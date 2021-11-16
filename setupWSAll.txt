@@ -1,0 +1,337 @@
+
+
+ 
+ _mainFolderDB*!_/webFiles/mainTeaching_/mainFolderDB*!_
+ _externalIDDB*!_eIDDB_/externalIDDB*!_
+
+_usernameDB*!_unamesDB_/usernameDB*!_
+
+_hierarchy*!_hBosses_/hierarchy*!_
+
+   _countersDB*!_cntrs_/countersDB*!_
+ 
+_fileManagement*!_fMan_/fileManagement*!_
+
+_messageManagement*!_messMan_/messageManagement*!_
+
+
+_couasManagement*!_couasMa_/couasManagement*!_
+
+_backupDB*!_backup_/backupDB*!_
+_backupMaxSZ*!_1000_/backupMaxSZ*!_
+
+_mainText*!_mTxt_/mainText*!_
+_responseDB*!_rspT_/responseDB*!_
+_statDB*!_statT_/statDB*!_
+_fstDB*!_fstT_/fstDB*!_
+_hierarchyCache*!_hBossCache_/hierarchyCache*!_
+ 
+ _dcMountingFolder*!_dmountF_/dcMountingFolder*!_
+ _dImageName*!_ub_cpp_py_/dImageName*!_
+ _codesToAutoGrade*!_5_/codesToAutoGrade*!_
+ 
+_initializerExtension*!__start_/initializerExtension*!_
+
+_publicSubFolderToStoreFiles*!_qq_/publicSubFolderToStoreFiles*!_
+_publicSubFolderForSystemFiles*!_qs_/publicSubFolderForSystemFiles*!_
+_subFolderForGuestClones*!_sites_/subFolderForGuestClones*!_
+
+_numStorageSubFoldersInFolder*!_1000_/numStorageSubFoldersInFolder*!_
+_numFilesInFolder*!_1000_/numFilesInFolder*!_
+_publicSubFolderToStoreChallengeImages*!_ch0_/publicSubFolderToStoreChallengeImages*!_ 
+_privateSubFolderToStoreChallengeAnswers*!_answ0_/privateSubFolderToStoreChallengeAnswers*!_
+
+
+
+ Debugging mode: yes/no/timeOnly
+ _debugging*!_no_/debugging*!_
+ _websiteName*!_GradeYard_/websiteName*!_
+
+ _websiteURL*!_https://gradeyard.com/teaching_/websiteURL*!_
+ 
+   
+  _cookieName*!_teach0_/cookieName*!_ 
+ _fileUploads*!_pc0_/fileUploads*!_ 
+
+
+
+ _tableOpenTag*!_<table class="table table-striped table-responsive table-hover">_/tableOpenTag*!_ 
+ _theadOpenTag*!_<thead class="table-secondary">_/theadOpenTag*!_
+
+
+_pVar*!_page_/pVar*!_ 
+ _rrc*!_r_/rrc*!_ 
+ _fromName*!_rec_/fromName*!_ 
+ _rSubmitR*!_rsu_/rSubmitR*!_ 
+ _respSbmYES!*_y_/respSbmYES!*_ 
+
+
+ _folderName*!_dbSystem_/folderName*!_
+
+_prefixSubdicrectories*!_Dir__/prefixSubdicrectories*!_ 
+_prefixFilesPt*!_f__/prefixFilesPt*!_
+_prefixFilesDt*!_fd__/prefixFilesDt*!_
+_maxStringBeforeNextFolder*!_zz_/maxStringBeforeNextFolder*!_ 
+
+Degree of B-tree (This parameter must not be changed after the databases are created) 
+_sysBTT*!_5_/sysBTT*!_    
+    
+ _fileWithDynamicData*!_xdynData.txt_/fileWithDynamicData*!_ 
+_availableFileNames*!_xaFN.txt_/availableFileNames*!_
+_fileExtension*!_txt_/fileExtension*!_ 
+_nextNameBB*!__lNF*!__nextNameBE*!_
+_nextNameEB*!__/lNF*!__nextNameEE*!_
+_nextEmptyBB*!_?_nextEmptyBE*!_
+_nextEmptyEB*!_!_nextEmptyEE*!_
+
+_questionsOnPage!*_10_/questionsOnPage!*_
+_convenience!*_
+_vVPair__vr_Hw_/vr__vl_EH_/vl__/vVPair_
+_vVPair__vr_Homework_/vr__vl_EH_/vl__/vVPair_
+_vVPair__vr_Midterm_/vr__vl_EM_/vl__/vVPair_
+_vVPair__vr_Final_/vr__vl_EF_/vl__/vVPair_
+_vVPair__vr_F_/vr__vl_EF_/vl__/vVPair_
+_vVPair__vr_HW_/vr__vl_EH_/vl__/vVPair_
+_vVPair__vr_homework_/vr__vl_EH_/vl__/vVPair_
+_vVPair__vr_gradingSummaryExtension_/vr__vl_GrMain_/vl__/vVPair_
+
+_/convenience!*_
+
+_defaultAlphabet!*_english_/defaultAlphabet!*_
+
+_defaultTexts!*_
+_vVPair__vr_gradingRoomActionTaken_/vr__vl_
+<h3> Success </h3>
+<div>
+_insert_
+_n*_buttonLink_/n*_
+_n*_Back to grading room_/n*_
+_n*_*BLREPL*_/n*_
+_/insert_ 
+</div>
+_/vl__/vVPair_
+_vVPair__vr_gradingRoomNothingToChange_/vr__vl_
+<h3> Nothing to change </h3>
+<div>
+_insert_
+_n*_buttonLink_/n*_
+_n*_Back to grading room_/n*_
+_n*_*BLREPL*_/n*_
+_/insert_ 
+</div>
+_/vl__/vVPair_
+
+
+_vVPair__vr_standardCourseCreated_/vr__vl_
+<p></p>
+<div class="card bg-success text-white">
+ <div class="card-body"> _doNotChangeAlphabet*_ <p><center>
+ <b>Welcome to the main page of your new course!</b>
+ </center></p><p> The name of the main document is <b>_*PAGE*NAME*_</b>. Please remember and write down this name and the URL</p><center> <a href="index.cgi?page=_*PAGE*NAME*_">index.cgi?page=_*PAGE*NAME*_</a></center> 
+ <p>Follow the link with the name "Instructor Page" to enroll the students. That link and the page are only visible to the administrators.   </p>
+  _/doNotChangeAlphabet*_
+ </div></div>
+_/vl__/vVPair_
+
+_vVPair__vr_automaticGradingComplete_/vr__vl_
+<h3>Automatic grading complete</h3>
+<div>
+_insert_
+_n*_buttonLink_/n*_
+_n*_Back to grading room_/n*_
+_n*_*BLREPL*_/n*_
+_/insert_ 
+</div>
+_/vl__/vVPair_
+
+
+_vVPair__vr_defaultExamOptions_/vr__vl_
+ 
+***************************************************
+***                MAIN SETUP OF THE EXAM             ***
+***************************************************
+
+
+
+***************************************************
+***                SECTION 1: EXAM STATUS              ***
+***************************************************
+****************       _sf*|_n_/sf*|_      **************
+***************************************************
+
+Status is one of the following: n/a/q/s/c/sc/p/sp 
+ n - not available. Exam is closed and questions are not shown
+ a - active. Exam is open and students can submit responses to questions
+ q - exam is closed for answering. 
+         The questions and responses are displayed
+ s - exam is closed for answering. 
+         The questions, responses, and official answers are displayed
+
+ p - exam is closed for answering. 
+         The questions, responses, and points from the grader are displayed.
+ sp - exam is closed for answering. 
+         The questions, responses, points, and official solutions are displayed.
+
+ c - exam is closed for answering. 
+         The questions, responses, points, and the comments by the grader are displayed.
+ sc - exam is closed for answering. 
+         The questions, responses, points, grader's comments, and official solutions are displayed.
+
+
+***************************************************
+***            SECTION 2: GRADING STATUS            ***
+***************************************************
+**************       _sgr*|_n_/sgr*|_      *************
+***************************************************
+
+Status is one of the following: n/a/
+ n - not available. Grading is closed and nothing is shown to the grader
+ a - active. Grades can be submitted by the grader.
+
+                                
+
+***************************************************
+*** SECTION 3: LABEL ON THE SUBMIT BUTTON ***
+***************************************************
+***** _blb*|_Update / Save / Re-submit_/blb*|_*****
+***************************************************
+
+
+***************************************************
+***     SECTION 4: OPTIONS FOR PDF FILES        ***
+***************************************************
+_pdfOptions*_  
+ _pref*_f__/pref*_ 
+ _addName*_yes_/addName*_
+
+_/pdfOptions*_
+
+
+***************************************************
+***     SECTION 5: TEXT BEFORE THE EXAM        ***
+***************************************************
+_iinf*|_
+<UL><li>
+You should re-submit the form after each edit.</li>
+<li>After the exam is over, the site will not accept any changes.</li>
+</UL>
+_/iinf*|_
+_/vl__/vVPair_
+
+
+
+
+
+_vVPair__vr_examPreambleLatexTemplate_/vr__vl_
+  
+
+
+\documentclass[twoside]{article}
+\newcommand\DS{\displaystyle}
+\newcommand\TS{\textstyle}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{times}
+\usepackage{mathptmx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\newcommand{\vect}[1]{\mathbf{#1}}
+
+\topmargin -1in \oddsidemargin -15.5mm \evensidemargin -15.5mm
+\textwidth 19.2cm \textheight 23.5cm 
+
+\pagestyle{empty} 
+
+ 
+
+_/vl__/vVPair_
+
+
+
+_vVPair__vr_answerBoxLatexTemplate_/vr__vl_
+  
+
+\vspace{0.3cm}
+\noindent $\begin{array}{cc|ccccc|}\cline{3-7} &&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ } \\
+\mbox{Answer:} &&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ } \\
+\cline{3-7}\end{array}$
+\vfill 
+
+_/vl__/vVPair_
+
+
+
+_/defaultTexts!*_
+
+
+_defaultFindReplace!*_
+_vVPair__vr_\begin{theorem}_/vr__vl_
+<div class="card bg-light text-dark">
+ <div class="card-body"><b>Theorem</b> _/vl__/vVPair_
+_vVPair__vr_\begin{lemma}_/vr__vl_
+<div class="card bg-light text-dark">
+ <div class="card-body"><b>Lemma</b> _/vl__/vVPair_
+_vVPair__vr_\begin{proposition}_/vr__vl_
+<div class="card bg-light text-dark">
+ <div class="card-body"><b>Proposition</b> _/vl__/vVPair_
+
+
+
+_vVPair__vr_\begin{definition}_/vr__vl_
+<div class="card bg-light text-dark">
+ <div class="card-body"><b>Definition</b> _/vl__/vVPair_
+
+
+_vVPair__vr_\begin{problem}_/vr__vl_
+<div class="card bg-light text-dark">
+ <div class="card-body"><b>Problem</b> _/vl__/vVPair_
+
+_vVPair__vr_\begin{exercise}_/vr__vl_
+<div class="card bg-light text-dark">
+ <div class="card-body"><b>Exercise</b> _/vl__/vVPair_
+
+_vVPair__vr_\begin{example}_/vr__vl_
+<div class="card bg-light text-dark">
+ <div class="card-body"><b>Example</b> _/vl__/vVPair_
+_vVPair__vr_\begin{box}_/vr__vl_
+<div class="card bg-light text-dark">
+ <div class="card-body"> _/vl__/vVPair_
+_vVPair__vr_\end{box}_/vr__vl_</div></div><p></p>_/vl__/vVPair_
+
+_vVPair__vr_\end{example}_/vr__vl_</div></div><p></p>_/vl__/vVPair_
+_vVPair__vr_\end{theorem}_/vr__vl_</div></div><p></p>_/vl__/vVPair_
+
+
+_vVPair__vr_\end{definition}_/vr__vl_</div></div><p></p>_/vl__/vVPair_
+ 
+_vVPair__vr_\end{problem}_/vr__vl_</div></div><p></p>_/vl__/vVPair_
+
+_vVPair__vr_\end{exercise}_/vr__vl_</div></div><p></p>_/vl__/vVPair_
+
+_vVPair__vr_\end{lemma}_/vr__vl_</div></div><p></p>_/vl__/vVPair_
+
+
+_vVPair__vr_\end{proposition}_/vr__vl_</div></div><p></p>_/vl__/vVPair_
+
+
+_vVPair__vr_\begin{proof}_/vr__vl_
+<p></p>
+<div>
+_hideReveal__revealTitle_Show proof_/revealTitle__hideTitle_Hide proof_/hideTitle_ _/vl__/vVPair_
+
+
+_vVPair__vr_\begin{solution}_/vr__vl_
+<p></p>
+<div>
+_hideReveal__revealTitle_Show solution_/revealTitle__hideTitle_Hide solution_/hideTitle_ _/vl__/vVPair_
+
+_vVPair__vr_\end{proof}_/vr__vl__/hideReveal_</div><p></p>_/vl__/vVPair_
+
+_vVPair__vr_\end{solution}_/vr__vl__/hideReveal_</div><p></p>_/vl__/vVPair_
+
+_/defaultFindReplace!*_
+
+_skipInitFolders*!_no_/skipInitFolders*!_
+
+
