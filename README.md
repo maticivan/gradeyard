@@ -1,4 +1,4 @@
-# gradeyard
+# GradeYard
 
 The GradeYard (https://gradeyard.com) is a learning management system designed to keep the course material, assignments, grades, and students as components of a personal website. 
 
