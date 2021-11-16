@@ -1,0 +1,17 @@
+//
+//	Acknowledgements:
+//
+//	GradeYard learning management system would not be possible without existing open source projects.
+//
+//	The code uses GCC libraries: https://gcc.gnu.org/
+//
+// 	In addition to the standard libraries, the following ones were used as well:
+//
+//	libcgicc: https://tracker.debian.org/pkg/libcgicc
+//	libpng++: http://www.libpng.org/pub/png/libpng.html
+//	C++ implementation of sha256: http://zedwood.com/article/cpp-sha256-function
+//      openSSL: https://www.openssl.org/
+//	imagemagick: https://imagemagick.org/
+//	mathjax: https://www.mathjax.org/
+//	TeX Live: https://tug.org/texlive/
+//	Bootstrap: https://getbootstrap.com/ 
