@@ -21,8 +21,6 @@
 
 
 namespace SF{
-
-
   template<class T1, class T2>
   class TwoValues{
   public:
@@ -43,10 +41,8 @@ namespace SF{
     }
     return 0;
   }
-
   template<typename T1, typename T2>
   void sortWithFollower(std::vector<T1> & v1, std::vector<T2> & v2){
-
     long sz=v1.size();
     if(v2.size()==sz){
       std::vector<TwoValues<T1,T2> > w;
@@ -62,7 +58,6 @@ namespace SF{
       }
     }
   }
-
   char toLowerCase(const char & x){
       char fR=x;
       if((x>='A')&&(x<='Z')){
@@ -78,7 +73,6 @@ namespace SF{
       }
       return output;
   }
-
   int isLetterOrBS(const char & c){
     if( (c>='a') && (c<='z')){return 1;}
     if( (c>='A') && (c<='Z')){return 1;}
@@ -97,7 +91,6 @@ namespace SF{
     }
     return res;
   }
-
   std::pair<std::string, int> getEverythingBefore(const std::string & src,
                                                   long & pos,
                                                   const std::string &endSt,
@@ -108,7 +101,6 @@ namespace SF{
       // long pos=7;
       // std::pair<std::string,int> res=SF::getEverythingBefore(src,pos,"5678");
       // then you will have res.first="78901234" and pos=19
-
       long size=src.length();
       std::string fR="";
       long endingLen=endSt.length();
@@ -123,21 +115,16 @@ namespace SF{
               currentCh=toLowerCase(currentCh);
               compareCh=toLowerCase(compareCh);
           }
-
           stToAdd+= src[pos];
           if(currentCh==compareCh){
               ++posInEnd;
           }
           else{
-
-
               pos-=stToAdd.length();
               ++pos;
               fR+=stToAdd[0];
               posInEnd=0;
               stToAdd="";
-
-
           }
           ++pos;
       }
@@ -145,22 +132,18 @@ namespace SF{
       if(posInEnd==endingLen){
           success=1;
       }
-
       return std::make_pair(fR,success);
   }
-
   long firstContainsTheOther(const std::string &st1,const std::string &st2,const int & caseSensitive=0){
     long pos=0;
     std::pair<std::string,int> aD=getEverythingBefore(st1,pos,st2,caseSensitive);
     return aD.second;
   }
-
   std::pair<std::string,int> extract(const std::string &  ,
                                      long &  ,
                                      const std::string & ,
                                      const std::string & ,
                                      const int &  );
-
   std::pair<std::string,int> extrStrong(const std::string & src,
                                         long & pos,
                                         const std::string &startString,
@@ -172,8 +155,6 @@ namespace SF{
       std::pair<std::string,int> fR;
       fR.first="";
       fR.second=0;
-
-
       std::pair<std::string,int> thrashSt=getEverythingBefore(src,pos,startString,caseSensitive);
       std::pair<std::string,int> beforeNextStart,beforeNextEnd;
       if(thrashSt.second==1){
@@ -217,15 +198,12 @@ namespace SF{
             }
           }
           fR.second=1;
-
       }
-
       if(fR.second==0){
           fR.first="";
       }
       return fR;
   }
-
   std::pair<std::string,int> extract(const std::string & src,
                                      long & pos,
                                      const std::string &startString,
@@ -326,7 +304,6 @@ namespace SF{
       pos=posSave;
       return fR;
   }
-
   std::pair<std::string,int> extractAndReplace(const std::string & src,
                                                long & pos,
                                                const std::string &startString,
@@ -336,7 +313,6 @@ namespace SF{
     if(startString!=endString){
       return extrReplStrong(src,pos,startString,endString,caseSensitive,replaceWith);
     }
-
     std::pair<std::string,int> fR;
     fR.first="";
     fR.second=0;
@@ -394,7 +370,6 @@ namespace SF{
       currentVar=allD.first;
       it=varsToVals.find(currentVar);
       if(it!=itE){
-
         pos-=(sepLens+currentVar.length());
         if(pos<0){pos=0;}
         newOutput="";
@@ -411,7 +386,6 @@ namespace SF{
     }
     return output;
   }
-
   template<typename T>
   void flipTheStack(std::stack<T>& s){
     std::stack<T> t;
@@ -421,7 +395,6 @@ namespace SF{
       t.pop();
     }
   }
-
   template<typename TTT>
   std::set<TTT> vectorToSet(const std::vector<TTT> &_v){
     std::set<TTT> fR;
@@ -431,8 +404,6 @@ namespace SF{
     }
     return fR;
   }
-
-
   std::string findAndReplace(const std::string &input,
                           const std::string &_searchFor,
                           const std::vector<std::string> &_replaceWith,
@@ -487,7 +458,6 @@ namespace SF{
       }
       return output;
   }
-
   std::string findAndReplace(const std::string &input,
                           const std::string &searchFor,
                           const std::string &_replaceWith,
@@ -529,22 +499,6 @@ namespace SF{
       }
     }
   }
-  /*
-  std::pair<long,long> minAndMinimizer(const std::vector<long> & v){
-    std::pair<long,long> res;
-    res.first=-1;res.second=-1;
-    long sz=v.size();
-    if(sz<1){return res;}
-    res.first=v[0];res.second=0;
-    for(long i=1;i<sz;++i){
-      if(v[i]<res.first){
-        res.first=v[i];
-        res.second=i;
-      }
-    }
-    return res;
-  }
-  */
   std::pair<long,long> minAndMinimizer(const std::map<long,long> & m){
     std::pair<long,long> res;
     res.first=-1;res.second=-1;
@@ -552,13 +506,6 @@ namespace SF{
     if(sz<1){return res;}
     return *(m.begin());
   }
-/*  std::string printStatus(const std::vector<long>&fPositions,const std::string &input,const long &pos,const std::vector<std::string> &searchFor){
-    std::string st;
-    for(long i=0;i<fPositions.size();++i){
-      st+="fP("+std::to_string(i)+")="+std::to_string(fPositions[i]);
-    }
-    return st;
-  }*/
   std::map<long,long> firstPosMap(const std::vector<long> & v){
     std::map<long,long> res;
     long i=v.size();
@@ -572,8 +519,6 @@ namespace SF{
                              const std::vector<std::string> &searchFor,
                              const std::vector<std::string> &replaceWith,
                              const int &caseSensitive=0){
-
-
       long lenSF=searchFor.size();
       if((lenSF<1)||(replaceWith.size()!=lenSF)){
         return input;
@@ -583,16 +528,10 @@ namespace SF{
       for(long i=0;i<lenSF;++i){
         fPositions[i]=-1;
       }
-
-
-
       std::pair<long,long> minsV;
       long pos=0;
-
       updateFirstPositions(fPositions,input,pos,searchFor,caseSensitive);
-
       std::map<long,long> fPMap=firstPosMap(fPositions);
-
       long sz=input.length();
       std::string output;
       while(pos<sz){
@@ -607,23 +546,17 @@ namespace SF{
         }
         fPMap.erase(fPMap.begin());
         fPMap[getFirstPosition(input,pos, searchFor[minsV.second],caseSensitive)]=minsV.second;
-
       }
-
-
       return output;
   }
   std::string findAndReplace(const std::string &input,
                              const std::vector<std::string> &searchFor,
                              const std::vector<std::string> &replaceWith,
                              const int &caseSensitive=0){
-
       // This function trusts that
       // 1) searchFor[i] appears only once for every i.
       // 2) searchFor[i] appears before searchFor[j] if i<j
       // If 1) or 2) fails, then the function will findAndReplaceSecureButNotVeryFast.
-
-
       long lenSF=searchFor.size();
       if((lenSF<1)||(replaceWith.size()!=lenSF)){
         return input;
@@ -633,14 +566,9 @@ namespace SF{
       for(long i=0;i<lenSF;++i){
         fPositions[i]=-1;
       }
-
-
-
       std::pair<long,long> minsV;
       long pos=0;
-
       updateFirstPositions(fPositions,input,pos,searchFor,caseSensitive);
-
       long trustworthy=1;
       long i=1;
       while((i<lenSF)&&(trustworthy==1)){
@@ -652,17 +580,12 @@ namespace SF{
       if(trustworthy==0){
         return findAndReplaceSecureButNotVeryFast(input,searchFor,replaceWith,caseSensitive);
       }
-
-
-
       long sz=input.length();
       std::string output;
       i=0;
       while((pos<sz)&&(i<lenSF)){
         minsV.first=fPositions[i];
         minsV.second=i;
-
-
         while(pos<fPositions[i]){
           output+=input[pos];
           ++pos;
@@ -678,10 +601,8 @@ namespace SF{
         output+=input[pos];
         ++pos;
       }
-
       return output;
   }
-
   long countInString(const std::string & _allItems,
                                     const std::string & _nextB="_n_",
                                     const std::string & _nextE="_/n_",
@@ -741,7 +662,6 @@ namespace SF{
     }
     return fR;
   }
-
   std::vector<std::vector<std::string> > getCommands(const std::string & _qs,
                                                      const std::string & _nextB,
                                                      const std::string & _nextE,
@@ -761,7 +681,6 @@ namespace SF{
     }
     return fR;
   }
-
   std::string removeInfoAndPrepareNew(std::string &oldSysData, const std::string & _bS, const std::string & _eS, const std::string & _nD){
     std::string nD=_bS+_nD+_eS;
     long pos=0;
@@ -771,9 +690,6 @@ namespace SF{
     }
     return nD;
   }
-
-
-
   long getLegalCharacters(std::map<char,long> &fR1, std::map<long,char> &fR2){
    char c;
    long toAdd=0;
@@ -792,10 +708,8 @@ namespace SF{
      fR2[toAdd]=c;
      ++toAdd;
    }
-
    return toAdd;
   }
-
   class TranslatorCharToLong{
   private:
     long num;
@@ -844,7 +758,6 @@ namespace SF{
     fR[0]=c;
     return fR;
   }
-
   std::vector<long> strToVectInt(const std::string &_s){
     std::vector<long> fR;
     long sz=_s.size();
@@ -856,8 +769,6 @@ namespace SF{
     }
     return fR;
   }
-
-
   std::string vectIntToStr(const std::vector<long> &_c){
     long i=0;
     long lC=_c.size();
@@ -874,9 +785,7 @@ namespace SF{
     aV6[0]=7;aV6[1]=9;aV6[2]=3;aV6[3]=8;aV6[4]=7;aV6[5]=4;
     return aV6;
   }
-
   std::string combineTwoWords(const std::string &_a, const std::string &_b){
-
     // lengths of _a and _b must be smaller than or equal to 999
     long numChr=GLOBAL_TRANSLATOR_CHAR_LONG.getNum();
     std::vector<long> aV6=getAdditionVector6();
@@ -926,7 +835,6 @@ namespace SF{
       if(posB>=lB){
         posB=0;
       }
-
     }
     return vectIntToStr(c);
   }
@@ -945,10 +853,8 @@ namespace SF{
     }
     std::string __a,__b;
     std::vector<long> a,b,c,slA,slB;
-
     c=strToVectInt(_st);
     slA.resize(3);slB.resize(3);
-
     slA[0]=makeItBiggerThanOrEqual0(c[3]-c[2]-c[1]-aV6[0]);
     slB[0]=makeItBiggerThanOrEqual0(c[4]-c[3]-c[1]-aV6[1]);
     slA[1]=makeItBiggerThanOrEqual0(c[5]-c[4]-c[1]-aV6[2]);
@@ -990,7 +896,6 @@ namespace SF{
     }
     return _mnf;
   }
-
   std::vector<std::string> removeFromSeq(const std::vector<std::string> &in, const std::string & toRemove){
     std::vector<std::string> out;
     long sz=in.size();
@@ -1224,7 +1129,6 @@ namespace SF{
     std::map<std::string,std::string>::const_iterator itSrc,itSrcE;
     itSrcE=src.end();
     while(i<maxNum){
-
       itSrc=src.find(keyPrefix+std::to_string(i));
       if(itSrc!=itSrcE){
         key=itSrc->second;
