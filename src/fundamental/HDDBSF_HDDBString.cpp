@@ -21,14 +21,15 @@
 
 
 namespace HDDBSF{
+  std::string secureForStorage(const std::string & source){
+      return SF::findAndReplace(source,"*!_",GF::GL_HIDING_STRING_HDDBRF);
+  }
+  std::string unpackFromStorage(const std::string & source){
+      return SF::findAndReplace(source,GF::GL_HIDING_STRING_HDDBRF,"*!_");
+  }
   class String{
   private:
-
       std::string mainData;
-
-      std::string secureForStorage(const std::string &) const;
-      std::string unpackFromStorage(const std::string &) const;
-
   public:
       String(const std::string & = "noData");
       void setMainData(const std::string &);
@@ -37,12 +38,7 @@ namespace HDDBSF{
       void loadFromString(const std::string&);
       std::string putIntoString() const;
   };
-  std::string String::secureForStorage(const std::string & source) const{
-      return SF::findAndReplace(source,"*!_",GF::GL_HIDING_STRING_HDDBRF);
-  }
-  std::string String::unpackFromStorage(const std::string & source) const{ 
-      return SF::findAndReplace(source,GF::GL_HIDING_STRING_HDDBRF,"*!_");
-  }
+
 
   String::String(const std::string & _mD){
       mainData=_mD;
