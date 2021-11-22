@@ -343,7 +343,7 @@ namespace ATF{
     long pos;std::pair<std::string,int> allD;
     pos=0;allD=SF::extract(da,pos,"_dB*!_","_/dB*!_");
     if(allD.second==1){
-      da=allD.first;
+      da=HDDBSF::unpackFromStorage(allD.first);
     }
 
 
@@ -459,7 +459,7 @@ namespace ATF{
     long pos=0;
     std::pair<std::string,int> allD;
     std::string sepB="_dB*!_";std::string sepE="_/dB*!_";
-    newText=sepB+da+sepE;
+    newText=sepB+HDDBSF::secureForStorage(da)+sepE;
     allD=SF::extractAndReplace(oldText,pos,sepB,sepE,0,newText);
     if(allD.second==1){
         IOF::toFile(dFName,allD.first);
