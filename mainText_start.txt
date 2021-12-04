@@ -3254,6 +3254,30 @@ _n*_users_/n*_
 _n*_25_/n*_
 _n*_3_/n*_
 _/insert_
+
+
+\begin{box}
+_insert_
+_n*_formInitialization_/n*_
+_n*_searchForUser_/n*_
+_n*_index.cgi?page=listUsers_/n*_
+_/insert_
+_insert_
+_n*_textInputField_/n*_
+_n*_searchForUser_/n*_
+_n*_sBg_/n*_
+_n*_Search for:_/n*_
+_n*__/n*_
+_n*_80_/n*_
+_/insert_
+
+ 
+_insert_
+_n*_formPlacement_/n*_
+_n*_searchForUser_/n*_
+_/insert_ 
+\end{box}
+
 _/textData!!_
 
 
