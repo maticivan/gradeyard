@@ -19,8 +19,6 @@
 #ifndef _INCL_WI_Response_H
 #define _INCL_WI_Response_H
 namespace RTI{
-
-
   class PossibleStatusOfTheForm{
   private:
     std::set<std::string> psForm;
@@ -31,14 +29,11 @@ namespace RTI{
   } GL_FORM_POSSIBLE_STATUS;
   PossibleStatusOfTheForm::PossibleStatusOfTheForm(){
     psForm.insert("nyo");//not yet open - do not show the form nor the answers
-
     //show form and accept answers
     psForm.insert("awd");//accept answers before deadline
     psForm.insert("a");//accept answers
-
     //show only questions
     psForm.insert("q");
-
     //show submissions and solutions
     psForm.insert("s");//show submissions of the user and official solutions
     psForm.insert("p");//show submissions of the user and points of the grader (but not comments)
@@ -47,9 +42,6 @@ namespace RTI{
     psForm.insert("cs");//both s and c
     psForm.insert("sp");//both s and p
     psForm.insert("ps");//both s and p
-
-
-
     itE=psForm.end();
   }
   std::string PossibleStatusOfTheForm::checkForLegalStatus(const std::string &ch){
@@ -64,6 +56,7 @@ namespace RTI{
     std::string language, officialSource,userSource,codeToEmbed;
     std::vector<std::string> inputTestCases, includes;
     std::vector<double> pointsTestCases;
+    std::string comments;
   };
   struct SingleQuestionInfo{
   public:
@@ -79,7 +72,6 @@ namespace RTI{
     std::map<long,std::string> completionProgress;
     std::map<long,std::string> scoringProgress;
   };
-
   struct ResponderInfo{
   public:
     std::vector<std::string> fileInfoV;
@@ -88,7 +80,6 @@ namespace RTI{
     std::string idInfoData;
     std::string solverUserName;
     std::string exitStatus;// the function infoFromResponseText will set this to either "badForm" or "ok"
-
     std::string prefixForExamPDF;
     std::string addNameIndicator;
     long acceptResp;
@@ -97,16 +88,11 @@ namespace RTI{
     long displayPoints;
     long displayComments;
     long displayQs;
-
     std::string documentType;
-
     std::string gradingStatus;
     std::map<std::string,std::string> gradersComments;
-
     std::set<std::string> questionLabels;
-
     int indicatorOfPOST;
-
     std::string debuggingPrint() const;
   };
   struct LocationOfDocuments{
@@ -122,42 +108,30 @@ namespace RTI{
   };
   class Response:public APTI::AbstractText{
   protected:
-
     int ind_initSuccess;
     RMD::Response meRM;
-
-
     std::string myDocType;//can be responseToTest or gradeOfResponse
-
     std::string st_responseToTest="responseToTest";
     std::string st_gradeOfResponse="gradeOfResponse";
-
     std::string st_gradingColor="purple";
-
     RMD::Response responseDocumentForGrader;
     // when the object is a grading document
     //     then this attribute contains the responseDocument that has to be graded.
     // (when the object is a response document this attribute is irrelevant and not set to anything)
     int indRespDocForGraderCorrectlySet=0;
-
     RMD::Response gradingDocumentForReponse;
     // when the object is a response
     //     then this attribute contains the gradingDocument.
     // (when the object is a grading document this attribute is irrelevant and not set to anything)
     int indGradingDocForRespCorrectlySet=0;
-
     std::string rawTextOfResponseVisibleToGrader;
     // when the object is a grading document, this attribute is the rawText of the response document
-
     std::string e_formNameRT=MWII::GL_WI.get_e_formNameRT();
     std::string e_actNameRT=MWII::GL_WI.get_e_respSubmitReqRT()+"="+MWII::GL_WI.get_e_respSubmitSuccRT();//="respSubmit=yes";
-
     std::string s_gradeLinkInResp_QRTB="_grd*|_";
     std::string s_gradeLinkInResp_QRTE="_/grd*|_";
-
     std::string s_respLinkInGrade_QRTB="_rsp*|_";
     std::string s_respLinkInGrade_QRTE="_/rsp*|_";
-
     std::string s_nextQ_QRTB="_in*|_";
     std::string s_nextQ_QRTE="_/in*|_";
     std::string s_tFormulation_QRTB="_tx*|_";
@@ -176,42 +150,28 @@ namespace RTI{
     std::string s_fileAllowed_QRTE="_/fa*|_";
     std::string s_autograderInfo_QRTB="_agr*|_";
     std::string s_autograderInfo_QRTE="_/agr*|_";
-
     std::string s_label_QRTB="_lb*|_";
     std::string s_label_QRTE="_/lb*|_";
-
     std::string s_buttonLabel_QRTB="_blb*|_";
     std::string s_buttonLabel_QRTE="_/blb*|_";
-
     std::string s_importantInfo_QRTB="_iinf*|_";
     std::string s_importantInfo_QRTE="_/iinf*|_";
-
     std::string s_notStartedYet_QRTB="_notOpen*|_";
     std::string s_notStartedYet_QRTE="_/notOpen*|_";
     std::string s_notReadyForGrading_QRTB="_noGrading*|_";
     std::string s_notReadyForGrading_QRTE="_/noGrading*|_";
-
     std::string s_score_GRTB="_score_";
     std::string s_score_GRTE="_/score_";
     std::string s_comment_GRTB="_comment_";
     std::string s_comment_GRTE="_/comment_";
-
-
-
     std::string s_statusOfTheForm_ARTB="_sf*|_";
     std::string s_statusOfTheForm_ARTE="_/sf*|_";
-
     std::string s_statusOfTheGrading_ARTB="_sgr*|_";
     std::string s_statusOfTheGrading_ARTE="_/sgr*|_";
-
-
-
-
     std::string s_formulRespRec_ARTB="_f*|_";
     std::string s_formulRespRec_ARTE="_/f*|_";
     std::string s_masterStatus_ARTB="_ms*|_";
     std::string s_masterStatus_ARTE="_/ms*|_";
-
     std::string s_deadlineRespRec_ARTB="_dl*|_";
     std::string s_deadlineRespRec_ARTE="_/dl*|_";
     std::string s_idInfo_ARTB="_iI*|_";
@@ -220,27 +180,20 @@ namespace RTI{
     std::string s_solverUName_ARTE="_/userName*|_";
     std::string s_comment_ARTB="_gc*|_";
     std::string s_comment_ARTE="_/gc*|_";
-
     std::string s_numFilesAllowed_ARTB="_nf*|_";
     std::string s_numFilesAllowed_ARTE="_/nf*|_";
-
     std::string s_verSepBB="_v";
     std::string s_verSepEB="_/v";
     std::string s_verSepE="*|_";
-
     std::string s_indFileSep_ARTBB="_f";
     std::string s_indFileSep_ARTEB="_/f";
     std::string s_infFileSep_ARTBEE="*|_";
-
-
     std::string s_accessLogs_ARTB="_alo*|_";
     std::string s_accessLogs_ARTE="_/alo*|_";
-
     std::string s_accessLogsInnerSep_ARTB="_alIn*|_";
     std::string s_accessLogsInnerSep_ARTE="_/alIn*|_";
     std::string s_accessLogsNumDevs_ARTB="_alND*|_";
     std::string s_accessLogsNumDevs_ARTE="_/alND*|_";
-
     std::string labelOnTheSubmitButton;
     std::string instructionsOnTopOfTheForm;
     std::string messageUnavailableYet;
@@ -249,14 +202,10 @@ namespace RTI{
     long numFilesAllowed;
     std::map<std::string,std::vector<std::string> > userRTAnswMap;
     //key: question number; value = < solution,answer, pointsEarned, graders Comment>
-
     std::map<std::string,std::vector<std::string> > formRTQsMap;
     //key: question number; value = <question, formulation, solution, answer, points, displayType, fileAllowed, autoGraderExecutionData>
-
     long numberOfDifferentDevicesThatAccessedTheForm;
     std::set<std::string> allDevicesThatAccessedTheForm;
-
-
     std::string modifyMe() const;
     std::string closestLegalRequest(const PSDI::SessionData &, const std::string &) const;
     std::vector<long> getStatusVector(const PSDI::SessionData & , const std::string & , const std::string & ) const;
@@ -266,8 +215,6 @@ namespace RTI{
     std::string userAnswerDisplay(const SingleQuestionInfo &, long &) const;
     std::string singleProblemDisplay(const SingleQuestionInfo&, ProblemCommentsAndScores &, long &, double &) const;
     std::string singleProblemDisplayForGrader(const SingleQuestionInfo &, ProblemCommentsAndScores &, long &, double &) const;
-
-
   public:
     Response(const std::string & = "mainTextFirstPage", const std::string & = "no1117", const std::string & = "everyone");
     int initialize(const std::string & = "mainTextFirstPage", const std::string & = "no211", const std::string & = "everyone");
@@ -289,6 +236,5 @@ namespace RTI{
     std::string changeResponseReceiverStatus(const PSDI::SessionData & , const std::string & , const std::string & );
     int isInitialized() const;
   };
-
 }
 #endif
