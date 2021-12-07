@@ -15,24 +15,17 @@
 //    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
 //    along with this program.  If not, see https://www.gnu.org/licenses/.
 
-
 #ifndef _INCL_GF_GLOBALINITS_CPP
 #define _INCL_GF_GLOBALINITS_CPP
-
 namespace GF{
   DEBMF::DebHandler GL_DEB_MESSAGES;
-
-
   std::map<std::string,std::string> GL_OPENED_FILES;
   long GL_MAXFILESINRAM=1000;
-
   long GLOBAL_FILETOSTRCOUNTER=0;
-
   long GLOBAL_MAX_DAYS_ST=60;
   long GLOBAL_MAX_MONTHS_ST=15;
   long GLOBAL_MAX_YEARS_ST=100;
   std::string GLOBAL_FILEOPENED;
-
   std::string GL_HIDING_STRING_FORMULACENTER="azmnvdtvnvdtv29122943";
   std::string GL_HIDING_STRING_DISPPF01="*feS8!!kwXW**az!n!vD*t|v|S";
   std::string GL_HIDING_STRING_DISPPF02="df*1l)k|f|";
@@ -43,7 +36,8 @@ namespace GF{
   std::string GL_HIDING_STRING_PTKF04="WNRf34";
   std::string GL_HIDING_STRING_SF="e!n!S!azm8*81!!7!2203!a";
   std::string GL_HIDING_STRING_TWDVF="!e*n&d=*7e&n&d";
-
+  std::string GL_errorDidNotCompile="Error:DidNotCompile";
+  std::string GL_errorOutputTooBig="Error:OutputTooBig";
   std::map<std::string,std::map<std::string,double> > initializeLetterGradesConversionMap(){
     std::map<std::string,std::map<std::string,double> > fR;
     std::map<std::string,double> aConv;
@@ -94,19 +88,14 @@ namespace GF{
     strings[20]="ables*";
     strings[21]="opicCode_";
     strings[22]="_/n*_";
-
     veryBadStrings.resize(4);
     veryBadStrings[0]="<?";
     veryBadStrings[1]="<php";
     veryBadStrings[2]="ata!!_";
     veryBadStrings[3]="ing!!_";
-
   }
   std::map<std::string,std::map<std::string,double> > GL_GRADE_CONVERSION=initializeLetterGradesConversionMap();
-
   long GL_randSeed= std::chrono::high_resolution_clock::now().time_since_epoch().count();
   std::mt19937 GL_mt_randIF(GL_randSeed);
 }
-
-
 #endif
