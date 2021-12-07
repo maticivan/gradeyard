@@ -79,6 +79,16 @@ namespace CAGI{
         cInfo.pointsTestCases[i]=maxScore / static_cast<double>(numTestCases);
         scoreByNow+=cInfo.pointsTestCases[i];
       }
+      pos=0;allD=SF::extract(rawTxt,pos,"_revealTestCasesAfterGrading_","_/revealTestCasesAfterGrading_");
+      if(allD.second==0){
+        cInfo.revealTestCasesAfterGrading.resize(numTestCases);
+        for(long i=0;i<numTestCases;++i){
+          cInfo.revealTestCasesAfterGrading[i]="no";
+        }
+      }
+      else{
+        cInfo.revealTestCasesAfterGrading=SF::stringToVector(allD.first,"_n*_","_/n*_");
+      }
       pos=0;allD=SF::extract(rawTxt,pos,"_pointsTestCases_","_/pointsTestCases_");
       if(allD.second==1){
         std::vector<std::string> ptsTestCases = SF::stringToVector(allD.first,"_n*_","_/n*_");
@@ -118,7 +128,7 @@ namespace CAGI{
     }
     return 0;
   }
-  GradingResult calculateScore(const std::vector<std::string> &officialOutput, const std::vector<std::string> &userOutput, const std::vector<double> &pts){
+  GradingResult calculateScore(const std::vector<std::string> &officialOutput, const std::vector<std::string> &userOutput, const std::vector<double> &pts, const std::vector<std::string> & inputTestCases, const std::vector<std::string> &revealAfter){
     GradingResult res;
     res.comment="";
     res.numericScore=-100.0;
@@ -152,6 +162,11 @@ namespace CAGI{
       else{
         res.comment+="failure";
       }
+      if(revealAfter[i]=="yes"){
+        res.comment+="\n  Input: "+inputTestCases[i]+"\n";
+        res.comment+=" Output: "+userOutput[i]+"\n";
+        res.comment+="Correct: "+officialOutput[i]+"\n";
+      }
       if(userOutput[i] != SF::findAndReplace(userOutput[i],GF::GL_errorDidNotCompile,"")){
         indicatorDidNotCompile=1;
       }
@@ -167,6 +182,9 @@ namespace CAGI{
     res.score=BF::eraseTrailingZeros(std::to_string(total));
     res.numericScore=total;
     res.comment="_code_AUTOGRADER COMMENT BEGIN"+res.comment+"\nAUTOGRADER COMMENT END_/code_";
+    if(MWII::GL_WI.getDefaultWebText("ShowAutoGraderComment")=="no"){
+      res.comment="";
+    }
     return res;
   }
   int codeAutoGradeAndUpdateMap(const PSDI::SessionData & _psd, std::map<std::string,GradingResult>& oldScores, const std::map<std::string,RTI::CodeAutoGraderInfo> & delayedAG){
@@ -179,6 +197,7 @@ namespace CAGI{
     std::vector<std::string> languages;
     std::vector<std::vector<std::string> >includes;
     std::vector<std::vector<std::string> >inputTestCases;
+    std::vector<std::vector<std::string> >revealTCAfterGrading;
     std::vector<std::vector<double> > scores;
     std::vector<std::string> labels;
     long twoNC=2*numCodes;
@@ -186,6 +205,7 @@ namespace CAGI{
     languages.resize(twoNC);
     includes.resize(twoNC);
     inputTestCases.resize(twoNC);
+    revealTCAfterGrading.resize(twoNC);
     labels.resize(twoNC);
     scores.resize(twoNC);
     long i=0;
@@ -196,6 +216,7 @@ namespace CAGI{
       languages[i]=(it->second).language;
       includes[i]=(it->second).includes;
       inputTestCases[i]=(it->second).inputTestCases;
+      revealTCAfterGrading[i]=(it->second).revealTestCasesAfterGrading;
       scores[i]=(it->second).pointsTestCases;
       labels[i]=it->first;
       ++i;
@@ -203,6 +224,7 @@ namespace CAGI{
       languages[i]=(it->second).language;
       includes[i]=(it->second).includes;
       inputTestCases[i]=(it->second).inputTestCases;
+      revealTCAfterGrading[i]=(it->second).revealTestCasesAfterGrading;
       scores[i]=(it->second).pointsTestCases;
       labels[i]=it->first;
       ++i;
@@ -218,7 +240,7 @@ namespace CAGI{
     i=0;
     GradingResult score1Problem;
     while(i<numCodes){
-      score1Problem=calculateScore(aGOutput.first[2*i+1],aGOutput.first[2*i],scores[2*i]);
+      score1Problem=calculateScore(aGOutput.first[2*i+1],aGOutput.first[2*i],scores[2*i],inputTestCases[2*i],revealTCAfterGrading[2*i]);
       if(score1Problem.score!="badScore"){
         oldScores[labels[2*i]]=score1Problem;
       }
