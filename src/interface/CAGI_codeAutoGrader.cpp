@@ -17,16 +17,17 @@
 
 #ifndef _INCL_CAGI_CodeAutoGrader_CPP
 #define _INCL_CAGI_CodeAutoGrader_CPP
-
-
 namespace CAGI{
-
+  struct GradingResult{
+  public:
+    double numericScore;
+    std::string score;
+    std::string comment;
+  };
   struct DockerCodeCounter{
   public:
     long remainingCodes;
   } GL_Code_Counter;//will be initialized in mainFunction.cpp
-
-
   std::string lastCode(const std::string & _input){
     std::string input=SF::findAndReplace(_input,"_code_","<pre>");
     input=SF::findAndReplace(input,"_/code_","</pre>");
@@ -53,19 +54,16 @@ namespace CAGI{
         cInfo.language="cpp";
       }
     }
-
     cInfo.codeToEmbed="";
     pos=0;allD=SF::extract(rawTxt,pos,"_embedIntoCode_","_/embedIntoCode_");
     if(allD.second==1){
       cInfo.codeToEmbed=allD.first;
     }
-
     cInfo.inputTestCases.resize(0);
     pos=0;allD=SF::extract(rawTxt,pos,"_testCases_","_/testCases_");
     if(allD.second==1){
       cInfo.inputTestCases=SF::stringToVector(allD.first,"_n*_","_/n*_");
     }
-
     cInfo.includes.resize(0);
     pos=0;allD=SF::extract(rawTxt,pos,"_includes_","_/includes_");
     if(allD.second==1){
@@ -92,7 +90,6 @@ namespace CAGI{
           }
         }
       }
-
       if((maxScore>BF::GLOBAL_EPSILON) && ((scoreByNow-maxScore)*(scoreByNow-maxScore)>BF::GLOBAL_EPSILON)){
         double rescale=maxScore/scoreByNow;
         for(long i=0;i<numTestCases;++i){
@@ -100,25 +97,32 @@ namespace CAGI{
         }
       }
     }
-
-
     std::string testEmbed=SF::findAndReplace(cInfo.codeToEmbed,"_*embedHere*_","");
     if(cInfo.codeToEmbed!=testEmbed){
       cInfo.officialSource=SF::findAndReplace(cInfo.codeToEmbed,"_*embedHere*_",cInfo.officialSource);
       cInfo.userSource=SF::findAndReplace(cInfo.codeToEmbed,"_*embedHere*_",cInfo.userSource);
     }
-
     return cInfo;
-
   }
   int sufficientlyEqual(const std::string & _a, const std::string &_b){
-    if(TWDVF::eraseLeadingAndTrailingEmptyCharacters(_a)==TWDVF::eraseLeadingAndTrailingEmptyCharacters(_b)){
+    std::string a=TWDVF::eraseLeadingAndTrailingEmptyCharacters(_a);
+    std::string b=TWDVF::eraseLeadingAndTrailingEmptyCharacters(_b);
+    a=SF::findAndReplace(a,"\t"," ");
+    b=SF::findAndReplace(b,"\t"," ");
+    a=SF::findAndReplace(a,"   "," ");
+    b=SF::findAndReplace(b,"   "," ");
+    a=SF::findAndReplace(a,"  "," ");
+    b=SF::findAndReplace(b,"  "," ");
+    if(a==b){
       return 1;
     }
     return 0;
   }
-  std::string calculateScore(const std::vector<std::string> &officialOutput, const std::vector<std::string> &userOutput, const std::vector<double> &pts){
-    std::string res="badScore";
+  GradingResult calculateScore(const std::vector<std::string> &officialOutput, const std::vector<std::string> &userOutput, const std::vector<double> &pts){
+    GradingResult res;
+    res.comment="";
+    res.numericScore=-100.0;
+    res.score="badScore";
     long sz=officialOutput.size();
     if(sz!=userOutput.size()){
       return res;
@@ -128,34 +132,49 @@ namespace CAGI{
     }
     double total=0.0;
     long indicatorOfficialSolutionBad=0;
+    long indicatorDidNotCompile=0;
     long i=0;
     while((i<sz) && (indicatorOfficialSolutionBad==0)){
-      if(officialOutput[i] != SF::findAndReplace(officialOutput[i],"Error:OutputTooBig","")){
+      if(officialOutput[i] != SF::findAndReplace(officialOutput[i],GF::GL_errorOutputTooBig,"")){
         indicatorOfficialSolutionBad=1;
       }
-      if(officialOutput[i] != SF::findAndReplace(officialOutput[i],"Error:DidNotCompile","")){
+      if(officialOutput[i] != SF::findAndReplace(officialOutput[i],GF::GL_errorDidNotCompile,"")){
         indicatorOfficialSolutionBad=1;
       }
       if(officialOutput[i] ==""){
         indicatorOfficialSolutionBad=1;
       }
+      res.comment+="\nTest case "+std::to_string(i+1)+": ";
       if( sufficientlyEqual(officialOutput[i],userOutput[i])==1 ){
         total+=pts[i];
+        res.comment+="success";
+      }
+      else{
+        res.comment+="failure";
+      }
+      if(userOutput[i] != SF::findAndReplace(userOutput[i],GF::GL_errorDidNotCompile,"")){
+        indicatorDidNotCompile=1;
       }
       ++i;
     }
     if(indicatorOfficialSolutionBad==1){
       total=-100.0;
+      res.comment="\nProblem with official solution.";
     }
-    return BF::eraseTrailingZeros(std::to_string(total));
+    if(indicatorDidNotCompile==1){
+      res.comment="\nCode did not compile.";
+    }
+    res.score=BF::eraseTrailingZeros(std::to_string(total));
+    res.numericScore=total;
+    res.comment="_code_AUTOGRADER COMMENT BEGIN"+res.comment+"\nAUTOGRADER COMMENT END_/code_";
+    return res;
   }
-  int codeAutoGradeAndUpdateMap(const PSDI::SessionData & _psd, std::map<std::string,std::string>& oldScores, const std::map<std::string,RTI::CodeAutoGraderInfo> & delayedAG){
+  int codeAutoGradeAndUpdateMap(const PSDI::SessionData & _psd, std::map<std::string,GradingResult>& oldScores, const std::map<std::string,RTI::CodeAutoGraderInfo> & delayedAG){
     std::map<std::string,RTI::CodeAutoGraderInfo>::const_iterator it,itE;
     long numCodes=delayedAG.size();
     if(numCodes<1){
       return 0;
     }
-
     std::vector<std::string> sources;
     std::vector<std::string> languages;
     std::vector<std::vector<std::string> >includes;
@@ -197,17 +216,16 @@ namespace CAGI{
       return 0;
     }
     i=0;
-    std::string score1Problem;
+    GradingResult score1Problem;
     while(i<numCodes){
       score1Problem=calculateScore(aGOutput.first[2*i+1],aGOutput.first[2*i],scores[2*i]);
-      if(score1Problem!="badScore"){
+      if(score1Problem.score!="badScore"){
         oldScores[labels[2*i]]=score1Problem;
       }
       ++i;
     }
     return 1;
   }
-
   std::string wrongLengthsOfVectors(){
     std::string fR="";
     fR+="<p>Error:</p>";
@@ -259,8 +277,6 @@ namespace CAGI{
     }
     fR+=presentationOfResultsOfTests(inputTestCases[0],aGOutput.first[0]);
     return fR;
-
   }
 }
-
 #endif
