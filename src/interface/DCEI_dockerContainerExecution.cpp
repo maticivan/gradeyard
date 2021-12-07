@@ -18,17 +18,13 @@
 
 #ifndef _INCL_DockerContainerExecution_CPP
 #define _INCL_DockerContainerExecution_CPP
-
-
 namespace DCEI{
   struct DCEI_globalConstants{
   public:
     std::string separatorBetweenBigNumbersInNames;
     std::vector<std::string> dangerousCPPCommands;
     std::vector<std::string> dangerousCPPWords;
-
     std::vector<std::string> dangerousPythonCommands;
-
     DCEI_globalConstants();
   } GL_DCEI_const;
   DCEI_globalConstants::DCEI_globalConstants(){
@@ -38,11 +34,9 @@ namespace DCEI{
     dangerousCPPCommands[0]="system";
     dangerousCPPCommands[1]="exec";
     dangerousCPPCommands[2]="fork";
-
     long numDangerousCPPWords=1;
     dangerousCPPWords.resize(numDangerousCPPWords);
     dangerousCPPWords[0]="reinterpret_cast";
-
     long numDangerousPythonCommands=6;
     dangerousPythonCommands.resize(numDangerousPythonCommands);
     dangerousPythonCommands[0]="system";
@@ -52,16 +46,6 @@ namespace DCEI{
     dangerousPythonCommands[4]="fork";
     dangerousPythonCommands[5]="chdir";
   }
-
-
-
-
-
-
-
-
-
-
   struct ContainerExecutionData{
   public:
     std::vector<std::string> language;
@@ -76,17 +60,13 @@ namespace DCEI{
     std::string bashExecFileName;
     long myLinuxUserId;
   };
-
   std::string myMountFolder(const std::string & myUserName){
     return DD::GL_DBS.getMountFolder()+"/un_"+myUserName;
   }
-
   int createTempFolderForMounting(const std::string &myUserName){
     IOF::sys_createFolderIfDoesNotExist(myMountFolder(myUserName),"readme.txt","Do not edit this folder");
     return 1;
   }
-
-
   std::pair<std::string, long> usernameAndId(const PSDI::SessionData & _psd){
     std::string filePathToSaveData=myMountFolder(_psd.my_un)+"/"+"redirectCommand.txt";
     std::pair<std::string,long> res;
@@ -100,10 +80,6 @@ namespace DCEI{
     }
     return "cp "+from+"/"+fNameFrom+" "+to+"/"+fNameTo+"\n";
   }
-
-
-
-
   std::string fileFullName(const std::string &baseName, const std::string &ext, const long &mod1, const long &mod2=-1){
     std::string fR=baseName+BF::padded(mod1+1,BF::GLOBAL_PRIME_SEQUENCES.paddingNumB,"0");
     if(mod2>-1){
@@ -121,7 +97,6 @@ namespace DCEI{
     }
     return 1;
   }
-
   int putTextsIntoFiles(const std::string & folderName,const std::vector<std::string> &tx, const std::string &fileBaseName, const std::string & ext){
     std::vector<std::string> extV;
     long sz=tx.size();
@@ -131,7 +106,6 @@ namespace DCEI{
     }
     return putTextsIntoFiles(folderName,tx,fileBaseName,"",extV);
   }
-
   int deleteFiles(const std::string & folderName, const long & sz, const std::string &fileBaseName, const std::string & addDot, const std::vector<std::string> &ext){
     std::string tempFName;
     for(long i=0;i<sz;++i){
@@ -163,7 +137,7 @@ namespace DCEI{
     bRes+="if [[ $? != 0 ]]; then\n";
     for(long j=0;j<numTsts;++j){
       txtResFile=fileFullName(outN,".txt",i,j);
-      bRes+="   echo \"Error:DidNotCompile\" > "+txtResFile+"\n";
+      bRes+="   echo \""+GF::GL_errorDidNotCompile+"\" > "+txtResFile+"\n";
     }
     bRes+="else\n";
     for(long j=0;j<numTsts;++j){
@@ -179,7 +153,6 @@ namespace DCEI{
     bRes+="fi\n";
     return bRes;
   }
-
   std::string bashCommandsToCompileAndExecutePython3(const std::string & pySourceFile,
                                                      const std::string & inN,
                                                      const std::string & outN,
@@ -194,7 +167,7 @@ namespace DCEI{
     bRes+="if [[ $? != 0 ]]; then\n";
     for(long j=0;j<numTsts;++j){
       txtResFile=fileFullName(outN,".txt",i,j);
-      bRes+="   echo \"Error:DidNotCompile\" > "+txtResFile+"\n";
+      bRes+="   echo \""+GF::GL_errorDidNotCompile+"\" > "+txtResFile+"\n";
     }
     bRes+="else\n";
     for(long j=0;j<numTsts;++j){
@@ -222,7 +195,7 @@ namespace DCEI{
         bRes+="fsize=$(wc -c <\"$file\")\n";
         bRes+="if [ $fsize -ge $compsize ]; then\n";
         bRes+="   ";
-        bRes+="echo \"Error:OutputTooBig\" > "+fName+"\n";
+        bRes+="echo \""+GF::GL_errorOutputTooBig+"\" > "+fName+"\n";
         bRes+="fi\n";
       }
     }
@@ -276,8 +249,6 @@ namespace DCEI{
       }
     }
     bRes+=overwriteBigOutputs(ced.outDataFNBase,ced.inputData,50);
-
-
     long numOuts=ced.inputData.size();
     long numOutsI;
     for(long i=0;i<numOuts;++i){
@@ -286,13 +257,8 @@ namespace DCEI{
         bRes+=copyFromOneFolderToAnother(folderKnownToSource,folderHiddenFromSource,fileFullName(ced.outDataFNBase,".txt",i,j));
       }
     }
-
-
-
     return bRes;
   }
-
-
   int executeInContainerAndWriteFiles(const PSDI::SessionData & _psd, const ContainerExecutionData& ced){
     putTextsIntoFiles(myMountFolder(_psd.my_un),ced.sourceCode,ced.sourceFNBase,".",ced.language);
     long numFiles=ced.inputData.size();
@@ -302,16 +268,12 @@ namespace DCEI{
     std::string bExecFileFullPath=myMountFolder(_psd.my_un)+"/"+ced.bashExecFileName;
     IOF::toFile(bExecFileFullPath,createBashForExecution(ced));
     IOF::sys_changePermissions(bExecFileFullPath,"775");
-
     IOF::sys_executeCommandThatDoesNotPrint(ced.dockerCommand);
     return 1;
   }
-
   std::vector<std::vector<std::string> > collectOutputAndDeleteFiles(const PSDI::SessionData & _psd, const ContainerExecutionData & ced){
     std::vector<std::vector<std::string> > res;
-    
     long numFiles=ced.inputData.size();
-
     res.resize(numFiles);
     long szI;
     std::string mFolder=myMountFolder(_psd.my_un)+"/";
@@ -321,7 +283,7 @@ namespace DCEI{
       res[i].resize(szI);
       for(long j=0;j<szI;++j){
         outFileName=mFolder+ fileFullName(ced.outDataFNBase,".txt",i,j);
-        res[i][j]=IOF::fileToString(outFileName,1); 
+        res[i][j]=IOF::fileToString(outFileName,1);
       }
     }
     IOF::sys_deleteFolderAndSubfolders(myMountFolder(_psd.my_un));
@@ -331,19 +293,16 @@ namespace DCEI{
     std::pair<std::string,std::string>out;
     out.first=_in;
     std::string replacementWord=startReplWord;
-
     long numDangers=listDangers.size();
     for(long i=0;i<numDangers;++i){
       replacementWord=SF::findYForNonSubstring(out.first,replacementWord,"b","e");
       out.first=SF::findAndReplace(out.first,listDangers[i],"b"+replacementWord+"e");
     }
-
     out.second=replacementWord;
     return out;
   }
   std::string makeCPPSourceSafe(const std::string &_src,const std::vector<std::string> &incl){
     std::string out=_src;
-
     std::string replacementWord="aaa";
     std::pair<std::string,std::string> improvedCode;
     improvedCode=replaceDangerWords(out,GL_DCEI_const.dangerousCPPCommands,replacementWord);
@@ -352,7 +311,6 @@ namespace DCEI{
     improvedCode=replaceDangerWords(out,GL_DCEI_const.dangerousCPPWords,replacementWord);
     out=improvedCode.first;
     replacementWord=improvedCode.second;
-
     out=SF::findAndReplace(out,"#","//#");
     long isz=incl.size();
     if(isz>0){
@@ -366,7 +324,6 @@ namespace DCEI{
     }
     return out;
   }
-
   std::string makePython3SourceSafe(const std::string &_src,const std::vector<std::string> &incl){
     std::string out=_src;
     std::string replacementWord="aaa";
@@ -374,11 +331,8 @@ namespace DCEI{
     improvedCode=replaceDangerWords(out,GL_DCEI_const.dangerousPythonCommands,replacementWord);
     out=improvedCode.first;
     replacementWord=improvedCode.second;
-
-
     out=SF::findAndReplace(out,"from","#from");
     out=SF::findAndReplace(out,"import","#import");
-
     long isz=incl.size();
     if(isz>0){
       while(isz>0){
@@ -386,8 +340,6 @@ namespace DCEI{
         out=incl[isz]+"\n"+out;
       }
     }
-
-
     return out;
   }
   std::vector<std::string> improveCPPIncludes(const std::vector<std::string> &oldIncl){
@@ -402,7 +354,6 @@ namespace DCEI{
     }
     return newIncl;
   }
-
   std::vector<std::string> improvePythonIncludes(const std::vector<std::string> &oldIncl){
     std::vector<std::string> newIncl=oldIncl;
     long sz=oldIncl.size();
@@ -418,7 +369,6 @@ namespace DCEI{
     }
     return newIncl;
   }
-
   std::string makeSourceSafe(const std::string & _src,const std::string & _lang,const std::vector<std::string> & incl){
     if(_lang=="cpp"){
       return makeCPPSourceSafe(_src,improveCPPIncludes(incl));
@@ -451,36 +401,25 @@ namespace DCEI{
     test+=(sz-inclSz)*(sz-inclSz);
     if(test>0){return res;}
     res.second=1;
-
-
     ContainerExecutionData mainCED;
-
     std::pair<std::string,long> unid=usernameAndId(_psd);
-
     mainCED.myLinuxUserName=unid.first;
     mainCED.myLinuxUserId=unid.second;
-
     mainCED.language=_languages;
     mainCED.sourceCode=makeSourcesSafe(_sources,_languages,includes);
     mainCED.inputData=_inputData;
     mainCED.sourceFNBase="sfile";
     mainCED.inDataFNBase="ind";
     mainCED.outDataFNBase="outd";
-
     mainCED.bashExecFileName="befile";
-
     mainCED.folderInContainer="/fmountPoint/f"+DD::GL_DBS.getInitExtension();
     mainCED.dockerCommand="docker run --rm --name test_container_001 -v ";
     mainCED.dockerCommand+=myMountFolder(_psd.my_un)+":";
     mainCED.dockerCommand+=mainCED.folderInContainer+" -u "+std::to_string(mainCED.myLinuxUserId)+" ";
     mainCED.dockerCommand+=DD::GL_DBS.getImageName()+" /bin/bash "+mainCED.folderInContainer+"/"+mainCED.bashExecFileName;
-
     res.second= executeInContainerAndWriteFiles(_psd,mainCED);
-
     res.first=collectOutputAndDeleteFiles(_psd,mainCED);
-
     return res;
   }
 }
-
 #endif
