@@ -17,37 +17,29 @@
 
 #ifndef _INCL_PlainTextKeeper_CPP
 #define _INCL_PlainTextKeeper_CPP
-
 namespace PTKF{
   class PlainTextKeeper{
   private:
     std::string sepBStB="_pTB*";
     std::string sepBStE="_/pTB*";
     std::string sepEC="!|!|_";
-
     std::string sepB;
     std::string sepE;
-
     std::map<long,std::string> plainTextBank;
     std::string generateReceipt(const long & ) const;
   public:
     PlainTextKeeper(const std::string &);
     std::string depositTxt(const std::string &);
     std::string recover(const std::string &) const;
-
     void treatCODE(const std::string & ="_code_", const std::string & = "_/code_");
     void treatCDE(const std::string & ="_cde_", const std::string & = "_/cde_");
     void treatPre(const std::string & = "<pre>", const std::string & = "</pre>");
-
     void treatBoxCode();
-
   };
-
   void treatHTMLTagsInNonMathText(std::string &t){
     t=SF::findAndReplace(t,"<","\\(<\\)");
     t=SF::findAndReplace(t,">","\\(>\\)");
   }
-
   void makeItMoreProfessional(std::string & t){
     t=SF::findAndReplace(t,"\n","<BR>");
     std::vector<std::string> seqLongSpaces,seqQuads;
@@ -68,7 +60,6 @@ namespace PTKF{
       t=SF::findAndReplace(t,seqLongSpaces[i],"\\("+seqQuads[i]+"\\)");
     }
   }
-
   PlainTextKeeper::PlainTextKeeper(const std::string & salt){
     plainTextBank.clear();
     sepB=sepBStB+salt+sepEC;
@@ -100,33 +91,25 @@ namespace PTKF{
       }
       returnText=SF::findAndReplace(returnText,sF,rW);
     }
-
     return returnText;
   }
-
   void PlainTextKeeper::treatCDE(const std::string & cdeOpen, const std::string & cdeClose){
     long sz=plainTextBank.size();
     std::string st;
     for(long i=0;i<sz;++i){
       st=plainTextBank[i];
-      treatHTMLTagsInNonMathText(st);
-
-      st=SF::findAndReplace(st,cdeOpen,"<span style=\"font-family:Lucida Console, monospace\">");
-      st=SF::findAndReplace(st,cdeClose,"</span>");
-
+      st=SF::findAndReplace(st,cdeOpen,"<code>");
+      st=SF::findAndReplace(st,cdeClose,"</code>");
       st="_doNotChangeAlphabet*_"+st+"_/doNotChangeAlphabet*_";
       plainTextBank[i]=st;
     }
-
   }
   void PlainTextKeeper::treatBoxCode(){
-
     long sz=plainTextBank.size();
     std::string st;
     std::pair<std::string,int> receiveRepl;
     // HCBF::verySafePlace vector of caracters will be used to hide all the tags that would be modified with other pieces of code
     // this will be returned in DISPPF::finalizeForDisplay()
-
     for(long i=0;i<sz;++i){
       receiveRepl=SF::replaceAllOuterLayerSeparators(plainTextBank[i],"_codeBox_", "_/codeBox_","<p><textarea class=\"form-control\" rows=\"10\">","</textarea></p>",HCBF::verySafePlace);
       if(receiveRepl.second==1){
@@ -157,10 +140,7 @@ namespace PTKF{
     indicatorProfessionalUser=0;
     for(long i=0;i<sz;++i){
       indicatorProfessionalUser=0;
-
       st=plainTextBank[i];
-
-
       st1=SF::findAndReplace(st,"<BR>","");
       if(st1!=st){
         indicatorProfessionalUser=1;
@@ -180,29 +160,28 @@ namespace PTKF{
       if(indicatorProfessionalUser==1){
         st=SF::findAndReplace(st,"<br>","_br_");
       }
-      treatHTMLTagsInNonMathText(st);
-      if(indicatorProfessionalUser==0){
-        makeItMoreProfessional(st);
-      }
-      else{
+      if(indicatorProfessionalUser!=0){
+        treatHTMLTagsInNonMathText(st);
         st=SF::findAndReplace(st,"$\\quad","\\(\\quad");
         st=SF::findAndReplace(st,"\\quad$","\\quad\\)");
         st=SF::findAndReplace(st,"_br_","<BR>");
         st=SF::findAndReplace(st,"_quot_","\"");
       }
-      st=SF::findAndReplace(st,codeOpen,"<p style=\"font-family:Lucida Console, monospace\">");
-      st=SF::findAndReplace(st,codeClose,"</p>");
+      if(indicatorProfessionalUser==0){
+        st=SF::findAndReplace(st,codeOpen,"<pre>");
+        st=SF::findAndReplace(st,codeClose,"</pre>");
+      }
+      else{
+        st=SF::findAndReplace(st,codeOpen,"<p style=\"font-family:Lucida Console, monospace\">");
+        st=SF::findAndReplace(st,codeClose,"</p>");
+      }
       st="_doNotChangeAlphabet*_"+st+"_/doNotChangeAlphabet*_";
       plainTextBank[i]=st;
     }
-
   }
-
-
     int removeToSafety(PTKF::PlainTextKeeper &kc, std::string &t,const std::string & s_B,const std::string & s_E,const long & keepCodes=1){
       //returns 1 if everything is removed properly
       // returns 0 if there is an open tag or a tag inside a tag
-
       int correct=1;
       long sz=t.size();
       long pos;
@@ -229,7 +208,6 @@ namespace PTKF{
         }
         ttdR=s_B+allD.first+s_E;
         dRec=kc.depositTxt(ttdS);
-
         while(posOld<pos-ttdR.length()){
           updatedT+=t[posOld];
           ++posOld;
@@ -237,7 +215,6 @@ namespace PTKF{
         updatedT+=dRec;
         posOld=pos;
         allD=SF::extract(t,pos,s_B,s_E);
-
       }
       if(allD.second==0){
         while(posOld<sz){
@@ -246,7 +223,6 @@ namespace PTKF{
         }
       }
       t=updatedT;
-
       if(correct==1){
         if(t!=SF::findAndReplace(t,s_E,"")){
           correct=0;
@@ -259,11 +235,6 @@ namespace PTKF{
       }
       return correct;
     }
-
-
-
   PlainTextKeeper GL_PLAINTEXT_KEEPER("gl0bal");
 }
-
-
 #endif
