@@ -163,9 +163,9 @@ namespace CAGI{
         res.comment+="failure";
       }
       if(revealAfter[i]=="yes"){
-        res.comment+="\n  Input: "+inputTestCases[i]+"\n";
-        res.comment+=" Output: "+userOutput[i]+"\n";
-        res.comment+="Correct: "+officialOutput[i]+"\n";
+        res.comment+="\n  Input: "+inputTestCases[i];
+        res.comment+="\n Output: "+userOutput[i];
+        res.comment+="\nCorrect: "+officialOutput[i]+"\n";
       }
       if(userOutput[i] != SF::findAndReplace(userOutput[i],GF::GL_errorDidNotCompile,"")){
         indicatorDidNotCompile=1;
