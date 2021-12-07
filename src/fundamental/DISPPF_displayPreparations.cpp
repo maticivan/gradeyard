@@ -17,15 +17,12 @@
 
 #ifndef _INCL_DISPLAYPREPARATIONS_CPP
 #define _INCL_DISPLAYPREPARATIONS_CPP
-
 namespace DISPPF{
   void dollarsToLatexSymbols(std::string & output,const long &singleDollarsAlso  =1){
     std::string azm=GF::GL_HIDING_STRING_DISPPF01;
-
     std::vector<std::string> w2El;
     w2El.resize(2);
     output=SF::findAndReplace(output,"\\$",azm);
-
     w2El[0]="\\[";w2El[1]="\\]";
     output=SF::findAndReplace(output,"$$",w2El);
     if(singleDollarsAlso==1){
@@ -37,42 +34,31 @@ namespace DISPPF{
   int removeBoxCodeToSafety(PTKF::PlainTextKeeper &kc, std::string &t,const std::string & s_B="_codeBox_",const std::string & s_E="_/codeBox_"){
     //returns 1 if everything is removed properly
     // returns 0 if there is an open tag or a tag inside a tag
-
     int correct=1;
     long pos;
     std::pair<std::string,int> allD;
     std::string ttd, dRec;
     pos=0;
     allD=SF::extract(t,pos,s_B,s_E);
-
     while(allD.second==1){
-
-
       ttd=s_B+allD.first+s_E;
       dRec=kc.depositTxt(ttd);
       t=SF::findAndReplace(t,ttd,dRec,0);
       pos=0;
       allD=SF::extract(t,pos,s_B,s_E);
     }
-
-
     return correct;
   }
-
-
-
   class HTML_Tags{
   private:
     std::string azm=GF::GL_HIDING_STRING_DISPPF02;
   public:
-
     std::vector<std::string> formattingTags;
     std::vector<std::string> alakazams;
     HTML_Tags();
   };
   HTML_Tags::HTML_Tags(){
     formattingTags.resize(21);
-
     formattingTags[0]="<i>";
     formattingTags[1]="</i>";
     formattingTags[2]="<b>";
@@ -94,18 +80,13 @@ namespace DISPPF{
     formattingTags[18]="<h3>";
     formattingTags[19]="</h3>";
     formattingTags[20]="<br>";
-
-
-
     long sz=formattingTags.size();
     alakazams.resize(sz);
     for(long i=0;i<sz;++i){
       alakazams[i]=azm+std::to_string(i)+"e|";
     }
-
   }
   HTML_Tags GL_HTML_Tags;
-
   std::string treatHideReveal(const std::string & _input){
     std::string output=_input;
     long pos,posToSave;
@@ -121,7 +102,6 @@ namespace DISPPF{
       if(posToSave<0){
         posToSave=0;
       }
-
       pos=0;allD=SF::extract(text,pos,"_hideTitle_","_/hideTitle_");
       hideT="Hide";
       if(allD.second==1){
@@ -131,7 +111,6 @@ namespace DISPPF{
       if(allD.second==1){
         text=allD.first;
       }
-
       pos=0;allD=SF::extract(text,pos,"_revealTitle_","_/revealTitle_");
       revT="Show";
       if(allD.second==1){
@@ -152,7 +131,6 @@ namespace DISPPF{
       nt+="<div class=\"card-body\">";
       nt+=text+"</div></div>";
       output=SF::findAndReplace(output,oldText,nt);
-
       pos=posToSave;
       pos=0;
       allD=SF::extract(output,pos,"_hideReveal_","_/hideReveal_");
@@ -160,13 +138,10 @@ namespace DISPPF{
     }
     return output;
   }
-
   std::string formattingCommands(const std::string & _input){
     std::string output=_input;
-
     output=treatHideReveal(output);
     return output;
-
   }
   struct RequestsForSanitizer{
   public:
@@ -188,20 +163,15 @@ namespace DISPPF{
   // 1 - allow formatting tags.  WARNING -- not implemented yet
 
   // 2 - allow all tags except for dangerous ones
-
     PTKF::PlainTextKeeper keeperOfVerbatim("vb0b");
-
     PTKF::PlainTextKeeper keeperOfCodesB("sc0b");
     PTKF::PlainTextKeeper keeperOfBoxCodes("sc0bb");
     PTKF::PlainTextKeeper keeperOfCodesS("sc0s");
     PTKF::PlainTextKeeper keeperOfPresB("p0b");
     PTKF::PlainTextKeeper keeperOfPresS("p0s");
-
     std::string t=_t;
-
     std::string unsafe="Latex Error ";
     int indicatorSafety;
-
     indicatorSafety=PTKF::removeToSafety(keeperOfVerbatim,t,"_verbatim_","_/verbatim_");
     if((1-indicatorSafety)* (rs.exitWithErrorIfUnsafe)==1){
       return unsafe+" 1";
@@ -231,16 +201,13 @@ namespace DISPPF{
     keeperOfCodesS.treatCDE();
     keeperOfPresB.treatPre("<pre>","</pre>");
     keeperOfPresS.treatPre("<code>","</code>");
-
     keeperOfBoxCodes.treatBoxCode();
-
     if(rs.convertDollarsToLatex==1){
       std::vector<std::string>ws;
       ws.resize(2);
       ws[0]="1";ws[1]="2";
       dollarsToLatexSymbols(t);
     }
-
     std::string oldT=t;
     long sz=GF::GL_DANGERS.strings.size();
     for(long i=0;i<sz;++i){
@@ -256,9 +223,6 @@ namespace DISPPF{
         t=SF::findAndReplace(t,GF::GL_DANGERS.veryBadStrings[i],"");
       }
     }
-
-
-
     if(rs.htmlTolerance<2){
       PTKF::PlainTextKeeper mth1("m01");
       indicatorSafety=PTKF::removeToSafety(mth1,t,"\\(","\\)");
@@ -290,7 +254,6 @@ namespace DISPPF{
       if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
         return unsafe+"9";
       }
-
       if(rs.htmlTolerance==1){
         sz=GL_HTML_Tags.formattingTags.size();
         for(long i=0;i<sz;++i){
@@ -305,15 +268,12 @@ namespace DISPPF{
           t=SF::findAndReplace(t,GL_HTML_Tags.alakazams[i],GL_HTML_Tags.formattingTags[i]);
         }
       }
-
-
       t=mth6.recover(t);
       t=mth5.recover(t);
       t=mth4.recover(t);
       t=mth3.recover(t);
       t=mth2.recover(t);
       t=mth1.recover(t);
-
     }
     t=formattingCommands(t);
     t=keeperOfCodesS.recover(t);
@@ -323,10 +283,7 @@ namespace DISPPF{
     t=keeperOfVerbatim.recover(t);
     t=keeperOfBoxCodes.recover(t);
     return t;
-
   }
-
-
   std::string finalizeForDisplay(const std::map<std::string,std::string> &findReplacePairs, const std::string & _t){
     std::string t=_t;
     std::map<std::string,std::string>::const_iterator itFR,itFRE;
@@ -366,23 +323,23 @@ namespace DISPPF{
     return 0;
   }
   std::string prepareForHTMLDisplay(const std::string &_st){
-
     std::string output=_st;
     output=SF::findAndReplace(output,"<<","!*cppCOUT*!");
     output=SF::findAndReplace(output,">>","!*cppCIN*!");
-    output=SF::findAndReplace(output,"<"," < ");
-    output=SF::findAndReplace(output,">"," > ");
+    output=SF::findAndReplace(output,"< ","!*goodSpAftOIn*!");
+    output=SF::findAndReplace(output," >","!*goodSpBefCIn*!");
+    output=SF::findAndReplace(output,"<","< ");
+    output=SF::findAndReplace(output,">"," >");
+    output=SF::findAndReplace(output,"!*goodSpBefCIn*!"," >");
+    output=SF::findAndReplace(output,"!*goodSpAftOIn*!","< ");
     output=SF::findAndReplace(output,"!*cppCOUT*!","<<");
     output=SF::findAndReplace(output,"!*cppCIN*!",">>");
-
     RequestsForSanitizer reqS;
     reqS.convertDollarsToLatex=1;
     reqS.htmlTolerance=0;
     reqS.exitWithErrorIfUnsafe=1;
     output=sanitizeForDisplay(output,reqS);
-    output=SF::findAndReplace(output,"\n","<BR>");
     return output;
-
   }
 }
 #endif
