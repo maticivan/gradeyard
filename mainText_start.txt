@@ -39,6 +39,10 @@ is disabled, then the website will only evaluate the integrals of polynomials. T
 submitted through the Calculator form.
 _maxNumForSimpson_0_/maxNumForSimpson_
 
+_defaultTexts!*_
+_vVPair__vr_Comment_/vr__vl_No_/vl__/vVPair_
+_/defaultTexts!*_
+
 _defaultWebsiteName_https://gradeyard.com_/defaultWebsiteName_ 
 
 _/textData!!_
@@ -9112,6 +9116,9 @@ _/includes_
 _pointsTestCases_
 _n*_7_/n*__n*_8_/n*__n*_10_/n*_
 _/pointsTestCases_
+_revealTestCasesAfterGrading_
+_n*_yes_/n*__n*_yes_/n*__n*_no_/n*_
+_/revealTestCasesAfterGrading_
 _/agr*|_
 
 _searchReplace_
@@ -9215,7 +9222,9 @@ _/includes_
 _pointsTestCases_
 _n*_7_/n*__n*_8_/n*__n*_10_/n*_
 _/pointsTestCases_
-
+_revealTestCasesAfterGrading_
+_n*_yes_/n*__n*_yes_/n*__n*_no_/n*_
+_/revealTestCasesAfterGrading_
 _embedIntoCode_ 
 long {mElement}(const std::vector < long > & v){
   _*embedHere*_
@@ -9337,6 +9346,9 @@ _/testCases_
 _pointsTestCases_
 _n*_7_/n*__n*_8_/n*__n*_10_/n*_
 _/pointsTestCases_
+_revealTestCasesAfterGrading_
+_n*_yes_/n*__n*_yes_/n*__n*_no_/n*_
+_/revealTestCasesAfterGrading_
 _/agr*|_
 
 _searchReplace_
