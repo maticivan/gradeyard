@@ -58,7 +58,7 @@ namespace DISPPF{
     HTML_Tags();
   };
   HTML_Tags::HTML_Tags(){
-    formattingTags.resize(21);
+    formattingTags.resize(25);
     formattingTags[0]="<i>";
     formattingTags[1]="</i>";
     formattingTags[2]="<b>";
@@ -79,7 +79,11 @@ namespace DISPPF{
     formattingTags[17]="</h2>";
     formattingTags[18]="<h3>";
     formattingTags[19]="</h3>";
-    formattingTags[20]="<br>";
+    formattingTags[20]="<h4>";
+    formattingTags[21]="</h4>";
+    formattingTags[22]="<h5>";
+    formattingTags[23]="</h5>";
+    formattingTags[24]="<br>";
     long sz=formattingTags.size();
     alakazams.resize(sz);
     for(long i=0;i<sz;++i){
@@ -157,10 +161,11 @@ namespace DISPPF{
   }
   std::string sanitizeForDisplay(const std::string & _t, const RequestsForSanitizer & rs){
   //rs.htmlTolerance:
-  // 0 - no html codes. Outside of math and code blocks every < is replaced by \(<\)
+  // 0 - no html codes
+  //     Outside of math and code blocks every < is replaced by \(<\)
   //     and every > is replaced by \(>\))
 
-  // 1 - allow formatting tags.  WARNING -- not implemented yet
+  // 1 - allow formatting tags.  WARNING -- not implemented fully yet.
 
   // 2 - allow all tags except for dangerous ones
     PTKF::PlainTextKeeper keeperOfVerbatim("vb0b");
@@ -249,11 +254,11 @@ namespace DISPPF{
       if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
         return unsafe+"8";
       }
-      PTKF::PlainTextKeeper mth6("m06");
-      indicatorSafety=PTKF::removeToSafety(mth6,t,"\\begin{equation}","\\end{equation}");
-      if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
-        return unsafe+"9";
-      }
+      mth5.treatMath();
+      mth4.treatMath();
+      mth3.treatMath();
+      mth2.treatMath();
+      mth1.treatMath();
       if(rs.htmlTolerance==1){
         sz=GL_HTML_Tags.formattingTags.size();
         for(long i=0;i<sz;++i){
@@ -268,7 +273,6 @@ namespace DISPPF{
           t=SF::findAndReplace(t,GL_HTML_Tags.alakazams[i],GL_HTML_Tags.formattingTags[i]);
         }
       }
-      t=mth6.recover(t);
       t=mth5.recover(t);
       t=mth4.recover(t);
       t=mth3.recover(t);
@@ -324,21 +328,11 @@ namespace DISPPF{
   }
   std::string prepareForHTMLDisplay(const std::string &_st){
     std::string output=_st;
-    output=SF::findAndReplace(output,"<<","!*cppCOUT*!");
-    output=SF::findAndReplace(output,">>","!*cppCIN*!");
-    output=SF::findAndReplace(output,"< ","!*goodSpAftOIn*!");
-    output=SF::findAndReplace(output," >","!*goodSpBefCIn*!");
-    output=SF::findAndReplace(output,"<","< ");
-    output=SF::findAndReplace(output,">"," >");
-    output=SF::findAndReplace(output,"!*goodSpBefCIn*!"," >");
-    output=SF::findAndReplace(output,"!*goodSpAftOIn*!","< ");
-    output=SF::findAndReplace(output,"!*cppCOUT*!","<<");
-    output=SF::findAndReplace(output,"!*cppCIN*!",">>");
     RequestsForSanitizer reqS;
     reqS.convertDollarsToLatex=1;
-    reqS.htmlTolerance=0;
+    reqS.htmlTolerance=1;
     reqS.exitWithErrorIfUnsafe=1;
-    output=sanitizeForDisplay(output,reqS);
+    output=sanitizeForDisplay(output,reqS); 
     return output;
   }
 }
