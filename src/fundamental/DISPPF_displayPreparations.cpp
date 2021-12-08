@@ -228,37 +228,37 @@ namespace DISPPF{
         t=SF::findAndReplace(t,GF::GL_DANGERS.veryBadStrings[i],"");
       }
     }
+    PTKF::PlainTextKeeper mth1("m01");
+    indicatorSafety=PTKF::removeToSafety(mth1,t,"\\(","\\)");
+    if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
+      return unsafe+" 4 ";
+    }
+    PTKF::PlainTextKeeper mth2("m02");
+    indicatorSafety=PTKF::removeToSafety(mth2,t,"\\[","\\]");
+    if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
+      return unsafe+"5";
+    }
+    PTKF::PlainTextKeeper mth3("m03");
+    indicatorSafety=PTKF::removeToSafety(mth3,t,"\\begin{eqnarray*}","\\end{eqnarray*}");
+    if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
+      return unsafe+"6";
+    }
+    PTKF::PlainTextKeeper mth4("m04");
+    indicatorSafety=PTKF::removeToSafety(mth4,t,"\\begin{eqnarray}","\\end{eqnarray}");
+    if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
+      return unsafe+"7";
+    }
+    PTKF::PlainTextKeeper mth5("m05");
+    indicatorSafety=PTKF::removeToSafety(mth5,t,"\\begin{equation}","\\end{equation}");
+    if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
+      return unsafe+"8";
+    }
+    mth5.treatMath();
+    mth4.treatMath();
+    mth3.treatMath();
+    mth2.treatMath();
+    mth1.treatMath();
     if(rs.htmlTolerance<2){
-      PTKF::PlainTextKeeper mth1("m01");
-      indicatorSafety=PTKF::removeToSafety(mth1,t,"\\(","\\)");
-      if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
-        return unsafe+" 4 ";
-      }
-      PTKF::PlainTextKeeper mth2("m02");
-      indicatorSafety=PTKF::removeToSafety(mth2,t,"\\[","\\]");
-      if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
-        return unsafe+"5";
-      }
-      PTKF::PlainTextKeeper mth3("m03");
-      indicatorSafety=PTKF::removeToSafety(mth3,t,"\\begin{eqnarray*}","\\end{eqnarray*}");
-      if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
-        return unsafe+"6";
-      }
-      PTKF::PlainTextKeeper mth4("m04");
-      indicatorSafety=PTKF::removeToSafety(mth4,t,"\\begin{eqnarray}","\\end{eqnarray}");
-      if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
-        return unsafe+"7";
-      }
-      PTKF::PlainTextKeeper mth5("m05");
-      indicatorSafety=PTKF::removeToSafety(mth5,t,"\\begin{equation}","\\end{equation}");
-      if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
-        return unsafe+"8";
-      }
-      mth5.treatMath();
-      mth4.treatMath();
-      mth3.treatMath();
-      mth2.treatMath();
-      mth1.treatMath();
       if(rs.htmlTolerance==1){
         sz=GL_HTML_Tags.formattingTags.size();
         for(long i=0;i<sz;++i){
@@ -273,12 +273,14 @@ namespace DISPPF{
           t=SF::findAndReplace(t,GL_HTML_Tags.alakazams[i],GL_HTML_Tags.formattingTags[i]);
         }
       }
-      t=mth5.recover(t);
-      t=mth4.recover(t);
-      t=mth3.recover(t);
-      t=mth2.recover(t);
-      t=mth1.recover(t);
     }
+    t=mth5.recover(t);
+    t=mth4.recover(t);
+    t=mth3.recover(t);
+    t=mth2.recover(t);
+    t=mth1.recover(t);
+
+
     t=formattingCommands(t);
     t=keeperOfCodesS.recover(t);
     t=keeperOfPresS.recover(t);
@@ -332,7 +334,7 @@ namespace DISPPF{
     reqS.convertDollarsToLatex=1;
     reqS.htmlTolerance=1;
     reqS.exitWithErrorIfUnsafe=1;
-    output=sanitizeForDisplay(output,reqS); 
+    output=sanitizeForDisplay(output,reqS);
     return output;
   }
 }
