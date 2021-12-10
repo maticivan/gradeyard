@@ -146,7 +146,7 @@ namespace LMF{
       if(allD.second==1){
         fName=allD.first;
         fName=SF::findAndReplace(fName,".gif",".png");
-        input=SF::findAndReplace(input,oldText,"\\includegraphics[scale=0.3]{."+fName+"}");
+        input=SF::findAndReplace(input,oldText,"\\includegraphics[scale=0.3]{"+fName+"}");
       }
       pos=0;allD=SF::extract(input,pos,"<img ","\">");
     }
