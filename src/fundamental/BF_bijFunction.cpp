@@ -227,7 +227,7 @@ namespace BF{
     tmp<<d;
     return tmp.str();
   }
-  std::string doubleToString(const double &d,const long &precision=12){
+  std::string doubleToString(const double &d,const long &precision=10){
     return eraseTrailingZeros(double_to_string_withPrecision(d,precision));
   }
 
