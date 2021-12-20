@@ -28,7 +28,6 @@ namespace LANGF{
     if(adv+szO >= sz){
       return i;
     }
-
     long walker=0;
     while((walker<szO)&&(input[adv]==_o[walker])){++walker;++adv;}
     if(walker!=szO){
@@ -40,12 +39,7 @@ namespace LANGF{
     if(allD.second==0){
       return sz;
     }
-    if(pos+szC>=sz){
-      return sz;
-    }
-    --pos;
-    return pos+szC;
-
+    return pos;
   }
   long advanceTheCounterIfThereIsATag(const long & i, const std::string &input,const std::vector<std::string> & _o, const std::vector<std::string> & _c){
     long adv=i,advNew;
@@ -207,10 +201,8 @@ namespace LANGF{
         if(ind==0){ind=1;output+=input[i];}
         ++i;
       }
-
     }
     return output;
-
   }
   std::string changeAlphabetInTexts(const std::string & input, const std::string & alph,const std::vector<std::string> & _o, const std::vector<std::string> & _c ){
     std::string output=input;
@@ -222,7 +214,6 @@ namespace LANGF{
     if(alph=="cyr"){
       return changeAlphabetCyr(output, _o,_c);
     }
-
     return output;
   }
   std::string changeAlphabet(const std::string & input,const std::string &defaultAlph){
@@ -233,15 +224,12 @@ namespace LANGF{
     if((allD.second==1)||(alphabet!="english")){
       if(allD.second==1){alphabet=allD.first;}
       long indSafety;
-
       TMF::Timer t1,t2,t3;
       t1.start();
-
       long numTags=9;
       long cntr;
       std::vector<std::string> openTags;
       std::vector<std::string> closeTags;
-
       openTags.resize(numTags);
       closeTags.resize(numTags);
       cntr=0;
@@ -257,12 +245,11 @@ namespace LANGF{
       ++cntr;
       openTags[cntr]="\\begin{eqnarray*}"; closeTags[cntr]="\\end{eqnarray*}";
       ++cntr;
-      openTags[cntr]="\\begin{eqnarray}"; closeTags[cntr]="\\begin{eqnarray}";
+      openTags[cntr]="\\begin{eqnarray}"; closeTags[cntr]="\\end{eqnarray}";
       ++cntr;
       openTags[cntr]="\\begin{equation}"; closeTags[cntr]="\\end{equation}";
       ++cntr;
       openTags[cntr]="<"; closeTags[cntr]=">";
-
       PTKF::PlainTextKeeper textAreaKeeper("textA");
       indSafety=PTKF::removeToSafety(textAreaKeeper,result,"<textarea","</textarea>");
       PTKF::PlainTextKeeper langSaver("lang");
@@ -278,7 +265,6 @@ namespace LANGF{
       GF::GL_DEB_MESSAGES.addMessage("Timer 1: "+ BF::doubleToString(t1.getTime()));
       GF::GL_DEB_MESSAGES.addMessage("Timer 2: "+ BF::doubleToString(t2.getTime()));
       GF::GL_DEB_MESSAGES.addMessage("Timer 3: "+ BF::doubleToString(t3.getTime()));
-
     }
     else{
       result=SF::findAndReplace(result,"_doNotChangeAlphabet*_","");
