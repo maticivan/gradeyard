@@ -27,7 +27,6 @@ namespace AF{
   } GL_ArO;
   ArithmeticOperations::ArithmeticOperations(){
     maxLength=0;
-
     oSet.insert("+");
     oSet.insert("*");
     oSet.insert("/");
@@ -43,13 +42,11 @@ namespace AF{
       }
     }
   }
-
   std::string treatAdditiveSymbols(const std::string &s,const std::string &r=""){
     // replace -- with +
     // replace +- with -
     // replace -+ with -
     // replace ++ with +
-
     std::string newSt=s;
     if(r.length()==0){
       std::string originalSt=s;
@@ -171,7 +168,6 @@ namespace AF{
         res+=s[i];
         ++i;
       }
-
     }
     if(jobDone==0){
       res+=")";
@@ -237,7 +233,6 @@ namespace AF{
     }
     fForNextDigitInt/=10;
     return (static_cast<double>(fForNextDigitInt)/multiplier);
-
   }
   double evaluateNum(const double &f, const double &s, const std::string & o){
     if(o=="+"){
@@ -253,7 +248,6 @@ namespace AF{
       if((f<BF::GLOBAL_EPSILON)&&(f>-BF::GLOBAL_EPSILON)){
         return 0.0;
       }
-
       double sgn=1.0;
       double absf=f;
       if(f<0.0){
@@ -303,7 +297,6 @@ namespace AF{
   std::pair<double,int> numericalEvaluationOfPreparedFormula(const std::string &s){
     // returns pair (result, evaluationPossible)
     // the second argument is 0 if the expression was not possible to evaluate
-
 
     long len=s.length();
     std::string symbolNum="d";
@@ -388,7 +381,6 @@ namespace AF{
           ++j;
         }
         if(identifiedOperation==0){
-
           tempNum=0.0;
           while((i<len)&&(s[i]>='0')&&(s[i]<='9')){
             tempNum*=10.0;
@@ -409,7 +401,6 @@ namespace AF{
           tempP.first=tempNum;
           tempP.second=symbolNum;
           evaluator.push(tempP);
-
         }
       }
     }
@@ -419,15 +410,11 @@ namespace AF{
     }
     tempP=evaluator.top();
     evaluator.pop();
-
     return std::pair<double,long>(tempP.first,1);
-
   }
   std::string prepareFormula(const std::string &_raw){
     std::string rawFormula=_raw;
-
     rawFormula=BF::cleanSpaces(rawFormula,1);
-
     rawFormula=treatAdditiveSymbols(rawFormula);
     rawFormula=treatUnaryMinus(rawFormula);
     rawFormula=deleteUnnecessaryPlus(rawFormula);
@@ -450,10 +437,5 @@ namespace AF{
   std::pair<double,int> evFDouble(const std::string & _raw){
     return numericalEvaluationOfPreparedFormula(prepareFormula(_raw));
   }
-
-
 }
-
-
-
 #endif
