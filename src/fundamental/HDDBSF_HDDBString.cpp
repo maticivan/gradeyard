@@ -19,7 +19,6 @@
 #ifndef _INCL_MYHDString_CPP
 #define _INCL_MYHDString_CPP
 
-
 namespace HDDBSF{
   std::string secureForStorage(const std::string & source){
       return SF::findAndReplace(source,"*!_",GF::GL_HIDING_STRING_HDDBRF);
@@ -38,12 +37,9 @@ namespace HDDBSF{
       void loadFromString(const std::string&);
       std::string putIntoString() const;
   };
-
-
   String::String(const std::string & _mD){
       mainData=_mD;
   }
-
   void String::setMainData(const std::string &_mD){
       mainData=_mD;
   }
@@ -57,13 +53,9 @@ namespace HDDBSF{
       return 0;
   }
   void String::loadFromString(const std::string& s){
-
       std::string dataB="_dBS*!_";
       std::string dataE="_/dBS*!_";
-
-
       std::string d=s+dataB+"defaultData"+dataE;
-
       std::pair<std::string,int> res;
       long pos=0;
       res=SF::extract(d,pos,dataB,dataE);
@@ -73,18 +65,12 @@ namespace HDDBSF{
       else{
         mainData= unpackFromStorage(res.first);
       }
-
   }
   std::string String::putIntoString() const{
     std::string dataB="_dBS*!_";
     std::string dataE="_/dBS*!_";
-
-
     std::string resString=dataB+secureForStorage(mainData)+dataE;
-
     return resString;
   }
 }
-
-
 #endif
