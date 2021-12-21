@@ -18,7 +18,6 @@
 
 #ifndef _INCL_LATEXMANIPULATION_CPP
 #define _INCL_LATEXMANIPULATION_CPP
-
 namespace LMF{
   struct LatexDataSingleQuestion{
     std::string formulation;
@@ -29,7 +28,6 @@ namespace LMF{
     std::string solution;
     std::string answer;
   };
-
   struct LatexDataExamPaper{
     std::string studentName;
     std::string examCode;
@@ -37,19 +35,12 @@ namespace LMF{
     std::string courseName;
     std::string courseCode;
     std::string storageLocation;
-
     std::string examPreambleLatexTemplate;
     std::string answerBoxLatexTemplate;
-
     std::string prefix;
     std::string addNameIndicator;
-
     std::stack<LatexDataSingleQuestion> questionsStack;
-
   };
-
-
-
   long calculateWidth(const std::string & _input){
     std::string input=_input;
     std::string input2=input;
@@ -58,7 +49,6 @@ namespace LMF{
     if(input.length()!=input2.length()){
       return 500;
     }
-
     input=SF::findAndReplace(input,"\\frac","");
     input=SF::findAndReplace(input,"\\hfill","");
     input=SF::findAndReplace(input,"\\mathbb","");
@@ -83,14 +73,8 @@ namespace LMF{
     input=SF::findAndReplace(input,"\\triangle","a");
     input=SF::findAndReplace(input,"\\star","a");
     input=SF::findAndReplace(input,"\\ast","a");
-
-
-
-
     return input.length();
-
   }
-
   long calculateProblemHeight(const std::string & _input){
     std::string input=_input;
     input=SF::findAndReplace(input,"\n","_nL*_s_/nL*_");
@@ -98,7 +82,6 @@ namespace LMF{
     input=SF::findAndReplace(input,"\\\\","_nL*_s_/nL*_");
     input=SF::findAndReplace(input,"\\begin{enumerate}","_nL*_s_/nL*_");
     input=SF::findAndReplace(input,"\\begin{itemize}","_nL*_s_/nL*_");
-
     long countNLines=SF::countInString(input,"_nL*_","_/nL*_");
     return countNLines + (input.length() / 150);
   }
@@ -138,7 +121,6 @@ namespace LMF{
     pos=0;allD=SF::extract(input,pos,"<img ","\">");
     std::string fName,oldText;
     while(allD.second==1){
-
       fName=allD.first;
       oldText="<img "+fName+"\">";
       fName+="_/n*_ end";
@@ -179,16 +161,9 @@ namespace LMF{
     input=SF::findAndReplace(input,"</p>","");
     input=SF::findAndReplace(input,"</div>","");
     input=SF::findAndReplace(input,"</br>","");
-
-
     input=htmlToLatexPictures(input);
-
-
-
     return input;
-
   }
-
   std::string prepareSingleProblemForPrinting(const LatexDataSingleQuestion & sq,const LatexDataExamPaper & exam){
     std::string fR="";
     fR+="\\item["+std::to_string(sq.questionNumber +1)+"] ";
@@ -200,16 +175,12 @@ namespace LMF{
     if(sq.questionType=="textInputField"){
       fR+=exam.answerBoxLatexTemplate;
     }
-
     fR=htmlToLatexFormatting(fR);
     return fR;
   }
-
   std::string prepareLatexSource(const LatexDataExamPaper & exam, const long &indInClass){
     std::string fR="";
-
     long maxHeightForPage=25;
-
     std::string problemBreakString="\n\n\\vfill\n\n";
     std::string pageBreakString=problemBreakString+ "\\clearpage\n";
     std::string codeBoxTop="";
@@ -227,10 +198,8 @@ namespace LMF{
     std::string singleProblem;long pHeight;
     long currentHeight=0;
     while(!problems.empty()){
-
       singleProblem=prepareSingleProblemForPrinting(problems.top(),exam);
       pHeight=calculateProblemHeight(singleProblem);
-
       if(currentHeight>0){
         if(currentHeight+pHeight>maxHeightForPage){
           fR+=pageBreakString;
@@ -243,16 +212,11 @@ namespace LMF{
       else{
         currentHeight=pHeight;
       }
-
       fR+=singleProblem;
       fR+=problemBreakString;
       problems.pop();
-
-
     }
-
     fR= "\n\\begin{enumerate}\n"+ fR+"\\end{enumerate}\n%%%EXAM VERSION END%%%";
-
     if(indInClass==0){
       fR= "\\noindent {\\bf "+exam.studentName+"}\n\n"+fR;
       fR="\n\n \\begin{document}"+fR+"\n\n\\end{document} \n";
@@ -265,7 +229,6 @@ namespace LMF{
   }
   int createPdfFromTex(const std::string &lSource, const std::string &lFName, const std::string &storageLocation){
     IOF::toFile(lFName+".tex",lSource);
-
     std::string latexCommand="pdflatex -interaction=batchmode -output-directory="+storageLocation;
     latexCommand+=" "+lFName+".tex";
     IOF::sys_runLatexCommand(latexCommand);
@@ -281,15 +244,11 @@ namespace LMF{
     if(indInClass==1){
       return lSource;
     }
-
     std::string lFName=exam.storageLocation+"/"+exam.prefix+exam.examCode;
     if(exam.addNameIndicator=="yes"){
       lFName+="_"+BF::cleanAllSpaces(exam.studentName);
-
     }
-
     createPdfFromTex(lSource,lFName,exam.storageLocation);
-
     return lFName+".pdf";
   }
   std::string finalizeLatexForInClassExam(const std::string & rawLatex,const std::string & latexTop,const std::string & fName, const std::string & storageLocation){
@@ -334,5 +293,4 @@ namespace LMF{
     return correctSSWithoutBraces(correctSSWithoutBraces(s,'_'),'^');
   }
 }
-
 #endif
