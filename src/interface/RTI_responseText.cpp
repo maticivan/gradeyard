@@ -366,7 +366,7 @@ namespace RTI{
   }
   std::string Response::userAnswerDisplay(const SingleQuestionInfo &sqi, long &fileCounter) const{
     std::string fR="";
-    fR+="<div class=\"card\">\n<div class=\"card-body\">";
+    fR+="<div class=\"card border-info text-dark\">\n<div class=\"card-body\">";
       if((sqi.userAnswer!="notFound")&&(sqi.userAnswer!="")){
         fR+="<B>"+MWII::GL_WI.getDefaultWebText("Answer submitted")+": </B> ";
         if(sqi.displType==s_textInputReqField){
@@ -394,6 +394,26 @@ namespace RTI{
       }
       return fR;
   }
+  std::string problemCardOpeningTags(const SingleQuestionInfo &sqi, const std::string & lastComponent){
+    std::string fR="";
+    fR+=" <div class=\"card border-dark bg-light text-dark\">\n <div class=\"card-header\">\n";
+    fR+="<div class=\"row\"><div class=\"col-sm-1\"><B>"+std::to_string(sqi.num);
+    fR+="</B></div><div class=\"col-sm-8\"><B>";
+    if((sqi.maxPoints!="notFound")&&(sqi.maxPoints!="")){
+      fR+=" ("+sqi.maxPoints+" "+MWII::GL_WI.getDefaultWebText("points")+") ";
+    }
+    fR+="</B></div><div class=\"col-sm-3\"> ";
+    fR+=lastComponent;
+    fR+=" </div>\n</div>\n</div><div class=\"card-body\"> "+sqi.formulation;
+    return fR;
+  }
+  std::string submissionOpeningTags(const SingleQuestionInfo &sqi, const std::string & firstComponent, const std::string &lastComponent){
+    std::string fR="";
+    fR+="<div class=\"card border-info text-dark\">\n<div class=\"card-header\">";
+    fR+="<div class=\"row\"><div class=\"col-sm-10\"> <B>"+firstComponent+" </B></div>";
+    fR+="<div class=\"col-sm-2\">"+lastComponent+"</div></div></div>\n <div class=\"card-body\">";
+    return fR;
+  }
   std::string Response::singleProblemDisplay(const SingleQuestionInfo &sqi, ProblemCommentsAndScores & pcas, long &fileCounter, double &pointsEarned) const{
     pointsEarned=-999.99;
     std::string fR="";
@@ -415,7 +435,15 @@ namespace RTI{
     if(sqi.acceptResp==1){
       std::string diffText1_Label="textInputField";
       std::string diffText2_Label="_/n*__n*_15_/n*_\n_/insert_\n";
-      answSubmittedForTopBar="<B>"+MWII::GL_WI.getDefaultWebText("Answer submitted")+" </B>\n ";
+      answSubmittedForTopBar="<B>"+MWII::GL_WI.getDefaultWebText("Submitted")+" </B>\n ";
+      std::string linkCodeAutograderTest="";
+      if(APTI::GL_studentsAllowedToExecuteCodeOnPublicTestCases=="yes"){
+        if(sqi.autoGraderCodeData.publicTestCases.size()>0){
+          linkCodeAutograderTest+="<a href=\"?page=cts&ev0=rrc&el0=";
+          linkCodeAutograderTest+=tName+"&ev1=nrr&el1="+sqi.QNum+"\"><b><button type=\"button\" ";
+          linkCodeAutograderTest+=" class=\"btn btn-outline-dark btn-sm\">Check</button></b></a>\n";
+        }
+      }
       if(sqi.displType==s_textAreaReqField){
         diffText1_Label="textAreaField";
         diffText2_Label="_/n*__n*_10_/n*__n*_90_/n*_\n_/insert_\n";
@@ -427,28 +455,18 @@ namespace RTI{
       }
       fR+="_insert__n*_"+diffText1_Label+"_/n*__n*_"+e_formNameRT+"_/n*_\n_n*_";
       fR+=sqi.QNum+"_/n*__n*_";
-      fR+=" <div class=\"card bg-light text-dark\">\n <div class=\"card-body\">\n";
-      fR+="<div class=\"row\"><div class=\"col-sm-1 "+barBgColor+" "+barTextColor;
-      fR+="\"><B>"+std::to_string(sqi.num);
-      fR+="</B></div><div class=\"col-sm-8 "+barBgColor+" "+barTextColor;
-      fR+="\"><B>";
-      if((sqi.maxPoints!="notFound")&&(sqi.maxPoints!="")){
-        fR+=" ("+sqi.maxPoints+" "+MWII::GL_WI.getDefaultWebText("points")+") ";
+      std::string answBarLastComponent="<span class=\"text-danger\"><B>"+MWII::GL_WI.getDefaultWebText("No answer yet")+"</B></span>";
+      if(answerSubmitted=="yes"){
+        answBarLastComponent="<span class=\"text-success\">"+answSubmittedForTopBar+"</span>";
       }
-      fR+="</B></div><div class=\"col-sm-3 "+barBgColor+" "+barTextColor;
-      fR+="\"> ";
-      if(answerSubmitted=="yes") {
-        fR+=answSubmittedForTopBar;
-      }
-      else{
-        fR+="<B>"+MWII::GL_WI.getDefaultWebText("No answer yet")+"</B>";
-      }
-      fR+=" </div>\n</div>";
-      fR+=sqi.formulation+"</div>\n</div>";
+      fR+=problemCardOpeningTags(sqi,answBarLastComponent);
+      fR+="</div>\n</div>";
       if((sqi.displType==s_textInputReqField)||(sqi.displType==s_textAreaReqField)){
          if((sqi.userAnswer!="notFound")&&(sqi.userAnswer!="")){
-           fR+="<div class=\"card\">\n<div class=\"card-body\">";
-           fR+="<B>"+MWII::GL_WI.getDefaultWebText("Current submission")+": </B>";
+           /*fR+="<div class=\"card\">\n<div class=\"card-body\">";
+           fR+="<div class=\"row\"><div class=\"col-sm-8\"> <B>"+MWII::GL_WI.getDefaultWebText("Current submission")+" </B></div>";
+           fR+="<div class=\"col-sm-4\">"+linkCodeAutograderTest+"</div></div>\n";*/
+           fR+=submissionOpeningTags(sqi,MWII::GL_WI.getDefaultWebText("Current submission"),linkCodeAutograderTest);
            if(sqi.displType==s_textInputReqField){
              DISPPF::RequestsForSanitizer reqS;
              fR+=DISPPF::sanitizeForDisplay( sqi.userAnswer,reqS);
@@ -476,14 +494,7 @@ namespace RTI{
       }
     }
     else{
-      fR+=" <div class=\"card bg-light text-dark\">\n <div class=\"card-body\">\n";
-      fR+="<div class=\"row\"><div class=\"col-sm-1 bg-secondary text-warning\"><B>"+std::to_string(sqi.num);
-      fR+="</B></div><div class=\"col-sm-11 bg-secondary text-warning\"><B>";
-      if((sqi.maxPoints!="notFound")&&(sqi.maxPoints!="")){
-        fR+=" ("+sqi.maxPoints+" "+MWII::GL_WI.getDefaultWebText("points")+") ";
-      }
-      fR+="</B></div></div>\n";
-      fR+= sqi.formulation;
+      fR+=problemCardOpeningTags(sqi,"");
       if(sqi.displType==s_radioButtonsField){
         std::vector<std::string> pairsOfValDescriptions=SF::stringToVector(sqi.allChoicesSt,"_rb*_","_/rb*_");
         std::vector<std::string> smallSt;
@@ -582,19 +593,7 @@ namespace RTI{
     if(sqi.acceptResp==1){
       fR+="_insert__n*_textAreaField_/n*__n*_"+e_formNameRT+"_/n*_\n_n*_";
       fR+=sqi.QNum+"_/n*__n*_";
-      fR+=" <div class=\"card bg-light text-dark\">\n <div class=\"card-body\">\n";
-      fR+="<div class=\"row\"><div class=\"col-sm-1 "+barBgColor+" "+barTextColor;
-      fR+="\"><B>"+std::to_string(sqi.num);
-      fR+="</B></div><div class=\"col-sm-8 "+barBgColor+" "+barTextColor;
-      fR+="\"><B>";
-      if((sqi.maxPoints!="notFound")&&(sqi.maxPoints!="")){
-        fR+=" ("+sqi.maxPoints+" "+MWII::GL_WI.getDefaultWebText("points")+") ";
-      }
-      fR+="</B></div><div class=\"col-sm-3 "+barBgColor+" "+barTextColor;
-      fR+="\"> ";
-      fR+=pointsEarnedForDisplay;
-      fR+=" </div>\n</div>";
-      fR+= sqi.formulation;
+      fR+=problemCardOpeningTags(sqi,pointsEarnedForDisplay);
       if(sqi.displType==s_radioButtonsField){
         std::vector<std::string> pairsOfValDescriptions=SF::stringToVector(sqi.allChoicesSt,"_rb*_","_/rb*_");
         std::vector<std::string> smallSt;
@@ -636,7 +635,7 @@ namespace RTI{
         if((sqi.graderComment!="notFound")&&(sqi.graderComment!="")){
           fR+=pointsEarnedForDisplay;
           if(pointsEarned>-999.99){
-            fR+="<BR>"; 
+            fR+="<BR>";
             if(MWII::GL_WI.getDefaultWebText("Comment")!="No"){
               fR+="<B>"+MWII::GL_WI.getDefaultWebText("Comment")+":</B> ";
             }
@@ -912,9 +911,12 @@ namespace RTI{
                 versionQ=allD.first;
               }
               problemDoc= formQsV[i];
+              rInf.questionVersions[qLabel]="0";
               if(versionQ!="notFound"){
+                rInf.questionVersions[qLabel]=versionQ;
                 problemDoc=TWDVF::prepareProblemForTest(problemDoc,BF::stringToInteger(versionQ));
               }
+              rInf.completeProblemDocs[qLabel]=problemDoc;
               tmpForm=getFormQVector(problemDoc);
               if(tmpForm.first!="notFound"){
                 formRTQsMap[tmpForm.first]=tmpForm.second;
@@ -922,10 +924,11 @@ namespace RTI{
             }
         }
       }
-       for(long i=0;i<uaSz;++i){
+      for(long i=0;i<uaSz;++i){
           tmpUsr=getUsrAVect(userAsV[i]);
           if(tmpUsr.first!="notFound"){
             userRTAnswMap[tmpUsr.first]=tmpUsr.second;
+            rInf.submittedAnswers[tmpUsr.first]=tmpUsr.second[1];
           }
       }
       std::vector<long> sv= getStatusVector(_psd,_req,rInf.statusOfTheForm);
@@ -1241,7 +1244,7 @@ namespace RTI{
       }
       ++itf;
     }
-    CAGI::codeAutoGradeAndUpdateMap(_psd,autoGradingMap,delayedCodeAutograding);
+    CAGI::codeAutoGradeAndUpdateMap(_psd,autoGradingMap,delayedCodeAutograding,"secretTestCases");
     std::string newInit;
     std::vector<std::string> grInfo=SF::stringToVector(rawText,"_in*|_","_/in*|_");
     long sz=grInfo.size();
