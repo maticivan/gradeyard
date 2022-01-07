@@ -39,6 +39,9 @@ is disabled, then the website will only evaluate the integrals of polynomials. T
 submitted through the Calculator form.
 _maxNumForSimpson_0_/maxNumForSimpson_
 
+
+_executePublicTestCases_yes_/executePublicTestCases_
+
 _defaultTexts!*_
 _vVPair__vr_Comment_/vr__vl_No_/vl__/vVPair_
 _/defaultTexts!*_
@@ -3281,6 +3284,8 @@ _n*_formPlacement_/n*_
 _n*_searchForUser_/n*_
 _/insert_ 
 \end{box}
+
+
 
 _/textData!!_
 
@@ -9077,6 +9082,7 @@ _textData!!_
 _tx*|_  <p>Create a C++ program that reads two integers $x$ and $y$ from user input and calculates ${alpha}x + {beta}y+{alpha+beta}$.
 </p>
  
+<p>You should not use sequences, arrays, or any commands that include this symbol: $[$ </p>
 _/tx*|_
 
 
@@ -9105,6 +9111,9 @@ _aw*|_na_/aw*|_
 _rq*|_textAreaField_/rq*|_ 
  _agr*|_
 _language_cpp_/language_
+_publicTestCases_
+_n*_5 14_/n*_ _n*_2 19_/n*_ _n*_31 52_/n*_
+_/publicTestCases_
 _testCases_
 _n*_15 21_/n*_ _n*_23 30_/n*_ _n*_41 12_/n*_
 _/testCases_
@@ -9112,7 +9121,9 @@ _/testCases_
 _includes_
 _n*_iostream_/n*_
 _/includes_
-
+_forbidden_
+_n*_[_/n*_
+_/forbidden_
 _pointsTestCases_
 _n*_7_/n*__n*_8_/n*__n*_10_/n*_
 _/pointsTestCases_
@@ -11358,7 +11369,7 @@ _textData!!_
  </center>
 
 <H2>Auto-grading of computer code</H2>
-<p>If autograder is used, then it will only grade the <b>last</b> code in your submission. Your solution can contain explanation in words, and several blocks of code. If that is the case, then only the last one will be executed by the auto-grader. If you do not put anything between the code tags, then the autograder will assume that your entire solution is the code that you want to be graded. </p><p>If your code does not compile, the auto-grader will get 0 points on that problem.</p>
+<p>If autograder is used, then it will only grade the <b>last</b> code in your submission. Your solution can contain explanation in words, and several blocks of code. If that is the case, then only the last one will be executed by the auto-grader. If you do not put anything between the code tags, then the autograder will assume that your entire solution is the code that you want to be graded. </p><p>If your code does not compile, the auto-grader will assign 0 points for that problem.</p>
 
 _/textData!!_
 
@@ -11370,6 +11381,71 @@ _nextCommand!*!!_
 _n*!!***!_insert_/n*!!***!_
 
 _n*!!***!_0000000000000112_/n*!!***!_
+_n*!!***!_cts_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_permissionString!!__permission__name_read_/name__userOrGroup_everyone_/userOrGroup__/permission_
+_permission__name_write_/name__userOrGroup_administrator_/userOrGroup__/permission_
+_/permissionString!!__documentType!!_regularText_/documentType!!_
+_/systemData!!_
+
+_textData!!_
+ 
+ 
+   _insert_
+            _n*_buttonLink_/n*_
+            _n*_Back to the assignment_/n*_
+            _n*_?r=_vr_rrc_/vr__/n*_
+           _/insert_  
+
+
+ <H1>Auto-grader testing</H1>
+ 
+<p>Here you can execute your code on several test cases and see whether it works. The code auto-grader will use test cases of a similar format. However, the test cases used for grading will be different than the ones you are seeing here. </p>
+       
+_insert_
+_n*_codeTest_/n*_
+_n*__vr_rrc_/vr__/n*_
+_n*__vr_nrr_/vr__/n*_
+_n*_
+<h2>Problem formulation</h2>
+\begin{box}
+_*text*_
+\end{box}
+
+<h2>Your submission</h2>
+\begin{box}
+_*userAnswer*_
+\end{box}
+
+<h2>Results of auto-grading</h2>
+\begin{box}
+_*gradingResult*_
+\end{box}
+_/n*_
+_/insert_
+
+_/textData!!_
+
+_/n*!!***!_
+_/nextCommand!*!!_  
+
+
+
+
+
+
+
+
+_nextCommand!*!!_ 
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000113_/n*!!***!_
 _n*!!***!_planets_/n*!!***!_
 
 _n*!!***!_
@@ -11383,7 +11459,7 @@ _/permissionString!!__documentType!!_regularText_/documentType!!_
 _/systemData!!_
 
 _textData!!_
- <H2>Introduction</H2>
+ <H1>Introduction</H1>
 <p>The Solar System consists of several planets. The closest planet to the Sun is Mercury. Other planets are not as close to the Sun as the Mercury.</p> 
 <p>This page may need some expansion. There could be website visitors who would not find this article as informative as they hoped.</p>
        
@@ -11392,9 +11468,3 @@ _/textData!!_
 
 _/n*!!***!_
 _/nextCommand!*!!_  
-
-
-
-
-
-
