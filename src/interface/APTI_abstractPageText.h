@@ -20,6 +20,7 @@
 #define _INCL_WI_AbstractText_H
 
 namespace APTI{
+  std::string GL_studentsAllowedToExecuteCodeOnPublicTestCases="yes";
   class AbstractText{
   protected:
     std::set<std::string> permitRead;
@@ -36,9 +37,6 @@ namespace APTI{
     std::string sysDataRequested;
     std::string myUserName;
     std::string sysDataRaw;
-
-
-
     std::string s_sysDataB="_systemData!!_";
     std::string s_sysDataE="_/systemData!!_";
     std::string s_tDataB="_textData!!_";
@@ -51,30 +49,23 @@ namespace APTI{
     std::string s_createdByE="_/createdBy!!_";
     std::string s_modifiedByB="_modifiedBy!!_";
     std::string s_modifiedByE="_/modifiedBy!!_";
-
     std::string s_permissionStringB="_permissionString!!_";
     std::string s_permissionStringE="_/permissionString!!_";
     std::string s_docTypeStringB="_documentType!!_";
     std::string s_docTypeStringE="_/documentType!!_";
-
-
     std::string s_individualPermissionB="_permission_";
     std::string s_individualPermissionE="_/permission_";
     std::string s_userOrGroupB="_userOrGroup_";
     std::string s_userOrGroupE="_/userOrGroup_";
-
     std::string s_insertB="_insert_";
     std::string s_insertE="_/insert_";
-
     std::string s_insSepInB="_n*_";
     std::string s_insSepInE="_/n*_";
-
     std::string s_listFromDB="listFromDB";
     std::string s_textAreaReqField="textAreaField";
     std::string s_textInputReqField="textInputField";
     std::string s_radioButtonsField="radioButtonsField";
     std::string s_checkBoxesField="checkBoxesField";
-
     std::string s_antiSpamChallengeField="antiSpamChallenge";
     std::string s_fileReqField="fileRequestField";
     std::string s_formInitialization="formInitialization";
@@ -88,39 +79,28 @@ namespace APTI{
     std::string s_message="message";
     std::string s_couas="courseAssignment";
     std::string s_respRecStatus="responseReceiverStatus";
-
+    std::string s_codeTest="codeTest";
     std::string s_internalLink="internalLink";
     std::string s_buttonLink="buttonLink";
     std::string s_invitationToSolve="invitationToSolve";
     std::string s_userPermits="userPermits";
-
     std::string s_itemTable="itemTable";
     std::string s_answerToQuery="answerToTheQuery";
-
     std::string v_regularText="regularText";
-
     std::map<std::string, FHI::InputForm> allForms;
-
     std::string s_root="root";
     std::string s_everyone="everyone";
     std::string s_notFound="notFound";
     std::string s_commands="commands";
     std::string e_redirectToForward="rdf";
-
     std::string val_sysDataReq_YES="yes";
     std::string val_sysDataReq_RAW="raw";
-
-
-
     std::map<std::string,std::string> translationVarToVal;
-
-
     long subTextRecursionDepth=0;
     long maxRecursionDepth=10;
-
     std::map<std::string,std::string> getTranslationMap(const std::string & ) const;
-
     std::string createSubText(const PSDI::SessionData &,const std::string &);
+    std::string createCodeTest(const PSDI::SessionData &,const std::string &, const std::string &, const std::string &);
     std::string createUserPermitInfo(const PSDI::SessionData &,const std::string &);
     std::string createRespRecStatusDisplay(const PSDI::SessionData & , const std::string & ) const;
     std::string createMessageDisplay(const PSDI::SessionData &,const std::string &);
@@ -128,8 +108,6 @@ namespace APTI{
     std::string createCouasDisplay(const PSDI::SessionData &,const std::string &);
     std::string createItemTable(const PSDI::SessionData &,const std::string &);
     std::string createInternalLink(const PSDI::SessionData &, const std::string &, const std::string &) const;
-
-
     std::string createTextAreaField(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string & ="notFound", const std::string & ="notFound");
     std::string createTextInputField(const std::string &, const std::string &, const std::string &, const std::string &, const std::string &);
     std::string createRadioButtonsField(const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string &);
@@ -153,13 +131,10 @@ namespace APTI{
     std::string createModifyLink(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string &) const;
     std::pair<std::string,std::string> createCommandLinkPair(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &, const std::string &) const;
     std::string createCommandLink(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &, const std::string &) const;
-
     std::string createLinkForEditUser(const std::string &) const;
     std::string createLinkForEditUserAdvanced(const std::string &,const std::string &) const;
-
     std::string createLinkForEditUserExtraAdvanced(const std::string &,const std::string &) const;
     std::string createLinkToText(const std::string &, const std::string & = "page", const std::string & ="") const;
-
     std::string createLinkToMessage(const std::string &, const std::string & , const std::string &) const;
     std::string createLinkToCouas(const std::string &, const std::string & ,const std::string &) const;
     std::string createLinkToExecuteBackup(const std::string &, const std::string &) const;
@@ -185,7 +160,6 @@ namespace APTI{
     long allowedToInputCommands(const PSDI::SessionData &) const;//WARNING not implemented yet
   public:
     AbstractText(const std::string & = "mainTextFirstPage", const std::string & = "no1117", const std::string & = "everyone");
-
     std::set<std::string> readPermissions() const;
     std::set<std::string> writePermissions() const;
     std::string getRawText() const;
@@ -214,9 +188,6 @@ namespace APTI{
     std::string createListFromDB(const PSDI::SessionData &, const std::string &,  const std::string &, const std::string &) const;
     int allowedToModifyText(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &) const;
     int allowedToDisplayText(const PSDI::SessionData &, const std::string &, const std::string & ="mainTextPosition") const;
-
   };
 }
-
-
 #endif
