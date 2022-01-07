@@ -20,15 +20,12 @@
 #define _INCL_WI_SessionInformation_CPP
 
 namespace SII{
-
   MPTI::MainText SessionInformation::getHeader() const{return header;}
   MPTI::MainText SessionInformation::getFooter() const{return footer;}
   MPTI::MainText SessionInformation::getMainText() const{return mainText;}
   std::string SessionInformation::getResponse(const std::string & _q) const{
     return SF::getElFromMapOrNotFoundMessage(psd.respMap,_q,s_notFound);
-
   }
-
   std::vector<std::vector<std::string> > SessionInformation::getRespInOrder() const{return respInOrder;}
   SPREPF::StatData SessionInformation::prepareStatData() const{
     SPREPF::StatData forSt;
@@ -47,9 +44,7 @@ namespace SII{
     return forSt;
   }
   void SessionInformation::addToMainText(const std::string &_a){mainText.addToText(_a);}
-
   std::string SessionInformation::preparePage(const std::string & queryAnswer){
-
     SPREPF::StatData st_D=prepareStatData();
     std::string preqN=STI::hidePageFromThoseWhoAreTryingToGuessPasswords(psd.pageRequested,st_D);
     STI::updateStatDB(st_D);
@@ -58,13 +53,11 @@ namespace SII{
       if(timeSinceLastVisit>3){
         STI::updateFastUpdatingStatDB(psd.pageRequested);
       }
-
     }
     if(preqN!=psd.pageRequested){
       psd.pageRequested=preqN;
       changeMainText(psd.pageRequested);
     }
-
     if((psd.my_un!="visitor")&&(psd.pageRequested=="login")){
       psd.pageRequested="loginSuccessful";
       changeMainText(psd.pageRequested);
@@ -77,7 +70,6 @@ namespace SII{
     header.updateSecondMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
     header.updateThirdMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
     header.updateMainMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
-
     footer.updateFooterBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
     std::string savedPER=psd.pEditReq;
     psd.pEditReq="no";
@@ -89,8 +81,6 @@ namespace SII{
     if((respRecRequested!="")&&(indicatorRespRecInitialized==0)){
       mainRespRec.initialize(respRecRequested,sysDataRequested,psd.my_un);
     }
-
-
     if(respRecRequested==""){
       if((psd.pEditReq=="no")&&(psd.pageRequested=="listFiles")){
         mainText.selectVersionForListOfFiles(addModFileCodeReq,startOfList);
@@ -99,23 +89,16 @@ namespace SII{
         fR+=SF::findAndReplace(MWII::GL_WI.getDefaultWebText("standardCourseCreated"),"_*PAGE*NAME*_",psd.createStandardCourseMainDocName);
       }
       fR+=mainText.displayText(psd,"mainTextPosition");
-
       if(str_backups_IfCalledFor!=""){
         fR+=BI::textAreaField("probText",str_backups_IfCalledFor,15,100);
       }
-
-
-
-
       fR+=DEBUGGING_ADDITIONS;
       fR+=HDDBRF::GL_DBREC_DEB;
     }
     else{
-
       fR+=mainRespRec.displayRespRec(psd);
       fR+=DEBUGGING_ADDITIONS;
     }
-
     if(str_pdfSummary_IfCalledFor!=""){
       fR+=BI::textAreaField("probText",str_pdfSummary_IfCalledFor,15,100);
       if(psd.pdfNameForInclassExam!=""){
@@ -124,20 +107,14 @@ namespace SII{
         fR+="</p>\n";
       }
     }
-
-
     if(debuggingEnvVarRequest==s_deb_correctDebuggingEnvVarReq){
       fR+= BI::envToHTML(envVariables);
     }
-
-
-
     std::string beforeFormRepl= DISPPF::finalizeForDisplay(MWII::GL_WI.getDefaultFindReplaceMap(), fR+psd.passwordChangeStatus+"</div>"+footerFR);
     std::string afterFormRepl=beforeFormRepl;
     if((psd.inFormSearch!="")&&(psd.inFormReplace!="")){
       afterFormRepl=SF::findAndReplace(afterFormRepl,psd.inFormSearch,psd.inFormReplace);
     }
-
     if( (psd.isRoot=="no") && ((psd.pageRequested=="createWebsite")||(psd.pageRequested=="changePassword")) ){
       afterFormRepl=SF::findAndReplace(afterFormRepl,"_THIS*WEBSITE*URL*_",MWII::GL_WI.getWSURL());
       afterFormRepl=SF::findAndReplace(afterFormRepl,"_GUEST*SITES*_",DD::GL_DBS.getGuestClonesRelLoc());
@@ -155,17 +132,11 @@ namespace SII{
         }
       }
     }
-
-
-
     afterFormRepl=LANGF::changeAlphabet(afterFormRepl,MWII::GL_WI.getAlphabet());
     afterFormRepl=INCII::treatInCommandInsert(afterFormRepl);
- 
     GF::GL_DEB_MESSAGES.addMessage("Time to generate page is "+ BF::doubleToString(timeToGenerateWebsite.getTime()));
     afterFormRepl+=GF::GL_DEB_MESSAGES.prepareAllMessages(MWII::GL_WI.getDebuggingOptions());
-
     return afterFormRepl;
-
   }
   void SessionInformation::addDebuggingMessagesIfInDebuggingMode(){
     if(debuggingModeRequest==s_deb_correctDebuggingModeReq){
@@ -186,13 +157,11 @@ namespace SII{
     psd.sortCriterion="0";
     psd.couasEditReq="no";
     psd.rrgrader="no";
-
     psd.indChangeRespRecToPrintVersionOfCommonInClassExam=0;
     psd.probVersionsOfChangedRespRec="";
     psd.pdfNameForInclassExam="";
     psd.masterKey="";
     psd.queryAnswerPlaceHolder="_*"+RNDF::genRandCode(15)+"_*qAsnw_";
-
     psd.displayDaysInWeek.resize(0);
     psd.displayMonthsInYear.resize(0);
     indicatorInitialized=0;
@@ -210,7 +179,6 @@ namespace SII{
     idOfMessageWhoseEditWasSubmitted="";
     newTextOfMessage="";
   }
-
   std::string SessionInformation::cookieText(const std::string &cookieName , const std::string &cookieValue ) const{
     std::string fR="";
     std::string domainName=MWII::GL_WI.getWSURL();
@@ -238,24 +206,19 @@ namespace SII{
     fR+="; Secure; HttpOnly";
     return fR;
   }
-
   long SessionInformation::countSubmittedFiles(const cgicc::Cgicc & ch) const{
     return ch.getFiles().size();
   }
   int SessionInformation::uploadToServer(const cgicc::Cgicc & ch, const std::string & labelName, const std::string &fileName ){
-
     cgicc::const_file_iterator file = ch.getFile(labelName);
      if(file != ch.getFiles().end()) {
         std::ofstream mfileos;
         mfileos.open(fileName);
         file->writeToStream(mfileos);
-
         mfileos.close();
      }
-
      return 1;
   }
-
   void SessionInformation::analyzeEnvVarsAndForms(const cgicc::Cgicc & ch){
     indicatorFormResponded=0;
     indicatorFileReceived=0;
@@ -274,15 +237,11 @@ namespace SII{
     psd.usrAgent=envVariables[8];//HTTP_USER_AGENT
     psd.remAddr=envVariables[11];//REMOTE_ADDR
     psd.reqMethod=envVariables[13];//REQUEST_METHOD
-
     if((envVariables[13]=="GET")||(envVariables[13]=="POST")){
       if(envVariables[13]=="POST"){indicatorFormResponded=1;}
       long i=0;
-
-
       MWII::GL_WI.setRedirectOverwrite(s_notFound);
       MWII::GL_WI.setRedirectForward(s_notFound);
-
       cgicc::const_form_iterator it, itE;
       itE = ch.getElements().end();
       it=ch.getElements().begin();
@@ -395,7 +354,6 @@ namespace SII{
           skipOtherIfs=1;
           psd.comfUserEdit=respInOrder[i][1];
         }
-
         if((skipOtherIfs==0)&&(respInOrder[i][0]==e_passwCh)){
           skipOtherIfs=1;
           psd.passwordChangeRequested=respInOrder[i][1];
@@ -415,10 +373,8 @@ namespace SII{
         }
         MWII::GL_WI.setStartOfList(startOfList);
         MWII::GL_WI.setSortCriterion(psd.sortCriterion);
-
         ++it;++i;
       }
-
       GF::GL_DEB_MESSAGES.addMessage("The number of files received is "+std::to_string(countSubmittedFiles(ch)));
     }
   }
@@ -455,7 +411,6 @@ namespace SII{
         fileInfoData=SF::findAndReplace(fileInfoData,toSearch,toReplace);
       }
     }
-
     pos=0;allD=SF::extract(additionalData,pos,"_fSize*|_","_/fSize*|_");
     // if allD.second==0, the new file is not submitted with the form
     if(allD.second==1){
@@ -470,10 +425,8 @@ namespace SII{
       if(allD.second==1){
         extOld=allD.first;
         pos=0;allD=SF::extract(additionalData,pos,"_fileDataType_","_/fileDataType_");
-
         if(allD.second==1){
           std::string correctExtension=extOld+"bad";
-
           if(allD.first=="application/pdf"){
             correctExtension="pdf";
           }
@@ -481,26 +434,17 @@ namespace SII{
             correctExtension="jpg";
           }
           if(extOld==correctExtension){
-
             std::string filePath;
             pos=0;allD=SF::extract(fileInfoData,pos,"_filePath_","_/filePath_");
             if(allD.second==1){
                 uploadToServer(ch, formFieldName, allD.first+"/"+MWII::FILE_PREFIX+ fName+"."+extOld );
-
             }
-
-
-
             pos=0;allD=SF::extractAndReplace(fileInfoData,pos,"_fSize*|_","_/fSize*|_",0,newFSize);
             if(allD.second==1){
               fileInfoData=allD.first;
             }
-
           }
-
         }
-
-
       }
       pos=0;allD=SF::extract(additionalData,pos,"_fInfo*|_","_/fInfo*|_");;
       if(allD.second==1){
@@ -508,16 +452,13 @@ namespace SII{
         fileInfoData=SF::findAndReplace(fileInfoData,toSearch,toReplace);
       }
     }
-
     sf.setTextData(fileInfoData);
     sf.putInDB();
-
     return "";
   }
   long SessionInformation::loggedIn(){
     return loginStatusIndicator;
   }
-
   void SessionInformation::initSession(const cgicc::Cgicc & ch){
     if(indicatorInitialized==0){
       indicatorRespRecInitialized=0;
@@ -541,24 +482,16 @@ namespace SII{
         }
         else{
           currentCookie=s_notFound;
-
-
-
         }
       }
       if(currentCookie!=s_notFound){
         std::pair<std::string,std::string> uNRN=SF::oneWordToTwoWords(currentCookie);
         int succ=(psd.myWU).setFromExternalId(uNRN.first);
         if(succ==1){
-
           if((psd.myWU).checkCookieCorrectness(currentCookie)){
             loginStatusIndicator=1;
             (psd.myWU).updateEncryptionDataAfterCookieReading(currentCookie);
-
           }
-
-
-
         }
       }
       if((loginActionIndicator==-1)&&(loginStatusIndicator==1)){
@@ -567,13 +500,11 @@ namespace SII{
         loginStatusIndicator=0;
       }
       if((loginActionIndicator==1)&&(loginStatusIndicator==0)){
-
         SPREPF::StatData st_DLogin=prepareStatData();
         if(STI::checkIfSpammerIsTryingToGuessPasswords(st_DLogin)=="spammer"){
           loginActionIndicator=0;
           psd.pageRequested="tooManyAttemptsInShortTime";
           changeMainText(psd.pageRequested);
-
         }
         else{
           int succ=(psd.myWU).setFromUsername(getResponse("username"));
@@ -595,7 +526,6 @@ namespace SII{
             MWII::GL_WI.setFailedLogIn();
           }
         }
-
       }
       if(loginStatusIndicator==1){
         if(loginActionIndicator==0){//renew cookie
@@ -608,12 +538,6 @@ namespace SII{
         psd.allowedToExecuteAll=(psd.myWU).isAllowedToExecuteCommands();
         psd.masterKey=(psd.myWU).getMasterKeyFromRAM("sigmaM");
       }
-
-
-
-
-
-
       GF::GL_DEB_MESSAGES.addMessage("The current cookie is |"+currentCookie+"|\n");
        TMD::MText m;
       int s=m.setFromTextName("mainTextInitializer");
@@ -650,7 +574,6 @@ namespace SII{
           if(allD.second==1){
             psd.displayMonthsInYear=SF::stringToVector(allD.first,"_n*_","_/n*_");
           }
-
         }
         pos=0;
         allD=SF::extract(initText,pos,"_defaultTexts!*_","_/defaultTexts!*_");
@@ -674,7 +597,10 @@ namespace SII{
           if(BF::isNumeric(allD.first,0)){
             FF::MAXIMAL_NUMBER_OF_INTERVALS_FOR_SIMPSON=BF::stringToInteger(allD.first);
           }
-
+        }
+        pos=0;allD=SF::extract(initText,pos,"_executePublicTestCases_","_/executePublicTestCases_");
+        if(allD.second==1){
+          APTI::GL_studentsAllowedToExecuteCodeOnPublicTestCases=allD.first;
         }
         if(MWII::GL_WI.getRedirectOverwrite()!="notFound"){
           std::pair<std::string,std::string> twoCodes=SF::oneWordToTwoWords(MWII::GL_WI.getRedirectOverwrite());
@@ -686,14 +612,11 @@ namespace SII{
         }
         if(loginFailedIndicator==1){
           psd.pageRequested="wrongUserNameOrPassword";
-
         }
         if(psd.pageRequested!=""){
-
           if((psd.pageRequested=="createWebsite")||(psd.pageRequested=="deleteWebsite")){
             createOrDeleteWebsiteOrChangeRequestedPage();
           }
-
           int initSucc=mainText.initialize(psd.pageRequested,sysDataRequested,psd.my_un);
           if(initSucc==0){
             psd.pageRequested="pageDoesNotExist";
@@ -705,15 +628,11 @@ namespace SII{
           mainText.initialize(dfPage,"no",psd.my_un);
           MWII::GL_WI.setMainPageName(dfPage);
           psd.pageRequested=dfPage;
-
         }
-
         if(addModFileReq==m_addModFileDelete){
           if(allowedToCreateText()==1){//WARNING - allowedToDeleteFile is giving "yes" too easy to accommodate the following code
-
             //Step 1: Determine if the file is submitted by a form.
             //        and if it is, then tell the form that the file is deleted
-
             FMD::FileManager sf;
             int scc=sf.setFromExternalCode(addModFileCodeReq);
             if(scc==1){
@@ -755,7 +674,6 @@ namespace SII{
 
               }
             }
-
             deleteFile(addModFileCodeReq);
           }
         }
@@ -767,7 +685,6 @@ namespace SII{
               cgicc::const_file_iterator fileIt, fileItE;
               fileItE=ch.getFiles().end();
               fileIt=ch.getFile(e_addModFileFilePar);
-
               if(fileIt!=fileItE){
                 std::string additionalData="_fInfo*|_"+addModFileModifyInfo+"_/fInfo*|_";
                 additionalData+="_fileDataType_"+fileIt->getDataType()+"_/fileDataType_";
@@ -786,7 +703,6 @@ namespace SII{
             if(fileIt!=fileItE){
               additionalData+="_fileDataType_"+fileIt->getDataType()+"_/fileDataType_";
               additionalData+="_fSize*|_"+std::to_string(fileIt->getDataLength())+"_/fSize*|_";
-
             }
             updateExistingFile(ch,psd.my_un,addModFileCodeReq,e_addModFileFilePar,additionalData);
           }
@@ -794,11 +710,8 @@ namespace SII{
             updateGradesFromResponse();
           }
         }
-
-
         if(respRecRequested!=""){
           if(respSubmitted=="yes"){
-
             RTI::Response tmpRT(respRecRequested,"no",psd.my_un);
             if(tmpRT.isInitialized()==1){
               RTI::ResponderInfo res=tmpRT.infoFromResponseText(psd,"df");
@@ -808,7 +721,6 @@ namespace SII{
               if(res.exitStatus=="badForm"){
                 res.acceptResp=0;
               }
-
               if(
                 ((res.acceptResp==1)&&(res.documentType=="responseToTest"))
                 ||
@@ -826,15 +738,12 @@ namespace SII{
                   long sz=oldAnswers.size();
                   qLbs.resize(sz);
                   std::map<std::string,long> invFunc;
-
                   std::string s_inRespLabelB="_aw*|_";
                   std::string s_inRespLabelE="_/aw*|_";
                   if(res.documentType=="gradeOfResponse"){
                     s_inRespLabelB="_gc*|_";
                     s_inRespLabelE="_/gc*|_";
                   }
-
-
                   for(long i=0;i<sz;++i){
                     pos=0;
                     allD=SF::extract( oldAnswers[i],pos,"_lb*|_", "_/lb*|_");
@@ -844,9 +753,6 @@ namespace SII{
                       invFunc[qLbs[i]]=i;
                     }
                   }
-
-
-
                   std::string answToReplace;
                   std::set<std::string>::const_iterator it,itE;
                   std::map<std::string,std::string>::const_iterator itM,itME;
@@ -856,9 +762,6 @@ namespace SII{
                   itME=(psd.respMap).end();
                   int dangerousInputDetected=0;
                   while((it!=itE)&&(dangerousInputDetected==0)){
-
-
-
                     itM=(psd.respMap).find(*it);
                     if(itM!=itME){
                       DISPPF::RequestsForSanitizer reqS;
@@ -874,25 +777,19 @@ namespace SII{
                           dataToModify=SF::findAndReplace(dataToModify,"_in*|_"+oldAnswers[itInvF->second]+"_/in*|_",answToReplace,0);
                         }
                       }
-
                     }
                     ++it;
                   }
-
                   if(dangerousInputDetected==0){
                     psd.respRecFlag="accepted";
                     dataToModify=uploadFilesFromResponseReceiver(ch,respRecRequested,dataToModify,res.fileInfoV,tmpRT,res.idInfoData);
                     modifyRespRec(respRecRequested, dataToModify,"yes");
-
                   }
                   else{
                     psd.respRecFlag="rejected";
                   }
-
-
                 }
               }
-
             }
           }
           indicatorRespRecInitialized=mainRespRec.initialize(respRecRequested,sysDataRequested,psd.my_un);
@@ -900,12 +797,9 @@ namespace SII{
             respRecRequested="";
           }
         }
-
       }
-
     }
     if(idOfMessageWhoseEditWasSubmitted!=""){
-
       if(idOfMessageWhoseEditWasSubmitted=="nm"){
         createMessage("_!myself!_",newTextOfMessage,psd.inFormReplace);
       }
@@ -954,7 +848,6 @@ namespace SII{
   long SessionInformation::canFormResponseBeAccepted() const{return indicatorFormResponseCanBeAccepted;}
   long SessionInformation::isFileReceived() const{return indicatorFileReceived;}
   long SessionInformation::canFileBeAccepted() const{return indicatorFileCanBeAccepted;}
-
   std::string SessionInformation::enhanceTheCommandDueToComfUserEdit(const std::string & s) const{
     if(psd.comfUserEdit!="y"){
       return s;
@@ -968,15 +861,11 @@ namespace SII{
     else{
       mainText.initialize(_t,sysDataRequested,psd.my_un);
     }
-
   }
-
-
   PublicFile::PublicFile(){
     initialized=0;
   }
   int PublicFile::initializeNewFile(const std::string & _extFileCode, const std::string & _fE, const std::string & iUID, const std::string &additionalData){
-
     fileExtension=_fE;
     long pos=0;
     std::pair<std::string,int> allD=SF::extract(additionalData,pos,fDatTB,fDatTE);
@@ -1007,8 +896,6 @@ namespace SII{
         }
       }
     }
-
-
     m.createFile(iUID);
     ivn=m.getInternalNumberFromInternalId();
     long sz=ivn.size();
@@ -1019,16 +906,13 @@ namespace SII{
       if(wu.setFromInternalId(iUID)==1){
         u_Name=wu.getUsername();
       }
-
       externalFileCode=m.getExternalCodeFromInternalNumber();
       filePath=m.clearThePublicPathAndDetermineTheFolder(MWII::GL_WI.getWSURL(),"",DD::GL_DBS.getPublicStorage(),DD::GL_DBS.getPublicStorage(),num,DD::GL_DBS.getNumSubFolders(),DD::GL_DBS.getNumFilesInFolder());
-
       fileName=SF::combineTwoWords(externalFileCode,RNDF::genRandCode(6));
       fileInfoData=fcB+externalFileCode+fcE;
       fileInfoData+=fnmB+fileName+fnmE;
       fileInfoData+=fPB+filePath+fPE;
       fileInfoData+=fnB+std::to_string(num)+fnE;
-
       fileInfoData+=fEB+fileExtension+fEE;
       fileInfoData+=fUCB+u_Name+fUCE;
       TMF::Timer tm;
@@ -1037,7 +921,6 @@ namespace SII{
       fileInfoData+=additionalData;
       m.setTextData(fileInfoData);
       m.putInDB();
-
       initialized=1;
       return 1;
     }
@@ -1052,7 +935,6 @@ namespace SII{
         long num=ivn[0];
         externalFileCode=_extFileCode;
         filePath=m.clearThePublicPathAndDetermineTheFolder(MWII::GL_WI.getWSURL(),"",DD::GL_DBS.getPublicStorage(),DD::GL_DBS.getPublicStorage(),num,DD::GL_DBS.getNumSubFolders(),DD::GL_DBS.getNumFilesInFolder());
-
         fileInfoData=m.getTextData();
         long pos=0;
         std::pair<std::string,int> allD=SF::extract(fileInfoData,pos,fEB,fEE);
@@ -1072,7 +954,6 @@ namespace SII{
         if(allD.second==1){
           fileName=allD.first;
         }
-
         initialized=1;
         return 1;
       }
@@ -1096,10 +977,7 @@ namespace SII{
     }
     // The user is "!noUser!" . We need to set existing file
     return initializeExistingFile(_extFileCode);
-
-
   }
-
   std::string PublicFile::getFileInfoData() const{   return fileInfoData; }
   std::string PublicFile::getFilePath() const{ return filePath; }
   std::string PublicFile::getFileName() const{
@@ -1131,15 +1009,12 @@ namespace SII{
     return _p.deleteFile();
   }
   std::string SessionInformation::deleteSingleFile(const std::string &_extFileCode){
-
     PublicFile pf;
     pf.init(_extFileCode);
     return deleteFile(pf);
   }
-
   std::string SessionInformation::deleteFile(const std::string &_extFileCode){
     // Step 1: Check whether _extFileCode is a scraped website data with a lot of files to delete
-
     std::vector<std::string> manyFiles=PASF::getItemsFromScrapedPage(_extFileCode,"\n","\t");
     long sz=manyFiles.size();
     if(sz>0){
@@ -1211,7 +1086,6 @@ namespace SII{
     GCSI::createClonedWebsite(guestUName,w.getEncPassword());
     return "created";
   }
-
   int SessionInformation::createOrDeleteWebsiteOrChangeRequestedPage(){
     if(psd.isRoot=="no"){
       if(psd.my_un=="visitor"){
@@ -1231,7 +1105,6 @@ namespace SII{
     }
     return 0;
   }
-
   int SessionInformation::allowedToCreateText() const{
     if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
       return 1;
@@ -1244,14 +1117,12 @@ namespace SII{
     }
     return 0;
   }
-
   int SessionInformation::allowedToDeleteText(const std::string & _tN) const{
     if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
       return 1;
     }
     return 0;
   }
-
   int SessionInformation::allowedToModifyText(const std::string & _tN) const{
     if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
       return 1;
@@ -1259,7 +1130,6 @@ namespace SII{
     MPTI::MainText tToCheck(psd.pageRequested,"no1117",psd.my_un);
     return tToCheck.allowedToModifyText(psd,"","",psd.my_un);
   }
-
   int SessionInformation::allowedToModifyRespRec(const std::string & _tN,const std::string & _fSubmission) const{
     if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
       return 1;
@@ -1294,7 +1164,6 @@ namespace SII{
     sf.setTextData(textData);
     sf.putInDB();
     return "!success!: "+sf.getTextName();
-
   }
   std::string SessionInformation::modifyText(const std::string & _tName, const std::string & _tData){
     //WARNING: not implemented properly yet: permission checking is too restrictive
@@ -1329,21 +1198,16 @@ namespace SII{
     }
     return "!success!";
   }
-
-
   int SessionInformation::allowedToCreateMessage(const std::string & idOfCollector) const{
     if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
       return 1;
     }
-
     MEI::MElement mEl;
     if(MEI::initMElementFromCode(mEl,idOfCollector)=="success"){
       return mEl.allowedToCreateMessage(psd.my_un);
     }
-
     return 0;
   }
-
   int SessionInformation::allowedToModifyMessage(const std::string & mId, const std::string & idOfCollector) const{
     if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
       return 1;
@@ -1354,8 +1218,6 @@ namespace SII{
     }
     return 0;
   }
-
-
   int SessionInformation::allowedToCreateCouas(const std::string & idOfCollector) const{
       //WARNING: not implemented properly yet: permission checking is too restrictive
     if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
@@ -1363,7 +1225,6 @@ namespace SII{
     }
     return 0;
   }
-
   int SessionInformation::allowedToModifyCouas(const std::string & couasId, const std::string & idOfCollector) const{
       //WARNING: not implemented properly yet: permission checking is too restrictive
     if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
@@ -1371,8 +1232,6 @@ namespace SII{
     }
     return 0;
   }
-
-
   std::string SessionInformation::createMessage(const std::string & _uName, const std::string & _mData, const std::string & _collectorId){
     if(allowedToCreateMessage(_collectorId)==0){
       return "!failed!: Not allowed";
@@ -1403,7 +1262,6 @@ namespace SII{
     }
     std::string navSt,collT;
     bm.addToCollection(_collectorId,navSt,collT);
-
     std::string mDataProcessed="";
     mDataProcessed+="_created_";
     TMF::Timer tm;
@@ -1420,7 +1278,6 @@ namespace SII{
       navSeqNew[i]=navSeq[i];
     }
     navSeqNew[szns]="_!code_"+_collectorId+"_/!code_ _!title_"+collT+"_/!title_";
-
     ++szns;
     std::string navStNew="";
     for(long i=0;i<szns;++i){
@@ -1431,11 +1288,8 @@ namespace SII{
     mDataProcessed+=_mData;
     mDataProcessed+="_/messText!*_";
     bm.setTextData(prepareTextForTextTable(mDataProcessed,"!noOldData!"));
-
     bm.putInDB();
-
     return bm.getExternalCodeFromInternalId();
-
   }
   std::string SessionInformation::createForum(const std::string & _uName, const std::string & _fOptionsData,const std::string & _collectorId, const std::string &backupRecovery){
     if(psd.isRoot!="yes"){
@@ -1477,10 +1331,8 @@ namespace SII{
       }
     }
     return "!success!: _mainTopicCode_"+mainCode+"_/mainTopicCode_";
-
   }
   std::string SessionInformation::createSupportingPages(const std::map<std::string,std::string> & templM, const std::map<std::string,std::string> & varM, const std::map<std::string,std::string> & specialInstructions){
-
     std::map<std::string,std::string>::const_iterator it, itE,itV,itVE,itS,itSE;
     itE=templM.end();
     itVE=varM.end();
@@ -1488,7 +1340,6 @@ namespace SII{
     std::string varCode="varNotFound";
     std::string docName="docNotFound";
     itV=varM.find("docName");
-
     if(itV!=itVE){
       docName=itV->second;
     }
@@ -1499,7 +1350,6 @@ namespace SII{
     std::string supportingPageLabel,supportingPageContent,supportingPageName,supportingPageExtension;
     int skipInd;int rootInd;
     it=templM.begin();
-
     while(it!=itE){
       supportingPageLabel=it->first;supportingPageContent=it->second;
       supportingPageContent=SF::findAndReplace(supportingPageContent,"*variables*",docName+varCode);
@@ -1529,7 +1379,6 @@ namespace SII{
             psd.recoveryOperationNames.push("courseCreation");
             psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteText",supportingPageName));
           }
-
         }
       }
       ++it;
@@ -1549,7 +1398,6 @@ namespace SII{
       ++it;
     }
     return "";
-
   }
   std::string SessionInformation::createStandardCourse(const std::string & _fOptionsData, const std::string & _forFutureUse){
     if(psd.isRoot!="yes"){
@@ -1566,20 +1414,16 @@ namespace SII{
       return "!failed!: no templates";
     }
     std::string templMain=allD.first;
-
-
     std::map<std::string,std::string> specInstr;
     pos=0;allD=SF::extract(_fOptionsData,pos,"_specialInstructions_","_/specialInstructions_");
     if(allD.second==1){
       specInstr=SF::stringToMap(allD.first,LI::GL_LN.st_sep_kB,LI::GL_LN.st_sep_kE,LI::GL_LN.st_sep_vB,LI::GL_LN.st_sep_vE);
     }
-
     std::map<std::string,std::string> examsMap;
     pos=0;allD=SF::extract(_fOptionsData,pos,"_genExams_","_/genExams_");
     if(allD.second==1){
       examsMap=SF::stringToMap(allD.first,LI::GL_LN.st_sep_keB,LI::GL_LN.st_sep_keE,LI::GL_LN.st_sep_veB,LI::GL_LN.st_sep_veE);
     }
-
     std::map<std::string,std::string> templatesMap=SF::stringToMap(templMain,LI::GL_LN.st_sep_tnB,LI::GL_LN.st_sep_tnE,LI::GL_LN.st_sep_tcB,LI::GL_LN.st_sep_tcE);
     std::map<std::string,std::string>::const_iterator it,itE,itV,itVE;
     itE=templatesMap.end();
@@ -1588,8 +1432,6 @@ namespace SII{
       return "!failed!: no grading creation template";
     }
     std::string gCreationTemplate=it->second;
-
-
     std::map<std::string,std::string> varMap;
     varMap=SF::stringToMap(vMain,LI::GL_LN.st_sep_vrB,LI::GL_LN.st_sep_vrE,LI::GL_LN.st_sep_vlB,LI::GL_LN.st_sep_vlE);
     itVE=varMap.end();
@@ -1603,16 +1445,13 @@ namespace SII{
     if(itV!=itVE){
       semester="("+itV->second+")";
     }
-
     gCreationTemplate=SF::replaceVariablesWithValues(gCreationTemplate,LI::GL_LN.st_sep_vrB,LI::GL_LN.st_sep_vrE,varMap);
-
     std::string crScc=createGradingForCourse(gCreationTemplate,"na");
     pos=0;allD=SF::extract(crScc,pos,"_mainCouas_","_/mainCouas_");
     if(allD.second==0){
       return "!failed!: gradging documents were not created properly";
     }
     std::string couasCode=allD.first;
-
     it=templatesMap.find("forumForCourse");
     std::string forumCode="noForum";
     if(it!=itE){
@@ -1625,44 +1464,32 @@ namespace SII{
       }
       forumCode=allD.first;
     }
-
     it=templatesMap.find("documentMain");
     if(it==itE){
       return "!failed!: no main document";
     }
     std::string mtContent=it->second;
-
     itV=varMap.find("docName");
     if(itV==itVE){
       return "!failed!: no name for the main document";
     }
     std::string mainDocName=itV->second;
     std::string variablesExt="Var";
-
-
     itV=varMap.find("variablesExtension");
     if(itV!=itVE){
       variablesExt=itV->second;
     }
-
     mtContent=SF::findAndReplace(mtContent,"*variables*",mainDocName+variablesExt);
     std::string mainTextCrRes=createText(mainDocName, mtContent);
-
     if( (mainTextCrRes.length()>3) && (mainTextCrRes[0]=='!')&&(mainTextCrRes[1]=='s')&&(mainTextCrRes[2]=='u') ){
       psd.recoveryOperationNames.push("courseCreation");
       psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteText",mainDocName));
     }
-
-
     specInstr["variables"]="skip";
-
     createSupportingPages(templatesMap,varMap,specInstr);
-
     createInitialExams(examsMap,mainDocName);
-
     vMain=SF::findAndReplace(vMain,"***REPLACE***WITH***MAIN_GRADING_DOC***",couasCode);
     vMain=SF::findAndReplace(vMain,"***REPLACE***WITH***MAIN_FORUM_PAGE***",forumCode);
-
     mainTextCrRes=createText(mainDocName+variablesExt,vMain,"!*!","systemText");
     if( (mainTextCrRes.length()>3) && (mainTextCrRes[0]=='!')&&(mainTextCrRes[1]=='s')&&(mainTextCrRes[2]=='u') ){
       psd.recoveryOperationNames.push("courseCreation");
@@ -1671,16 +1498,12 @@ namespace SII{
     psd.createStandardCourseMainDocName=mainDocName;
     psd.createStandardCourseSuccess="yes";
     return "!success!";
-
   }
-
-
   std::string SessionInformation::modifyMessage(const std::string & _messId, const std::string & _mData){
     //WARNING: not implemented properly yet: permission checking is too restrictive
     if(allowedToModifyMessage(_messId,"!*!")==0){
       return "!failed!: Not allowed";
     }
-
     MD::Message bm;
     int messageExists=bm.setFromExternalCode(_messId);
     if(messageExists==0){
@@ -1696,17 +1519,14 @@ namespace SII{
         indicatorAdvancedUser=1;
       }
     }
-
     std::string oldData=bm.getTextData();
     std::string mDataProcessed=_mData,uNM=psd.my_un,uFN=psd.myFirstName,uLN=psd.myLastName,nSt="";
     if(indicatorAdvancedUser==0){
       mDataProcessed="";
       std::string oldDT="";
-
       std::string createdTM;
       TMF::Timer tm;
       createdTM=tm.timeString();
-
       pos=0;allD=SF::extract(oldData,pos,s_tDataB,s_tDataE);
       if(allD.second==1){
         oldDT=allD.first;
@@ -1726,18 +1546,14 @@ namespace SII{
         if(allD.second==1){
           uLN=allD.first;
         }
-
         pos=0;allD=SF::extract(oldDT,pos,"_navigation_","_/navigation_");
         if(allD.second==1){
           nSt=allD.first;
         }
-
       }
-
       mDataProcessed+="_created_";
       mDataProcessed+= createdTM;
       mDataProcessed+="_/created_";
-
       mDataProcessed+="_user_"+uNM+"_/user_";
       mDataProcessed+="_firstName_"+uFN+"_/firstName_";
       mDataProcessed+="_lastName_"+uLN+"_/lastName_";
@@ -1782,28 +1598,19 @@ namespace SII{
     if(succ==0){
       return "!failed!: Something may be bad with the database. The userId did exist when checked but could not create course / assignment.";
     }
-
     TMF::Timer tm;
     std::string mDataProcessed=TDI::couasTextString(tm.timeString(),uNM, uFN,uLN,_couasData);
     myCouas.setTextData(prepareTextForTextTable(mDataProcessed,"!noOldData!"));
-
     myCouas.putInDB();
-
     return "!success!: "+myCouas.getExternalCodeFromInternalId();
-
   }
-
-
-
   std::string SessionInformation::modifyCouas(const std::string & _couasId, const std::string & _couasData){
     //WARNING: not implemented properly yet: permission checking is too restrictive
     if(allowedToModifyCouas(_couasId,"!*!")==0){
       return "!failed!: Not allowed";
     }
     return MCWCPI::modifyCouasWithoutCheckingPermissions(psd,_couasId,_couasData);
-
   }
-
   std::string SessionInformation::deleteMessage(const std::string & _messId,const std::string & _collectorId){
     //WARNING: not implemented properly yet: permission checking is too restrictive
     if(allowedToModifyMessage(_messId,_collectorId)==0){
@@ -1822,7 +1629,6 @@ namespace SII{
     }
     return "!success!";
   }
-
   std::string SessionInformation::deleteCouas(const std::string & _couasId,const std::string & _collectorId){
     //WARNING: not implemented properly yet: permission checking is too restrictive
     if(allowedToModifyCouas(_couasId,_collectorId)==0){
@@ -1840,9 +1646,6 @@ namespace SII{
     }
     return "!success!";
   }
-
-
-
   std::string SessionInformation::createGradingForCourse(const std::string & _couasData, const std::string & _collectorId){
     //WARNING: not implemented properly yet: permission checking is too restrictive
     if(allowedToCreateCouas(_collectorId)==0){
@@ -1851,13 +1654,11 @@ namespace SII{
     if(psd.my_un=="visitor"){
       return "!failed!: Visitors cannot create courses or assignments";
     }
-
     std::string uNM=psd.my_un;
     std::string uFN=psd.myFirstName;
     std::string uLN=psd.myLastName;
     std::string nSt="";
     std::string intUserId=(psd.myWU).getInternalId();;
-
     std::vector<std::string> cToCreate=SF::stringToVector(_couasData,"_couas!*_","_/couas!*_");
     std::vector<std::string> undeclaredVarsV; long uvsz;
     long sz=cToCreate.size();
@@ -1866,7 +1667,6 @@ namespace SII{
     }
     std::map<std::string,std::string> variableToContent,variableToCode;
     std::set<std::string> undeclaredVariables;
-
     std::string currentVar,currentContent;
     long pos;std::pair<std::string,int> allD;
     for(long i=0;i<sz;++i){
@@ -1894,7 +1694,6 @@ namespace SII{
     if(undeclaredVariables.size()>0){
       return "!failed! There are variables that are not declared.";
     }
-
     int succ;
     it=variableToContent.begin();
     std::map<std::string,CAD::CouAs> mCM;
@@ -1913,8 +1712,6 @@ namespace SII{
       variableToContent[it->first]=SF::updateVarsWithVals(it->second,variableToCode,"","");
       ++it;
     }
-
-
     TMF::Timer tm;
     std::string mDataProcessed;
     it=variableToContent.begin();
@@ -1937,17 +1734,10 @@ namespace SII{
       }
       psd.recoveryOperationNames.push("courseCreation");
       psd.recoveryOperationCommands.push(BMD::deleteCouasOrMessage("deleteCourseAssignment",cCode,bossCode));
-
       ++it;
     }
-
     return "!success!:"+succList+mainCourseCode;
-
-
   }
-
-
-
   std::string SessionInformation::createRespRec(const std::string & _tName, const std::string & _tData){
     //WARNING: not implemented properly yet: permission checking is too restrictive
     if(allowedToCreateRespRec()==0){
@@ -1965,9 +1755,7 @@ namespace SII{
     respRecRequested=sf.getTextName();
     sf.setTextData(prepareTextForTextTable(_tData,"!noOldData!"));
     sf.putInDB();
-
     return "!success!: "+sf.getTextName();
-
   }
   std::string SessionInformation::modifyRespRec(const std::string & _tName, const std::string & _tData, const std::string & _fSubmission){
     //WARNING: not implemented properly yet: permission checking is too restrictive
@@ -1985,19 +1773,14 @@ namespace SII{
     respRecRequested=_tName;
     return "!success!";
   }
-
   ExamAttributes SessionInformation::attributesFromRespRec(const std::string &d,const std::string &docName) const{
     ExamAttributes fR;
     fR.textForRespReceiver=d;
-
-
     std::vector<std::string> vectProblems=SF::stringToVector(d,"_in*|_","_/in*|_");
-
     long numProblems=vectProblems.size();
     (fR.possibleVersions).resize(numProblems);
     (fR.problemLabels).resize(numProblems);
     long p;std::pair<std::string,int> allD; long pos;
-
     fR.numFilesAllowed=0;
     pos=0;allD=SF::extract(d,pos,"_nf*|_","_/nf*|_");
     if(allD.second==1){
@@ -2012,15 +1795,11 @@ namespace SII{
       fR.deadlineText=allD.first;
     }
     fR.deadlineText="_dl*|_"+fR.deadlineText+"_/dl*|_";
-
     fR.msDoc=docName;
     pos=0;allD=SF::extract(d,pos,"_ms*|_","_/ms*|_");
     if(allD.second==1){
       fR.msDoc=allD.first;
     }
-
-
-
     for(long i=0;i<numProblems;++i){
       (fR.problemLabels)[i]="notFound";
       (fR.possibleVersions)[i].resize(0);
@@ -2029,17 +1808,14 @@ namespace SII{
       if(allD.second==1){
         (fR.problemLabels)[i]=allD.first;
       }
-
     }
     return fR;
   }
-
   long SessionInformation::checkWhetherAllProblemsExist(const std::string &d) const{
     // returns 1 if all problems exist
     // returns 0 if problem 0 does not exist
     // returns -1 if problem 1 does not exist but problem 0 does exist
     // returns -i if problem i does not exist but problems 0, 1, 2, ..., (i-1), do exist
-
     std::vector<std::string> vectProblems=SF::stringToVector(d,"_in*|_","_/in*|_");
     long i=0; TMD::MText tmp; int exists;
     long pos,pos2; std::pair<std::string, int> allD,allD2;
@@ -2058,14 +1834,10 @@ namespace SII{
     }
     return 1;
   }
-
   ExamAttributes SessionInformation::newExamFromTemplate(const std::string &d,const std::string &docName){
     ExamAttributes fR;
     fR.textForRespReceiver="";
-
-
     std::vector<std::string> vectProblems=SF::stringToVector(d,"_in*|_","_/in*|_");
-
     long numProblems=vectProblems.size();
     (fR.possibleVersions).resize(numProblems);
     (fR.problemLabels).resize(numProblems);
@@ -2091,7 +1863,6 @@ namespace SII{
       fR.deadlineText=allD.first;
     }
     fR.deadlineText="_dl*|_"+fR.deadlineText+"_/dl*|_";
-
     fR.msDoc=docName;
     pos=0;allD=SF::extract(d,pos,"_ms*|_","_/ms*|_");
     if(allD.second==1){
@@ -2126,11 +1897,9 @@ namespace SII{
       }
     }
     fR.textForRespReceiver+="_ms*|_"+fR.msDoc+"_/ms*|_";
-
     TMD::MText tmp; int exists;
     std::string tmpTextName;
     std::string td;std::string nextProblem;
-
     for(long i=0;i<numProblems;++i){
       nextProblem=vectProblems[i];
       pos=0;allD=SF::extract(nextProblem,pos,"_p*|_","_/p*|_");
@@ -2152,7 +1921,6 @@ namespace SII{
         else{
           nextProblem=SF::findAndReplace(nextProblem,"_p*|_"+allD.first+"_/p*|_",allD.first);
         }
-
           (fR.possibleVersions)[i]=TWDVF::identifyVersions(nextProblem);
           pos=0;allD=SF::extract(nextProblem,pos,"_lb*|_","_/lb*|_");
           if(allD.second==1){
@@ -2165,9 +1933,6 @@ namespace SII{
           fR.textForRespReceiver+="_in*|_"+nextProblem+"_/in*|_\n";
       }
     }
-
-
-
     return fR;
   }
   std::string SessionInformation::enrollExistingStudentsToExam(const ExamAttributes & ea, const std::string & d,const std::string &docName){
@@ -2208,7 +1973,6 @@ namespace SII{
         }
       }
     }
-
     std::vector<std::string> vectStData;
     long numStudents=vectStudents.size();
     int rrNameIsFree;
@@ -2252,7 +2016,6 @@ namespace SII{
           gradeText+="Master status: _ms*|_"+ea.msDoc+"_/ms*|_\n";
           exGrade.setTextData(prepareTextForTextTable(gradeText,"!noOldData!"));
           exGrade.putInDB();
-
           //Step 2: Create the testing document
           respText="This is a response to test.\nThe solver will solve the test and answers will be listed below.\n";
           respText+="_grd*|_"+exGrade.getTextName()+"_/grd*|_\n";
@@ -2272,33 +2035,23 @@ namespace SII{
             sep_B="_"+sep_B;
             respText+=sep_B+std::to_string((ea.possibleVersions)[j][RNDF::randNum((ea.possibleVersions)[j].size())])+sep_E+"\n";
           }
-
           exResp.setTextData(prepareTextForTextTable(respText,"!noOldData!"));
           exResp.putInDB();
-
           // Step 3: Create the reference to Student in the main document
-
           fR+="_st*|_\n_n*|_"+exResp.getTextName()+"_/n*|_\n_n*|_";
           fR+=exGrade.getTextName()+"_/n*|_\n";
           for(long k=0;k<szSD;++k){
             fR+="_n*|_"+vectStData[k]+"_/n*|_\n";
           }
           fR+="_/st*|_";
-
           // Step 4: Create deleting commands for the backup database. If the administrator realizes that the exam
           // is incorrectly created, then the administrator can simply reverse the creation by going to backup database
-
           psd.recoveryOperationNames.push("assignmentCreation");psd.recoveryOperationNames.push("assignmentCreation");
           psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",exResp.getTextName()));
           psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",exGrade.getTextName()));
         }
       }
-
-
-
     }
-
-
     return fR;
   }
   std::string SessionInformation::genExamTemplate(const std::string &d,const std::string &docName){
@@ -2309,9 +2062,7 @@ namespace SII{
     ExamAttributes ea=attributesFromRespRec(oldT,docName);
     return enrollExistingStudentsToExam(ea,d,docName);
   }
-
   std::string SessionInformation::addStudentsToExam(const std::string & _eName, const std::string & _dToAddFrom){
-
     if(allowedToCreateRespRec()==0){
       return "!failed!: Not allowed";
     }
@@ -2320,7 +2071,6 @@ namespace SII{
     if(textExists==0){
       return "!failed!: Text name does not exist";
     }
-
     respRecRequested=sf.getTextName();
     std::string oldTD=sf.getTextData();
     long pos;std::pair<std::string,int> allD;
@@ -2330,12 +2080,9 @@ namespace SII{
     }
     sf.setTextData(prepareTextForTextTable(updateExamDocument(allD.first,_dToAddFrom,_eName),"!noOldData!"));
     sf.putInDB();
-
     return "!success!: "+sf.getTextName();
-
   }
   std::string SessionInformation::generateExam(const std::string & _eName, const std::string & _dToGenerateFrom){
-
     if(allowedToCreateRespRec()==0){
       return "!failed!: Not allowed";
     }
@@ -2355,22 +2102,16 @@ namespace SII{
     respRecRequested=sf.getTextName();
     sf.setTextData(prepareTextForTextTable(genExamTemplate(_dToGenerateFrom,_eName),"!noOldData!"));
     sf.putInDB();
-
     psd.recoveryOperationNames.push("assignmentCreation");
     psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",respRecRequested));
     return "!success!: "+sf.getTextName();
-
   }
-
-
   std::string SessionInformation::generatePdfsForExam(const std::string & _eName, const std::string & _dForReporting){
-
     if(allowedToCreateRespRec()==0){
       return "!failed!: Not allowed";
     }
     RMD::Response sf;
     int textExists=sf.setFromTextName(_eName);
-
     long pos; std::pair<std::string,int> allD;
     pos=0;allD=SF::extract(_dForReporting,pos,"_clearFolder*|_","_/clearFolder*|_");
     if((allD.second==1)&& ( (allD.first=="yes")||(allD.first=="y") ) ){
@@ -2382,15 +2123,11 @@ namespace SII{
       psd.indChangeRespRecToPrintVersionOfCommonInClassExam=1;
       rawTextInClassExamVersions=SF::stringToVector(allD.first,"_n*_","_/n*_");
     }
-
     if(textExists==0){
       return "!failed!: Exam does not exist";
     }
-
     respRecRequested=sf.getTextName();
-
     std::string rawTextRespRec=sf.getTextData();
-
     pos=0;allD=SF::extract(rawTextRespRec,pos,s_tDataB,s_tDataE);
     if(allD.second==1){
       std::vector<std::string> allRawStudentsData=SF::stringToVector(allD.first,"_st*|_","_/st*|_");
@@ -2422,7 +2159,6 @@ namespace SII{
         stAllData.resize(sz);
         for(long i=0;i<sz;++i){
           stAllData[i]=SF::stringToVector(allRawStudentsData[i],"_n*|_","_/n*|_");
-
           if(stAllData[i].size()>5){
             RTI::Response rtTemp(stAllData[i][0],"no",psd.my_un);
             stAllData[i][1]=rtTemp.prepareDefaultRequest(psd,"pm");
@@ -2436,16 +2172,12 @@ namespace SII{
           }
         }
       }
-
     }
     psd.indChangeRespRecToPrintVersionOfCommonInClassExam=0;
     psd.probVersionsOfChangedRespRec="";
     return "!success!: "+respRecRequested;
-
   }
-
   std::string SessionInformation::updateIndividualVersionsOfExam(const std::string & _eName, const std::string & _textWithUpdate){
-
     if(allowedToCreateRespRec()==0){
       return "!failed!: Not allowed";
     }
@@ -2458,7 +2190,6 @@ namespace SII{
     std::map<std::string,std::string>::const_iterator it,itE;
     itE=stUNamesToVersions.end();
     respRecRequested=sf.getTextName();
-
     std::string rawTextRespRec=sf.getTextData();
     long pos; std::pair<std::string, int> allD;
     pos=0;allD=SF::extract(rawTextRespRec,pos,s_tDataB,s_tDataE);
@@ -2471,7 +2202,6 @@ namespace SII{
       str_pdfSummary_IfCalledFor="";
       for(long i=0;i<sz;++i){
         stAllData[i]=SF::stringToVector(allRawStudentsData[i],"_n*|_","_/n*|_");
-
         if(stAllData[i].size()>5){
           it=stUNamesToVersions.find(stAllData[i][4]);
           if(it!=itE){
@@ -2482,19 +2212,15 @@ namespace SII{
               ssf.setTextData(td);
               ssf.putInDB();
             }
-
           }
         }
       }
     }
     return "!success!: "+respRecRequested;
-
   }
-
   std::string SessionInformation::distributeExamToStudents(const std::string & _examTemplateName, const std::string & _distributionText){
     return "";
   }
-
   std::string SessionInformation::deleteSingleRespRec(const std::string & _tName){
     if(allowedToModifyRespRec(_tName,"no")==0){
       return "!failed!: Not allowed";
@@ -2505,7 +2231,6 @@ namespace SII{
       return "!failed!: Text name does not exist";
     }
     // We need to delete all files that this response receiver has uploaded.
-
     std::string rawText=sf.getTextData();
     long pos;std::pair<std::string,int> allD;
     std::string sep_B,sep_E, externalFileCode,fileTextToSearch;
@@ -2524,31 +2249,22 @@ namespace SII{
             externalFileCode=IOF::justFileNameNoExtensionNoFolder(allD.first,MWII::FILE_PREFIX);
             deleteFile(externalFileCode);
           }
-
         }
-
       }
     }
-
     // We need to delete its grader also
-
     pos=0;allD=SF::extract(rawText,pos,"_grd*|_","_/grd*|_ ");
     if(allD.second==1){
       deleteRespRec(allD.first);
     }
-
     int succ=sf.deleteRecord();
     if(succ==0){
       return "!failed!: Something may be bad with the database. The text name did exist when checked but could not delete.";
     }
     return "!success!";
   }
-
-
-
   std::string SessionInformation::deleteRespRec(const std::string & _tName){
     // Step 1: Check whether _tName is a scraped website data with a lot of response receivers
-
     std::vector<std::string> manyRespRec=PASF::getItemsFromScrapedPage(_tName,"\n","\t");
     long sz=manyRespRec.size();
     if(sz>0){
@@ -2563,10 +2279,6 @@ namespace SII{
     //           We delete the single response receiver
     return deleteSingleRespRec(_tName);
   }
-
-
-
-
   int SessionInformation::allowedToDeleteUser(const std::string & ) const{
     if(psd.isRoot=="yes"){return 1;}//WARNING: permission checking is too restrictive
     return 0;
@@ -2588,11 +2300,8 @@ namespace SII{
     }
     return "!success!";
   }
-
-
   std::string SessionInformation::deleteUser(const std::string & _uName){
     // Step 1: Check whether _uName is a scraped website data with a lot of users
-
     std::vector<std::string> manyUsers=PASF::getItemsFromScrapedPage(_uName,"\n","\t");
     long sz=manyUsers.size();
     if(sz>0){
@@ -2607,7 +2316,6 @@ namespace SII{
     //           We delete the single user
     return deleteSingleUser(_uName);
   }
-
   int SessionInformation::allowedToAddToHierarchy(const std::string & h, const std::string & l) const{
     if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
       return 1;
@@ -2663,11 +2371,9 @@ namespace SII{
     if((userHExists!=1)||(userLExists!=1)){
       return "!failed!: One of the users does not exist";
     }
-
     uH.removeFromHierarchy(uL,"meHigh");
     return "!success!";
   }
-
   std::string SessionInformation::assignGraders(const std::string & _rR, const std::string & _options){
     //WARNING: not implemented properly yet: too resrtictive
     if(allowedToAssignGraders(_rR,_options)==0){
@@ -2709,10 +2415,8 @@ namespace SII{
     return "!failed!";
   }
   std::string SessionInformation::createAccountsForStudents(std::vector<PASF::StudentData> & students,const std::string & _couas){
-
     long intToAdd;
     long numSt=students.size();
-
     WUD::User wC;
     int couasUserExists=wC.setFromUsername("p_"+_couas);
     if(couasUserExists==0){
@@ -2721,7 +2425,6 @@ namespace SII{
       psd.recoveryOperationNames.push("enrollment");
       psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteUser","p_"+_couas));
     }
-
     for(long i=0;i<numSt;++i){
       WUD::User wu;
       int userExists=wu.setFromExternalId(students[i].externalId);
@@ -2757,13 +2460,10 @@ namespace SII{
           tmpOUD.masterKey=psd.masterKey;
           wuN.addUserData(tmpOUD);
           wuN.addToHierarchy(wC,"meHigh");
-
           psd.recoveryOperationNames.push("enrollment");
           psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteUser",unToAttempt));
-
         }
       }
-
     }
     return "!success!";
   }
@@ -2797,7 +2497,6 @@ namespace SII{
       return "!failed!: Operation not allowed";
     }
     std::vector<PASF::StudentData> students=PASF::identifyStudents(_options,_prefixForExtId);
-
     std::string accCrRes=createAccountsForStudents(students,_couas);
     std::string couasModSuccess=enrollStudentsInCouas(_couas,students);
     std::string er= submitEnrollmentReport(_reportName,_couas,students);
@@ -2816,7 +2515,6 @@ namespace SII{
       long start=BF::stringToInteger(backupTexts[1]);
       long end=BF::stringToInteger(backupTexts[2]);
       sz=end-start;
-
       if(sz>0){
         backupTexts.resize(sz);
         for(long j=start;j<end;++j){
@@ -2824,15 +2522,11 @@ namespace SII{
         }
       }
     }
-
-
     for(long i=0;i<sz;++i){
       str_backups_IfCalledFor+=SF::findAndReplace(BMD::recovery(_db,backupTexts[i]),"!verbSave!","*fjkl3"+GL_MAIN_SETUP_FILE_NAME+"2!3211");
     }
-
     return "!success!";
   }
-
   int SessionInformation::allowedToAssignPermit(const std::string &_iR, const std::string &_iAEC) const{
     if((psd.isRoot=="no")&&(_iR=="yes")){
       return 0;
@@ -2867,15 +2561,12 @@ namespace SII{
     tmpOUD.allowedToExecuteCommands=_iAEC;
     tmpOUD.allowedToCloneTheWebsite=_iAClone;
     w.addUserData(tmpOUD);
-
     int userCreationSucc=w.createUser(_uName,psd.masterKey,_extId);
     if(userCreationSucc!=1){
       return "!failed!: createUser returned the error code "+std::to_string(userCreationSucc);
     }
     return "!success!";
   }
-
-
   std::string SessionInformation::modifyUser(const std::string & _uName, const std::string &_fN, const std::string &_lN, const std::string &_p, const std::string &_e, const std::string &_iR, const std::string &_iAEC, const std::string & _iAClone){
     //WARNING: not implemented properly yet: too restrictive in checking permissions
     if(allowedToAssignPermit(_iR,_iAEC)==0){
@@ -2886,7 +2577,6 @@ namespace SII{
     }
     WUD::User w;
     int userIdentificationSucc=w.setFromUsername(_uName);
-
     if(userIdentificationSucc!=1){
       return "!failed!: user not found";
     }
@@ -2901,9 +2591,7 @@ namespace SII{
     w.addUserData(tmpOUD);
     return "!success!";
   }
-
   long checkAntiSpam(const std::string & code, const std::string & solution){
-
     std::string fileWithCode=DD::GL_DBS.getChallengeAnswStorage()+"/a"+solution+".dat";
     std::string sol=IOF::fileToString(fileWithCode);
     IOF::sys_deleteFile(fileWithCode);
@@ -2917,11 +2605,8 @@ namespace SII{
     const std::string & dataToModify,
     const std::vector<std::string> &fInfoV,
     const RTI::Response & _t, const std::string & _nameOfPersonWhoIsFillingTheForm){
-
     std::string nDataText=dataToModify;
-
     long numFilesAllowed=fInfoV.size();
-
     cgicc::const_file_iterator fileIt, fileItE;
     fileItE=ch.getFiles().end();
     std::string sepSmB="_n*|_",sepSmE="_/n*|_";
@@ -2949,25 +2634,19 @@ namespace SII{
               fileIt=ch.getFile(labelHTML);
               if(fileIt!=fileItE){
                 //file exists
-
                 if(fileIt->getDataLength() < MWII::GL_MAX_FILE_RESP_REC){
                   // delete the old file
                   // Step 1: find out the file code
                   std::string fSaltedCode=IOF::justFileNameNoExtensionNoFolder(fname_i,MWII::FILE_PREFIX);
                   std::pair<std::string,std::string> codeAndSalt=SF::oneWordToTwoWords(fSaltedCode);
-
                   // Step 2: delete file
-
                   deleteFile(codeAndSalt.first);
-
                   // Step 3: Tell that we need to upload new file
                   fileErased=1;
                 }
                 else{
                   psd.respRecFlag="fileTooLarge";
                 }
-
-
               }
             }
           }
@@ -2979,14 +2658,12 @@ namespace SII{
           // we don't have a previous records of this file
           // we will now check whether a user is submitting the file
           fileIt=ch.getFile(labelHTML);
-
           if(fileIt!=fileItE){
             if(fileIt->getDataLength() < MWII::GL_MAX_FILE_RESP_REC){
               std::string additionalData="_fInfo*|_"+_nameOfPersonWhoIsFillingTheForm+"("+labelHTML+")"+"_/fInfo*|_";
               additionalData+="_nRespRec*|_"+_t.getTextName()+"_/nRespRec*|_";
               additionalData+="_fileDataType_"+fileIt->getDataType()+"_/fileDataType_";
               additionalData+="_fSize*|_"+std::to_string(fileIt->getDataLength())+"_/fSize*|_";
-
               fname_i=placeNewFileToServer( ch, "root", "findOutFromDataType", labelHTML,additionalData);
               if(fname_i=="failed"){
                 psd.respRecFlag="badExtension";
@@ -3010,16 +2687,13 @@ namespace SII{
             else{
               psd.respRecFlag="fileTooLarge";
             }
-
           }
         }
       }
-
     }
     return nDataText;
   }
   void SessionInformation::updateRespMapToProperlyAccountForBothGraderCommentsAndPoints(){
-
     std::map<std::string,std::string> tempRespToKeepPointsOnly;
     std::map<std::string,std::string>::iterator it,it2,itE,it2E;
     it=(psd.respMap).begin();
@@ -3037,7 +2711,6 @@ namespace SII{
         else{
           it2->second += "_comment_"+it->second+"_/comment_";
         }
-
       }
       sz=(it->first).size();
       if(
@@ -3046,7 +2719,6 @@ namespace SII{
         ((it->first)[1]=='Q')
         ){
         // We found points for a question
-
         qAnswerKey="";
         for(long i=1;i<sz;++i){
           qAnswerKey+=(it->first)[i];
@@ -3087,10 +2759,7 @@ namespace SII{
     }
     return 0;
   }
-
-
   std::string changeTypeIfOfHigherPriority(const std::string &type, const std::string &newType){
-
     if(type=="mainText"){
       return newType;
     }
@@ -3106,11 +2775,8 @@ namespace SII{
       }
     }
     return type;
-
   }
-
   std::string SessionInformation::createRecoveryCommands(){
-
     if(psd.recoveryOperationCommands.size()<1){return "nothingToDo";}
     std::string operationCommands="";
     std::string type="mainText";
@@ -3132,11 +2798,9 @@ namespace SII{
     for(long j=1;j<6;++j){
       name[0]+=BF::padded(tnVector[j],10,"0");
     }
-
     name[0]+="e";
     MTF::Table& backupT=DD::GL_MAIN_DB.dbsM["backupDatabase"];
     long maxBackupSize=DD::GL_DBS.getBackupMaxSZ();
-
     if(backupT.size() >= maxBackupSize){
       std::pair<std::vector<std::string>, std::string> firstEl=backupT[0];
       backupT.delRow(firstEl.first);
@@ -3145,5 +2809,4 @@ namespace SII{
     return "done";
   }
 }
-
 #endif
