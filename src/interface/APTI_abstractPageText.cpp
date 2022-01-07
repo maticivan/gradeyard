@@ -37,9 +37,6 @@ namespace APTI{
     std::string sysDataRequested;
     std::string myUserName;
     std::string sysDataRaw;
-
-
-
     std::string s_sysDataB="_systemData!!_";
     std::string s_sysDataE="_/systemData!!_";
     std::string s_tDataB="_textData!!_";
