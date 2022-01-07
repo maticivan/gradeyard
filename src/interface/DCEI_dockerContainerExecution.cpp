@@ -369,25 +369,30 @@ namespace DCEI{
     }
     return newIncl;
   }
-  std::string makeSourceSafe(const std::string & _src,const std::string & _lang,const std::vector<std::string> & incl){
+  std::string makeSourceSafe(const std::string & _src,const std::string & _lang,const std::vector<std::string> & incl, const std::vector<std::string> & forb){
+    std::string src=_src;
+    long fsz=forb.size();
+    for(long i=0; i<fsz;++i){
+      src=SF::findAndReplace(src,forb[i],"");
+    }
     if(_lang=="cpp"){
-      return makeCPPSourceSafe(_src,improveCPPIncludes(incl));
+      return makeCPPSourceSafe(src,improveCPPIncludes(incl));
     }
     if(_lang=="py"){
-      return makePython3SourceSafe(_src,improvePythonIncludes(incl));
+      return makePython3SourceSafe(src,improvePythonIncludes(incl));
     }
-    return _src;
+    return src;
   }
-  std::vector<std::string> makeSourcesSafe(const std::vector<std::string> & _src, const std::vector<std::string> &_lang,const std::vector<std::vector<std::string> > &_incl){
+  std::vector<std::string> makeSourcesSafe(const std::vector<std::string> & _src, const std::vector<std::string> &_lang,const std::vector<std::vector<std::string> > &_incl, const std::vector<std::vector<std::string> > &_forb){
     std::vector<std::string> res;
     long sz=_src.size();
     res.resize(sz);
     for(long i=0;i<sz;++i){
-      res[i]=makeSourceSafe(_src[i],_lang[i],_incl[i]);
+      res[i]=makeSourceSafe(_src[i],_lang[i],_incl[i],_forb[i]);
     }
     return res;
   }
-  std::pair<std::vector<std::vector<std::string> >,int> executePrograms(const PSDI::SessionData & _psd, const std::vector<std::string> & _sources, const std::vector<std::string> & _languages, const std::vector<std::vector<std::string> > & includes, const std::vector<std::vector<std::string> > & _inputData){
+  std::pair<std::vector<std::vector<std::string> >,int> executePrograms(const PSDI::SessionData & _psd, const std::vector<std::string> & _sources, const std::vector<std::string> & _languages, const std::vector<std::vector<std::string> > & includes,const std::vector<std::vector<std::string> > & forbiddenStrs, const std::vector<std::vector<std::string> > & _inputData){
     std::pair<std::vector<std::vector<std::string> >,int> res;
     res.second=0;
     createTempFolderForMounting(_psd.my_un);
@@ -406,7 +411,7 @@ namespace DCEI{
     mainCED.myLinuxUserName=unid.first;
     mainCED.myLinuxUserId=unid.second;
     mainCED.language=_languages;
-    mainCED.sourceCode=makeSourcesSafe(_sources,_languages,includes);
+    mainCED.sourceCode=makeSourcesSafe(_sources,_languages,includes,forbiddenStrs);
     mainCED.inputData=_inputData;
     mainCED.sourceFNBase="sfile";
     mainCED.inDataFNBase="ind";
