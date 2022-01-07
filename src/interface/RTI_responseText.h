@@ -53,9 +53,10 @@ namespace RTI{
   }
   struct CodeAutoGraderInfo{
   public:
-    std::string language, officialSource,userSource,codeToEmbed;
-    std::vector<std::string> inputTestCases,revealTestCasesAfterGrading, includes;
-    std::vector<double> pointsTestCases;
+    std::string language, officialSource,userSource,codeToEmbed,messageDidNotCompile;
+    std::vector<std::string> inputTestCases,revealTestCasesAfterGrading,publicTestCases,
+    publicRevealTestCasesAfterGrading, includes,forbiddenStrs;
+    std::vector<double> pointsTestCases,publicPointsTestCases;
   };
   struct SingleQuestionInfo{
   public:
@@ -91,6 +92,9 @@ namespace RTI{
     std::string gradingStatus;
     std::map<std::string,std::string> gradersComments;
     std::set<std::string> questionLabels;
+    std::map<std::string,std::string> questionVersions;
+    std::map<std::string,std::string> submittedAnswers;
+    std::map<std::string,std::string> completeProblemDocs;
     int indicatorOfPOST;
     std::string debuggingPrint() const;
   };
