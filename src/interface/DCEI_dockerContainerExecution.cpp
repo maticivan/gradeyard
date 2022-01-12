@@ -248,7 +248,7 @@ namespace DCEI{
         );
       }
     }
-    bRes+=overwriteBigOutputs(ced.outDataFNBase,ced.inputData,50);
+    bRes+=overwriteBigOutputs(ced.outDataFNBase,ced.inputData,1025);
     long numOuts=ced.inputData.size();
     long numOutsI;
     for(long i=0;i<numOuts;++i){
@@ -284,6 +284,9 @@ namespace DCEI{
       for(long j=0;j<szI;++j){
         outFileName=mFolder+ fileFullName(ced.outDataFNBase,".txt",i,j);
         res[i][j]=IOF::fileToString(outFileName,1);
+        res[i][j]=SF::findAndReplace(res[i][j],"<",".");
+        res[i][j]=SF::findAndReplace(res[i][j],">",",");
+        res[i][j]=SF::findAndReplace(res[i][j],"_"," ");
       }
     }
     IOF::sys_deleteFolderAndSubfolders(myMountFolder(_psd.my_un));
