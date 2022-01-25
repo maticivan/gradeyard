@@ -21,22 +21,14 @@
 #include "PS0F_primeSequences.cpp"
 #include "PS1F_permutationSequences.cpp"
 
-
-
-
-
 namespace BF{
-
   double GLOBAL_EPSILON=0.000000001;
-
   PS0F::PrimeSequences GLOBAL_PRIME_SEQUENCES;
   long GLOBAL_NUM_PRIME_SEQUENCES=300;
-
   PS1F::PermutationSequences GLOBAL_PERMUTATION_SEQUENCES;
   long GLOBAL_NUM_PERMUTATION_SEQUENCES=10;
   const char CONST_DECIMAL_SEPARATOR='.';
   const char CONST_THOUSANDS_SEPARATOR=',';
-
   int isNumeric(const std::string & s,const long & tolerateSignsInFront = 1){
     long sz=s.length();
     long i=0;
@@ -47,7 +39,6 @@ namespace BF{
         ++i;
       }
     }
-
     while((res==1)&&(i<sz)){
       if(s[i]==CONST_DECIMAL_SEPARATOR){
         ++numDecPoints;
@@ -85,14 +76,12 @@ namespace BF{
       if(x>0){fR+=std::to_string(x);}
       return fR;
   }
-
-
   std::string removeASCII10AND13(const std::string &_input,const std::string & _replaceWith=""){
       std::string output;
       long len=_input.length();
       long i=0;
       while(i<len){
-          if(( static_cast<double>(_input[i])!=13)&&( static_cast<double>(_input[i])!=10)){
+          if(( static_cast<long>(_input[i])!=13)&&( static_cast<long>(_input[i])!=10)){
               output+=_input[i];
           }
           else{
@@ -105,9 +94,7 @@ namespace BF{
   std::string cleanSpaces(const std::string & _input, const int removeAllSpaces=0){
       // removes double space characters
       // removes leading spaces in string
-
       std::string input=removeASCII10AND13(_input);
-
       std::string output="";
       int spaceBefore=1;
       int spaceNow;
@@ -129,7 +116,6 @@ namespace BF{
           }
       }
       return output;
-
   }
   std::string cleanAllSpaces(const std::string &_input){
     return cleanSpaces(_input,1);
@@ -161,7 +147,6 @@ namespace BF{
     fR*=sign;
     return fR;
   }
-
   double stringToDouble(const std::string &_s){
     std::string t=cleanSpaces(_s,1);
     double sign=1.0;
@@ -191,7 +176,6 @@ namespace BF{
       ++pos;
       while(pos<len){
         fR+= decimalMultiplier*(static_cast<double>( (t[pos]))-zero);
-
         decimalMultiplier*=0.1;
         ++pos;
       }
@@ -199,8 +183,6 @@ namespace BF{
     fR*=sign;
     return fR;
   }
-
-
   std::string eraseTrailingZeros(const std::string &st){
     long len=st.length();
     long pos=len-1;
@@ -230,12 +212,10 @@ namespace BF{
   std::string doubleToString(const double &d,const long &precision=10){
     return eraseTrailingZeros(double_to_string_withPrecision(d,precision));
   }
-
   long cantorDiag(const long &i, const long &j){
     long z=i+j;
     return z*(z+1)/2+i;
   }
-
   long oddRootFloor(const long & q){
     long zL=std::sqrt(q);
     if(zL%2==0){
@@ -251,7 +231,6 @@ namespace BF{
     fR.second=z-fR.first;
     return fR;
   }
-
   long inversePrimeMod(const long & x,const long & prime){
     if(x<1){return -1;}
     if(x>=prime){return -1;}
@@ -270,7 +249,6 @@ namespace BF{
     }
     return -1;
   }
-
   class BijectiveFunction{
   private:
     long bigPrimeModul;
@@ -308,7 +286,6 @@ namespace BF{
     }
     return (a1*invMult)%bigPrimeModul;
   }
-
   std::pair<long,long> getTwoNumbers(const std::vector<long> & indicators01, const std::vector<std::vector<long> > & p01, const std::string &pass){
     std::pair<long,long> fR;
     std::vector<std::string> twoNums;
@@ -334,21 +311,18 @@ namespace BF{
     fR.first=stringToInteger(twoNums[0]);
     fR.second=stringToInteger(twoNums[1]);
     return fR;
-
   }
   std::vector<long> plainSeqFromString(const std::string & input, const std::vector<long> & indCombs,
-    const std::vector<std::vector<long> > & permuts01,
-    const BijectiveFunction &f0, const BijectiveFunction &f1,
-    const long & shift,
-    const long & indSimple){
-
+                                       const std::vector<std::vector<long> > & permuts01,
+                                       const BijectiveFunction &f0, const BijectiveFunction &f1,
+                                       const long & shift,
+                                       const long & indSimple){
     std::vector<long> fR;
     long sz=input.length();
     long lenEach=permuts01[0].size();
     if(sz%(2*lenEach)!=0){
       fR.resize(1);
       fR[0]=-1;
-
       return fR;
     }
     long lenEach2=2*lenEach;
@@ -381,7 +355,6 @@ namespace BF{
     }
     return fR;
   }
-
   std::string combineTwoNumbers(const std::vector<long> & indicators01, const std::vector<std::vector<long> > & p01, const long & x, const long & y){
     std::string fR="";
     long len0=(p01[0]).size();
@@ -432,7 +405,6 @@ namespace BF{
     }
     return fR;
   }
-
   template<typename TTT>
   std::vector<std::vector<TTT> > transposeMatrix(const std::vector<std::vector<TTT> > &v){
     std::vector<std::vector<TTT> > vt,emptyVect;
