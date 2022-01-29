@@ -30,7 +30,7 @@ namespace TMF{
           31,28,31,30,31,30,31,31,30,31,30,31
         };
 
-  
+
   long numDaysInYear(const long & y){
     if( y%4!=0){
       return 365;
@@ -187,12 +187,15 @@ namespace TMF{
     // 01234567890123456789012345678
     std::vector<long> fR;
     fR.resize(6);
-
+    for(long i=0;i<6;++i){fR[i]=-1;}
+    std::vector<long> signalForBadInput=fR;
+    if(_input.length() < 25){return signalForBadInput;}
     std::string tmp;
     tmp="";
     tmp+=_input[5];
     tmp+=_input[6];
     fR[2]=BF::stringToInteger(tmp);
+    if((fR[2]<0)||(fR[2]>31)){return signalForBadInput;}
     tmp="";
     tmp+=_input[8];
     tmp+=_input[9];
@@ -205,25 +208,29 @@ namespace TMF{
       }
       ++i;
     }
+    if((fR[1]<0)||(fR[1]>GLOBAL_NUM_MONTHS_IN_YEAR)){return signalForBadInput;}
     tmp="";
     tmp+=_input[12];
     tmp+=_input[13];
     tmp+=_input[14];
     tmp+=_input[15];
     fR[0]=BF::stringToInteger(tmp);
+    if(fR[1]<0){return signalForBadInput;}
     tmp="";
     tmp+=_input[17];
     tmp+=_input[18];
     fR[3]=BF::stringToInteger(tmp);
+    if((fR[3]<0)||(fR[3]>23) ){return signalForBadInput;}
     tmp="";
     tmp+=_input[20];
     tmp+=_input[21];
     fR[4]=BF::stringToInteger(tmp);
+    if((fR[4]<0)||(fR[4]>59)){return signalForBadInput;}
     tmp="";
     tmp+=_input[23];
     tmp+=_input[24];
     fR[5]=BF::stringToInteger(tmp);
-
+    if((fR[5]<0)||(fR[5]>59)){return signalForBadInput;}
     return fR;
   }
 
@@ -434,6 +441,13 @@ namespace TMF{
     std::vector<long> v;
     v.resize(6);v[0]=0;v[1]=0;v[2]=_d;v[3]=_h;v[4]=_m;v[5]=_s;
     return cookieExpiration(v);
+  }
+  std::string sanitizeTimeString(const std::string & ts){
+    std::vector<long> tv=stGMT_to_timeVectorTMF(ts);
+    if(tv[0]<0){
+      return "Wed, 19 Aug 2020 13:59:14 GMT";
+    }
+    return ts;
   }
 }
 #endif
