@@ -69,6 +69,11 @@ namespace CAGI{
     if(allD.second==1){
       cInfo.messageDidNotCompile=allD.first;
     }
+    cInfo.compilerFlags="-std=c++11";
+    pos=0;allD=SF::extract(agParameters,pos,"_compilerFlags_","_/compilerFlags_");
+    if(allD.second==1){
+      cInfo.compilerFlags=allD.first;
+    }
     cInfo.inputTestCases.resize(0);
     pos=0;allD=SF::extract(agParameters,pos,"_testCases_","_/testCases_");
     if(allD.second==1){
@@ -238,6 +243,7 @@ namespace CAGI{
     std::vector<std::string> sources;
     std::vector<std::string> languages;
     std::vector<std::string> mDidNotCompile;
+    std::vector<std::string> cFlags;
     std::vector<std::vector<std::string> >includes;
     std::vector<std::vector<std::string> >forbiddenStrs;
     std::vector<std::vector<std::string> >inputTestCases;
@@ -248,6 +254,7 @@ namespace CAGI{
     sources.resize(twoNC);
     languages.resize(twoNC);
     mDidNotCompile.resize(twoNC);
+    cFlags.resize(twoNC);
     includes.resize(twoNC);
     forbiddenStrs.resize(twoNC);
     inputTestCases.resize(twoNC);
@@ -273,6 +280,7 @@ namespace CAGI{
         scores[i]=(it->second).pointsTestCases;
       }
       mDidNotCompile[i]=(it->second).messageDidNotCompile;
+      cFlags[i]=(it->second).compilerFlags;
       labels[i]=it->first;
       ++i;
       sources[i]=(it->second).officialSource;
@@ -290,11 +298,12 @@ namespace CAGI{
         scores[i]=(it->second).pointsTestCases;
       }
       mDidNotCompile[i]=(it->second).messageDidNotCompile;
+      cFlags[i]=(it->second).compilerFlags;
       labels[i]=it->first;
       ++i;
       ++it;
     }
-    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd,sources,languages,includes,forbiddenStrs,inputTestCases);
+    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd,sources,languages,cFlags,includes,forbiddenStrs,inputTestCases);
     if(aGOutput.second==0){
       return 0;
     }
@@ -347,16 +356,17 @@ namespace CAGI{
   }
   std::string executionResult(const PSDI::SessionData & _psd, const std::string & agrParameters, const std::string & offSolution){
     RTI::CodeAutoGraderInfo cInfo=getAutoGraderCodeData(agrParameters,offSolution,"","100");
-    std::vector<std::string> sources,languages;
+    std::vector<std::string> sources,languages,cFlags;
     std::vector<std::vector<std::string> > includes, forbiddenStrs, inputTestCases;
-    sources.resize(1);languages.resize(1);
+    sources.resize(1);languages.resize(1);cFlags.resize(1);
     includes.resize(1);forbiddenStrs.resize(1);inputTestCases.resize(1);
     sources[0]=cInfo.officialSource;
     languages[0]=cInfo.language;
+    cFlags[0]=cInfo.compilerFlags;
     includes[0]=cInfo.includes;
     forbiddenStrs[0]=cInfo.forbiddenStrs;
     inputTestCases[0]=cInfo.inputTestCases;
-    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd, sources,languages,includes,forbiddenStrs,inputTestCases);
+    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd, sources,languages,cFlags,includes,forbiddenStrs,inputTestCases);
     std::string fR="<h4>Code execution on test cases</h4>";
     if((aGOutput.second==0)||(aGOutput.first.size()!=1)){
       fR+=wrongLengthsOfVectors();
