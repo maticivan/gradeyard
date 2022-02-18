@@ -53,7 +53,7 @@ namespace RTI{
   }
   struct CodeAutoGraderInfo{
   public:
-    std::string language, officialSource,userSource,codeToEmbed,messageDidNotCompile;
+    std::string language, officialSource,userSource,codeToEmbed,messageDidNotCompile,compilerFlags;
     std::vector<std::string> inputTestCases,revealTestCasesAfterGrading,publicTestCases,
     publicRevealTestCasesAfterGrading, includes,forbiddenStrs;
     std::vector<double> pointsTestCases,publicPointsTestCases;
