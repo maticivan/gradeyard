@@ -49,6 +49,7 @@ namespace DCEI{
   struct ContainerExecutionData{
   public:
     std::vector<std::string> language;
+    std::vector<std::string> compilerFlags;
     std::vector<std::string> sourceCode;
     std::vector<std::vector<std::string> > inputData;
     std::string sourceFNBase;
@@ -123,6 +124,7 @@ namespace DCEI{
     return deleteFiles(folderName,sz,fileBaseName,"",extV);
   }
   std::string bashCommandsToCompileAndExecuteCpp(const std::string & cppSourceFile,
+                                                 const std::string & compilerFlags,
                                                  const std::string & inN,
                                                  const std::string & outN,
                                                  const std::string &binB,
@@ -133,7 +135,7 @@ namespace DCEI{
     std::string binName=fileFullName(binB,"",i);
     std::string txtResFile;
     std::string txtInFile;
-    bRes+="output=$(c++ "+cppSourceFile+" -o "+binName +" -std=c++11 2>&1)\n";
+    bRes+="output=$(c++ "+cppSourceFile+" -o "+binName +" "+compilerFlags+" 2>&1)\n"; 
     bRes+="if [[ $? != 0 ]]; then\n";
     for(long j=0;j<numTsts;++j){
       txtResFile=fileFullName(outN,".txt",i,j);
@@ -230,6 +232,7 @@ namespace DCEI{
         wordThatStartWithDot+=ced.language[i];
         bRes+=bashCommandsToCompileAndExecuteCpp(
           fileFullName(ced.sourceFNBase,wordThatStartWithDot,i),
+          ced.compilerFlags[i],
           ced.inDataFNBase,ced.outDataFNBase,
           ced.sourceFNBase,i,
           ced.inputData[i].size(),
@@ -395,7 +398,7 @@ namespace DCEI{
     }
     return res;
   }
-  std::pair<std::vector<std::vector<std::string> >,int> executePrograms(const PSDI::SessionData & _psd, const std::vector<std::string> & _sources, const std::vector<std::string> & _languages, const std::vector<std::vector<std::string> > & includes,const std::vector<std::vector<std::string> > & forbiddenStrs, const std::vector<std::vector<std::string> > & _inputData){
+  std::pair<std::vector<std::vector<std::string> >,int> executePrograms(const PSDI::SessionData & _psd, const std::vector<std::string> & _sources, const std::vector<std::string> & _languages, const std::vector<std::string> & _cFlags, const std::vector<std::vector<std::string> > & includes,const std::vector<std::vector<std::string> > & forbiddenStrs, const std::vector<std::vector<std::string> > & _inputData){
     std::pair<std::vector<std::vector<std::string> >,int> res;
     res.second=0;
     createTempFolderForMounting(_psd.my_un);
@@ -414,6 +417,7 @@ namespace DCEI{
     mainCED.myLinuxUserName=unid.first;
     mainCED.myLinuxUserId=unid.second;
     mainCED.language=_languages;
+    mainCED.compilerFlags=_cFlags;
     mainCED.sourceCode=makeSourcesSafe(_sources,_languages,includes,forbiddenStrs);
     mainCED.inputData=_inputData;
     mainCED.sourceFNBase="sfile";
