@@ -540,6 +540,14 @@ namespace APTI{
       end=nT;
     }
     if(sc=="1"){if(indSz<end){end=indSz;}}
+    if(sc=="0"){
+      std::map<std::string,std::string>::const_iterator it=_psd.respMap.find("save");
+      if(it!=_psd.respMap.end()){
+        if(it->second=="yes"){
+          DD::GL_MAIN_DB.saveForRecovery("mainText",start,end,std::to_string(start));
+        }
+      }
+    }
     std::string scSw="0";
     if(sc=="0"){scSw="1";}
     topLine[0]=createLinkToSwitchSortCriterion(MWII::GL_WI.getDefaultWebText("Name"),"listTexts",scSw,MWII::GL_WI.getStartOfList());
