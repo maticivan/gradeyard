@@ -187,7 +187,6 @@ namespace APTI{
       if(_textBefore!=s_notFound){
         textBefore=_textBefore;
       }
-
       fFF.convertToRadioButtons(fieldName,textBefore,_textAfter, _allChoices,_preSelection);
       (allForms[formName]).addChangeField(fFF);
     }
@@ -229,7 +228,6 @@ namespace APTI{
       std::string textBefore="";
       std::string textInTheField="";
       std::string dim="10";
-
       if(_textBefore!=s_notFound){
         textBefore=_textBefore;
       }
@@ -253,7 +251,6 @@ namespace APTI{
     if(it!=itE){
       FHI::FormField fFF;
       std::string textBefore="";
-
       if(_textBefore!=s_notFound){
         textBefore=_textBefore;
       }
@@ -433,7 +430,6 @@ namespace APTI{
     for(long i=start;i<end;++i){
       if(sc=="1"){
         w.setFromUsername((indexUn.getKeysFromRow(i))[0]);
-
       }
       else{
         w.setFromIndexFromInternalIdDB(i);
