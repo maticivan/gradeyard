@@ -36,6 +36,7 @@ namespace MWID{
     long numStats() const;
     long numStatsAdv() const;
     long numBackups() const;
+    long saveForRecovery(const std::string &, const long & , const long & , const std::string & ) const;
     void putInitialDataInTable(const std::string &);
     MTF::Table createTableWithOneKey(const std::string &, const std::string &, const std::string &, const std::string &, const std::string &);
     MTF::Table createTableWithTwoKeys(const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string &);
@@ -46,25 +47,20 @@ namespace MWID{
     std::string fR;
     std::map<std::string,MTF::Table>::const_iterator it;
     std::map<std::string,MTF::Table>::const_iterator itE;
-
     itE=dbsM.end();
-
     it=dbsM.begin();
     while(it!=itE){
       fR+="Size of "+it->first+" is "+std::to_string((it->second).size())+"\n";
       ++it;
     }
-
     it=dbsM.begin();
     while(it!=itE){
       fR+="\n\n"+it->first+" status report: \n";
       fR+=(it->second).statusReportForDebugging();
       ++it;
     }
-
     return fR;
   }
-
   long MainDB::numUsers() const{
     std::map<std::string,MTF::Table>::const_iterator it;
     it=dbsM.find("usernames");
@@ -142,8 +138,6 @@ namespace MWID{
     vKeys.resize(2);
     vKeys[0]=_key0;
     vKeys[1]=_key1;
-
-
     tb.setKeyNames(vKeys);
     tb.setMainDataName(_mDN);
     if(tbCreated==1){
@@ -169,6 +163,46 @@ namespace MWID{
       }
       return tb;
   }
+  std::string newItemFormatted(const std::pair<std::vector<std::string>, std::string> & item, const long & i, const std::string & sB, const std::string &sE, const std::string &ssB, const std::string &ssE){
+    std::string formattedItem;
+    formattedItem+=sB+"\n";
+    formattedItem+=ssB+"insert"+ssE+"\n"; 
+    if(item.first.size() > 0){formattedItem+=ssB+item.first[0]+ssE+"\n";}
+    if(item.first.size()>1){formattedItem+=ssB+item.first[1]+ssE+"\n";}
+    formattedItem+=ssB+HDDBSF::unpackFromStorage(item.second)+ssE+"\n";
+    formattedItem+=sE+"\n";
+    return formattedItem;
+  }
+  long MainDB::saveForRecovery(const std::string &_internalTableNickName, const long & _st, const long & _en, const std::string & ext) const{
+    std::string rc;
+    long start=_st;
+    long end=_en;
+    if(start<0){start=0;}
+    std::map<std::string,MTF::Table>::const_iterator it;
+    it=dbsM.find(_internalTableNickName);
+    if(it!=dbsM.end()){
+      long sz=(it->second).size();
+      if(start > sz-1){
+        start=0;end=sz;
+      }
+      if(start> end-1){
+        start=0;end=sz;
+      }
+      if(end > sz){
+        end=sz;
+      }
+      for(long i=start;i<end;++i){
+        std::pair<std::vector<std::string>, std::string> itemI=(it->second)[i];
+        rc+=newItemFormatted(itemI,i,"_nextCommand!*!!_", "_/nextCommand!*!!_", "_n*!!***!_","_/n*!!***!_");
+      }
+      std::string fToSave=(it->second).getTableName();
+      fToSave+=DD::GL_DBS.getInitExtension()+"_"+ext;
+      fToSave+=".txt";
+      IOF::toFile(fToSave,rc);
+      return 1;
+    }
+    return 0;
+  }
   void MainDB::putInitialDataInTable(const std::string &_internalTableNickName){
     std::string tableName=dbsM[_internalTableNickName].getTableName();
     std::string fToInit=tableName;
@@ -177,11 +211,9 @@ namespace MWID{
     std::string initCommands=IOF::fileToString(fToInit);
     if(initCommands!="fileNotFound"){
       std::vector<std::vector<std::string> > allCommands=SF::getCommands(initCommands, "_nextCommand!*!!_", "_/nextCommand!*!!_", "_n*!!***!_", "_/n*!!***!_");
-
       long sz=allCommands.size(),szIn;
       std::vector<std::string> kV;
       for(long i=0;i<sz;++i){
-
         szIn=allCommands[i].size();
         if(szIn>2){
           if(allCommands[i][0]=="insert"){
@@ -191,56 +223,39 @@ namespace MWID{
             }
             dbsM[_internalTableNickName].insert(kV,allCommands[i][szIn-1]);
           }
-
-
         }
       }
-
     }
-
   }
   void MainDB::initialize(){
     IOF::sys_createFolderIfDoesNotExist(DD::GL_DBS.getMainFolder(),"readme.txt","Do not edit this folder");
-
     tablesJustCreated.clear();
     fut_tablesJustCreated.clear();
     std::vector<std::string> vKeys;
     // externalIds initialization
     dbsM["externalIds"]=createTableWithTwoKeys("externalIds", DD::GL_DBS.getExternalIDDB(),"eIDT","externalId","internalId","hierarchyCache");
-
     //usernames initialization
     dbsM["usernames"]=createTableWithTwoKeys("usernames", DD::GL_DBS.getUserNameDB(),"uns","internalId","username","otherUserData");
-
     // hierarchy initialization
     dbsM["hierarchy"]=createTableWithTwoKeys("hierarchy", DD::GL_DBS.getHierarchy(),"bossDB","high","low","hData");
-
     // counters initialization
     dbsM["counters"]=createTableWithOneKey("counters", DD::GL_DBS.getCounters(),"sysCounters","counterName","counterD");
-
     // file manager initialization
     dbsM["fileMan"]=createTableWithTwoKeys("fileMan", DD::GL_DBS.getFileManage(),"fMan","fileId","userId","fData");
-
     // message manager initialization
     dbsM["messMan"]=createTableWithTwoKeys("messMan", DD::GL_DBS.getMessManage(),"mMan","messId","userId","messData");
-
     // courses and assignments manager manager initialization
     dbsM["couasMan"]=createTableWithTwoKeys("couasMan", DD::GL_DBS.getCouasManage(),"cMan","couasId","userId","couasData");
-
     // database of backups for undoing the administrator actions
     dbsM["backupDatabase"]=createTableWithOneKey("backupDatabase", DD::GL_DBS.getBackupDB(),"bDb","name","bData");
-
     // main text initialization
     dbsM["mainText"]=createTableWithTwoKeys("mainText", DD::GL_DBS.getMainText(),"mainText","id","name","tData");
-
     // responses initialization
     dbsM["response"]=createTableWithTwoKeys("response", DD::GL_DBS.getResponseTable(),"response","id","name","tData");
-
     // stat initialization
     dbsM["stat"]=createTableWithOneKey("stat", DD::GL_DBS.getStatTable(),"stat","name","tData");
-
     // fast updating stat saveInitialization
     fu_dbsM["fStat"]=createFastUpdatingTable("fStat",DD::GL_DBS.getFastUpdatingStatTable(),"fStat");
-
     executeQueues();
     if(!tablesJustCreated.empty()){
       std::set<std::string>::iterator it,itE;
@@ -250,15 +265,11 @@ namespace MWID{
         ++it;
       }
     }
-
-
   }
   void MainDB::executeQueues(){
     std::map<std::string,MTF::Table>::iterator it;
     std::map<std::string,MTF::Table>::iterator itE;
-
     itE=dbsM.end();
-
     it=dbsM.begin();
     while(it!=itE){
       if(it->first!="counters"){
@@ -266,7 +277,6 @@ namespace MWID{
       }
       ++it;
     }
-
   }
 }
 #endif
