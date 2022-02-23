@@ -53,17 +53,12 @@
 #include "LANGF_languageFunctions.cpp"
 #include "QAF_queryAnalysis.cpp"
 namespace MTF{
-
   void nanoSleep(const long & tm){
     timespec timeOut,remains;
-
     timeOut.tv_sec = 0;
     timeOut.tv_nsec = tm;//500000000; /* 50 milliseconds */
-
     nanosleep(&timeOut, &remains);
   }
-
-
   class StringWithCounter{
   public:
     std::string s;
@@ -76,7 +71,6 @@ namespace MTF{
     if(s<z.s){return 1;}
     return 0;
   }
-
   class Table{
   private:
       long timeToWaitBeforeDecidingThatPreviousProcessIsStuckAndNeedsToBeKilled=10;
@@ -88,65 +82,44 @@ namespace MTF{
       std::map<std::string,long> keyNameToVectInd;
       void reCreateSearchMapForKeys();
       std::set<std::string> indexNames;
-
       std::string stFolderIndex="inds";
       std::string tInitFName="tableInit.txt";
       std::string tCKIFName="tCKIInit.txt";
       std::string indFName="inInd.txt";
-
       std::string folderInstQueue="instQueue";
       std::string extForCommandsInQueue="cmq";
       std::string extForFlag="flg";
-
       std::string stFolderData;
-
       std::string tableFolder;
-
       std::set<long> setKeyForIndexFromStr(const std::string &) const;
       std::vector<long> vectKeyForIndexFromStr(const std::string &) const;
       std::string indNameFromVectKeys(const std::vector<long> & ) const;
       std::string strFromVectKeys(const std::vector<long> &) const;
-
-
-
       std::vector<long> keyNamesToInds(const std::vector<std::string> &) const;
-
       ATF::Table getCombKey() const;
-
       int updateIndexWithEntry(const std::string &, const std::vector<std::string> &, const long &);
-
       std::string combKeyToString(const std::vector<std::string> &) const;
       std::set<StringWithCounter> stringToCombKeySet(const std::string &) const;
       std::vector<std::string> stringToCombKey(const std::string &) const;
       std::string createFileName(const std::string &,const std::string &) const;
-
       std::string prepareKeyString(const std::vector<std::string> &) const;
       std::vector<std::string> invertKeyString(const std::string &) const;
-
       std::string prepareDBRecString(const std::vector<std::string> &, const std::string &) const;
       std::pair<std::vector<std::string>,std::string> invertDBRecString(const std::string &) const;
-
-
-
     int insertUnsafe(const std::vector<std::string> &, const std::string &);
     // unsafe insert may end with memory race
     // This method is private for a reason. It should be called only by methods that can
     // guarantee the safety
-
     int delRowUnsafe(const std::vector<std::string> &);
     // unsafe delRow may end with memory race
     // This method is private for a reason. It should be called only by methods that can
     // guarantee the safety
-
   public:
       Table(const std::string & ="notSet!***!", const std::string & ="defaultTable");
       std::vector<std::string> getKeyNames() const;
       std::string getMainDataName() const;
       std::string getTableName() const;
       std::string getStartingFolderName() const;
-
-
-
       int createIndex(const std::vector<std::string> &, const int & =0);
       int createIndex(const std::vector<long> &, const int & =0);
       int deleteIndex(const std::vector<std::string> &);
@@ -161,29 +134,19 @@ namespace MTF{
       // returns 1 if the table is created for the first time
       // If the second argument is "yes" then the function will trust that all folders are created
       //    and will save time by not performing the verifications
-
       std::string updateDBInitStr(const std::string &) const;
       TOSF::TSets getIndTable(const std::string & ) const;
       int initTableFromStr(const std::string &);
-
-
-
-
       int insertQ(const::std::vector<std::string> &, const std::string &);
       //This will only insert in queue - requires executeFromQueue() afterwards
-
-
       int insert(const::std::vector<std::string> &, const std::string &, const long & = 1000);
       // This will force insert in the database. Before and after the insert it will clear
       // the execution Queue - it will make multiple attempts (the last argument is the number of attempts)
-
       int executeFromQueue();
-
       long searchSize(const std::vector<std::string> &,
                       const std::vector<long> & ) const;
       long searchSize(const std::vector<std::string> &,
                       const std::vector<std::string> & ) const;
-
       std::pair<std::vector<std::string>, std::string> operator[](const long & ) const;
       std::vector< std::pair<std::vector<std::string>, std::string> >
       search(const std::vector<std::string> &,
@@ -194,9 +157,6 @@ namespace MTF{
       // 1 - combination key
       // 2 - the keys over which the search occurs (in the case that combination key is not the complete key sequence)
       // 3,4 - In the case that there is more than one result and we don't want all of them the third and fourth argument are range
-
-
-
       std::vector< std::pair<std::vector<std::string>, std::string> >
       search(const std::vector<std::string> &,
              const std::vector<std::string> &,
@@ -207,23 +167,15 @@ namespace MTF{
       // 2 - the keys over which the search occurs (in the case that combination key is not the complete key sequence)
       // 3,4 - In the case that there is more than one result and we don't
       // want all of them the third and fourth argument are range
-
-
-
       int delRowQ(const std::vector<std::string> &);
       //This will only submit delRow request to queue - requires executeFromQueue() afterwards
-
       int delRow(const std::vector<std::string> &, const long & = 1000);
       // This will force insert in the database. Before and after the insert it will clear
       // the execution Queue - it will make multiple attempts (the last argument is the number of attempts)
-
       long size() const;
       std::string statusReportForDebugging() const;
       int finalizeTableUpdate();
   };
-
-
-
   std::set<long> Table::setKeyForIndexFromStr(const std::string & st) const{
       std::set<long> setInd;
       std::string sepB="_i_";
@@ -233,16 +185,12 @@ namespace MTF{
           inpS+=sepB+"endInd"+sepE;
       }
       long pos=0;
-
-
       std::pair<std::string,int> allDataP=SF::extract(inpS,pos,sepB,sepE);
-
       while( (allDataP.second==1) && (allDataP.first!="endInd")){
           setInd.insert(BF::stringToInteger(allDataP.first));
           allDataP=SF::extract(inpS,pos,sepB,sepE);
       }
       return setInd;
-
   }
   std::vector<long> Table::vectKeyForIndexFromStr(const std::string & st) const{
       std::set<long> setInd=setKeyForIndexFromStr(st);
@@ -274,9 +222,6 @@ namespace MTF{
         }
         ++i;
     }
-
-
-
     if(fR==0){
         return badVector;
     }
@@ -292,8 +237,6 @@ namespace MTF{
     }
     return newInd;
   }
-
-
   std::string Table::strFromVectKeys(const std::vector<long> & _v) const{
       std::vector<long> v=_v;
       std::sort(v.begin(),v.end());
@@ -307,7 +250,6 @@ namespace MTF{
       }
       return fR;
   }
-
   std::string Table::statusReportForDebugging() const{
     std::string fR;
     fR="starting folder name: "+  stFN;
@@ -315,7 +257,6 @@ namespace MTF{
     for(long i=0;i<keyNames.size();++i){fR+=keyNames[i]+" ";}
     fR+="\nMain data name: "+ mainDataName;
     fR+="\nTable name: "+tableName;
-
       fR+="\nINDEX START\n";
       std::set<std::string>::const_iterator it,itE;
       itE=indexNames.end();
@@ -329,27 +270,20 @@ namespace MTF{
       fR+="<BR>\nCOMBINATION KEY STATUS REPORT END<BR>\n";
     return fR;
   }
-
   int Table::setFolderNames(const std::string &f, const std::string & trust){
       stFN=f;
       if(trust=="yes"){
         return 0;
       }
       return IOF::sys_createFolderIfDoesNotExist(stFN,"readme.txt","Do not edit this folder.");
-
   }
-
   Table::Table(const std::string & _sfn,const std::string &_tn){
-
       if(_sfn!="notSet!***!"){
           setFolderNames(_sfn);
           if(tableName!="defaultTable"){
               setTableName(_tn);
-
-
           }
       }
-
   }
   std::string Table::getStartingFolderName()const{
     return stFN;
@@ -363,7 +297,6 @@ namespace MTF{
   std::string Table::getTableName() const{
       return tableName;
   }
-
   void Table::reCreateSearchMapForKeys(){
     keyNameToVectInd.clear();
     long sz=keyNames.size();
@@ -371,38 +304,22 @@ namespace MTF{
       keyNameToVectInd[keyNames[i]]=i;
     }
   }
-
   void Table::setKeyNames(const std::vector<std::string> & _v){
-
       keyNames=_v;
       std::sort(keyNames.begin(),keyNames.end());
-
       reCreateSearchMapForKeys();
-
   }
   void Table::setMainDataName(const std::string & _s){
       mainDataName=_s;
   }
   int Table::setTableName(const std::string & _s,const std::string & _trust){
-
-
       tableName=_s;
-
-
       tableFolder=stFN+"/"+tableName;
-
-
     if((_trust=="yes")||(IOF::sys_createFolderIfDoesNotExist(tableFolder,tInitFName,"Do not edit this folder.")==0)){
       // table existed from before
       std::string initData=IOF::fileToString(tableFolder+"/"+tInitFName);
       initTableFromStr(initData);
     }
-
-
-
-
-
-
     if(_trust!="yes"){
       std::string t2Init=tableFolder;
       t2Init+="/"+tCKIFName;
@@ -418,7 +335,6 @@ namespace MTF{
     }
     return 0;
   }
-
   std::string Table::updateDBInitStr(const std::string & tableDBInitStr) const{
       ATF::Table tempT(stFN,tableName);
       // The class ATF::Table has a very good method to update init string
@@ -427,18 +343,13 @@ namespace MTF{
       tempT.setMainDataName(mainDataName);
       tempT.setKeyNames(keyNames);
       std::string st1=tempT.updateDBInitStr(tableDBInitStr);
-
       std::string indexNamesB="_inds*"+tableName+"!*_";
       std::string indexNamesE="_/inds*"+tableName+"!*_";
       long pos=0;
       std::string nextIndNameB="_n!*_";
       std::string nextIndNameE="_/n!*_";
-
-
       std::string newTableDBInitStr = SF::eraseStuffBetween(st1,indexNamesB,indexNamesE,pos).first;
-
       newTableDBInitStr+= indexNamesB;
-
       std::set<std::string>::iterator it,itE;
       it=indexNames.begin();
       itE=indexNames.end();
@@ -448,22 +359,16 @@ namespace MTF{
           newTableDBInitStr+= nextIndNameE;
           ++it;
       }
-
       newTableDBInitStr+= indexNamesE;
       return newTableDBInitStr;
-
-
   }
-
   int Table::initTableFromStr(const std::string &stToInitFrom){
-
     ATF::Table tempT;
     // The class ATF::Table has a very good method to update init string
     // that we want to use at this point.
     // Create a fake table tempT from the string.
       tempT.setTableName(tableName);
     int fR= tempT.initTableFromStr(stToInitFrom);
-
     if(fR==1){
       stFN=tempT.getStartingFolderName();
       keyNames=tempT.getKeyNames();
@@ -485,17 +390,11 @@ namespace MTF{
         allDataP=SF::extract(stInds,pos,nextIndNameB,nextIndNameE);
         while( (allDataP.second==1) && (allDataP.first!="endIndices")){
             indexNames.insert(allDataP.first);
-
             allDataP=SF::extract(stInds,pos,nextIndNameB,nextIndNameE);
         }
-
-
-
     }
     return 1;
-
   }
-
   std::vector<long> Table::keyNamesToInds(const std::vector<std::string> & vI) const{
       long i=0;
       long sz=vI.size();
@@ -510,7 +409,6 @@ namespace MTF{
           }
           ++i;
       }
-
       return fR;
   }
   int Table::finalizeTableUpdate(){
@@ -536,8 +434,6 @@ namespace MTF{
           IOF::sys_createFolderIfDoesNotExist(indFolders,"readme.txt","Do not edit this folder.",indFName," ");
           finalizeTableUpdate();
           createdForTheFirstTime=1;
-
-
       }
       if((createdForTheFirstTime==1)||(repair==1)){
         long szz=this->size();
@@ -548,19 +444,13 @@ namespace MTF{
           updateIndexWithEntry(newInd, tmpV,1);
           ++ii;
         }
-
       }
       return createdForTheFirstTime;
   }
   int Table::createIndex(const std::vector<std::string> & vI, const int & repair){
       std::vector<long> vL=keyNamesToInds(vI);
-
       return createIndex(vL,repair);
   }
-
-
-
-
   int Table::deleteIndex(const std::vector<long> & vI){
     std::string newInd=indNameFromVectKeys(vI);
     if(newInd=="badVector"){return 0;}
@@ -570,24 +460,17 @@ namespace MTF{
       if(itS==itSE){
         return 0;
       }
-
       indexNames.erase(newInd);
       std::string indFolders=stFN+"/"+ tableName+"/"+stFolderIndex;
       std::string tF=indFolders+"/readme.txt";
-
-
-
       std::ifstream fTest(tF);
       if(fTest.good()){
         indFolders += "/"+newInd;
         std::string tF1=indFolders+"/readme.txt";
-
         std::ifstream fT1(tF1);
         if(fT1.good()){
             std::string systemCommand="rm -rf "+indFolders;
-
             system(systemCommand.c_str());
-
         }
       }
       finalizeTableUpdate();
@@ -595,13 +478,8 @@ namespace MTF{
   }
   int Table::deleteIndex(const std::vector<std::string> & vI){
       std::vector<long> vL=keyNamesToInds(vI);
-
       return deleteIndex(vL);
   }
-
-
-
-
   ATF::Table Table::getCombKey() const{
     std::string tbF=tableFolder;
     std::string tN=tableName+"*CKT*";
@@ -618,25 +496,17 @@ namespace MTF{
     }
     return combKInd;
   }
-
   TOSF::TSets Table::getIndTable(const std::string &indName) const{
-
     std::string indFolders=stFN+"/"+ tableName+"/"+stFolderIndex+"/";
     indFolders+=indName;
     std::string fForInit=indFolders+"/"+indFName;
     std::string stIn=IOF::fileToString(fForInit);
-
     std::string tN=indName+"*IND*";
     TOSF::TSets indT(indFolders,tN);
-
-
-
-
     indT.setStartingFolderName(indFolders);
     indT.setTableName(tN);
     std::vector<long> knsInds=vectKeyForIndexFromStr(indName);
     std::vector<std::string> kns;
-
     long sz=knsInds.size();
     kns.resize(sz);
     for(long i=0;i<sz;++i){
@@ -644,20 +514,12 @@ namespace MTF{
     }
     indT.setKeyNames(kns);
     indT.setMainDataName("allKeys");
-
-
-
-
-
-
     int resInit=indT.initTableFromStr(stIn);
-
     if(resInit==0){
       indT.setStartingFolderName(indFolders);
       indT.setTableName(tN);
       std::vector<long> knsInds=vectKeyForIndexFromStr(indName);
       std::vector<std::string> kns;
-
       long sz=knsInds.size();
       kns.resize(sz);
       for(long i=0;i<sz;++i){
@@ -666,11 +528,8 @@ namespace MTF{
       indT.setKeyNames(kns);
       indT.setMainDataName("allKeys");
     }
-
     return indT;
-
   }
-
   std::string Table::combKeyToString(const std::vector<std::string> &k) const{
     std::string fR="";
     std::string bSep="_!*X!*_";
@@ -681,8 +540,6 @@ namespace MTF{
     }
     return fR;
   }
-
-
   std::set<StringWithCounter> Table::stringToCombKeySet(const std::string &s) const{
     std::set<StringWithCounter> fR;
     long pos=0;
@@ -725,128 +582,88 @@ namespace MTF{
   //action == 2 : delete
     int fR=0;
     std::vector<long> vI=vectKeyForIndexFromStr(indName);
-
     TOSF::TSets inT=getIndTable(indName);
-
     std::string mData=combKeyToString(combKey);
-
     std::vector<std::string> keyForSearch;
     long kS=vI.size();
     keyForSearch.resize(kS);
     for(long i=0;i<kS;++i){
       keyForSearch[i]=combKey[vI[i]];
     }
-
     if(action==1){
       inT.insert(keyForSearch,mData);
     }
     if(action==2){
       inT.delSetEntry(keyForSearch,mData);
     }
-
     std::string indFolders=stFN+"/"+ tableName+"/"+stFolderIndex+"/";
     indFolders+=indName;
     std::string fForInit=indFolders+"/"+indFName;
     std::string stIn=IOF::fileToString(fForInit);
-
     stIn=inT.updateDBInitStr(stIn);
     IOF::toFile(fForInit,stIn);
-
-
     return fR;
-
   }
-
-
-
-
   int  Table::insertUnsafe(const std::vector<std::string> & keyV, const std::string & data){
     if(keyV.size()!=keyNames.size()){
       return 0;
     }
     ATF::Table combKInd=getCombKey();
     //Step 1: Inserting into the main table
-
     int insertionReport=combKInd.insertOrUpdateAndGiveReport(keyV,data);
-
     if(insertionReport==1){
       //Step 2: Update table initialization - the root may have changed
       std::string t2Init=tableFolder;
       t2Init+="/"+tCKIFName;
       std::string inSt=IOF::fileToString(t2Init);
-
       inSt=combKInd.updateDBInitStr(inSt);
       IOF::toFile(t2Init,inSt);
-
       //Step 3: Update indices
       std::set<std::string>::const_iterator it,itE;
       it=indexNames.begin();itE=indexNames.end();
-
       while(it!=itE){
         updateIndexWithEntry(*it,keyV,1);
         ++it;
       }
-
     }
-
-
     return 1;
   }
-
   std::pair<std::vector<std::string>, std::string>
   Table::operator[](const long & i) const{
     std::pair<std::vector<std::string>, std::string>  fR;
-
-
     ATF::Table combKInd=getCombKey();
     std::pair<HDDBRF::Record,std::string> pDBRS=combKInd[i];
     HDDBRF::Record dS=pDBRS.first;
-
-
     fR.first=dS.getKeys();
     IRFNF::IndRecFName indRFN = combKInd.findIndexRecordFileName(pDBRS.first);
     std::string dfn=DMF::dataFNameFromIRFN(indRFN);
     fR.second=IOF::fileToString(dfn);
-
     return fR;
   }
-
-
-
   long Table::size() const{
-
     ATF::Table combKInd=getCombKey();
     return combKInd.size();
   }
-
   std::vector< std::pair<std::vector<std::string>, std::string> >
   Table::search(const std::vector<std::string> & _keyV,
                    const std::vector<long> & _indV,
                    const long & _start,
                    const long & _end) const{
-
     std::vector< std::pair<std::vector<std::string>, std::string> > fR;
     std::vector<std::string> keyV=_keyV;
     std::vector<long> indV=_indV;
-
     if( indV.size()==keyV.size()){
       if( (indV.size()!=2) || (indV[0]!=-1)){
         SF::sortWithFollower(indV,keyV);
       }
     }
-
     if( ((indV.size()==2)&&(indV[0]==-1)) || (indV.size()==keyNames.size()) ) {
       fR.resize(1);
-
       ATF::Table combKInd=getCombKey();
       fR[0].first=keyV;
-
       fR[0].second=combKInd.select(keyV);
       return fR;
     }
-
-
-
     std::string indName=strFromVectKeys(indV);
     std::set<std::string>::const_iterator it,itE;
     itE=indexNames.end();
@@ -854,9 +671,7 @@ namespace MTF{
     if(it==itE){
       return fR;
     }
-
     // indName is an actual index;
-
     TOSF::TSets inT=getIndTable(indName);
     std::vector<std::string> completeKeys=inT.getRangeFromSet(keyV,_start,_end);
     long sz=completeKeys.size();
@@ -870,13 +685,10 @@ namespace MTF{
     }
     return fR;
   }
-
   //Arguments of search:
   // 1 - combination key
   // 2 - the keys over which the search occurs (in the case that combination key is not the complete key sequence)
   // 3,4 - In the case that there is more than one result and we don't want all of them the third and fourth argument are range
-
-
   std::vector< std::pair<std::vector<std::string>, std::string> >
   Table::search(const std::vector<std::string> & keyV,
                    const std::vector<std::string> & indV,
@@ -888,11 +700,9 @@ namespace MTF{
         return search(keyV,l2,start,end);
       }
       return search(keyV,keyNamesToInds(indV),start,end);
-
   }
   long Table::searchSize(const std::vector<std::string> & keyV,
                             const std::vector<long> & _indV) const{
-
     std::string indName=strFromVectKeys(_indV);
     std::set<std::string>::const_iterator it,itE;
     itE=indexNames.end();
@@ -902,22 +712,15 @@ namespace MTF{
     }
     // indName is an actual index;
     TOSF::TSets inT=getIndTable(indName);
-
-
     return inT.getSizeOfSet(keyV);
   }
-
   long Table::searchSize(const std::vector<std::string> & keyV,
                             const std::vector<std::string> & indV) const{
     return searchSize(keyV,keyNamesToInds(indV));
   }
-
-
   int Table::delRowUnsafe(const std::vector<std::string> & keyV){
-
     int fR;
     //Step 1: Deleting from the main table
-
     ATF::Table combKInd=getCombKey();
     fR=combKInd.delRow(keyV);
     std::string t2Init=tableFolder;
@@ -925,17 +728,13 @@ namespace MTF{
     std::string inSt=IOF::fileToString(t2Init);
     inSt=combKInd.updateDBInitStr(inSt);
     IOF::toFile(t2Init,inSt);
-
     //Step 2: Update index tables
-
     std::set<std::string>::const_iterator it,itE;
     it=indexNames.begin();itE=indexNames.end();
-
     while(it!=itE){
       updateIndexWithEntry(*it,keyV,2);
       ++it;
     }
-
     return fR;
   }
   std::string Table::prepareDBRecString(const std::vector<std::string> & vKey, const std::string & vD) const{
@@ -944,7 +743,6 @@ namespace MTF{
     dbr.setMainDataRTD(vD);
     return dbr.putIntoString();
   }
-
   std::pair<std::vector<std::string>,std::string> Table::invertDBRecString(const std::string & st) const{
     HDDBRF::Record dbr;
     dbr.loadFromString(st);
@@ -953,17 +751,12 @@ namespace MTF{
     fR.second=dbr.getMainDataRTD();
     return fR;
   }
-
-
   std::string Table::prepareKeyString(const std::vector<std::string> & vKey) const{
     return prepareDBRecString(vKey,"noMainDataJustKey");
-
   }
-
   std::vector<std::string> Table::invertKeyString(const std::string & stD) const{
     return (invertDBRecString(stD)).first;
   }
-
   std::string Table::createFileName(const std::string & _s, const std::string & _e) const{
     long processId=getpid();
     std::string fN=_s+std::to_string(processId)+"j";
@@ -971,7 +764,6 @@ namespace MTF{
     fN+="."+_e;
     return fN;
   }
-
   int Table::insertQ(const std::vector<std::string> & keyV, const std::string & data){
     if(keyV.size()!=keyNames.size()){
       return 0;
@@ -986,18 +778,15 @@ namespace MTF{
     entireSt+=cS+ccommand+cE+" "+enS+entryToInsert+enE;
     std::string fileName=tableFolder+"/"+folderInstQueue;
     fileName+="/";
-
     std::string fN=createFileName("i",extForCommandsInQueue);
     fileName+=fN;
     IOF::toFile(fileName,entireSt);
     return 1;
   }
-
   int Table::insert(const std::vector<std::string> & keyV, const std::string & data, const long & numAttempts){
     if(keyV.size()!=keyNames.size()){
       return 0;
     }
-
     int exSuccess=executeFromQueue();
     long i=0;
     while((i<numAttempts)&&(exSuccess==0)){
@@ -1016,9 +805,7 @@ namespace MTF{
     }
     return exSuccess;
   }
-
   int Table::delRowQ(const std::vector<std::string> & keyV){
-
     std::string entryToInsert=prepareKeyString(keyV);
     std::string enS="_enIns*!_";
     std::string enE="_/enIns*!_";
@@ -1033,10 +820,8 @@ namespace MTF{
     fileName+=fN;
     IOF::toFile(fileName,entireSt);
     return 1;
-
   }
   int Table::delRow(const std::vector<std::string> & keyV, const long & numAttempts){
-
     int exSuccess=executeFromQueue();
     long i=0;
     while((i<numAttempts)&&(exSuccess==0)){
@@ -1055,14 +840,10 @@ namespace MTF{
     }
     return exSuccess;
   }
-
-
-
   int Table::executeFromQueue(){
     //return values:
     // 1 - success
     // 0 - there is a healthy process writing to the database; or I am taking too long and will give up
-
     TMF::Timer tm;
     int remainingProcesses=0;
     long tN=tm.timeNow();
@@ -1071,7 +852,6 @@ namespace MTF{
     seqF=IOF::listFiles(folderQ);
     std::vector<std::string> sFl=IOF::selectFilesWithProperty(seqF,"_crName_extension_/crName_ _ext_"+extForFlag+"_/ext_");
     std::vector<std::string> sCQ=IOF::selectFilesWithProperty(seqF,"_crName_extension_/crName_ _ext_"+extForCommandsInQueue+"_/ext_");
-
     if(sFl.size()>0){
       std::vector<std::time_t> cTimes=IOF::timeOfCreation(sFl);
       SF::sortWithFollower(cTimes,sFl);
@@ -1083,8 +863,6 @@ namespace MTF{
         else{
           ++remainingProcesses;
         }
-
-
       }
       if(remainingProcesses>0){
         return 0;
@@ -1132,7 +910,6 @@ namespace MTF{
           }
           if(commands[i]=="delete"){
             keys[i]=invertKeyString(allDataP.first);
-
           }
         }
       }
@@ -1141,11 +918,9 @@ namespace MTF{
     if(tN2-tN>timeToWaitBeforeDecidingThatPreviousProcessIsStuckAndNeedsToBeKilled){
       return 0;
     }
-
     std::string myFlagName=createFileName("f",extForFlag);
     std::string flagFile=folderQ+"/"+myFlagName;
     IOF::toFile(flagFile,"This flag means that I am writing to the database.");
-
     for(long i=0;i<sz;++i){
       if(commands[i]=="insert"){
         insertUnsafe(keys[i],datas[i]);
@@ -1153,11 +928,8 @@ namespace MTF{
       if(commands[i]=="delete"){
         delRowUnsafe(keys[i]);
       }
-
       IOF::sys_deleteFile(sCQ[i]);
-
     }
-
     IOF::sys_deleteFile(flagFile);
     return 1;
   }
