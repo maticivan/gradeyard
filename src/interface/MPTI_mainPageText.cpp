@@ -19,14 +19,12 @@
 #define _INCL_WI_MainText_CPP
 
 namespace MPTI{
-
   MainText::MainText(const std::string & _nameInDB, const std::string & _sysR, const std::string & _u){
     initialize(_nameInDB,_sysR,_u);
   }
   std::string MainText::modifyMe() const{
     return "modifyText";
   }
-
   int MainText::initialize(const std::string & _nameInDB, const std::string & _sysReq, const std:: string & _uName){
     TMD::MText m;
     int s=m.setFromTextName(_nameInDB);
@@ -45,32 +43,21 @@ namespace MPTI{
     sysDataRequested=_sysReq;
     if(s==1){
       initText=m.getTextData();
-
-
       long pos=0;
       std::pair<std::string,int> allSD=SF::extract(initText,pos,s_sysDataB,s_sysDataE);
       pos=0;
       std::pair<std::string,int> allTD=SF::extract(initText,pos,s_tDataB,s_tDataE);
-
       if(allSD.second==1){
-
         sysDataRaw=allSD.first;
         std::string pText=s_notFound;
-
         HSF::parametersFromString(allSD.first,tCreated,createdBy,tModified,modifiedBy,pText,documentType);
-
         if(pText!=s_notFound){
           PBD::createPermitSet(permitRead, pText,s_individualPermissionB, s_individualPermissionE, "read");
           PBD::createPermitSet(permitWrite, pText,s_individualPermissionB, s_individualPermissionE, "write");
         }
-
       }
-
-
-
       tName=m.getTextName();
       tExternalId=m.getExternalCodeFromInternalNumber();
-
       if(allTD.second==1){
         rawText=allTD.first;
         translationVarToVal=getTranslationMap(rawText);
@@ -87,12 +74,9 @@ namespace MPTI{
     if(allD.second==1){
       systemText=allD.first;
       long good=1;
-
       std::string headerText,headerChoice,actionText,actionChoice,headerOld,actionOld,existingTitleOrDescription="";
       pos=0;allD=SF::extract(systemText,pos,"_sectionHD*!_","_/sectionHD*!_");
       if(allD.second==1){headerText=allD.first;}else{good=0;}
-
-
       pos=0;allD=SF::extract(systemText,pos,"_actionText*!_","_/actionText*!_");
       if(allD.second==1){actionText=allD.first;}else{good=0;}
       if(good==1){
@@ -110,22 +94,18 @@ namespace MPTI{
             if(allD.second==1){
               existingTitleOrDescription=allD.first;
             }
-
           }
           pos=0;allD=SF::extract(headerText,pos,"_specialHD*!_","_/specialHD*!_");
           if(allD.second==1){headerChoice=SF::findAndReplace(allD.first,"_*FileCodeToModify*!_",version);}else{good=0;}
           pos=0;allD=SF::extract(actionText,pos,"_specialAction*!_","_/specialAction*!_");
           if(allD.second==1){
             actionChoice=SF::findAndReplace(allD.first,"_*FileCodeToModify*!_",version);
-
-          }else{
+          }
+          else{
             good=0;
           }
         }
-
       }
-
-
       if(good==1){
         std::string cleanForm;
         cleanForm=SF::findAndReplace(systemText,
@@ -140,7 +120,5 @@ namespace MPTI{
       }
     }
   }
-
 }
-
 #endif
