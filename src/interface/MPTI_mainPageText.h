@@ -17,8 +17,6 @@
 
 #ifndef _INCL_WI_MainText_H
 #define _INCL_WI_MainText_H
-
-
 namespace MPTI{
   class MainText:public APTI::AbstractText{
   protected:
@@ -28,6 +26,5 @@ namespace MPTI{
     int initialize(const std::string & = "mainTextFirstPage", const std::string & = "no211", const std::string & = "everyone");
     void selectVersionForListOfFiles(const std::string & = "", const std::string & = "0");
   };
-
 }
 #endif
