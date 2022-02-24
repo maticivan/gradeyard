@@ -179,7 +179,7 @@ namespace MWID{
     if(item.first.size()>1){
       formattedItem+=item.first[1];
     }
-    formattedItem+="1_/nc***_\nSTART EDITING AFTER THIS LINE _nc***_";
+    formattedItem+="_/nc***_\nSTART EDITING AFTER THIS LINE _nc***_";
     formattedItem+=HDDBSF::unpackFromStorage(item.second);
     formattedItem+="_/nc***_\nDO NOT EDIT THIS LINE  _/command_\n";
     return formattedItem;
