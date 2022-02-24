@@ -163,17 +163,29 @@ namespace MWID{
       }
       return tb;
   }
-  std::string newItemFormatted(const std::pair<std::vector<std::string>, std::string> & item, const long & i, const std::string & sB, const std::string &sE, const std::string &ssB, const std::string &ssE){
+  std::string newItemFormatted(const std::pair<std::vector<std::string>, std::string> & item, const std::string & sB, const std::string &sE, const std::string &ssB, const std::string &ssE){
     std::string formattedItem;
     formattedItem+=sB+"\n";
-    formattedItem+=ssB+"insert"+ssE+"\n"; 
+    formattedItem+=ssB+"insert"+ssE+"\n";
     if(item.first.size() > 0){formattedItem+=ssB+item.first[0]+ssE+"\n";}
     if(item.first.size()>1){formattedItem+=ssB+item.first[1]+ssE+"\n";}
     formattedItem+=ssB+HDDBSF::unpackFromStorage(item.second)+ssE+"\n";
     formattedItem+=sE+"\n";
     return formattedItem;
   }
-  long MainDB::saveForRecovery(const std::string &_internalTableNickName, const long & _st, const long & _en, const std::string & ext) const{
+  std::string newTextItemFormatted(const std::pair<std::vector<std::string>, std::string> & item){
+    std::string formattedItem;
+    formattedItem+="_command_\n_nc***_createText_/nc***_\nDocument name:_nc***_";
+    if(item.first.size()>1){
+      formattedItem+=item.first[1];
+    }
+    formattedItem+="1_/nc***_\nSTART EDITING AFTER THIS LINE _nc***_";
+    formattedItem+=HDDBSF::unpackFromStorage(item.second);
+    formattedItem+="_/nc***_\nDO NOT EDIT THIS LINE  _/command_\n";
+    return formattedItem;
+  }
+
+  long MainDB::saveForRecovery(const std::string &_internalTableNickName, const long & _st, const long & _en, const std::string & typeOfBackup) const{
     std::string rc;
     long start=_st;
     long end=_en;
@@ -193,10 +205,15 @@ namespace MWID{
       }
       for(long i=start;i<end;++i){
         std::pair<std::vector<std::string>, std::string> itemI=(it->second)[i];
-        rc+=newItemFormatted(itemI,i,"_nextCommand!*!!_", "_/nextCommand!*!!_", "_n*!!***!_","_/n*!!***!_");
+        if(typeOfBackup=="init"){
+          rc+=newItemFormatted(itemI,"_nextCommand!*!!_", "_/nextCommand!*!!_", "_n*!!***!_","_/n*!!***!_");
+        }
+        if(typeOfBackup=="text"){
+          rc+=newTextItemFormatted(itemI);
+        }
       }
       std::string fToSave=(it->second).getTableName();
-      fToSave+=DD::GL_DBS.getInitExtension()+"_"+ext;
+      fToSave+=DD::GL_DBS.getInitExtension()+"_"+std::to_string(start);
       fToSave+=".txt";
       IOF::toFile(fToSave,rc);
       return 1;
