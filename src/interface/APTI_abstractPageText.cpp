@@ -543,9 +543,7 @@ namespace APTI{
     if(sc=="0"){
       std::map<std::string,std::string>::const_iterator it=_psd.respMap.find("save");
       if(it!=_psd.respMap.end()){
-        if(it->second=="yes"){
-          DD::GL_MAIN_DB.saveForRecovery("mainText",start,end,std::to_string(start));
-        }
+        DD::GL_MAIN_DB.saveForRecovery("mainText",start,end,it->second);
       }
     }
     std::string scSw="0";
