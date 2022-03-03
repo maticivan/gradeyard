@@ -196,6 +196,9 @@ namespace CAGI{
       if(officialOutput[i] ==""){
         indicatorOfficialSolutionBad=1;
       }
+      if(officialOutput[i]=="fileNotFound"){
+        indicatorOfficialSolutionBad=1;
+      }
       res.comment+="\nTest case "+std::to_string(i+1)+": ";
       tcRes.result="failure";
       if( sufficientlyEqual(officialOutput[i],userOutput[i])==1 ){
@@ -218,7 +221,7 @@ namespace CAGI{
     }
     if(indicatorOfficialSolutionBad==1){
       total=-100.0;
-      res.comment="\nProblem with official solution.";
+      res.comment="\nProblem with autograder. Please wait a few minutes and try again.";
       res.testCasesRes.resize(0);
     }
     if(indicatorDidNotCompile==1){
