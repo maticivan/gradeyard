@@ -514,7 +514,7 @@ namespace APTI{
     if(numb<0){numb=0;}
     TMD::MText sf;
     std::pair<std::string,int> allD;
-    std::string dType,createdBy,createdOn,othD;
+    std::string dType,createdBy,createdOn,modifiedOn,othD;
     int res;
     long lsz=5;
     std::vector<std::string> topLine,mLine;
@@ -549,10 +549,10 @@ namespace APTI{
     std::string scSw="0";
     if(sc=="0"){scSw="1";}
     topLine[0]=createLinkToSwitchSortCriterion(MWII::GL_WI.getDefaultWebText("Name"),"listTexts",scSw,MWII::GL_WI.getStartOfList());
-    topLine[1]=MWII::GL_WI.getDefaultWebText("ID");
-    topLine[2]=MWII::GL_WI.getDefaultWebText("Type");
-    topLine[3]=MWII::GL_WI.getDefaultWebText("Created by");
-    topLine[4]=MWII::GL_WI.getDefaultWebText("Created on");
+    topLine[1]=MWII::GL_WI.getDefaultWebText("Type");
+    topLine[2]=MWII::GL_WI.getDefaultWebText("Created by");
+    topLine[3]=MWII::GL_WI.getDefaultWebText("Created on");
+    topLine[4]=MWII::GL_WI.getDefaultWebText("Modified on");
     for(long i=start;i<end;++i){
       if(sc=="1"){
         sf.setFromTextName(((indexTx.getKeysFromRow(i))[0]));
@@ -562,7 +562,7 @@ namespace APTI{
         sf.setFromInternalId(sR.first[0]);
       }
       mLine[0]=createLinkToText(sf.getTextName());
-      mLine[1]=sf.getExternalCodeFromInternalId();
+      //mLine[1]=sf.getExternalCodeFromInternalId();
       pos=0;
       othD=sf.getTextData();
       allD=SF::extract(othD,pos,"_documentType!!_","_/documentType!!_");
@@ -582,7 +582,13 @@ namespace APTI{
       if(allD.second==1){
         createdOn=allD.first;
       }
-      mLine[2]=dType;mLine[3]=createdBy;mLine[4]=createdOn;
+      modifiedOn=createdOn;
+      pos=0;allD=SF::extract(othD,pos,"_modified!!_","_/modified!!_");
+      if(allD.second==1){
+        modifiedOn=allD.first;
+      }
+      //mLine[2]=dType;mLine[3]=createdBy;mLine[4]=createdOn;
+      mLine[1]=dType;mLine[2]=createdBy;mLine[3]=createdOn;mLine[4]=modifiedOn;
       allLines.push(mLine);
     }
     SF::flipTheStack(allLines);
