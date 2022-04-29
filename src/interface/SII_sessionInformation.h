@@ -349,11 +349,13 @@ namespace SII{
     int allowedToAddToHierarchy(const std::string &, const std::string &) const;
     int allowedToRemoveFromHierarchy(const std::string &, const std::string &) const;
     int allowedToAssignGraders(const std::string &, const std::string & ) const;
+    int allowedToEditTimer(const std::string &, const std::string & ) const;
     int allowedToEnrollStudents(const std::string &, const std::string & ) const;
     int allowedToBackup(const std::string & , const std::string &) const;
     std::string addToHierarchy(const std::string &, const std::string &);
     std::string removeFromHierarchy(const std::string &, const std::string &);
     std::string assignGraders(const std::string &, const std::string &);
+    std::string editTimer(const std::string &, const std::string &);
     std::string createAccountsForStudents(std::vector<PASF::StudentData> & ,const std::string & );
     std::string submitEnrollmentReport(const std::string &, const std::string &, const std::vector<PASF::StudentData> & );
     std::string enrollStudents(const std::string &, const std::string &, const std::string &, const std::string &);
