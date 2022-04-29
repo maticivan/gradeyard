@@ -96,6 +96,16 @@ namespace RTI{
     std::map<std::string,std::string> submittedAnswers;
     std::map<std::string,std::string> completeProblemDocs;
     int indicatorOfPOST;
+    std::string commAllowedTime;
+    std::string commAbsoluteEnd;
+    long commTimerVersion;
+    std::string indEndingTime;
+    long indTimerVersion;
+    long userCanTakeActionAndActivateExam;
+    std::string potentialEndingTimeIfExamStartsNow;
+    long actRequest;
+    long remainingSeconds;
+    long roundingTimeSec;
     std::string debuggingPrint() const;
   };
   struct LocationOfDocuments{
@@ -153,6 +163,16 @@ namespace RTI{
     std::string s_fileAllowed_QRTE="_/fa*|_";
     std::string s_autograderInfo_QRTB="_agr*|_";
     std::string s_autograderInfo_QRTE="_/agr*|_";
+    std::string s_cAllowedTime_QRTB="_cAllT*|_";
+    std::string s_cAllowedTime_QRTE="_/cAllT*|_";
+    std::string s_cAbsEnd_QRTB="_cAbsEnd*|_";
+    std::string s_cAbsEnd_QRTE="_/cAbsEnd*|_";
+    std::string s_cTVersion_QRTB="_cTVers*|_";
+    std::string s_cTVersion_QRTE="_/cTVers*|_";
+    std::string s_iEnd_QRTB="_iEnd*|_";
+    std::string s_iEnd_QRTE="_/iEnd*|_";
+    std::string s_iTVersion_QRTB="_iTVers*|_";
+    std::string s_iTVersion_QRTE="_/iTVers*|_";
     std::string s_label_QRTB="_lb*|_";
     std::string s_label_QRTE="_/lb*|_";
     std::string s_buttonLabel_QRTB="_blb*|_";
@@ -163,6 +183,8 @@ namespace RTI{
     std::string s_notStartedYet_QRTE="_/notOpen*|_";
     std::string s_notReadyForGrading_QRTB="_noGrading*|_";
     std::string s_notReadyForGrading_QRTE="_/noGrading*|_";
+    std::string s_needsActivation_QRTB="_startMessage*|_";
+    std::string s_needsActivation_QRTE="_/startMessage*|_";
     std::string s_score_GRTB="_score_";
     std::string s_score_GRTE="_/score_";
     std::string s_comment_GRTB="_comment_";
@@ -197,10 +219,14 @@ namespace RTI{
     std::string s_accessLogsInnerSep_ARTE="_/alIn*|_";
     std::string s_accessLogsNumDevs_ARTB="_alND*|_";
     std::string s_accessLogsNumDevs_ARTE="_/alND*|_";
+    std::string s_timerRepl="_|*timer*|_";
+    std::string s_tmSecRepl="_|*tmSeconds*|_";
     std::string labelOnTheSubmitButton;
     std::string instructionsOnTopOfTheForm;
+    std::string timerCode;
     std::string messageUnavailableYet;
     std::string messageNoGradingYet;
+    std::string messageStartExam;
     std::vector<std::string> mainFileInfoVector;
     long numFilesAllowed;
     std::map<std::string,std::vector<std::string> > userRTAnswMap;
@@ -235,6 +261,7 @@ namespace RTI{
     std::string fileFieldForProblemInputForm(const std::string &, const long &) const;
     std::string fileForProblemInfo(const long &) const;
     std::string assignGraders(const PSDI::SessionData &, const std::string &);
+    std::string editTimer(const PSDI::SessionData &, const std::string &);
     std::pair<std::string,std::string> getRespRecStatus(const PSDI::SessionData &) const;
     std::string changeResponseReceiverStatus(const PSDI::SessionData & , const std::string & , const std::string & );
     int isInitialized() const;
