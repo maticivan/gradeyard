@@ -1988,6 +1988,9 @@ namespace SII{
         for(long k=0;k<vectStData.size();++k){
           tempStV[k]=vectStData[k];
         }
+        if(tempStV[2].length()<3){
+          tempStV[2]=tempStV[0];
+        }
         vectStData=tempStV;
       }
       RMD::Response exResp,exGrade;
@@ -2340,6 +2343,12 @@ namespace SII{
     }
     return 0;
   }
+  int SessionInformation::allowedToEditTimer(const std::string & p, const std::string & q) const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
   int SessionInformation::allowedToBackup(const std::string & db, const std::string & txt) const{
     if((psd.isRoot=="yes") ){
       return 1;
@@ -2382,6 +2391,17 @@ namespace SII{
     RTI::Response tmpRT(_rR,"no",psd.my_un);
     if(tmpRT.isInitialized()==1){
       return tmpRT.assignGraders(psd,_options);
+    }
+    return "!failed! Could not find the document.";
+  }
+  std::string SessionInformation::editTimer(const std::string & _rR, const std::string & _options){
+    //WARNING: not implemented properly yet: too resrtictive
+    if(allowedToEditTimer(_rR,_options)==0){
+      return "!failed!: Operation not allowed";
+    }
+    RTI::Response tmpRT(_rR,"no",psd.my_un);
+    if(tmpRT.isInitialized()==1){
+      return tmpRT.editTimer(psd,_options);
     }
     return "!failed! Could not find the document.";
   }
