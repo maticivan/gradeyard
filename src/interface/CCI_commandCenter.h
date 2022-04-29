@@ -59,6 +59,7 @@ namespace CCI{
     std::string executeAddToHierarchy(SII::SessionInformation &);
     std::string executeRemoveFromHierarchy(SII::SessionInformation &);
 
+    std::string executeEditTimer(SII::SessionInformation &);
     std::string executeAssignGraders(SII::SessionInformation &);
     std::string executeEnrollStudents(SII::SessionInformation &);
     std::string executeCreateBackupText(SII::SessionInformation &);
