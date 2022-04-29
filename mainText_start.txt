@@ -43,7 +43,40 @@ _maxNumForSimpson_0_/maxNumForSimpson_
 _executePublicTestCases_yes_/executePublicTestCases_
 
 _defaultTexts!*_
+_vVPair__vr_Click on the button below when you are ready._/vr__vl_
+<p></p><h2>Timed Exam</h2>
+<p>The timer will be activated once the problems are displayed for solving. </p>
+<p>You can change your answers as many times as you want before the expiration of the timer. After each change, you must click on the button with the label <b>Update / Save / Re-submit</b>.</p>
+<p>If you are done before the expiration of the timer, make sure that you click on <b>Update / Save / Re-submit</b> one last time before closing the web browser.
+</p>
+<p>Click on the button below when you are ready.</p>_/vl__/vVPair_
 _vVPair__vr_Comment_/vr__vl_No_/vl__/vVPair_
+_vVPair__vr_TimerJS_/vR__vl_ <div class="card bg-primary text-white">
+    <div class="card-body"> 
+
+<b><span id="gytimer"></span></b>
+
+<script> 
+var maxTime = _|*tmSeconds*|_;
+var end = new Date().getTime()+maxTime*1000;
+var x = setInterval(function() {
+  var now = new Date().getTime();
+  var distance = end - now;
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  document.getElementById("gytimer").innerHTML = days + "d " + hours + "h "
+  + minutes + "m " + seconds + "s ";
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("gytimer").innerHTML = "Time is up!";
+  }
+}, 1000);
+</script>
+
+</div>
+  </div>_/vl__/vVPair_
 _/defaultTexts!*_
 
 _defaultWebsiteName_https://gradeyard.com_/defaultWebsiteName_ 
@@ -5506,20 +5539,7 @@ Status is one of the following: n/a/
 ***     SECTION 4: TEXT BEFORE THE EXAM        ***
 ***************************************************
 _iinf*|_
-  <div class="card bg-primary text-white">
-    <div class="card-body"> 
-
-<UL>
-<li> 
-<a href="?page=formulasAndCode"><button type="button" class="btn btn-outline-light btn-sm">Instructions</button></a>  
-  for submitting math formulas and computer code.
-</li>
-<li>You can upload jpg or pdf files for your answers  </li>
-<li>The size of each file can be up to 2MB. However, the total size of all files must be below 5MB. </li>
-</UL>
-
-</div>
-  </div>
+_|*timer*|_
 _/iinf*|_
  
 _notOpen*|_
@@ -5761,6 +5781,20 @@ _insert_
 _n*_buttonLink_/n*_
 _n*_Graders_/n*_
 _n*_index.cgi?page=commandAssignGraders&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Timer_/n*_
+_n*_index.cgi?page=commandEditTimer&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Enroll_/n*_
+_n*_index.cgi?page=commandEnrollGuests&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
 _/insert_
 
 
@@ -9759,6 +9793,18 @@ _/insert_
 
 _insert_
 _n*_buttonLink_/n*_
+_n*_Timer_/n*_
+_n*_index.cgi?page=commandEditTimer&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Enroll_/n*_
+_n*_index.cgi?page=commandEnrollGuests&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
 _n*_Auto-grade_/n*_
 _n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_&rdd=gr&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
 _/insert_
@@ -9770,6 +9816,8 @@ _/insert_
 <li><b>Custom versions:</b> If there are multiple versions of problems, then the <code>Create</code> button would randomly assign the versions to students. The number of possible versions is unbounded. If you want to avoid that, then you should click on this button and adjust the settings to your liking.</li>
 <li><b>PDF:</b> Create latex source file or pdf files with exam problems. </li>
 <li><b>Graders:</b> Assign students to grade each other, or to self-grade their own work.</li>
+<li><b>Timer:</b> Set up exam timers and deadlines.</li>
+<li><b>Enroll:</b> Enroll additional users or guests to the exam. Exam links will be sufficient to access and solve the exam.</li>
 <li><b>Auto-grade:</b> Use the auto grader to help you grade multiple-choice problems, problems that have very short answers, or computer science assignments in C++ and python. The autograder will read all of the problems from all of the students, and identify and grade several problems that it is capable of grading. <b>Note:</b> You may need to call the auto-grader multiple times to grade all of the computer codes. </li>
 </ul>
 \end{box}
@@ -9802,6 +9850,7 @@ _n*__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/n*_
 _n*__vr_aType_/vr_  _vr_aNum_/vr__/n*_
 _n*_summary_/n*_
 _/insert_ 
+
 _/textData!!_
 
 _/n*!!***!_
@@ -11436,11 +11485,6 @@ _/nextCommand!*!!_
 
 
 
-
-
-
-
-
 _nextCommand!*!!_ 
 
 _n*!!***!_insert_/n*!!***!_
@@ -11463,6 +11507,162 @@ _textData!!_
 <p>The Solar System consists of several planets. The closest planet to the Sun is Mercury. Other planets are not as close to the Sun as the Mercury.</p> 
 <p>This page may need some expansion. There could be website visitors who would not find this article as informative as they hoped.</p>
        
+
+_/textData!!_
+
+_/n*!!***!_
+_/nextCommand!*!!_  
+
+
+
+
+
+_nextCommand!*!!_ 
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000114_/n*!!***!_
+_n*!!***!_commandEditTimer_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_contentAdministrator_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+_textData!!_
+  
+ <H2>Assign/Edit Timer</H2>
+_insert_
+_n*_formInitialization_/n*_
+_n*_reqCommand_/n*_
+_n*_index.cgi?comEx=yes_/n*_
+_/insert_
+_insert_
+_n*_textAreaField_/n*_
+_n*_reqCommand_/n*_
+_n*_commands_/n*_
+_n*_Editing the timer using the form below._/n*_
+_n*_ 
+ _command_
+DO NOT EDIT THIS LINE:_nc***_editTimer_/nc***_
+EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p_/nc***_ 
+_nc***_
+
+***************************************************************
+***   1.  Time to do the exam:                                                                     ***
+***************************************************************
+*** _cAllT*|_1 hour 10 minutes_/cAllT*|_                                              ***
+***************************************************************
+
+***************************************************************
+***   2.  Time by which the exam must end                                            ***
+***************************************************************
+***_cAbsEnd*|_Wed, 03 Feb 2100 19:00:00 GMT_/cAbsEnd*|_       ***
+***************************************************************
+
+****************************************************************
+***   3. Timer version  (increase this number to reset all timers)     ***
+****************************************************************
+*** _cTVers*|_0_/cTVers*|_                                                                         ***
+****************************************************************
+
+_/nc***_  
+ _/command__/n*_
+
+
+
+
+
+_/insert_
+_insert_
+_n*_formPlacement_/n*_
+_n*_reqCommand_/n*_
+_/insert_ 
+
+_/textData!!_
+
+_/n*!!***!_
+_/nextCommand!*!!_  
+
+
+
+_nextCommand!*!!_ 
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000115_/n*!!***!_
+_n*!!***!_commandEnrollGuests_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_contentAdministrator_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+_textData!!_
+ 
+<p></p>
+ <H2>Enroll Guests</H2>
+_insert_
+_n*_formInitialization_/n*_
+_n*_reqCommand_/n*_
+_n*_index.cgi?comEx=yes_/n*_
+_/insert_
+_insert_
+_n*_textAreaField_/n*_
+_n*_reqCommand_/n*_
+_n*_commands_/n*_
+_n*_Enroll guests by editing the form below._/n*_
+_n*_ 
+ _command_
+DO NOT EDIT THIS LINE:_nc***_addStudentsToExam_/nc***_
+EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_ 
+Edit names below. Add more analogolus lines if necessary._nc***_
+_st*|__n*|_Firstname01 Lastname01_/n*|__/st*|_
+_st*|__n*|_Firstname02 Lastname02_/n*|__/st*|_  
+Number of files that students will be allowed to submit:
+_nf*|_0_/nf*|_ 
+_/nc***_  
+ _/command__/n*_
+
+
+
+
+
+_/insert_
+_insert_
+_n*_formPlacement_/n*_
+_n*_reqCommand_/n*_
+_/insert_ 
 
 _/textData!!_
 
