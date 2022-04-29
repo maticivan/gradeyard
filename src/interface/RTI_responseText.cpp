@@ -169,8 +169,10 @@ namespace RTI{
     }
     labelOnTheSubmitButton="Update and Save";
     instructionsOnTopOfTheForm="";
+    timerCode="";
     messageUnavailableYet="<B>"+MWII::GL_WI.getDefaultWebText("The exam has not started yet. Please visit again later.")+"</B>";
     messageNoGradingYet="<B>" + MWII::GL_WI.getDefaultWebText("The exam cannot be graded now. Either the grading is over or the exam is not ready yet.")+"</B>";
+    messageStartExam= MWII::GL_WI.getDefaultWebText("Click on the button below when you are ready.");
     req=closestLegalRequest(_psd,req);
     if(req=="rw"){
       return prepare(_psd,rawText);
@@ -692,8 +694,30 @@ namespace RTI{
       rInf.prefixForExamPDF="ef_";
       rInf.addNameIndicator="no";
       rInf.acceptGrade=0;
+      rInf.commAllowedTime="notFound";
+      rInf.commAbsoluteEnd="notFound";
+      rInf.commTimerVersion=0;
+      rInf.indEndingTime="notFound";
+      rInf.indTimerVersion=0;
+      rInf.userCanTakeActionAndActivateExam=0;
+      rInf.potentialEndingTimeIfExamStartsNow="notFound";
+      rInf.actRequest=0;
+      rInf.remainingSeconds=-1;
+      rInf.roundingTimeSec=30;
       long pos;
       std::pair<std::string,int> allD;
+      pos=0;allD=SF::extract(rawText,pos,s_iEnd_QRTB,s_iEnd_QRTE);
+      if(allD.second==1){
+        rInf.indEndingTime=allD.first;
+      }
+      pos=0;allD=SF::extract(rawText,pos,s_iTVersion_QRTB,s_iTVersion_QRTE);
+      if(allD.second==1){
+        long tmpLong=BF::stringToInteger(allD.first);
+        if(tmpLong>-1){
+          rInf.indTimerVersion=tmpLong;
+        }
+      }
+
       pos=0;allD=SF::extract(rawText,pos,s_statusOfTheForm_ARTB,s_statusOfTheForm_ARTE);
       rInf.statusOfTheForm="nyo";
       if(allD.second==1){
@@ -756,7 +780,26 @@ namespace RTI{
           if(allD.second==1){
             messageNoGradingYet=allD.first;
           }
+          pos=0; allD=SF::extract(masterStatusRawData,pos,s_needsActivation_QRTB,s_needsActivation_QRTE);
+          if(allD.second==1){
+            messageStartExam=allD.first;
+          }
           rInf.statusOfTheForm=masterStatus;
+          pos=0;allD=SF::extract(masterStatusRawData,pos,s_cAllowedTime_QRTB,s_cAllowedTime_QRTE);
+          if(allD.second==1){
+            rInf.commAllowedTime=allD.first;
+          }
+          pos=0;allD=SF::extract(masterStatusRawData,pos,s_cAbsEnd_QRTB,s_cAbsEnd_QRTE);
+          if(allD.second==1){
+            rInf.commAbsoluteEnd=allD.first;
+          }
+          pos=0;allD=SF::extract(masterStatusRawData,pos,s_cTVersion_QRTB,s_cTVersion_QRTE);
+          if(allD.second==1){
+            long tmpLong=BF::stringToInteger(allD.first);
+            if(tmpLong>-1){
+              rInf.commTimerVersion=tmpLong;
+            }
+          }
         }
         if(GL_FORM_POSSIBLE_STATUS.checkForLegalStatus(rInf.statusOfTheForm)=="no"){
           rInf.statusOfTheForm="nyo";
@@ -931,16 +974,53 @@ namespace RTI{
             rInf.submittedAnswers[tmpUsr.first]=tmpUsr.second[1];
           }
       }
+
+      std::map<std::string,std::string>::const_iterator itAct;
+      itAct=_psd.respMap.find("act");
+      if(itAct!=_psd.respMap.end()){
+        if((itAct->second.length()>0)&&((itAct->second[0]=='y')||(itAct->second[0]=='Y'))){
+          rInf.actRequest=1;
+        }
+      }
       std::vector<long> sv= getStatusVector(_psd,_req,rInf.statusOfTheForm);
       rInf.acceptResp=sv[0];
       rInf.displaySol=sv[1];
       rInf.displayPoints=sv[2];
       rInf.displayComments=sv[3];
       rInf.displayQs=sv[4];
+      rInf= TFTI::analyzeTimerAndUpdateInfo(rInf);
+      if(rInf.userCanTakeActionAndActivateExam==1){
+        if(rInf.actRequest==0){
+          rInf.acceptResp=0;rInf.displaySol=0;rInf.displayPoints=0;rInf.displayComments=0;rInf.displayQs=0;
+        }
+        else{
+          rInf.acceptResp=1;rInf.displayQs=1;rInf.displaySol=0;rInf.displayPoints=0;rInf.displayComments=0;
+          pos=0;allD=SF::extractAndReplace(rawText,pos,s_iEnd_QRTB,s_iEnd_QRTE,0,s_iEnd_QRTB+rInf.potentialEndingTimeIfExamStartsNow+s_iEnd_QRTE);
+          if(allD.second==1){
+            rawText=allD.first;
+          }
+          else{
+            rawText = s_iEnd_QRTB+rInf.potentialEndingTimeIfExamStartsNow+s_iEnd_QRTE+rawText;
+          }
+          pos=0;allD=SF::extractAndReplace(rawText,pos,s_iTVersion_QRTB,s_iTVersion_QRTE,0,s_iTVersion_QRTB+std::to_string(rInf.commTimerVersion)+s_iTVersion_QRTE);
+          if(allD.second==1){
+            rawText=allD.first;
+          }
+          else{
+            rawText = s_iTVersion_QRTB+std::to_string(rInf.commTimerVersion)+s_iTVersion_QRTE+rawText;
+          }
+          pos=0;allD=SF::extractAndReplace(initText,pos,s_tDataB,s_tDataE,0,s_tDataB+rawText+s_tDataE);
+          if( allD.second==1 ){
+            initText=allD.first;
+            meRM.setTextData(initText);
+            meRM.putInDB();
+          }
+        }
+      }
       rInf.exitStatus="ok";
       mainFileInfoVector=rInf.fileInfoV;
       myDocType=rInf.documentType;
-      rInf.indicatorOfPOST= analyzeAccessAndReportSuspiciousBehavior(_psd);
+      rInf.indicatorOfPOST= analyzeAccessAndReportSuspiciousBehavior(_psd); 
       return rInf;
   }
   std::string ResponderInfo::debuggingPrint() const{
@@ -962,6 +1042,15 @@ namespace RTI{
     for(long i=0;i<sz;++i){
       rifd+=( fileInfoV)[i]+"<BR>";
     }
+    rifd+="Common allowed time for all users: "+commAllowedTime+"<BR>";
+    rifd+="Common absolute end for all users: "+commAbsoluteEnd+"<BR>";
+    rifd+="Common timer version for all users: "+std::to_string(commTimerVersion)+"<BR>";
+    rifd+="Individual ending time (if set): "+indEndingTime+"<BR>";
+    rifd+="Individual timer version: "+std::to_string(indTimerVersion)+"<BR>";
+    rifd+="User can take action and activate: "+std::to_string(userCanTakeActionAndActivateExam)+"<BR>";
+    rifd+="Ending time if exam starts now: "+potentialEndingTimeIfExamStartsNow+"<BR>";
+    rifd+="Activation requested: "+std::to_string(actRequest)+"<BR>";
+    rifd+="Remaining time in seconds: "+std::to_string(remainingSeconds)+"<BR>";
     sz=( gradersComments).size();
     rifd+="gradersComments size: "+std::to_string(sz)+"<BR>";
     std::map<std::string,std::string>::const_iterator it,itE=( gradersComments).end();
@@ -1414,6 +1503,16 @@ namespace RTI{
     if(res.exitStatus=="badForm"){
       return "";
     }
+    if(res.remainingSeconds>-1){
+      timerCode=MWII::GL_WI.getDefaultWebText("TimerJS");
+      if(timerCode.length() < 10){
+        timerCode="";
+      }
+      else{
+        timerCode=SF::findAndReplace(timerCode,s_tmSecRepl,std::to_string(res.remainingSeconds));
+      }
+    }
+    instructionsOnTopOfTheForm=SF::findAndReplace(instructionsOnTopOfTheForm,s_timerRepl,timerCode);
     std::string editV01;
     std::string hd="",ft="",md="";
     lD_ep.studentName=res.idInfoData;
@@ -1442,7 +1541,21 @@ namespace RTI{
       res.acceptResp=0;
     }
     if(res.displayQs==0){
-      if(res.documentType==st_responseToTest){hd=messageUnavailableYet;}
+      if(res.documentType==st_responseToTest){
+        if(res.userCanTakeActionAndActivateExam==1){
+          hd=messageStartExam;
+          hd+="<p></p>\n";
+          hd+="<p><center>";
+          std::string url="index.cgi?r=";
+          url+=meRM.getTextName();
+          url+="&act=yes";
+          hd+=HSF::createButtonLink(url,MWII::GL_WI.getDefaultWebText("Start"),"standardSize","dark");
+          hd+="</center></p>\n";
+        }
+        else{
+          hd=messageUnavailableYet;
+        }
+      }
       if(res.documentType==st_gradeOfResponse){hd=messageNoGradingYet;}
     }
     std::string parametersForBackToGradeRoom="";
@@ -1748,6 +1861,55 @@ namespace RTI{
       newRawT+="_/st*|_\n";
     }
     rawText=newRawT;
+    pos=0;allD=SF::extractAndReplace(initText,pos,s_tDataB,s_tDataE,0,s_tDataB+rawText+s_tDataE);
+    if( allD.second==1 ){
+      initText=allD.first;
+      meRM.setTextData(initText);
+      meRM.putInDB();
+    }
+    return "!success!";
+  }
+  std::string Response::editTimer(const PSDI::SessionData &_psd, const std::string &_options){
+    int workDone=0;
+
+    std::string allTime="3600";
+    std::string absEnd="Wed, 29 Apr 3333 19:00:00 GMT";
+    std::string timerVersion="0";
+    std::pair<std::string,int> allD;long pos;
+    pos=0;allD=SF::extract(_options,pos,s_cAllowedTime_QRTB,s_cAllowedTime_QRTE);
+    if(allD.second==1){
+      allTime=allD.first;
+    }
+    pos=0;allD=SF::extract(_options,pos,s_cAbsEnd_QRTB,s_cAbsEnd_QRTE);
+    if(allD.second==1){
+      absEnd=allD.first;
+    }
+    pos=0;allD=SF::extract(_options,pos,s_cTVersion_QRTB,s_cTVersion_QRTE);
+    if(allD.second==1){
+      timerVersion=allD.first;
+    }
+    pos=0;allD=SF::extractAndReplace(rawText,pos,s_cAllowedTime_QRTB,s_cAllowedTime_QRTE,0,s_cAllowedTime_QRTB+allTime+s_cAllowedTime_QRTE);
+    if(allD.second==1){
+      rawText=allD.first;
+    }
+    else{
+      rawText=s_cAllowedTime_QRTB+allTime+s_cAllowedTime_QRTE+rawText;
+    }
+    pos=0;allD=SF::extractAndReplace(rawText,pos,s_cAbsEnd_QRTB,s_cAbsEnd_QRTE,0,s_cAbsEnd_QRTB+absEnd+s_cAbsEnd_QRTE);
+    if(allD.second==1){
+      rawText=allD.first;
+    }
+    else{
+      rawText=s_cAbsEnd_QRTB+absEnd+s_cAbsEnd_QRTE+rawText;
+    }
+
+    pos=0;allD=SF::extractAndReplace(rawText,pos,s_cTVersion_QRTB,s_cTVersion_QRTE,0,s_cTVersion_QRTB+timerVersion+s_cTVersion_QRTE);
+    if(allD.second==1){
+      rawText=allD.first;
+    }
+    else{
+      rawText=s_cTVersion_QRTB+timerVersion+s_cTVersion_QRTE+rawText;
+    }
     pos=0;allD=SF::extractAndReplace(initText,pos,s_tDataB,s_tDataE,0,s_tDataB+rawText+s_tDataE);
     if( allD.second==1 ){
       initText=allD.first;
