@@ -29,8 +29,6 @@ namespace TMF{
   const long GLOBAL_DAYS_IN_MONTHS_IN_NONLEAP_YEAR[12]={
           31,28,31,30,31,30,31,31,30,31,30,31
         };
-
-
   long numDaysInYear(const long & y){
     if( y%4!=0){
       return 365;
@@ -78,9 +76,7 @@ namespace TMF{
         d+=GLOBAL_DAYS_IN_MONTHS_IN_NONLEAP_YEAR[j];
       }
     }
-
     return d;
-
   }
   long getSecondsSinceYYYY(const std::vector<long> & _t,const long & _yS=1900){
     // _t has the form (y,m,d,hr,min,sec);
@@ -98,12 +94,10 @@ namespace TMF{
      long bigYearBlockNDays=400*365+97;
      fR[0] += 400 *(_d/bigYearBlockNDays);
      long d=_d%bigYearBlockNDays;
-
      while(d>numDaysInYear(fR[0])){
        d-=numDaysInYear(fR[0]);
        fR[0]+=1;
      }
-
      if(d>31){
        fR[1] +=1;
        d-=31;
@@ -132,7 +126,6 @@ namespace TMF{
          return fR;
        }
      }
-
      for(long j=2;j<11;++j){
         if(d>GLOBAL_DAYS_IN_MONTHS_IN_NONLEAP_YEAR[j]){
          d-=GLOBAL_DAYS_IN_MONTHS_IN_NONLEAP_YEAR[j];
@@ -142,8 +135,6 @@ namespace TMF{
           fR[2]=d;
           return fR;
         }
-
-
      }
      fR[2]=d;
      return fR;
@@ -157,7 +148,6 @@ namespace TMF{
       std::vector<long> empty;empty.resize(0);return empty;
     }
     std::vector<long> tmp=_t;
-
     if(tmp[5]>59){
       tmp[4] += (tmp[5])/60;
       tmp[5] = (tmp[5])%60;
@@ -179,7 +169,6 @@ namespace TMF{
     tmp[0]=ymd[0];tmp[1]=ymd[1];tmp[2]=ymd[2];
     return tmp;
   }
-
   std::vector<long> stGMT_to_timeVectorTMF(const std::string & _input){
     // returns (Yr, Mo, Dy, Hr, Min, Sec)
     // input should be of the form
@@ -236,7 +225,6 @@ namespace TMF{
 
   class Timer{
   private:
-
     long timerStart;
     long timerEnd;
     long timerInProgress;
@@ -248,7 +236,6 @@ namespace TMF{
     double getTime() const;
     std::string dayOfTheWeekAbbreviation(const long &) const;
     std::string monthAbbreviation(const long &) const;
-
     std::vector<long> timeNowVector() const;
     // returns (year,month,day,hour,minute,second,dayOfTheWeek)
     // month \in {0,1,..., 11}
@@ -272,12 +259,9 @@ namespace TMF{
     std::string timeYYYYMM(const std::vector<long> &) const;
     std::string timeYYYY() const;
     std::string timeYYYY(const std::vector<long> &) const;
-
     std::string timeString() const;
     std::string timeString(const std::vector<long> &) const;
-
     std::vector<long> addTime(const std::vector<long> & , const std::vector<long> & ) const;
-
   };
   Timer::Timer(const long & _inProgress){
     timerInProgress=_inProgress;
@@ -314,7 +298,6 @@ namespace TMF{
     long m=_m;
     while(m<0){m+=GLOBAL_NUM_MONTHS_IN_YEAR;}
     return GLOBAL_MONTHS_A[m%GLOBAL_NUM_MONTHS_IN_YEAR];
-
   }
   std::vector<long> Timer::addTime(const std::vector<long> & _t7, const std::vector<long> & _add6) const{
     // _t has 7 components:
@@ -340,12 +323,10 @@ namespace TMF{
     if(_add6[3]<0){return empty;}
     if(_add6[4]<0){return empty;}
     if(_add6[5]<0){return empty;}
-
     long carryOverDays=0;
     long sec=_t7[5]+_add6[5];
     long min=_t7[4]+_add6[4];
     long hr=_t7[3]+_add6[3];
-
     if(sec>59){
       min += sec/60;
       sec = sec%60;
@@ -361,8 +342,6 @@ namespace TMF{
     std::vector<long> fR;
     fR=_t7;
     fR[6]=(_t7[6]+carryOverDays)%GLOBAL_NUM_DAYS_IN_WEEK;
-
-
     std::vector<long> temp;
     temp.resize(6);
     for(long i=0;i<6;++i){temp[i]=fR[i];}
@@ -385,19 +364,15 @@ namespace TMF{
     fR[1]=ptm->tm_mon;
     fR[0]=ptm->tm_year+1900;
     fR[6]=ptm->tm_wday;
-
-
     return fR;
   }
   std::string Timer::timeString(const std::vector<long> &v) const{
-
     std::string fR="";
     if(v.size()!=7){
       return "";
     }
     fR+=dayOfTheWeekAbbreviation(v[6]);
     fR+=", ";
-
     fR+=BF::padded(v[2],10,"0");
     fR+=" "+monthAbbreviation(v[1])+" "+std::to_string(v[0])+" ";
     fR+=BF::padded(v[3],10,"0");
@@ -428,7 +403,6 @@ namespace TMF{
     return std::to_string(v[0]);
   }
   std::string Timer::timeYYYY() const{return timeYYYY(timeNowVector());}
-
   std::string Timer::cookieExpiration(const std::vector<long> & v) const{
     if(v.size()!=6){
       return "";
