@@ -63,6 +63,7 @@ namespace MWII{
 #include "CAGI_codeAutoGrader.cpp"
 #include "APTI_abstractPageText.cpp"
 #include "MPTI_mainPageText.cpp"
+#include "TFTI_timerForTests.cpp"
 #include "RTI_responseText.cpp"
 #include "STI_statText.cpp"
 #include "CEVI_customizeExamVersions.cpp"
