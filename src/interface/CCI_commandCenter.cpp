@@ -437,7 +437,6 @@ namespace CCI{
     }
     return _s.removeFromHierarchy(arguments[0],arguments[1]);
   }
-
   std::string Command::executeAssignGraders(SII::SessionInformation &_s){
     long correctSizeForThisCommand=2;
     long sz=arguments.size();
@@ -446,7 +445,14 @@ namespace CCI{
     }
     return _s.assignGraders(arguments[0],arguments[1]);
   }
-
+  std::string Command::executeEditTimer(SII::SessionInformation &_s){
+    long correctSizeForThisCommand=2;
+    long sz=arguments.size();
+    if((type!="editTimer")||(sz!=correctSizeForThisCommand)){
+      return "!failed!:badCommand: Called editTimer method with wrong number of arguments";
+    }
+    return _s.editTimer(arguments[0],arguments[1]);
+  }
   std::string Command::executeEnrollStudents(SII::SessionInformation &_s){
     long correctSizeForThisCommand=4;
     long sz=arguments.size();
@@ -578,6 +584,9 @@ namespace CCI{
     }
     if(type=="assignGraders"){
       return executeAssignGraders(_s);
+    }
+    if(type=="editTimer"){
+      return executeEditTimer(_s);
     }
     if(type=="enrollStudents"){
       return executeEnrollStudents(_s);
