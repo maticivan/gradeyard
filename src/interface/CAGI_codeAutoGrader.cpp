@@ -105,14 +105,19 @@ namespace CAGI{
         scoreByNow+=cInfo.pointsTestCases[i];
       }
       pos=0;allD=SF::extract(agParameters,pos,"_revealTestCasesAfterGrading_","_/revealTestCasesAfterGrading_");
+      std::vector<std::string> defaultReveals;
+      defaultReveals.resize(numTestCases);
+      for(long i=0;i<numTestCases;++i){
+        defaultReveals[i]="no";
+      }
       if(allD.second==0){
-        cInfo.revealTestCasesAfterGrading.resize(numTestCases);
-        for(long i=0;i<numTestCases;++i){
-          cInfo.revealTestCasesAfterGrading[i]="no";
-        }
+        cInfo.revealTestCasesAfterGrading=defaultReveals;
       }
       else{
         cInfo.revealTestCasesAfterGrading=SF::stringToVector(allD.first,"_n*_","_/n*_");
+        if(cInfo.revealTestCasesAfterGrading.size()!=numTestCases){
+          cInfo.revealTestCasesAfterGrading=defaultReveals;
+        }
       }
       pos=0;allD=SF::extract(agParameters,pos,"_pointsTestCases_","_/pointsTestCases_");
       if(allD.second==1){
