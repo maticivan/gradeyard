@@ -6296,8 +6296,9 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
- 
+
+
+
 
  <H2>Generate PDF files for exam</H2>
 _insert_
@@ -6323,9 +6324,28 @@ If you want to generate latex documents for in-class exams, then in the followin
 with versions of the exams. 
 
 *****************************************************
+*** Other options (work only if inClassExams parameter ***
+*** is different from "no"                                                      ***
+*****************************************************
+*****************************************************
+*** _numExams*|_30_/numExams*|_                                 ***
+*** _versionIndex*|_2_/versionIndex*|_                              ***
+*** _versionShift*|_0_/versionShift*|_                                ***
+*** Cover page/ text before problems                               ***
+ _before*|_ _|*StudentCode*|_ 
+\begin{center} Exam  \end{center}       
+                               \cleardoublepage 
+_/before*|_ 
+*****************************************************
+*** Blank pages after the exam are controlled with          ***
+_after*|_ _|*StudentCode*|_ 
+\cleardoublepage
+_/after*|_ 
+*****************************************************
 *** _inClassExams*|_no_/inClassExams*|_ ***
 *****************************************************
 The word no in the command before should be replaced with the following (or similar) text:
+
 
 _inCommandInsert_
 _n*_randomExamVersions_/n*_
