@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -2122,9 +2122,37 @@ namespace SII{
     }
     std::vector<std::string> rawTextInClassExamVersions;
     pos=0;allD=SF::extract(_dForReporting,pos,"_inClassExams*|_","_/inClassExams*|_");
+    psd.pdfBeforeProblems="";
+    psd.pdfAfterProblems="";
+    std::string preGeneratedCodes="";
+    long numberOfExamsToGenerate=-1;
+    long versionIndex=0;
+    long versionShift=0;
     if((allD.second==1) && (allD.first!="no") && (allD.first!="n")) {
       psd.indChangeRespRecToPrintVersionOfCommonInClassExam=1;
       rawTextInClassExamVersions=SF::stringToVector(allD.first,"_n*_","_/n*_");
+
+
+      pos=0;allD=SF::extract(_dForReporting,pos,"_before*|_","_/before*|_");
+      if(allD.second==1){psd.pdfBeforeProblems=allD.first;}
+      pos=0;allD=SF::extract(_dForReporting,pos,"_after*|_","_/after*|_");
+      if(allD.second==1){psd.pdfAfterProblems=allD.first;}
+
+      pos=0;allD=SF::extract(_dForReporting,pos,"_preGeneratedCodes*|_","_/preGeneratedCodes*|_");
+      if(allD.second==1){preGeneratedCodes=allD.first;}
+      pos=0;allD=SF::extract(_dForReporting,pos,"_numExams*|_","_/numExams*|_");
+      if(allD.second==1){
+        numberOfExamsToGenerate=BF::stringToInteger(allD.first);
+      }
+      pos=0;allD=SF::extract(_dForReporting,pos,"_versionIndex*|_","_/versionIndex*|_");
+      if(allD.second==1){
+        versionIndex=BF::stringToInteger(allD.first);
+      }
+      pos=0;allD=SF::extract(_dForReporting,pos,"_versionShift*|_","_/versionShift*|_");
+      if(allD.second==1){
+        versionShift=BF::stringToInteger(allD.first);
+      }
+
     }
     if(textExists==0){
       return "!failed!: Exam does not exist";
@@ -2148,11 +2176,34 @@ namespace SII{
               psd.probVersionsOfChangedRespRec=rawTextInClassExamVersions[j];
               texSourceFiles[j]=rtTemp.prepareDefaultRequest(psd,"pm");
             }
-            for(long j=0;j<numVersions;++j){
-              str_pdfSummary_IfCalledFor+=texSourceFiles[j];
+            std::vector<std::string> allCodes=SF::stringToVector(preGeneratedCodes,"_n*_","_/n*_");
+            long numExams=numVersions;
+            if(allCodes.size()>1){
+              numExams=allCodes.size();
+            }
+            else{
+              if((numberOfExamsToGenerate>1)&&(numVersions>0)){
+                numExams=numberOfExamsToGenerate;
+                allCodes=LMF::genCodes(numExams,7,numVersions,versionShift,versionIndex);
+              }
+              else{
+                allCodes.resize(numVersions);
+              }
+            }
+            if(numVersions>0){
+              for(long j=0;j<numExams;++j){
+                str_pdfSummary_IfCalledFor+=LMF::addCodeToSource(texSourceFiles[j%numVersions],allCodes[j]);
+              }
             }
             psd.pdfNameForInclassExam=MWII::GL_WI.getPublicSystemFileLoc()+"/exIC"+RNDF::genRandCode(10);
             str_pdfSummary_IfCalledFor=LMF::finalizeLatexForInClassExam(str_pdfSummary_IfCalledFor,MWII::GL_WI.getDefaultWebText("examPreambleLatexTemplate"),psd.pdfNameForInclassExam, MWII::GL_WI.getPublicSystemFileLoc());
+            if(allCodes.size()>1){
+              std::string codesCommentedInLatexSource;
+              for(long i=0;i<allCodes.size();++i){
+                codesCommentedInLatexSource+="%%% _n*_"+allCodes[i]+"_/n*_\n";
+              }
+              str_pdfSummary_IfCalledFor=codesCommentedInLatexSource+str_pdfSummary_IfCalledFor;
+            }
             psd.pdfNameForInclassExam+=".pdf";
           }
         }
