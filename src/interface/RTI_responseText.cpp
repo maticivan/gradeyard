@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -1020,7 +1020,7 @@ namespace RTI{
       rInf.exitStatus="ok";
       mainFileInfoVector=rInf.fileInfoV;
       myDocType=rInf.documentType;
-      rInf.indicatorOfPOST= analyzeAccessAndReportSuspiciousBehavior(_psd); 
+      rInf.indicatorOfPOST= analyzeAccessAndReportSuspiciousBehavior(_psd);
       return rInf;
   }
   std::string ResponderInfo::debuggingPrint() const{
@@ -1709,7 +1709,7 @@ namespace RTI{
       lD_ep.answerBoxLatexTemplate=MWII::GL_WI.getDefaultWebText("answerBoxLatexTemplate");
       lD_ep.prefix=res.prefixForExamPDF;
       lD_ep.addNameIndicator=res.addNameIndicator;
-      return LMF::prepareExamForPrinting(lD_ep,_psd.indChangeRespRecToPrintVersionOfCommonInClassExam);
+      return LMF::prepareExamForPrinting(lD_ep,_psd.indChangeRespRecToPrintVersionOfCommonInClassExam,_psd.pdfBeforeProblems,_psd.pdfAfterProblems);
     }
     if(parametersForBackToGradeRoom!=""){
       std::string backLink="";
