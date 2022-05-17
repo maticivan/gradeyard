@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -178,7 +178,101 @@ namespace LMF{
     fR=htmlToLatexFormatting(fR);
     return fR;
   }
-  std::string prepareLatexSource(const LatexDataExamPaper & exam, const long &indInClass){
+  std::vector<std::string> uniqueRandomCodes(const long& numCodes,
+                                             const long& noiseSize,
+                                             const long& numVersions){
+    std::vector<std::string> res;
+    res.resize(numCodes);
+    long padNum=1;
+    while(padNum<numCodes){
+      padNum*=10;
+    }
+    padNum/=10;
+
+    std::vector<long> randP=RNDF::genRandPermutation(numCodes);
+    for(long i=0;i<numCodes;++i){
+      for(long j=0;j<noiseSize;++j){
+        res[i]+=std::to_string(RNDF::randNum(10));
+      }
+      res[i]+=BF::padded(randP[i],padNum,"0");
+    }
+    if(numCodes>0){
+      long csz=res[0].size();
+      if(csz>0){
+        std::vector<long> digitPermutation=RNDF::genRandPermutation(csz);
+        for(long i=0;i<numCodes;++i){
+          res[i]=BF::permuteString(res[i],digitPermutation);
+        }
+      }
+    }
+
+    return res;
+  }
+
+  std::vector<std::string> genCodes(const long& numCodes,
+                                    const long& noiseSize,
+                                    const long& numVersions,
+                                    const long& versionHidingShift=0,
+                                    const long& versionHidingIndex=0){
+    std::vector<std::string> res;
+    if(numCodes<1){return res;}
+    if(noiseSize<1){return res;}
+    if(numVersions<1){return res;}
+    if(versionHidingShift<0){return res;}
+    if(versionHidingIndex<0){return res;}
+    if(versionHidingIndex>noiseSize){return res;}
+    res=uniqueRandomCodes(numCodes,noiseSize,numVersions);
+    long padNum=1;
+    while(padNum<numVersions){
+      padNum*=10;
+    }
+    padNum/=10;
+    long sz=res.size();
+    long currentVersion=versionHidingShift;
+    std::string versionAddition;
+    char tmp;
+    for(long i=0;i<sz;++i){
+      currentVersion=currentVersion%numVersions;
+      versionAddition=BF::padded(currentVersion,padNum,"0");
+      if(versionAddition.size()>0){
+        tmp=versionAddition[0];
+        versionAddition[0]=res[i][versionHidingIndex];
+        res[i][versionHidingIndex]=tmp;
+      }
+      res[i]+=versionAddition;
+      ++currentVersion;
+    }
+    return res;
+  }
+  std::string addCodeToSource(const std::string & source,  const std::string & code, const std::string & codePlaceHolder="_|*StudentCode*|_"){
+    std::string replacementText="";
+    long sz=code.length();
+    if(sz>15){sz=15;}
+    long i=sz;
+    std::string toAdd;
+    while(i>0){
+      --i;
+      toAdd="&";
+      toAdd+=code[i];
+      replacementText=toAdd+replacementText;
+    }
+    std::string startingSpace="";
+    for(long i=0;i<15-sz;++i){
+      startingSpace+="&{ }^{ }";
+    }
+    replacementText=startingSpace+replacementText;
+    std::string startingCode,endingCode;
+    startingCode="\n \\noindent $\\;$ \\hfill $\\begin{array}{cc|ccccccccccccccc|}\\cline{3-17} ";
+    startingCode+="&&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ } \\\\ \n";
+    startingCode+="\\mbox{Code:} & ";
+    endingCode="\\\\ \n";
+    endingCode+="\\cline{3-17}\\end{array}$ \n\n";
+    endingCode+="$$\\quad$$\n\n";
+    replacementText=startingCode+replacementText+endingCode;
+    return SF::findAndReplace(source,codePlaceHolder,replacementText);
+
+  }
+  std::string prepareLatexSource(const LatexDataExamPaper & exam, const long &indInClass, const std::string &addOnTop="", const std::string &addToEnd=""){
     std::string fR="";
     long maxHeightForPage=25;
     std::string problemBreakString="\n\n\\vfill\n\n";
@@ -186,11 +280,7 @@ namespace LMF{
     std::string codeBoxTop="";
     if(indInClass==1){
       maxHeightForPage=75;
-      codeBoxTop+="\n \\noindent $\\;$ \\hfill $\\begin{array}{cc|ccccccccccccccc|}\\cline{3-17} ";
-      codeBoxTop+="&&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ } \\\\ \n";
-      codeBoxTop+="\\mbox{Code:} &&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ } &{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }\\\\ \n";
-      codeBoxTop+="\\cline{3-17}\\end{array}$ \n\n";
-      codeBoxTop+="$$\\quad$$\n\n";
+      codeBoxTop="_|*StudentCode*|_";
       pageBreakString+=codeBoxTop;
     }
     std::stack problems=exam.questionsStack;
@@ -225,6 +315,12 @@ namespace LMF{
     else{
       fR="%%%EXAM VERSION BEGIN%%%\n\n"+codeBoxTop+fR+ "\n\n \\cleardoublepage\n";
     }
+    if(addOnTop!=""){
+      fR=SF::findAndReplace(addOnTop,"_*codeBoxTop*_",codeBoxTop)+fR;
+    }
+    if(addToEnd!=""){
+      fR+=SF::findAndReplace(addToEnd,"_*codeBoxTop*_",codeBoxTop);
+    }
     return fR;
   }
   int createPdfFromTex(const std::string &lSource, const std::string &lFName, const std::string &storageLocation){
@@ -239,8 +335,8 @@ namespace LMF{
     IOF::sys_deleteFile(lFName+".tex");
     return 1;
   }
-  std::string prepareExamForPrinting(const LatexDataExamPaper & exam, const long & indInClass){
-    std::string lSource=prepareLatexSource(exam,indInClass);
+  std::string prepareExamForPrinting(const LatexDataExamPaper & exam, const long & indInClass, const std::string &beforeProblems, const std::string &afterProblems){
+    std::string lSource=prepareLatexSource(exam,indInClass,beforeProblems,afterProblems);
     if(indInClass==1){
       return lSource;
     }
