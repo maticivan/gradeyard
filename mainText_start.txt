@@ -6342,6 +6342,10 @@ _after*|_ _|*StudentCode*|_
 \cleardoublepage
 _/after*|_ 
 *****************************************************
+*** use existing codes by placing them between    ***
+*** the tags _n*_ and _/n*_ below                 ***
+_preGeneratedCodes*|_ _/preGeneratedCodes*|_
+*****************************************************
 *** _inClassExams*|_no_/inClassExams*|_ ***
 *****************************************************
 The word no in the command before should be replaced with the following (or similar) text:
