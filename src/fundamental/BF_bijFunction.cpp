@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -120,7 +120,18 @@ namespace BF{
   std::string cleanAllSpaces(const std::string &_input){
     return cleanSpaces(_input,1);
   }
-
+  std::string permuteString(const std::string & _in, const std::vector<long> & _p){
+    // assumes that _p is the permutation of {0, 1, ..., _in.size()-1}.
+    std::string out=_in;
+    long psz=_in.size();
+    if(_p.size() != psz){return out;}
+    for(long i=0;i<psz;++i){
+      if(_p[i]<psz){
+        out[i]=_in[_p[i]];
+      }
+    }
+    return out;
+  }
   long stringToInteger(const std::string &_s){
     std::string t=cleanSpaces(_s,1);
     long sign=1;
