@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -15,13 +15,14 @@
 //    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
 //    along with this program.  If not, see https://www.gnu.org/licenses/.
 
-#include "srcSecretCode/fundamental/SHF_standardHeaders.cpp"
-
-std::string GL_MAIN_SETUP_FILE_NAME="stSecretCode.txt";
-#include "srcSecretCode/fundamental/MTF_mainTable.cpp"
-#include "srcSecretCode/db/DD_databases.cpp"
-#include "srcSecretCode/graphs/MGG_mainGraphs.cpp"
-#include "srcSecretCode/interface/MWII_mainWI.cpp"
+#include "src/fundamental/SHF_standardHeaders.cpp"
+#include "src/fundamental/SAIOF_setupAndIO.cpp"
+std::string GL_MAIN_SETUP_FILE_NAME=SAIOF::get_GL_MAIN_SETUP_FILE_NAME();
+std::string GL_VERSION="1.001.2022.06.20";
+#include "src/fundamental/MTF_mainTable.cpp"
+#include "src/db/DD_databases.cpp"
+#include "src/graphs/MGG_mainGraphs.cpp"
+#include "src/interface/MWII_mainWI.cpp"
 
 int main() {
 
