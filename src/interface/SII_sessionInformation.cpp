@@ -142,6 +142,13 @@ namespace SII{
     if(debuggingModeRequest==s_deb_correctDebuggingModeReq){
       addToMainText(GF::GL_DEB_MESSAGES.prepareAllMessages(MWII::GL_WI.getDebuggingOptions()));
     }
+    if(MWII::GL_WI.getVersionStopOptions()!="stop"){
+      std::map<std::string,std::string>::const_iterator itM;
+      itM=(psd.respMap).find("version");
+      if(itM!=(psd.respMap).end()){
+        addToMainText(GL_VERSION);
+      }
+    }
   }
   std::vector<std::string> SessionInformation::envVars() const{return envVariables;}
   SessionInformation::SessionInformation(){
