@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -29,6 +29,8 @@ namespace WSI{
     std::string muE="_/websiteURL*!_";
     std::string mdOB="_debugging*!_";
     std::string mdOE="_/debugging*!_";
+    std::string vstOB="_versionStop*!_";
+    std::string vstOE="_/versionStop*!_";
 
 
     std::string cNB="_cookieName*!_";
@@ -79,6 +81,7 @@ namespace WSI{
       std::string default_wsName="websiteName";
       std::string default_wsURL="websiteURL";
       std::string default_dbOptions="no";
+      std::string default_vstOptions="noStop";
 
       std::string default_e_parPage="page1";
       std::string default_e_respRecReqRT="rrc1";
@@ -99,6 +102,7 @@ namespace WSI{
       std::string wsName=default_wsName;
       std::string wsURL=default_wsURL;
       std::string dbOptions=default_dbOptions;
+      std::string vstOptions=default_vstOptions;
 
       std::string fileUploadLoc=default_fileUploadLoc;
       std::string publicSystemFileLoc=default_publicSystemFileLoc;
@@ -137,13 +141,8 @@ namespace WSI{
       long q_on_page;
 
       std::map<std::string,std::string> defaultWebTexts;
-
       std::map<std::string,std::string> default_FindReplacePairs;
   public:
-
-
-
-
       void getSetupFromString(const std::string &);
       void changeAlphabet(const std::string &);
       void updateDefaultWebTexts(const std::string &);
@@ -152,6 +151,7 @@ namespace WSI{
       std::string getPublicSystemFileLoc() const;
       std::string getWSURL() const;
       std::string getDebuggingOptions() const;
+      std::string getVersionStopOptions() const;
       std::string getCookiePath() const;
       std::string getCookieName() const;
       std::string get_e_parPage() const;
@@ -193,12 +193,10 @@ namespace WSI{
       std::string getTheadOpenTag() const;
       std::string wrapTextToPreventAlphabetChange(const std::string & )const;
   };
-
-
-
   std::string Setup::getWSName() const{return wsName;}
   std::string Setup::getWSURL() const{return wsURL;}
   std::string Setup::getDebuggingOptions() const{return dbOptions;}
+  std::string Setup::getVersionStopOptions() const{return vstOptions;}
   std::string Setup::getUploadLoc() const{    return fileUploadLoc; }
   std::string Setup::getPublicSystemFileLoc() const{ return publicSystemFileLoc;}
   std::string Setup::getCookiePath() const{return cookiePath;}
@@ -208,7 +206,6 @@ namespace WSI{
   std::string Setup::get_e_formNameRT() const{return e_formNameRT;}
   std::string Setup::get_e_respSubmitReqRT() const{return e_respSubmitReqRT;}
   std::string Setup::get_e_respSubmitSuccRT() const{return e_respSubmitSuccRT;}
-
 
   std::string Setup::getChallengeImStorage() const{return challengeImages;}
   std::string Setup::getChallengeAnswStorage() const{return challengeAnswers;}
@@ -265,6 +262,7 @@ namespace WSI{
     sSt += mfB+default_wsName+mfE;
     sSt += muB+default_wsURL+muE;
     sSt += mdOB+default_dbOptions+mdOE;
+    sSt += vstOB+default_vstOptions+vstOE;
     sSt += cNB+default_cookieName+cNE;
 
     sSt += s_parPageB + default_e_parPage + s_parPageE;
@@ -289,6 +287,8 @@ namespace WSI{
 
       pos=0;
       dbOptions=(SF::extract(sSt,pos,mdOB,mdOE)).first;
+      pos=0;
+      vstOptions=(SF::extract(sSt,pos,vstOB,vstOE)).first;
       pos=0;
       cookieName=(SF::extract(sSt,pos,cNB,cNE)).first;
       pos=0;
