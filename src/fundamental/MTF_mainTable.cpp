@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -19,24 +19,6 @@
 #define _INCL_MYMAINTABLE_CPP
 
 
-#include "SSF_sortedSeq.cpp"
-#include "BF_bijFunction.cpp"
-#include "TMF_timer.cpp"
-#include "DEBMF_debuggingMessages.cpp"
-#include "HENCF_hashingEnc.cpp"
-#include "VSF_vectorSearches.cpp"
-#include "GF_globalInits.cpp"
-#include "RNDF_randomCodesAndPermutations.cpp"
-#include "SF_strings.cpp"
-#include "HSF_html_strings.cpp"
-#include "IOF_io.cpp"
-#include "ENCF_encryption.cpp"
-#include "LNF_labelsAndNumbers.cpp"
-#include "LMF_latexManipulation.cpp"
-#include "HCBF_htmlTagStorageForCodeBox.cpp"
-#include "SPREPF_statPreparation.cpp"
-#include "PASF_patternAnalysisStrings.cpp"
-#include "DERF_derangements.cpp"
 #include "PTKF_plainTextKeeper.cpp"
 #include "DISPPF_displayPreparations.cpp"
 #include "SACF_sanitize_and_check.cpp"
