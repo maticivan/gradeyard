@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -55,6 +55,7 @@ namespace SSF{
     AVLNode* rewireMin(AVLNode* );
     AVLNode* removeFromTree(AVLNode* , const TTT& , long & );
     AVLNode* duplicateTree(AVLNode*);
+    void clearAVLTree(AVLNode*);
     TTT avl_access(AVLNode* , const long & ) const;
   public:
     StatSeq();
@@ -71,7 +72,8 @@ namespace SSF{
     long operator+=(const StatSeq &);
     long operator-=(const TTT &);
     long operator-=(const StatSeq &);
-    long find(const TTT &) const;
+    long find(const TTT &, const long & = 0) const;
+    long lowerBound(const TTT &) const;
     void clear();
     TTT operator[](const long & ) const;
     virtual ~StatSeq();
@@ -229,6 +231,14 @@ namespace SSF{
     }
     return balance(root);
   }
+  template<typename TTT> void StatSeq<TTT>::clearAVLTree(AVLNode *root){
+    if(root!=nullptr){
+      clearAVLTree(root->leftChild);
+      clearAVLTree(root->rightChild);
+      delete root;
+    }
+    return;
+  }
   template<typename TTT> typename StatSeq<TTT>::AVLNode * StatSeq<TTT>::duplicateTree(AVLNode *root){
     AVLNode *newN;
     newN=nullptr;
@@ -294,12 +304,9 @@ namespace SSF{
     clear();
   }
   template<typename TTT> void StatSeq<TTT>::clear(){
-    long delSucc;
-    while(_dRoot!=nullptr){
-      delSucc=0;
-      _dRoot=removeFromTree(_dRoot,_dRoot->value,delSucc);
-      if(delSucc!=0){--_size;}
-    }
+    _size=0;
+    clearAVLTree(_dRoot);
+    _dRoot=nullptr;
   }
   template<typename TTT> long StatSeq<TTT>::erase(const TTT & _value){
     long delSucc=0;
@@ -352,7 +359,7 @@ namespace SSF{
     TTT irrelevantValue;
     return irrelevantValue;
   }
-  template<typename TTT> long StatSeq<TTT>::find(const TTT & _v) const{
+  template<typename TTT> long StatSeq<TTT>::find(const TTT & _v, const long & lowerBoundInsteadOfNegOne) const{
     AVLNode* researcher= _dRoot;
     long found=-1;
     long discardedLeft=0;
@@ -370,7 +377,13 @@ namespace SSF{
         }
       }
     }
+    if(found*lowerBoundInsteadOfNegOne==-1){
+      return discardedLeft;
+    }
     return found;
+  }
+  template<typename TTT> long StatSeq<TTT>::lowerBound(const TTT & _v) const{
+    return find(_v,1);
   }
 }
 #endif
