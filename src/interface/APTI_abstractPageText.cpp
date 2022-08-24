@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -1208,7 +1208,7 @@ namespace APTI{
     if(itM!=rinf.submittedAnswers.end()){
       userAnswer=itM->second;
     }
-    displStr=SF::findAndReplace(displStr,"_*userAnswer*_",userAnswer);
+    displStr=SF::findAndReplace(displStr,"_*userAnswer*_",HSF::codeDisplayForNonAdvanceUsers(userAnswer));
     std::map<std::string,CAGI::GradingResult> autoGradingMap;
     std::map<std::string,RTI::CodeAutoGraderInfo> autoGradingCodes;
     RTI::CodeAutoGraderInfo agData=CAGI::getAutoGraderCodeData(agrParameters,officialSolution,userAnswer,"100");
