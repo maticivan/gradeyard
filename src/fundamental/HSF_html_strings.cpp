@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -19,7 +19,6 @@
 #ifndef _INCL_HSF_HTML_STRINGS_CPP
 #define _INCL_HSF_HTML_STRINGS_CPP
 
-
 namespace HSF{
   std::string redirectIndexHTML_F(const std::string & redirectInfo, const std::string & wsURL){
     std::string fR="";
@@ -33,7 +32,6 @@ namespace HSF{
     fR+=wu+"\">"+wu+"</a>";
     fR+="</BODY></HTML>";
     return fR;
-
   }
   void parametersFromString(const std::string & sysDataStr,
                                   std::string & tCreated,
@@ -42,8 +40,6 @@ namespace HSF{
                                   std::string & modifiedBy,
                                   std::string & perm,
                                   std::string & dType){
-
-
     std::string s_createdB="_created!!_";
     std::string s_createdE="_/created!!_";
     std::string s_modifiedB="_modified!!_";
@@ -52,12 +48,10 @@ namespace HSF{
     std::string s_createdByE="_/createdBy!!_";
     std::string s_modifiedByB="_modifiedBy!!_";
     std::string s_modifiedByE="_/modifiedBy!!_";
-
     std::string s_permissionStringB="_permissionString!!_";
     std::string s_permissionStringE="_/permissionString!!_";
     std::string s_docTypeStringB="_documentType!!_";
     std::string s_docTypeStringE="_/documentType!!_";
-
     long p1=0;
     std::pair<std::string,int> allSDInTemp=SF::extract(sysDataStr,p1,s_createdB,s_createdE);
     if(allSDInTemp.second==1){
@@ -145,7 +139,6 @@ namespace HSF{
         }
         fR+=BF::removeASCII10AND13(tempLine)+ "\n";
       }
-
     }
     if(separator=="table"){
       fR+="</tbody></table>\n";
@@ -158,26 +151,16 @@ namespace HSF{
   std::string  tableFromStack(std::stack<std::vector<std::string> > &st, const std::string & tOpenTag, const std::string & thOpenTag){
     return tableOrCSVFromStack(st,"table",tOpenTag,thOpenTag);
   }
-
-
-
-
   std::string linkFromPair(const std::pair<std::string,std::string> & lp){
     return "<A href=\""+lp.first+"\">"+lp.second+"</A>";
   }
-
-    std::string createButtonLink(const std::string &uRL, const std::string &label, const std::string & bSize="btn-sm", const std::string & bOutline = "dark"){
-    /*if(bSize=="standardSize"){
-      return "<a href=\""+uRL+"\"><button type=\"button\" class=\"btn btn-outline-dark\">"+label+"</button></a>";
-    }
-    return "<a href=\""+uRL+"\"><button type=\"button\" class=\"btn btn-outline-dark "+bSize+"\">"+label+"</button></a>";
-     */
-        if(bSize=="standardSize"){
-            return "<a href=\""+uRL+"\"><button type=\"button\" class=\"btn btn-outline-"+bOutline+"\">"+label+"</button></a>";
-        }
-        return "<a href=\""+uRL+"\"><button type=\"button\" class=\"btn btn-outline-"+bOutline+" "+bSize+"\">"+label+"</button></a>";
+  std::string createButtonLink(const std::string &uRL, const std::string &label, const std::string & bSize="btn-sm", const std::string & bOutline = "dark"){
+      if(bSize=="standardSize"){
+          return "<a href=\""+uRL+"\"><button type=\"button\" class=\"btn btn-outline-"+bOutline+"\">"+label+"</button></a>";
+      }
+      return "<a href=\""+uRL+"\"><button type=\"button\" class=\"btn btn-outline-"+bOutline+" "+bSize+"\">"+label+"</button></a>";
   }
-    std::string buttonsBar(const std::stack<std::pair<std::string, std::string> > & _v, const std::string &location="mainText"){
+  std::string buttonsBar(const std::stack<std::pair<std::string, std::string> > & _v, const std::string &location="mainText"){
     std::stack<std::pair<std::string, std::string> > v=_v;
     std::string fR="";
     std::pair<std::string,std::string> topSt;
@@ -215,8 +198,6 @@ namespace HSF{
         tags[i]=SF::toLowerCase(tags[i]);
       }
     }
-
-
     fR.resize(sz);
     std::vector<long> remainingLettersToMatch,nSz;
     remainingLettersToMatch.resize(sz);nSz.resize(sz);
@@ -251,7 +232,6 @@ namespace HSF{
               counters[j] -= (nSz[j]-remainingLettersToMatch[j]);
               remainingLettersToMatch[j]=nSz[j];
             }
-
             ++counters[j];
             if(counters[j]==iLn){
               ++countersReachedLimit;
@@ -259,9 +239,22 @@ namespace HSF{
           }
         }
       }
-
     }
     return fR;
+  }
+  std::string codeDisplayForNonAdvanceUsers(const std::string& input,
+                                            const std::string& signAdvanced01="_code_",
+                                            const std::string& signAdvanced02="_cde_",
+                                            const std::string& addToFront="<pre>",
+                                            const std::string& addToBack="</pre>"
+                                            ){
+    std::string output = input;
+    if(input==SF::findAndReplace(input,signAdvanced01,"")){
+      if(input==SF::findAndReplace(input,signAdvanced02,"")){
+        output=addToFront+input+addToBack;
+      }
+    }
+    return output;
   }
   std::string urlEnvVarsFromForwardedParameters(const std::map<std::string,std::string> & respMap, const std::string & variable, const std::string & value, const std::string &forwardVariable, const std::string & forwardValue, const long & maxNumOfVarValTranslationsThatCanBeAddedThroughTheURLString=10){
     std::string fR;
@@ -274,7 +267,6 @@ namespace HSF{
     fR="page="+itEnvV->second;
     long i=0;std::string vr;std::string vl;
     while(i<maxNumOfVarValTranslationsThatCanBeAddedThroughTheURLString){
-
       itEnvV=respMap.find(forwardVariable+std::to_string(i));
       if(itEnvV!=itEnvVE){
         vr=itEnvV->second;
@@ -289,7 +281,6 @@ namespace HSF{
     }
     return fR;
   }
-
   int matchingTags(const std::string &input, const std::vector<std::string> & oT, const std::vector<std::string> & cT){
     long sz=oT.size();
     if(cT.size()!=sz){
@@ -306,7 +297,6 @@ namespace HSF{
     }
     std::vector<long> counts=countTags(input,allT);
     long i=0;
-
     while(i<sz){
       if(counts[i]!=counts[i+sz]){
         return 0;
@@ -315,9 +305,6 @@ namespace HSF{
     }
     return 1;
   }
-
-
-
   double letterToNumGrade(const std::string & l,const std::string & sch="Baruch"){
     double fR=-999.99;
     std::map<std::string,std::map<std::string,double> >::const_iterator iMB,iME;
@@ -334,7 +321,5 @@ namespace HSF{
     }
     return it->second;
   }
-
 }
-
 #endif
