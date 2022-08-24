@@ -11478,7 +11478,7 @@ _textData!!_
 
  <H1>Auto-grader testing</H1>
  
-<p>Here you can execute your code on several test cases and see whether it works. The code auto-grader will use test cases of a similar format. However, the test cases used for grading will be different than the ones you are seeing here. </p>
+<p>Below you can see the results of the execution of your code on public test cases. The grading will be based on secret test cases. The secret test cases will be of similar format, but they will be different from the public ones that you are seeing here. </p>
        
 _insert_
 _n*_codeTest_/n*_
