@@ -416,6 +416,13 @@ namespace RTI{
     fR+="<div class=\"col-sm-2\">"+lastComponent+"</div></div></div>\n <div class=\"card-body\">";
     return fR;
   }
+  std::string prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(const SingleQuestionInfo &sqi){
+    std::string answerPrepared=sqi.userAnswer;
+    if((sqi.autoGraderCodeData.language=="cpp")||(sqi.autoGraderCodeData.language=="py")){
+      answerPrepared=HSF::codeDisplayForNonAdvanceUsers(answerPrepared);
+    }
+    return answerPrepared;
+  }
   std::string Response::singleProblemDisplay(const SingleQuestionInfo &sqi, ProblemCommentsAndScores & pcas, long &fileCounter, double &pointsEarned) const{
     pointsEarned=-999.99;
     std::string fR="";
@@ -465,16 +472,14 @@ namespace RTI{
       fR+="</div>\n</div>";
       if((sqi.displType==s_textInputReqField)||(sqi.displType==s_textAreaReqField)){
          if((sqi.userAnswer!="notFound")&&(sqi.userAnswer!="")){
-           /*fR+="<div class=\"card\">\n<div class=\"card-body\">";
-           fR+="<div class=\"row\"><div class=\"col-sm-8\"> <B>"+MWII::GL_WI.getDefaultWebText("Current submission")+" </B></div>";
-           fR+="<div class=\"col-sm-4\">"+linkCodeAutograderTest+"</div></div>\n";*/
            fR+=submissionOpeningTags(sqi,MWII::GL_WI.getDefaultWebText("Current submission"),linkCodeAutograderTest);
+           std::string displUserAnswer=prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(sqi);
            if(sqi.displType==s_textInputReqField){
              DISPPF::RequestsForSanitizer reqS;
-             fR+=DISPPF::sanitizeForDisplay( sqi.userAnswer,reqS);
+             fR+=DISPPF::sanitizeForDisplay( displUserAnswer,reqS);
            }
            else{
-             fR+="<BR>"+DISPPF::prepareForHTMLDisplay(sqi.userAnswer);
+             fR+="<BR>"+DISPPF::prepareForHTMLDisplay(displUserAnswer);
            }
            fR+="</div></div> ";
         }
