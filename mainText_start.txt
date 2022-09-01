@@ -3144,8 +3144,7 @@ _/systemData!!_
 
 _textData!!_
 <p></p>
-<H1>Wrong Username or Password</H1>
-<P>Username and/or password are incorrect.</P>
+<H1>Wrong Username or Password</H1> 
 _/textData!!_
 
 _/n*!!***!_
