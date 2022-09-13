@@ -66,13 +66,8 @@ namespace PSDI{
 
     std::string masterKey;
     std::string respRecBackupText;
-
     std::vector<std::string> displayDaysInWeek;
     std::vector<std::string> displayMonthsInYear;
-
-
   };
 }
-
-
 #endif
