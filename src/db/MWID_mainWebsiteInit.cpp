@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -227,7 +227,7 @@ namespace MWID{
     fToInit+=".txt";
     std::string initCommands=IOF::fileToString(fToInit);
     if(initCommands!="fileNotFound"){
-      std::vector<std::vector<std::string> > allCommands=SF::getCommands(initCommands, "_nextCommand!*!!_", "_/nextCommand!*!!_", "_n*!!***!_", "_/n*!!***!_");
+      std::vector<std::vector<std::string> > allCommands=SF::stringToMatrix(initCommands, "_nextCommand!*!!_", "_/nextCommand!*!!_", "_n*!!***!_", "_/n*!!***!_");
       long sz=allCommands.size(),szIn;
       std::vector<std::string> kV;
       for(long i=0;i<sz;++i){
