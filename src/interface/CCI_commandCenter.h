@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -50,6 +50,7 @@ namespace CCI{
     std::string executeAddStudentsToExam(SII::SessionInformation &);
     std::string executeGeneratePdfsForExam(SII::SessionInformation &);
     std::string executeUpdateVersionsForExam(SII::SessionInformation &);
+    std::string executeExamBackupText(SII::SessionInformation &);
     std::string executeGenerateExam(SII::SessionInformation &);
     std::string executeDistributeExamToStudents(SII::SessionInformation &);
 
