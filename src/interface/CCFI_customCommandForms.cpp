@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -32,7 +32,6 @@ namespace CCFI{
     std::string editMessageW=" ";
     std::string textNameLabel="Text name:";
   };
-
   std::string createSimpleFormForTextEdit(const ArgsPowerModifyForm & apmf){
     std::string fR="_insert_\n";
     fR+="_n*_formInitialization_/n*_\n";
@@ -86,6 +85,16 @@ namespace CCFI{
     std::string enh="_command_\n_nc***_modifyText_/nc***_\n_nc***_"+_psd.pageRequested+"_/nc***_\n";
     enh+="_nc***_"+c+"_/nc***_\n_/command_";
     return enh;
+  }
+  std::string createRRBackupActivationText(const std::string & name, const std::string & action, const std::string & text){
+    std::string res="DO NOT EDIT THIS LINE_command_\n";
+    res+="DO NOT EDIT THIS LINE_nc***_"+action+"_/nc***_\n";
+    res+="DO NOT EDIT THIS LINE Text name:_nc***_"+name+"_/nc***_";
+    res+="START EDITING AFTER THIS LINE_nc***_\n";
+    res+=text;
+    res+="_/nc***_\n";
+    res+="DO NOT EDIT THIS LINE_/command_\n";
+    return res;
   }
 }
 
