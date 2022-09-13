@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -250,6 +250,7 @@ namespace SII{
     std::string enrollExistingStudentsToExam(const ExamAttributes & , const std::string & ,const std::string & );
     std::string genExamTemplate(const std::string &,const std::string &);
     std::string updateExamDocument(const std::string &,const std::string &,const std::string &);
+    std::string createRRBackup(const std::string& , const std::string & ) const;
     SPREPF::StatData prepareStatData() const;
 
     TMF::Timer timeToGenerateWebsite;
@@ -337,6 +338,7 @@ namespace SII{
     std::string generateExam(const std::string &, const std::string &);
     std::string generatePdfsForExam(const std::string &, const std::string &);
     std::string updateIndividualVersionsOfExam(const std::string &, const std::string &);
+    std::string createExamBackupText(const std::string &, const std::string &);
     std::string distributeExamToStudents(const std::string &, const std::string &);
     std::string createRespRec(const std::string &, const std::string &);
     std::string modifyRespRec(const std::string &, const std::string &, const std::string &);
