@@ -65,9 +65,14 @@ namespace PSDI{
     std::string pdfAfterProblems;
 
     std::string masterKey;
+    std::string respRecBackupText;
 
     std::vector<std::string> displayDaysInWeek;
     std::vector<std::string> displayMonthsInYear;
+
+
   };
 }
+
+
 #endif
