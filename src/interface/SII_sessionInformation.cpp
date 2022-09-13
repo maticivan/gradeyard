@@ -2333,9 +2333,7 @@ namespace SII{
         }
       }
     }
-    psd.respRecBackupText = createRRBackup(_eName,masterRRAction)+psd.respRecBackupText;
-  //  GF::GL_DEB_MESSAGES.addMessage("Hi!");
-  //  GF::GL_DEB_MESSAGES.addMessage("<pre>"+psd.respRecBackupText+"</pre>");
+    psd.respRecBackupText = createRRBackup(_eName,masterRRAction)+psd.respRecBackupText; 
     return "!success!: "+respRecRequested;
   }
   std::string SessionInformation::distributeExamToStudents(const std::string & _examTemplateName, const std::string & _distributionText){
