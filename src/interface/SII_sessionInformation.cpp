@@ -97,6 +97,9 @@ namespace SII{
     }
     else{
       fR+=mainRespRec.displayRespRec(psd);
+      if(psd.respRecBackupText!=""){
+        fR+=BI::textAreaField("probText",psd.respRecBackupText,15,100);
+      }
       fR+=DEBUGGING_ADDITIONS;
     }
     if(str_pdfSummary_IfCalledFor!=""){
@@ -2277,6 +2280,62 @@ namespace SII{
         }
       }
     }
+    return "!success!: "+respRecRequested;
+  }
+  std::string SessionInformation::createRRBackup(const std::string& rrName, const std::string & action) const{
+    RMD::Response ssf;
+    if(ssf.setFromTextName(rrName)){
+      std::string td=ssf.getTextData();
+      long pos;std::pair<std::string,int> allD;
+      pos=0;allD=SF::extract(td,pos,s_tDataB,s_tDataE);
+      if(allD.second==1){
+        td=allD.first;
+      }
+      return CCFI::createRRBackupActivationText(rrName,action,td);
+    }
+    return "notFound";
+  }
+  std::string SessionInformation::createExamBackupText(const std::string & _eName, const std::string & _commandsAndOptions){
+    if(allowedToCreateRespRec()==0){
+      return "!failed!: Not allowed";
+    }
+    RMD::Response sf;
+    int textExists=sf.setFromTextName(_eName);
+    if(textExists==0){
+      return "!failed!: Exam does not exist";
+    }
+    respRecRequested=sf.getTextName();
+    std::string rawTextRespRec=sf.getTextData();
+    std::string examRRAction="modifyResponseReceiver";
+    std::string gradingRRAction="modifyResponseReceiver";
+    std::string masterRRAction="modifyResponseReceiver";
+    long pos; std::pair<std::string, int> allD;
+    pos=0;allD=SF::extract(_commandsAndOptions,pos,"_examRRAction*_","_/examRRAction*_");
+    if(allD.second==1){
+      examRRAction=allD.first;
+    }
+    pos=0;allD=SF::extract(_commandsAndOptions,pos,"_gradingRRAction*_","_/gradingRRAction*_");
+    if(allD.second==1){
+      gradingRRAction=allD.first;
+    }
+    pos=0;allD=SF::extract(_commandsAndOptions,pos,"_masterRRAction*_","_/masterRRAction*_");
+    if(allD.second==1){
+      masterRRAction=allD.first;
+    }
+    pos=0;allD=SF::extract(rawTextRespRec,pos,s_tDataB,s_tDataE);
+    if(allD.second==1){
+      std::vector<std::vector<std::string> > allStudentFileNames=SF::stringToMatrix(allD.first,"_st*|_","_/st*|_","_n*|_","_/n*|_");
+      long sz=allStudentFileNames.size();
+      for(long i=0;i<sz;++i){
+        if(allStudentFileNames[i].size()>5){
+          psd.respRecBackupText +=createRRBackup( allStudentFileNames[i][0],examRRAction);
+          psd.respRecBackupText +=createRRBackup( allStudentFileNames[i][1],gradingRRAction);
+        }
+      }
+    }
+    psd.respRecBackupText = createRRBackup(_eName,masterRRAction)+psd.respRecBackupText;
+  //  GF::GL_DEB_MESSAGES.addMessage("Hi!");
+  //  GF::GL_DEB_MESSAGES.addMessage("<pre>"+psd.respRecBackupText+"</pre>");
     return "!success!: "+respRecRequested;
   }
   std::string SessionInformation::distributeExamToStudents(const std::string & _examTemplateName, const std::string & _distributionText){
