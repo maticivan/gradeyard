@@ -366,18 +366,26 @@ namespace RTI{
     fR+=_textBefore+"<BR>"+fileInfo+"_/n*__/insert_";
     return fR;
   }
+  std::string prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(const SingleQuestionInfo &sqi){
+    std::string answerPrepared=sqi.userAnswer;
+    if((sqi.autoGraderCodeData.language=="cpp")||(sqi.autoGraderCodeData.language=="py")){
+      answerPrepared=HSF::codeDisplayForNonAdvanceUsers(answerPrepared);
+    }
+    return answerPrepared;
+  }
   std::string Response::userAnswerDisplay(const SingleQuestionInfo &sqi, long &fileCounter) const{
     std::string fR="";
     fR+="<div class=\"card border-info text-dark\">\n<div class=\"card-body\">";
       if((sqi.userAnswer!="notFound")&&(sqi.userAnswer!="")){
         fR+="<B>"+MWII::GL_WI.getDefaultWebText("Answer submitted")+": </B> ";
+        std::string displUserAnswer=prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(sqi);
         if(sqi.displType==s_textInputReqField){
           DISPPF::RequestsForSanitizer reqS;
-          fR+=DISPPF::sanitizeForDisplay(sqi.userAnswer,reqS);
+          fR+=DISPPF::sanitizeForDisplay(displUserAnswer,reqS);
         }
         else{
           if(sqi.displType==s_textAreaReqField){
-            fR+="<BR>"+DISPPF::prepareForHTMLDisplay(sqi.userAnswer);
+            fR+="<BR>"+DISPPF::prepareForHTMLDisplay(displUserAnswer);
           }
           else{
             fR+=DISPPF::prepareForHTMLDisplay(sqi.userAnswer);
@@ -415,13 +423,6 @@ namespace RTI{
     fR+="<div class=\"row\"><div class=\"col-sm-10\"> <B>"+firstComponent+" </B></div>";
     fR+="<div class=\"col-sm-2\">"+lastComponent+"</div></div></div>\n <div class=\"card-body\">";
     return fR;
-  }
-  std::string prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(const SingleQuestionInfo &sqi){
-    std::string answerPrepared=sqi.userAnswer;
-    if((sqi.autoGraderCodeData.language=="cpp")||(sqi.autoGraderCodeData.language=="py")){
-      answerPrepared=HSF::codeDisplayForNonAdvanceUsers(answerPrepared);
-    }
-    return answerPrepared;
   }
   std::string Response::singleProblemDisplay(const SingleQuestionInfo &sqi, ProblemCommentsAndScores & pcas, long &fileCounter, double &pointsEarned) const{
     pointsEarned=-999.99;
