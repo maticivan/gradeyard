@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -373,6 +373,18 @@ namespace CCI{
     return _s.updateIndividualVersionsOfExam(arguments[0],arguments[1]);
   }
 
+  std::string Command::executeExamBackupText(SII::SessionInformation & _s){
+    long correctSizeForThisCommand=2;
+    //arguments:
+    // 0) textNameForExamTemplate
+    // 1) rawTextWithOtherOptions
+    long sz=arguments.size();
+    if((type!="examBackupText")||(sz!=correctSizeForThisCommand)){
+      return "!failed!:badCommand: Called examBackupText method with wrong number of arguments";
+    }
+    return _s.createExamBackupText(arguments[0],arguments[1]);
+  }
+
   std::string Command::executeDistributeExamToStudents(SII::SessionInformation & _s){
     long correctSizeForThisCommand=2;
     //arguments:
@@ -546,6 +558,9 @@ namespace CCI{
     }
     if(type=="updateVersionsForExam"){
       return executeUpdateVersionsForExam(_s);
+    }
+    if(type=="examBackupText"){
+      return executeExamBackupText(_s);
     }
     if(type=="addStudentsToExam"){
       return executeAddStudentsToExam(_s);
