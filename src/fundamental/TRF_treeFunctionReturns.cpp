@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -24,7 +24,6 @@ namespace TRF{
     HDPF::Pointer<HBF::Node<TTT> > aP;
     int success;
     int lastNodeRemovedAndTreeBecameEmpty;
-
     long indexOfComfortableSibling;
     long indexOfSiblingToMergeWith;
     HBF::Node<TTT> starRootAfterTrading;
@@ -40,14 +39,11 @@ namespace TRF{
     indexOfSiblingToMergeWith=-1;
     heightDecreased=0;
   }
-
-
   template<typename TTT> struct TreeInsertReturn{
   public:
     HDPF::Pointer<HBF::Node<TTT> > aP;
     int success;
     int nodeSplitIndicator;
-
     TTT centralValue;
     HDPF::Pointer<HBF::Node<TTT> > pointerToOldLocationOfTheCentralValue;
     long positionInNodeOfTheCentralValue;
@@ -63,7 +59,6 @@ namespace TRF{
     cLeft=0;
     cRight=0;
   }
-
 }
 
 #endif
