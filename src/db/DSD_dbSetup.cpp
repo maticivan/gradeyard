@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -21,7 +21,6 @@
 namespace DSD{
   class Setup{
   private:
-
       std::string mfB="_mainFolderDB*!_";
       std::string mfE="_/mainFolderDB*!_";
       std::string eIdB="_externalIDDB*!_";
@@ -36,20 +35,14 @@ namespace DSD{
       std::string cDBE="_/countersDB*!_";
       std::string fDBB="_fileManagement*!_";
       std::string fDBE="_/fileManagement*!_";
-
       std::string messDBB="_messageManagement*!_";
       std::string messDBE="_/messageManagement*!_";
-
       std::string couasDBB="_couasManagement*!_";
       std::string couasDBE="_/couasManagement*!_";
-
-
       std::string backupDBB="_backupDB*!_";
       std::string backupDBE="_/backupDB*!_";
       std::string backupMaxSZB="_backupMaxSZ*!_";
       std::string backupMaxSZE="_/backupMaxSZ*!_";
-
-
       std::string mTBB="_mainText*!_";
       std::string mTBE="_/mainText*!_";
       std::string rPBB="_responseDB*!_";
@@ -58,41 +51,28 @@ namespace DSD{
       std::string staPBE="_/statDB*!_";
       std::string fustaPBB="_fstDB*!_";
       std::string fustaPBE="_/fstDB*!_";
-
-
       std::string initTB="_initializerExtension*!_";
       std::string initTE="_/initializerExtension*!_";
-
       std::string sFSFB="_publicSubFolderToStoreFiles*!_";
       std::string sFSFE="_/publicSubFolderToStoreFiles*!_";
-
       std::string sFSFSysB="_publicSubFolderForSystemFiles*!_";
       std::string sFSFSysE="_/publicSubFolderForSystemFiles*!_";
-
       std::string sFSFGClB="_subFolderForGuestClones*!_";
       std::string sFSFGClE="_/subFolderForGuestClones*!_";
-
-
-
       std::string st_chImB="_publicSubFolderToStoreChallengeImages*!_";
       std::string st_chImE="_/publicSubFolderToStoreChallengeImages*!_";
       std::string st_chAnB="_privateSubFolderToStoreChallengeAnswers*!_";
       std::string st_chAnE="_/privateSubFolderToStoreChallengeAnswers*!_";
-
       std::string nSSFIFB="_numStorageSubFoldersInFolder*!_";
       std::string nSSFIFE="_/numStorageSubFoldersInFolder*!_";
       std::string nFIFB="_numFilesInFolder*!_";
       std::string nFIFE="_/numFilesInFolder*!_";
-
       std::string dcMountFolderB="_dcMountingFolder*!_";
       std::string dcMountFolderE="_/dcMountingFolder*!_";
       std::string dImageNameB="_dImageName*!_";
       std::string dImageNameE="_/dImageName*!_";
       std::string dMaxCodesToRunB="_codesToAutoGrade*!_";
       std::string dMaxCodesToRunE="_/codesToAutoGrade*!_";
-
-
-
       std::string default_extIdDB="mainFolderDB/externalIDDB";
       std::string default_mainFolder="mainFolderDB";
       std::string default_userNameDB="mainFolderDB/userNameDB";
@@ -114,17 +94,12 @@ namespace DSD{
       std::string default_guestClonesRelLoc="st";
       std::string default_challengeImages="c0";
       std::string default_challengeAnswers="mainFolderDB/a0";
-
       std::string default_dcMountFolder="dmountF11";
       std::string default_dImageName="ub_cpp_py11";
       long default_maxCodesToRun=10;
-
       long default_numSubFolders=100;
       long default_numFilesInFolder=100;
-
-
       std::string mainFolder=default_mainFolder;
-
       std::string extIdDB=default_extIdDB;
       std::string userNameDB=default_userNameDB;
       std::string hierarchy=default_hierarchy;
@@ -147,14 +122,11 @@ namespace DSD{
       std::string guestClonesRelLoc=default_guestClonesRelLoc;
       std::string challengeImages=default_challengeImages;
       std::string challengeAnswers=default_challengeAnswers;
-
       std::string dcMountFolder;
       std::string dImageName;
       long maxCodesToRun;
-
       long numSubFolders=default_numSubFolders;
       long numFilesInFolder=default_numFilesInFolder;
-
       std::string extIdDB_jN;
       std::string userNameDB_jN;
       std::string hierarchy_jN;
@@ -171,14 +143,8 @@ namespace DSD{
       std::string chIm_jN;
       std::string chAnsw_jN;
       std::string dcMountFolder_jN;
-
   public:
-
-
-
-
       void getSetupFromString(const std::string &);
-
       std::string getMainFolder() const;
       std::string getExternalIDDB() const;
       std::string getUserNameDB() const;
@@ -203,19 +169,12 @@ namespace DSD{
       std::string getChallengeAnswStorage() const;
       std::string getClonesMainDBFolder() const;
       std::string getClonesSystemFolder() const;
-
       std::string getMountFolder() const;
       std::string getImageName() const;
       long getMaxCodesToRun() const;
-
       long getNumSubFolders() const;
       long getNumFilesInFolder() const;
-
-
   };
-
-
-
   std::string Setup::getMainFolder() const{return mainFolder;}
   std::string Setup::getExternalIDDB() const{    return extIdDB; }
   std::string Setup::getUserNameDB() const{ return userNameDB;}
@@ -242,11 +201,8 @@ namespace DSD{
   std::string Setup::getMountFolder() const{return dcMountFolder;}
   std::string Setup::getImageName() const{return dImageName;}
   long Setup::getMaxCodesToRun() const{return maxCodesToRun;}
-
   long Setup::getNumSubFolders() const{return numSubFolders;}
   long Setup::getNumFilesInFolder() const{return numFilesInFolder;}
-
-
   void Setup::getSetupFromString(const std::string & fN){
       std::string sSt= fN ;
       sSt += mfB+default_mainFolder+mfE;
@@ -275,7 +231,6 @@ namespace DSD{
       sSt +=  dcMountFolderB + default_dcMountFolder+ dcMountFolderE;
       sSt += dImageNameB +default_dImageName+ dImageNameE;
       sSt += dMaxCodesToRunB+std::to_string(default_maxCodesToRun)+dMaxCodesToRunE;
-
       long pos=0;
       mainFolder=(SF::extract(sSt,pos,mfB,mfE)).first;
       pos=0;
@@ -325,7 +280,6 @@ namespace DSD{
       pos=0;
       chAnsw_jN=(SF::extract(sSt,pos,st_chAnB,st_chAnE)).first;
       challengeAnswers=mainFolder+"/"+chAnsw_jN;
-
       pos=0;
       dcMountFolder_jN=(SF::extract(sSt,pos,dcMountFolderB,dcMountFolderE)).first;
       dcMountFolder=mainFolder+"/"+dcMountFolder_jN;
@@ -333,36 +287,25 @@ namespace DSD{
       dImageName=(SF::extract(sSt,pos,dImageNameB,dImageNameE)).first;
       pos=0;
       maxCodesToRun=BF::stringToInteger((SF::extract(sSt,pos,dMaxCodesToRunB,dMaxCodesToRunE)).first);
-
       pos=0;
       initExtension=SF::extract(sSt,pos,initTB,initTE).first;
-
       pos=0;
       publicStorage=SF::extract(sSt,pos,sFSFB,sFSFE).first;
-
       pos=0;
       publicSystemStorage=SF::extract(sSt,pos,sFSFSysB,sFSFSysE).first;
-
-
-
       pos=0;
       guestClonesRelLoc=SF::extract(sSt,pos,sFSFGClB,sFSFGClE).first;
-
       folderMainDBGuestClone=mainFolder+"/"+guestClonesRelLoc;
       systemFolderClones=mainFolder+"/"+"sys_"+guestClonesRelLoc;
       if(guestClonesRelLoc.length()>0){
         if(guestClonesRelLoc[guestClonesRelLoc.length()-1]!='/'){
           guestClonesRelLoc+="/";
         }
-      } 
+      }
       pos=0;
       numSubFolders=BF::stringToInteger(SF::extract(sSt,pos,nSSFIFB,nSSFIFE).first);
       pos=0;
       numFilesInFolder=BF::stringToInteger(SF::extract(sSt,pos,nFIFB,nFIFE).first);
-
-
-
-
   }
   std::string Setup::printSetup() const{
       std::string fR=mainFolder+"\n";
@@ -391,5 +334,4 @@ namespace DSD{
       return fR;
   }
 }
-
 #endif
