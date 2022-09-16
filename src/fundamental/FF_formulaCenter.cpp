@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -66,8 +66,6 @@ namespace FF{
   std::string FunctionOfOneVariableData::getFunctionArgument() const{return functionArgument;}
   std::string FunctionOfOneVariableData::getRawString() const{return rawString;}
   int FunctionOfOneVariableData::isInitialized() const{ return initialized;}
-
-
   int FunctionOfOneVariableData::setFromString(const std::string & _raw, const long &start){
     std::string nFN,nFA,nRS;
     functionName="";functionArgument="";rawString="";initialized=0;
@@ -152,7 +150,6 @@ namespace FF{
     long pos; std::pair<std::string,int> allD;
     pos=_st; allD=SF::extract(_raw,pos,"int_","d");
     if(allD.second==0){return 0;}
-
     nVarI="";
     long len=_raw.size();
     while( (pos<len) && (SF::isLetterOrBS(_raw[pos]))){
@@ -160,7 +157,6 @@ namespace FF{
       ++pos;
     }
     nRS="int_"+allD.first+"d"+nVarI;
-
     std::string interior=allD.first;
     pos=0; allD=SF::extract(interior,pos,"{","}");
     if(allD.second==0){return 0;}
@@ -176,7 +172,6 @@ namespace FF{
       nI+=interior[pos];
       ++pos;
     }
-
     lBoundSt=nLBS;uBoundSt=nUBS;integrand=nI;variableOfIntegration=BF::cleanAllSpaces(nVarI);
     rawString=nRS;
     lBoundSt=BF::cleanAllSpaces(lBoundSt);
@@ -205,8 +200,6 @@ namespace FF{
     result+="</pre>\n";
     return result;
   }
-
-
   template<typename TTT>
   std::pair<TTT,int> getFirstObjectFromString(const std::string & _raw, const long & _st, const TTT & _templateIdentifier){
     std::pair<TTT,int> fR;
@@ -249,7 +242,6 @@ namespace FF{
     IntegralData emptyIntegralAsTemplateIdentifier;
     return getAllObjectsFromString(_raw,_st,emptyIntegralAsTemplateIdentifier);
   }
-
   int isPositiveInfinity(const std::string & s){
     if(s=="+infty") return 1;
     if(s=="+\\infty") return 1;
@@ -455,7 +447,6 @@ namespace FF{
          return uBPair;
        }
      }
-
      double lB=lBPair.result;
      double uB=uBPair.result;
      if(lB>uB){
@@ -473,12 +464,9 @@ namespace FF{
        res.result=antiDer.evaluate(uB)-antiDer.evaluate(lB);
        return res;
      }
-
      return simpsonApproximation(iD,lB,uB,compositionRecursionDepthRemaining);
    }
   FormulaEvaluationData evFormulaClean(const std::string & _rawFormula, const long & compositionRecursionDepthRemaining ){
-
-
     std::string rawFormula=_rawFormula;
     FormulaEvaluationData finalResult;
     finalResult.indicatorSimpson=0;
@@ -491,7 +479,6 @@ namespace FF{
       if(numI>0){
         FormulaEvaluationData integralValue;
         long i=0;
-
         while(i<numI){
           integralValue=evaluateIntegral(allIntegrals[i],compositionRecursionDepthRemaining);
           if(integralValue.success==0){
@@ -505,7 +492,6 @@ namespace FF{
         }
       }
     }
-
     // Step 2: Evaluate functions
     if(compositionRecursionDepthRemaining>0){
       std::vector<FunctionOfOneVariableData> allFunctions=getAllFunctionsFromString(rawFormula,0);
@@ -525,7 +511,6 @@ namespace FF{
         while(i<numF){
           evfRes=evaluateFunction(allFunctions[i].getFunctionName(),valuesOfArguments[i]);
           if(evfRes.second==0){
-
             return failure;
           }
           rawFormula=SF::findAndReplace(rawFormula,allFunctions[i].getRawString(),BF::doubleToString(evfRes.first));
@@ -538,12 +523,10 @@ namespace FF{
     finalResult.result=resPair.first;
     finalResult.success=resPair.second;
     return finalResult;
-
   }
   std::pair<double, int> evFormula(const std::string & _rawFormula, const long & compositionRecursionDepthRemaining = 5){
     //second component is 1 if the formula was evaluated
     //                 or 0 if the formula was not possible to evaluate
-
     std::string rawFormula=_rawFormula;
     rawFormula=SF::findAndReplace(rawFormula,"\\cdot","*");
     rawFormula=SF::findAndReplace(rawFormula,"\\int_{","int_{");
@@ -557,7 +540,5 @@ namespace FF{
     return finalResult;
   }
 }
-
-
 
 #endif
