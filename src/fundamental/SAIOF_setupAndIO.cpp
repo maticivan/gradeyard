@@ -67,14 +67,14 @@ namespace SAIOF{
   int looksLikeSetupFile(const std::string &st,const std::string &start="st", const std::string &end="e.txt"){
     return startMatch(st,start)*endMatch(st,end);
   }
-  std::string get_GL_MAIN_SETUP_FILE_NAME(){ 
+  std::string get_GL_MAIN_SETUP_FILE_NAME(const std::string & st="st", const std::string & en="e.txt"){
     std::vector<std::string> allFiles=IOF::listFiles(".");
     long db_sz=allFiles.size();
     long i=0;
     std::string found="";
     while((i<db_sz)&&(found=="")){
       allFiles[i]=SF::findAndReplace(allFiles[i],"./","");
-      if(looksLikeSetupFile(allFiles[i],"st","e.txt")){
+      if(looksLikeSetupFile(allFiles[i],st,en)){
         found=allFiles[i];
       }
       ++i;
