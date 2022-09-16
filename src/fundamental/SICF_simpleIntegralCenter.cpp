@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -21,9 +21,7 @@
 namespace SICF{
   double GL_CONST_PI=3.1415926535897932384626433832795;
   double GL_CONST_E=2.7182818284590452353602874713526624977572;
-
   double GL_EPSILON=0.00000000001;
-
   double power(const double & x, const long &k ){
     double res=1.0;
     for(long i=0;i<k;++i){
@@ -211,13 +209,11 @@ namespace SICF{
     std::pair<double,int> arithmeticAttempt;
     long pos; std::pair<std::string,int> allD;
     pos=0;allD=SF::getEverythingBefore(in,pos,varName);
-
     if(allD.second==0){
       arithmeticAttempt= AF::evFDouble(in);
       if(arithmeticAttempt.second==0){
         return res;
       }
-
       res.first.setCoefficient(0,arithmeticAttempt.first);
       res.second=1;
       return res;
@@ -230,8 +226,6 @@ namespace SICF{
     if(coeffSt==""){
       coeff=1.0;
     }
-
-
     long k=1;
     long lenIn=in.length();
     if(pos<lenIn-1){
@@ -251,8 +245,6 @@ namespace SICF{
       else{
         return res;
       }
-
-
     }
     res.second=1;
     res.first.setCoefficient(k,coeff);
@@ -313,13 +305,11 @@ namespace SICF{
         return res;
       }
     }
-
     pos=0;allD=SF::extract(in,pos,"(",")");
     if(allD.second==0){
       return res;
     }
     std::string operation="";
-
     if(pos > len-1){
       return polFromGoodStr(allD.first,varName);
     }
@@ -347,7 +337,6 @@ namespace SICF{
     if(pFirst.second==0){
       return res;
     }
-
     std::string stSecond="";
     long posSave=pos;
     allD=SF::extract(in,pos,"(",")");
@@ -361,7 +350,6 @@ namespace SICF{
     else{
       stSecond=allD.first;
     }
-
     if((operation=="/")||(operation=="^")){
         //Polynomial can be divided only by a number or raised only to an integer.
         // We return failure as the result if the second argument is not a number.
@@ -443,7 +431,4 @@ namespace SICF{
     return polFromGoodStr(goodStr,varName);
   }
 }
-
-
-
 #endif
