@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -71,7 +71,6 @@ namespace AF{
     }
     return newSt;
   }
-
   std::string treatUnaryMinus(const std::string& s){
     return SF::findAndReplace(s,"-","+(-1)*");
   }
@@ -214,7 +213,6 @@ namespace AF{
       return -round(-f,d);
     }
     double result;
-
     if(d<-BF::GLOBAL_EPSILON){
       return f;//cannot round to negative number of digits
     }
@@ -393,7 +391,6 @@ namespace AF{
             ++i;
             while((i<len)&&(s[i]>='0')&&(s[i]<='9')) {
               tempNum+= decimalMultiplier*(static_cast<double>( (s[i]))-zero);
-
               decimalMultiplier*=0.1;
               ++i;
             }
@@ -404,7 +401,6 @@ namespace AF{
         }
       }
     }
-
     if(evaluator.empty()){
       return std::pair<double,long>(-5.0,0);
     }
