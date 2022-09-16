@@ -205,10 +205,8 @@ namespace LMF{
         }
       }
     }
-
     return res;
   }
-
   std::vector<std::string> genCodes(const long& numCodes,
                                     const long& noiseSize,
                                     const long& numVersions,
@@ -270,7 +268,6 @@ namespace LMF{
     endingCode+="$$\\quad$$\n\n";
     replacementText=startingCode+replacementText+endingCode;
     return SF::findAndReplace(source,codePlaceHolder,replacementText);
-
   }
   std::string prepareLatexSource(const LatexDataExamPaper & exam, const long &indInClass, const std::string &addOnTop="", const std::string &addToEnd=""){
     std::string fR="";
