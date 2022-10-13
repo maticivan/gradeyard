@@ -25,6 +25,7 @@
 #include "AF_arithmeticCenter.cpp"
 #include "SICF_simpleIntegralCenter.cpp"
 #include "FF_formulaCenter.cpp"
+#include "AEF_answerExtraction.cpp"
 #include "TWDVF_textsWithDifferentVersions.cpp"
 #include "HDPF_pointers.cpp"
 #include "HDDBSF_HDDBString.cpp"
