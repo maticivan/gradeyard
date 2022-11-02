@@ -18,7 +18,7 @@
 #include "src/fundamental/SHF_standardHeaders.cpp"
 #include "src/fundamental/SAIOF_setupAndIO.cpp"
 std::string GL_MAIN_SETUP_FILE_NAME=SAIOF::get_GL_MAIN_SETUP_FILE_NAME();
-std::string GL_VERSION="1.007.2022.10.13";
+std::string GL_VERSION="1.009.2022.11.02";
 #include "src/fundamental/MTF_mainTable.cpp"
 #include "src/db/DD_databases.cpp"
 #include "src/graphs/MGG_mainGraphs.cpp"
@@ -51,10 +51,9 @@ int main() {
       }
       mainSession.changeMainText();
     }
-
     std::string userReg=mainSession.getResponse("userReg");
     if(userReg=="yes"){
-      if(SII::checkAntiSpam(mainSession.getResponse("antiSpamCode"),mainSession.getResponse("asc"))==1){
+      if(mainSession.passedAntiSpam()){
         std::string pass1=mainSession.getResponse("pass1");
         std::string pass2=mainSession.getResponse("pass2");
         long sz1=pass1.length();
@@ -89,7 +88,6 @@ int main() {
             }
           }
         }
-
       }
       else{
         mainSession.changeMainText("wrongAntiSpamCode");
@@ -97,7 +95,7 @@ int main() {
     }
     std::string query=mainSession.getResponse("query");
     if(query=="yes"){
-      if(SII::checkAntiSpam(mainSession.getResponse("antiSpamCode"),mainSession.getResponse("asc"))==1){
+      if((mainSession.loggedIn())||(mainSession.passedAntiSpam())){
         queryAnswer=QAF::answerTheQuestion(mainSession.getResponse("question"));
       }
       else{
