@@ -469,6 +469,19 @@ namespace SII{
   long SessionInformation::loggedIn(){
     return loginStatusIndicator;
   }
+  int SessionInformation::passedAntiSpam() const{
+    return psd.passedAntiSpam;
+  }
+  long checkAntiSpam(const std::string & code, const std::string & solution){
+    std::string fileWithCode=DD::GL_DBS.getChallengeAnswStorage()+"/a"+solution+".dat";
+    std::string sol=IOF::fileToString(fileWithCode);
+    if(sol=="fileNotFound"){return 0;}
+    IOF::sys_deleteFile(fileWithCode);
+    if(sol==code){
+      return 1;
+    }
+    return 0;
+  }
   void SessionInformation::initSession(const cgicc::Cgicc & ch){
     if(indicatorInitialized==0){
       indicatorRespRecInitialized=0;
@@ -819,6 +832,11 @@ namespace SII{
     }
     if((psd.passwordChangeRequested=="yes")&&(loginStatusIndicator==1)) {
       psd.passwordChangeStatus="<P>"+analyzeRequestToChangePassword()+"</P>";
+    }
+    psd.passedAntiSpam=0;
+    std::string antiSpamFileName=getResponse("asc");
+    if(antiSpamFileName!=s_notFound){
+      psd.passedAntiSpam=checkAntiSpam(getResponse("antiSpamCode"),antiSpamFileName);
     }
     indicatorInitialized=1;
   }
@@ -2333,7 +2351,7 @@ namespace SII{
         }
       }
     }
-    psd.respRecBackupText = createRRBackup(_eName,masterRRAction)+psd.respRecBackupText; 
+    psd.respRecBackupText = createRRBackup(_eName,masterRRAction)+psd.respRecBackupText;
     return "!success!: "+respRecRequested;
   }
   std::string SessionInformation::distributeExamToStudents(const std::string & _examTemplateName, const std::string & _distributionText){
@@ -2725,15 +2743,6 @@ namespace SII{
     tmpOUD.allowedToCloneTheWebsite=_iAClone;
     w.addUserData(tmpOUD);
     return "!success!";
-  }
-  long checkAntiSpam(const std::string & code, const std::string & solution){
-    std::string fileWithCode=DD::GL_DBS.getChallengeAnswStorage()+"/a"+solution+".dat";
-    std::string sol=IOF::fileToString(fileWithCode);
-    IOF::sys_deleteFile(fileWithCode);
-    if(sol==code){
-      return 1;
-    }
-    return 0;
   }
   std::string SessionInformation::uploadFilesFromResponseReceiver(
     const cgicc::Cgicc & ch,const std::string & respRecRequested,
