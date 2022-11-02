@@ -297,12 +297,23 @@ namespace APTI{
   int AbstractText::allowedToDisplayText(const PSDI::SessionData & _psd,
                                              const std::string & _uN,
                                              const std::string & _position) const{
-    //WARNING: needs to be improved - only the root can see text other than "regularText"
+    //WARNING: needs to be improved - If text is not "regularText",
+    //                                   then very limited permits are given at the moment.
+    //                                   In general, only root can see these texts.
+    //                                       - exception: If it is a coding problem
+    //                                          then even though the documentType is "problem"
+    //                                          the display will be allowed if the correct permits are given
+    //                                          and the _position = "codeTestInNotes"
     if(_psd.isRoot=="yes"){
       return 1;
     }
     if(PBD::permitExists_N("read"+tName,permitRead,_uN)==0){
       return 0;
+    }
+    if(_position=="codeTestInNotes"){
+      if(documentType=="problem"){
+        return 1;
+      }
     }
     if(documentType!=v_regularText){
       if(_position=="mainTextPosition"){
@@ -1161,6 +1172,55 @@ namespace APTI{
     }
     return niceRes;
   }
+  std::string executeAGCodeTest(const PSDI::SessionData & _psd,
+                                const std::string& formulation,
+                                const std::string& officialSolution,
+                                const std::string& agrParameters,
+                                const std::string& userAnswer,
+                                const std::string& oldDisplayString,
+                                const std::string& solutionAllowedToDisplay,
+                                const std::string& _messageInsteadOfGrading){
+    std::string displStr=oldDisplayString;
+    if((solutionAllowedToDisplay=="yes")||(solutionAllowedToDisplay=="Yes")){
+      displStr=SF::findAndReplace(displStr,"_*officialSolution*_",officialSolution);
+    }
+    else{
+      displStr=SF::findAndReplace(displStr,"_*officialSolution*_","");
+    }
+    displStr=SF::findAndReplace(displStr,"_*text*_",formulation);
+    displStr=SF::findAndReplace(displStr,"_*userAnswer*_",HSF::codeDisplayForNonAdvanceUsers(userAnswer));
+    displStr=SF::findAndReplace(displStr,"_*rawUserAnswer*_",userAnswer);
+    std::string grResult;
+    std::string messageInsteadOfGrading=_messageInsteadOfGrading;
+    if(displStr!=SF::findAndReplace(displStr,"_*gradingResult*_","")){
+      if(messageInsteadOfGrading==""){
+        if(BF::cleanSpaces(userAnswer)==""){
+          messageInsteadOfGrading="No code submitted!";
+        }
+      }
+      if(messageInsteadOfGrading==""){
+        std::map<std::string,CAGI::GradingResult> autoGradingMap;
+        std::map<std::string,RTI::CodeAutoGraderInfo> autoGradingCodes;
+        RTI::CodeAutoGraderInfo agData=CAGI::getAutoGraderCodeData(agrParameters,officialSolution,userAnswer,"100");
+        if(agData.publicTestCases.size()<1){return "***!ERROR!***";}
+        autoGradingCodes["Q00"]=agData;
+        CAGI::codeAutoGradeAndUpdateMap(_psd,autoGradingMap,autoGradingCodes,"publicTestCases");
+        std::map<std::string,CAGI::GradingResult>::const_iterator itGR;
+        itGR=autoGradingMap.begin();
+        if(itGR!=autoGradingMap.end()){
+          grResult=prepareGrResult(itGR->second);
+        }
+      }
+      else{
+        grResult="<div class=\"card bg-light text-danger\">\n";
+        grResult+="<div class=\"card-body\">\n<h2>";
+        grResult+=messageInsteadOfGrading;
+        grResult+="</h2>\n</div>\n</div>\n";
+      }
+    }
+    displStr=SF::findAndReplace(displStr,"_*gradingResult*_",grResult);
+    return displStr;
+  }
   std::string AbstractText::createCodeTest(const PSDI::SessionData & _psd, const std::string & respRecCode, const std::string & qLabel, const std::string & baseText){
     if(GL_studentsAllowedToExecuteCodeOnPublicTestCases!="yes"){
       return "";
@@ -1202,25 +1262,75 @@ namespace APTI{
     if(allD.second==1){
       officialSolution=allD.first;
     }
-    displStr=SF::findAndReplace(displStr,"_*text*_",formulation);
-    std::string userAnswer="",grResult="";
+    std::string userAnswer="";
     itM=rinf.submittedAnswers.find(qLabel);
     if(itM!=rinf.submittedAnswers.end()){
       userAnswer=itM->second;
     }
-    displStr=SF::findAndReplace(displStr,"_*userAnswer*_",HSF::codeDisplayForNonAdvanceUsers(userAnswer));
-    std::map<std::string,CAGI::GradingResult> autoGradingMap;
-    std::map<std::string,RTI::CodeAutoGraderInfo> autoGradingCodes;
-    RTI::CodeAutoGraderInfo agData=CAGI::getAutoGraderCodeData(agrParameters,officialSolution,userAnswer,"100");
-    if(agData.publicTestCases.size()<1){return "<div>Error: No public test cases available</div>";}
-    autoGradingCodes[qLabel]=agData;
-    CAGI::codeAutoGradeAndUpdateMap(_psd,autoGradingMap,autoGradingCodes,"publicTestCases");
-    std::map<std::string,CAGI::GradingResult>::const_iterator itGR;
-    itGR=autoGradingMap.begin();
-    if(itGR!=autoGradingMap.end()){
-      grResult=prepareGrResult(itGR->second);
+    displStr=executeAGCodeTest(_psd,formulation,officialSolution,agrParameters,userAnswer,displStr,"no","");
+    if(displStr=="***!ERROR!***"){
+      return "<div>Error: No public test cases available</div>";
     }
-    displStr=SF::findAndReplace(displStr,"_*gradingResult*_",grResult);
+    return displStr;
+  }
+
+  std::string AbstractText::createCodeTestInNotes(const PSDI::SessionData & _psd,
+                                                  const std::string & problemName,
+                                                  const std::string & problemVersion,
+                                                  const std::string & baseText){
+    if(GL_studentsAllowedToExecuteCodeOnPublicTestCases!="yes"){
+      return "";
+    }
+    MPTI::MainText problemText;
+    int initSucc=problemText.initialize(problemName,"no",_psd.my_un);
+    if(initSucc==0){return "";}
+    int allowedToDisplay=problemText.allowedToDisplayText(_psd,_psd.my_un,"codeTestInNotes");
+    if(allowedToDisplay==0){
+      return "";
+    }
+    std::string rawT=problemText.getRawText();
+    std::pair<std::string,int> allD;long pos;
+    pos=0;allD=SF::extract(rawT,pos,"_apd*|_","_/apd*|_");
+    if((allD.second==0)||((allD.first!="yes")&&(allD.first!="Yes"))) {
+      return "<div>The problem is not allowed to be displayed to users for testing.</div>";
+    }
+    std::string allowedSolution="no";
+    pos=0;allD=SF::extract(rawT,pos,"_sall*|_","_/sall*|_");
+    if(allD.second==1){
+      allowedSolution=allD.first;
+    }
+    std::string correctVersion=TWDVF::singleVersion(rawT,BF::stringToInteger(problemVersion));
+    std::string formulation;
+    pos=0; allD=SF::extract(correctVersion,pos,"_tx*|_","_/tx*|_");
+    if(allD.second==1){
+      formulation=allD.first;
+    }
+    pos=0; allD=SF::extract(correctVersion,pos,"_agr*|_","_/agr*|_");
+    std::string agrParameters="";
+    if(allD.second==1){
+      agrParameters=allD.first;
+    }
+    std::string officialSolution="";
+    pos=0; allD=SF::extract(correctVersion,pos,"_sl*|_","_/sl*|_");
+    if(allD.second==1){
+      officialSolution=allD.first;
+    }
+    std::string userAnswer="";
+    std::map<std::string,std::string>::const_iterator itM;
+    itM=(_psd.respMap).find("codeTestUserAnswer");
+    if(itM!=(_psd.respMap).end()){
+      userAnswer=itM->second;
+    }
+    std::string displStr=baseText;
+    std::string message;
+    if((_psd.my_un=="visitor")&&(_psd.passedAntiSpam==0)){
+      message="Wrong anti-spam code";
+    }
+    displStr=executeAGCodeTest(_psd,formulation,officialSolution,agrParameters,userAnswer,displStr,allowedSolution,message);
+    displStr=treatInserts(_psd,displStr,s_insertB,s_insertE);
+    if(displStr=="***!ERROR!***"){
+      displStr="<div>Error: No public test cases available</div>";
+    }
     return displStr;
   }
   std::string AbstractText::createUserPermitInfo(const PSDI::SessionData & _psd, const std::string & userName){
@@ -1428,6 +1538,9 @@ namespace APTI{
         if((allArgs[0]==s_codeTest) && (sz==4)){
           return createCodeTest(_psd,allArgs[1],allArgs[2], allArgs[3]);
         }
+        if((allArgs[0]==s_codeTestInNotes) && (sz==4)){
+          return createCodeTestInNotes(_psd,allArgs[1],allArgs[2],allArgs[3]);
+        }
         if((allArgs[0]==s_message)&&(sz==2)){
           return createMessageDisplay(_psd,allArgs[1]);
         }
@@ -1468,6 +1581,7 @@ namespace APTI{
           return createRadioButtonsField(allArgs[1],allArgs[2],allArgs[3],allArgs[4],allArgs[5],allArgs[6]);
         }
         if((allArgs[0]==s_antiSpamChallengeField)&&((sz==5)||(sz==6))){
+          if(_psd.my_un!="visitor"){return "";}
           std::string _ln="8";
           if(sz==6){
             _ln=allArgs[5];
@@ -1516,7 +1630,6 @@ namespace APTI{
   }
   std::string AbstractText::treatInserts(const PSDI::SessionData &_psd, const std::string & _raw,const std::string & _iB, const std::string & _iE){
     std::string fR="",replacement;
-    // Idea: Cut the big string _raw into smaller strings so that each has only one thing to replace
     std::string tempSt;
     long pos=0,lastPos=0,posIn;
     std::pair<std::string,int> allD,allDIn;
