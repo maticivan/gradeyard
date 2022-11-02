@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -81,10 +81,7 @@ namespace IOF{
       }
       return 0;
   }
-
-
   std::string fileToString(const std::string &filename,const long & getFromDiskNotFromCache=0){
-
       if(getFromDiskNotFromCache==0){
         std::map<std::string,std::string>::iterator it,itE;
         itE=GF::GL_OPENED_FILES.end();
@@ -93,8 +90,6 @@ namespace IOF{
           return it->second;
         }
       }
-
-
       if(!fileExists(filename)){
         std::map<std::string,std::string>::iterator it,itE;
         itE=GF::GL_OPENED_FILES.end();
@@ -104,7 +99,6 @@ namespace IOF{
         }
         return("fileNotFound");
       }
-
       std::ifstream t(filename);
       t.seekg(0, std::ios::end);
       size_t size = t.tellg();
@@ -412,7 +406,7 @@ namespace IOF{
 
     systemCommand="chmod g+s "+folderName;
     system(systemCommand.c_str());
- 
+
     return 1;
   }
   int sys_createFolderIfDoesNotExist(const std::string &folderName,
