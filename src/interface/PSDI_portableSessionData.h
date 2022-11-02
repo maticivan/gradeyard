@@ -45,27 +45,21 @@ namespace PSDI{
     std::string passwordChangeRequested;
     std::string passwordChangeStatus;
     std::string comfUserEdit;
-
     std::string createStandardCourseMainDocName;
     std::string createStandardCourseSuccess;
-
     std::string queryAnswerPlaceHolder;
-
     std::map<std::string,std::string> respMap;
     std::map<std::string,std::string> encryptionMap;
-
     std::stack<std::string> recoveryOperationCommands;
     std::stack<std::string> recoveryOperationNames;
-
     int indChangeRespRecToPrintVersionOfCommonInClassExam;
     std::string probVersionsOfChangedRespRec;
-
     std::string pdfNameForInclassExam;
     std::string pdfBeforeProblems;
     std::string pdfAfterProblems;
-
     std::string masterKey;
     std::string respRecBackupText;
+    int passedAntiSpam;
     std::vector<std::string> displayDaysInWeek;
     std::vector<std::string> displayMonthsInYear;
   };
