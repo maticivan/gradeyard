@@ -60,10 +60,7 @@ namespace SII{
     std::string getFileName() const;
     std::string getFileInfoData() const;
     std::string deleteFile();//WARNING: don't call this method directly. Let the SessionInformation make the call because it will check whether it is allowed to delete file
-
-
   };
-
   struct ExamAttributes{
   public:
     std::string textForRespReceiver;
@@ -73,20 +70,15 @@ namespace SII{
     std::string deadlineText;
     std::string msDoc;
   };
-
   class SessionInformation{
   private:
-
     std::string DEBUGGING_ADDITIONS="";
-
     std::string cookie;
     std::string option;
-
     MPTI::MainText header;
     MPTI::MainText footer;
     MPTI::MainText mainText;
     RTI::Response mainRespRec;
-
     std::string dHN;
     std::string dFN;
     std::string dfPage;
@@ -94,16 +86,11 @@ namespace SII{
     std::string sURL;
     std::string showLogInLink;
     std::string fastUpdatingStat;
-
     long cntrEIdI0=51;
     long cntrEIdI1=79;
     long cntrEIdIZ=3;
-
-
     std::string str_backups_IfCalledFor;
     std::string str_pdfSummary_IfCalledFor;
-
-
     std::string s_sysDataB="_systemData!!_";
     std::string s_sysDataE="_/systemData!!_";
     std::string s_tDataB="_textData!!_";
@@ -116,15 +103,12 @@ namespace SII{
     std::string s_createdByE="_/createdBy!!_";
     std::string s_modifiedByB="_modifiedBy!!_";
     std::string s_modifiedByE="_/modifiedBy!!_";
-
     std::string s_permissionStringB="_permissionString!!_";
     std::string s_permissionStringE="_/permissionString!!_";
     std::string s_docTypeStringB="_documentType!!_";
     std::string s_docTypeStringE="_/documentType!!_";
-
     std::string e_startOfList="st";
     std::string e_sortCriterion="sc";
-
     std::string e_pageName=MWII::GL_WI.get_e_parPage();
     std::string e_respRecName=MWII::GL_WI.get_e_respRecReqRT();//="rrc";
     std::string e_redirectOverwrite="rdo";
@@ -141,39 +125,29 @@ namespace SII{
     std::string e_newTextWithMessage="nmt";
     std::string e_respRecThatWillGradeCouas="rrg";
     std::string e_confirmationOfComfortableUserEdit="ccu";
-
     std::string m_logIn="yes";
     std::string m_addModFileNew="new";
     std::string m_addModFileEdit="edit";
     std::string m_addModFileDelete="delete";
     std::string m_respSubmit=MWII::GL_WI.get_e_respSubmitSuccRT();//="yes";
     std::string m_logOut="no";
-
     std::string m_editReqY="y";
     std::string m_editReqR="r";
     std::string m_editReqW="w";
     std::string startOfList;
-
     std::string e_systemDataDisplayRequest="sysData";
     std::string e_debEnvVarRequest="debuggingEnvVar";
     std::string e_debModeRequest="debuggingMode";
-
     std::string e_responseReceiverDisplayRequest="rdd";
-
     std::string e_addModFileReq="amF";
     std::string e_addModFileCodeReq="fReq";
     std::string e_addModFileModifyInfo="fInfo";
     std::string e_addModFileFilePar="sbF";
-
-
     std::string e_searchFor="s1";
     std::string e_replaceWith="r1";
-
     std::string s_deb_correctDebuggingEnvVarReq="eFel223";
     std::string s_deb_correctDebuggingModeReq="dFel223";
-
     std::string s_notFound="notFound";
-
     std::string pageRequested;
     std::string respRecRequested;
     std::string respSubmitted;
@@ -186,7 +160,6 @@ namespace SII{
     std::string idOfMessageWhoseEditWasSubmitted;
     std::string newTextOfMessage;
     std::vector<std::string> envVariables;
-
     long loginActionIndicator;// 1-user wants to log in; 0- no change of status; -1 - user wants to log out
     long loginStatusIndicator;// 1 - user is logged in; 0 - user is logged out
     long loginFailedIndicator;// 1 - username/password supplied but wrong ; 0 - username/password correct, or no log in attempted
@@ -195,10 +168,8 @@ namespace SII{
     int indicatorRespRecInitialized;
     long indicatorFormResponded;
     long indicatorFormResponseCanBeAccepted;
-
     long indicatorFileReceived;
     long indicatorFileCanBeAccepted;
-
     PSDI::SessionData psd;
     // psd.basicPermitsAndInfo is the
     // vector with following information
@@ -217,7 +188,6 @@ namespace SII{
     //        will generate a latex source for the version i of the problem
     // [7] -> nothing/new/edit/delete  - action taken to the database of files
     // [8] -> file code (in the case that [7] is edit or delete, or that a form is prepared for replacement)
-
     // [9] -> HTTP_USER_AGENT
     // [10] -> REMOTE_ADDR
     // [11] -> REQUEST_METHOD
@@ -230,16 +200,6 @@ namespace SII{
     // [18] -> sortCriterion
     // [19] -> couasEditRequest
     // [20] -> codeResponseReceiver that should grade the couas
-  //  long bPermitSize;
-  //  std::string myUserName;
-    //std::string myFirstName;
-    //std::string myLastName;
-
-
-
-
-
-
     void updateRespMapToProperlyAccountForBothGraderCommentsAndPoints();
     int updateGradesFromResponse();
     std::vector<std::vector<std::string> > respInOrder;
@@ -252,7 +212,6 @@ namespace SII{
     std::string updateExamDocument(const std::string &,const std::string &,const std::string &);
     std::string createRRBackup(const std::string& , const std::string & ) const;
     SPREPF::StatData prepareStatData() const;
-
     TMF::Timer timeToGenerateWebsite;
   public:
     SessionInformation();
@@ -262,22 +221,18 @@ namespace SII{
     MPTI::MainText getHeader() const;
     MPTI::MainText getFooter() const;
     MPTI::MainText getMainText() const;
-
     std::vector<std::vector<std::string> > getRespInOrder() const;
     std::string getResponse(const std::string & ) const;
     long countSubmittedFiles(const cgicc::Cgicc & ) const;
-
-
     void analyzeEnvVarsAndForms(const cgicc::Cgicc &);
-
     long isFormResponded() const;
     long canFormResponseBeAccepted() const;
-
     long isFileReceived() const;
     long canFileBeAccepted() const;
     int allowedToAssignPermit(const std::string &, const std::string &) const;
     int allowedToModifyUser(const std::string & ) const;
     int allowedToDeleteUser(const std::string & )const;
+    int passedAntiSpam() const;
     void addToMainText(const std::string &);
     void addDebuggingMessagesIfInDebuggingMode();
     std::string preparePage(const std::string &);
@@ -298,18 +253,15 @@ namespace SII{
     std::string createText(const std::string &, const std::string &, const std::string & ="!*!", const std::string & ="!*!");
     std::string modifyText(const std::string &, const std::string &);
     std::string deleteText(const std::string &);
-
     std::string createCloneForGuest(const std::string &);
     int allowedToCreateCloneForGuest(const std::string &) const;
     std::string deleteCloneForGuest(const std::string &);
     int allowedToDeleteCloneForGuest(const std::string & ) const;
     int createOrDeleteWebsiteOrChangeRequestedPage();
-
     int allowedToCreateMessage(const std::string &) const;
     int allowedToModifyMessage(const std::string &,const std::string &) const;
     int allowedToCreateCouas(const std::string &) const;
     int allowedToModifyCouas(const std::string &,const std::string &) const;
-
     std::string createMessage(const std::string &, const std::string &, const std::string &);
     std::string modifyMessage(const std::string &, const std::string &);
     std::string deleteMessage(const std::string &, const std::string &);
@@ -317,12 +269,10 @@ namespace SII{
     std::string createSupportingPages(const std::map<std::string,std::string> & , const std::map<std::string,std::string> & , const std::map<std::string,std::string> & );
     std::string createInitialExams(const std::map<std::string,std::string> & , const std::string & );
     std::string createStandardCourse(const std::string &, const std::string &);
-
     std::string createCouas(const std::string &, const std::string &, const std::string &);
     std::string modifyCouas(const std::string &, const std::string &);
     std::string deleteCouas(const std::string &, const std::string &);
     std::string createGradingForCourse(const std::string &, const std::string &);
-
     int allowedToCreateRespRec() const;//WARNING: returns 1 only for root
     int allowedToModifyRespRec(const std::string &, const std::string &) const;
     //WARNING: returns 1 for root or if the second argument is "yes"
@@ -330,10 +280,6 @@ namespace SII{
     // is due to form being submitted
     std::string enhanceTheCommandDueToComfUserEdit(const std::string &) const;
     std::string uploadFilesFromResponseReceiver(const cgicc::Cgicc & ,const std::string & ,const std::string &, const std::vector<std::string> & , const RTI::Response & , const std::string &);
-
-
-
-
     std::string addStudentsToExam(const std::string &, const std::string &);
     std::string generateExam(const std::string &, const std::string &);
     std::string generatePdfsForExam(const std::string &, const std::string &);
@@ -364,7 +310,6 @@ namespace SII{
     std::string backupDBs(const std::string &, const std::string & );
     std::string prepareTextForTextTable(const std::string &, const std::string & = "noOldData") const;
     std::string analyzeRequestToChangePassword();
-
     std::string enrollStudentsInCouas(const std::string & , const std::vector<PASF::StudentData> & , const long & = 10 );
     std::string cookieText(const std::string & = "s", const std::string & ="deleted") const;
     std::string createRecoveryCommands();
