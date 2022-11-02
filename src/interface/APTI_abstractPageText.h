@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -80,6 +80,7 @@ namespace APTI{
     std::string s_couas="courseAssignment";
     std::string s_respRecStatus="responseReceiverStatus";
     std::string s_codeTest="codeTest";
+    std::string s_codeTestInNotes="codeTestInNotes"; 
     std::string s_internalLink="internalLink";
     std::string s_buttonLink="buttonLink";
     std::string s_invitationToSolve="invitationToSolve";
@@ -101,6 +102,7 @@ namespace APTI{
     std::map<std::string,std::string> getTranslationMap(const std::string & ) const;
     std::string createSubText(const PSDI::SessionData &,const std::string &);
     std::string createCodeTest(const PSDI::SessionData &,const std::string &, const std::string &, const std::string &);
+    std::string createCodeTestInNotes(const PSDI::SessionData &,const std::string &,const std::string &,const std::string&);
     std::string createUserPermitInfo(const PSDI::SessionData &,const std::string &);
     std::string createRespRecStatusDisplay(const PSDI::SessionData & , const std::string & ) const;
     std::string createMessageDisplay(const PSDI::SessionData &,const std::string &);
