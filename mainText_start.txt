@@ -2903,6 +2903,7 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
+
 <p></p>
 <H1>User Registration</H1>
 _insert_
@@ -5767,6 +5768,12 @@ _/insert_
 
 _insert_
 _n*_buttonLink_/n*_
+_n*_Backup_/n*_
+_n*_index.cgi?page=backupForExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
 _n*_Custom Versions_/n*_
 _n*_index.cgi?page=commandUpdateVersionsForExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
 _/insert_
@@ -6299,9 +6306,8 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
-
-
-
+ 
+ 
 
  <H2>Generate PDF files for exam</H2>
 _insert_
@@ -6327,32 +6333,9 @@ If you want to generate latex documents for in-class exams, then in the followin
 with versions of the exams. 
 
 *****************************************************
-*** Other options (work only if inClassExams parameter ***
-*** is different from "no"                                                      ***
-*****************************************************
-*****************************************************
-*** _numExams*|_30_/numExams*|_                                 ***
-*** _versionIndex*|_2_/versionIndex*|_                              ***
-*** _versionShift*|_0_/versionShift*|_                                ***
-*** Cover page/ text before problems                               ***
- _before*|_ _|*StudentCode*|_ 
-\begin{center} Exam  \end{center}       
-                               \cleardoublepage 
-_/before*|_ 
-*****************************************************
-*** Blank pages after the exam are controlled with          ***
-_after*|_ _|*StudentCode*|_ 
-\cleardoublepage
-_/after*|_ 
-*****************************************************
-*** use existing codes by placing them between    ***
-*** the tags _n*_ and _/n*_ below                 ***
-_preGeneratedCodes*|_ _/preGeneratedCodes*|_
-*****************************************************
 *** _inClassExams*|_no_/inClassExams*|_ ***
 *****************************************************
 The word no in the command before should be replaced with the following (or similar) text:
-
 
 _inCommandInsert_
 _n*_randomExamVersions_/n*_
@@ -9796,6 +9779,13 @@ _n*_Create_/n*_
 _n*_index.cgi?page=commandCreateExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
 _/insert_
 
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Backup_/n*_
+_n*_index.cgi?page=backupForExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
 _insert_
 _n*_buttonLink_/n*_
 _n*_Custom Versions_/n*_
@@ -9840,6 +9830,7 @@ _/insert_
 <br><b>Warning:</b> It is not safe, nice, nor polite to use some of the operations in this category <b>after</b> the students have started working on the assignment. 
 <ul>
 <li><b>Create:</b> If the exam is not created yet, this button will take you to the page where you can insert the problems and customize the parameters. If the exam already exists, you need to first delete the exam from the <code>Response Receiver</code> database before creating it again.</li>
+<li><b>Backup:</b> Puts student answers in a form that can be used as a backup command and that can be used in offline grading tools.</li>
 <li><b>Custom versions:</b> If there are multiple versions of problems, then the <code>Create</code> button would randomly assign the versions to students. The number of possible versions is unbounded. If you want to avoid that, then you should click on this button and adjust the settings to your liking.</li>
 <li><b>PDF:</b> Create latex source file or pdf files with exam problems. </li>
 <li><b>Graders:</b> Assign students to grade each other, or to self-grade their own work.</li>
@@ -11470,16 +11461,23 @@ _/permissionString!!__documentType!!_regularText_/documentType!!_
 _/systemData!!_
 
 _textData!!_
+  
+_title*_Autograder_/title*_
+_metaDesc*_The code autograder will test your submission against the public test cases._/metaDesc*_
+<p></p>
  
+
  
+
+
    _insert_
             _n*_buttonLink_/n*_
             _n*_Back to the assignment_/n*_
             _n*_?r=_vr_rrc_/vr__/n*_
            _/insert_  
 
-
- <H1>Auto-grader testing</H1>
+<p></p>
+ <H1>Autograder Testing</H1>
  
 <p>Below you can see the results of the execution of your code on public test cases. The grading will be based on secret test cases. The secret test cases will be of similar format, but they will be different from the public ones that you are seeing here. </p>
        
@@ -11488,23 +11486,21 @@ _n*_codeTest_/n*_
 _n*__vr_rrc_/vr__/n*_
 _n*__vr_nrr_/vr__/n*_
 _n*_
+_*gradingResult*_
+<p></p>
 <h2>Problem formulation</h2>
 \begin{box}
 _*text*_
 \end{box}
-
+<p></p>
 <h2>Your submission</h2>
 \begin{box}
 _*userAnswer*_
 \end{box}
 
-<h2>Results of auto-grading</h2>
-\begin{box}
-_*gradingResult*_
-\end{box}
+ 
 _/n*_
 _/insert_
-
 _/textData!!_
 
 _/n*!!***!_
@@ -11690,6 +11686,255 @@ _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
 _/insert_ 
+
+_/textData!!_
+
+_/n*!!***!_
+_/nextCommand!*!!_  
+
+
+_nextCommand!*!!_ 
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000116_/n*!!***!_
+_n*!!***!_backupForExam_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_contentAdministrator_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+_textData!!_
+ 
+
+<p></p>
+<H1>Create Backup of Exams for Offline Storage</H1>
+_insert_
+_n*_formInitialization_/n*_
+_n*_reqCommand_/n*_
+_n*_index.cgi?comEx=yes_/n*_
+_/insert_
+_insert_
+_n*_textAreaField_/n*_
+_n*_reqCommand_/n*_
+_n*_commands_/n*_ 
+_n*_The command is pre-filled with required parameters and it is best if you just keep them at their default values._/n*_
+_n*_ 
+ _command_
+DO NOT EDIT THIS LINE:_nc***_examBackupText_/nc***_
+EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_ 
+START EDITING AFTER THIS LINE_nc***_
+ 
+ 
+ _examRRAction*_modifyResponseReceiver_/examRRAction*_
+_gradingRRAction*_modifyResponseReceiver_/gradingRRAction*_
+_masterRRAction*_modifyResponseReceiver_/masterRRAction*_
+
+_/nc***_  
+ _/command__/n*_
+_/insert_
+_insert_
+_n*_formPlacement_/n*_
+_n*_reqCommand_/n*_
+_/insert_ 
+
+_/textData!!_
+
+_/n*!!***!_
+_/nextCommand!*!!_  
+
+
+
+_nextCommand!*!!_ 
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000117_/n*!!***!_
+_n*!!***!_ctsInL_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_contentAdministrator_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+_textData!!_
+ 
+
+_title*_Code Editor_/title*_
+_metaDesc*_The code autograder can test your solution to the problem below._/metaDesc*_
+<p></p>
+ 
+   _insert_
+            _n*_buttonLink_/n*_
+            _n*_Back_/n*_
+            _n*_?page=_vr_lback_/vr__/n*_
+           _/insert_  
+
+ 
+ 
+  <p></p>
+
+ 
+       
+_insert_
+_n*_codeTestInNotes_/n*_
+_n*__vr_pnm_/vr__/n*_
+_n*__vr_pvr_/vr__/n*_
+_n*_
+ 
+_*gradingResult*_ 
+ 
+<p></p><h2>Formulation</h2>
+\begin{box}
+_*text*_
+\end{box}
+\begin{solution}
+<p>
+_insert_
+_n*_buttonLink_/n*_
+_n*_Link to official solution_/n*_
+_n*_?page=ctsInLOS&ev0=pnm&el0=_vr_pnm_/vr_&ev1=pvr&el1=_vr_pvr_/vr_&ev2=lback&el2=_vr_lback_/vr__/n*_
+_/insert_  </p>
+<p>Please save your work locally on your computer before clicking on the button. Your work won't be saved on this website.</p>
+\end{solution}
+<p></p>
+<h2>Your submission</h2>
+
+_insert_
+_n*_formInitialization_/n*_
+_n*_reqCode_/n*_
+_n*_index.cgi?page=ctsInL&ev0=pnm&el0=_vr_pnm_/vr_&ev1=pvr&el1=_vr_pvr_/vr_&ev2=lback&el2=_vr_lback_/vr__/n*_
+_/insert_
+_insert_
+_n*_textAreaField_/n*_
+_n*_reqCode_/n*_
+_n*_codeTestUserAnswer_/n*_ 
+_n*_ _/n*_
+_n*__*rawUserAnswer*__/n*_
+_/insert_
+_insert_
+_n*_antiSpamChallenge_/n*_
+_n*_reqCode_/n*_
+_n*_antiSpamCode_/n*_
+_n*_Prove that you are not a robot._/n*_ 
+_n*_80_/n*_
+_n*_8_/n*_
+_/insert_
+_insert_
+_n*_formPlacement_/n*_
+_n*_reqCode_/n*_
+_/insert_ 
+
+
+_/n*_
+_/insert_
+
+
+
+_/textData!!_
+
+_/n*!!***!_
+_/nextCommand!*!!_  
+
+
+
+
+_nextCommand!*!!_ 
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000118_/n*!!***!_
+_n*!!***!_ctsInLOS_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_contentAdministrator_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+_textData!!_
+ 
+
+
+ _title*_Solution_/title*_
+_metaDesc*_The document contains the formulation of the problem and its official solution._/metaDesc*_
+<p></p>
+ 
+   _insert_
+            _n*_buttonLink_/n*_
+            _n*_Back_/n*_
+            _n*_?page=_vr_lback_/vr__/n*_
+           _/insert_  
+
+
+ <H1>Problem and Official Solution</H1>
+ 
+  
+
+ 
+       
+_insert_
+_n*_codeTestInNotes_/n*_
+_n*__vr_pnm_/vr__/n*_
+_n*__vr_pvr_/vr__/n*_
+_n*_
+ 
+\begin{box}
+_*text*_
+\end{box}
+\begin{solution}
+_*officialSolution*_
+\end{solution}
+   
+
+_/n*_
+_/insert_
+
 
 _/textData!!_
 
