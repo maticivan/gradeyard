@@ -88,7 +88,10 @@ namespace SII{
       if(psd.createStandardCourseSuccess=="yes"){
         fR+=SF::findAndReplace(MWII::GL_WI.getDefaultWebText("standardCourseCreated"),"_*PAGE*NAME*_",psd.createStandardCourseMainDocName);
       }
-      fR+=mainText.displayText(psd,"mainTextPosition");
+      std::string mTextInMainPosition=mainText.displayText(psd,"mainTextPosition");
+      SF::transferTag(fR,mTextInMainPosition,"<title>","</title>","_title*_","_/title*_");
+      SF::transferTag(fR,mTextInMainPosition,"<meta name=\"description\" content=\"","\">","_metaDesc*_","_/metaDesc*_");
+      fR+=mTextInMainPosition;
       if(str_backups_IfCalledFor!=""){
         fR+=BI::textAreaField("probText",str_backups_IfCalledFor,15,100);
       }
