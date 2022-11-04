@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -23,23 +23,17 @@
 #include <cgicc/Cgicc.h>
 #include <cgicc/HTTPHTMLHeader.h>
 #include <cgicc/HTMLClasses.h>
-
-
-
-
 #include "WSI_wiSetup.cpp"
 namespace MWII{
   WSI::Setup GL_WI;
   std::string FILE_PREFIX="f";
   long GL_MAX_FILE_RESP_REC=3500000;
 }
-
 #include "PSDI_portableSessionData.h"
 #include "BI_basicFunctions.cpp"
 #include "LI_labelNames.h"
 #include "TDI_textDataForTable.cpp"
 #include "DCEI_dockerContainerExecution.cpp"
-
 #include "MCWCPI_modifyCouasWithoutCheckingPermissions.cpp"
 #include "FHI_formHandling.h"
 #include "CCFI_customCommandForms.cpp"
@@ -52,7 +46,6 @@ namespace MWII{
 #include "STI_statText.h"
 #include "SII_sessionInformation.h"
 #include "CCI_commandCenter.h"
-
 #include "GCSI_guestCloneServices.cpp"
 #include "FHI_formHandling.cpp"
 #include "MEI_messageElements.cpp"
@@ -70,6 +63,4 @@ namespace MWII{
 #include "INCII_inCommandInsert.cpp"
 #include "SII_sessionInformation.cpp"
 #include "CCI_commandCenter.cpp"
-
-
 #endif
