@@ -1323,6 +1323,11 @@ namespace RTI{
           }
         }
       }
+      else{
+        if((BF::isNumeric(sqi.officialAnswer))&&(!BF::isNumeric(sqi.userAnswer)) ){ 
+          sqi.userAnswer=BF::doubleToString(AEF::getLastNumericalValue(sqi.userAnswer));
+        }
+      }
       if( (sqi.userAnswer!="notFound")&&(sqi.userAnswer!="na")&&(sqi.userAnswer!="NA")&&(sqi.userAnswer!="n/a")&&(sqi.userAnswer!="N/A")&&(sqi.userAnswer!="")&&(sqi.userAnswer==sqi.officialAnswer)){
         CAGI::GradingResult tmpMaxPt;
         tmpMaxPt.score=sqi.maxPoints;
@@ -1336,6 +1341,7 @@ namespace RTI{
             autoGradingMap[sqi.QNum]=tmpMaxPt;
           }
         }
+
       }
       ++itf;
     }
