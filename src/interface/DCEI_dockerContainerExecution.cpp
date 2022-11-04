@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -135,7 +135,7 @@ namespace DCEI{
     std::string binName=fileFullName(binB,"",i);
     std::string txtResFile;
     std::string txtInFile;
-    bRes+="output=$(c++ "+cppSourceFile+" -o "+binName +" "+compilerFlags+" 2>&1)\n"; 
+    bRes+="output=$(c++ "+cppSourceFile+" -o "+binName +" "+compilerFlags+" 2>&1)\n";
     bRes+="if [[ $? != 0 ]]; then\n";
     for(long j=0;j<numTsts;++j){
       txtResFile=fileFullName(outN,".txt",i,j);
