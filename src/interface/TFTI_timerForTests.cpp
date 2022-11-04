@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -101,7 +101,7 @@ namespace TFTI{
     result*=60;
     result+=s;
     return result;
-  } 
+  }
   RTI::ResponderInfo analyzeTimerAndUpdateInfo(const RTI::ResponderInfo & rInf){
     RTI::ResponderInfo res=rInf;
     if(res.acceptResp==1){
@@ -113,12 +113,10 @@ namespace TFTI{
       TMF::Timer tmpTm;
       std::vector<long> tNowVect=tmpTm.timeNowVector();
       long allowedTimeSec=convertStringToSeconds(res.commAllowedTime);
-
       //Checking if the exam is over
       long i_endTimeSec=-1;
       if(res.indEndingTime!="notFound"){
         i_endTimeSec=TMF::getSecondsSinceYYYY(iEndVect);
-
       }
       long c_endTimeSec=-1;
       if(res.commAbsoluteEnd!="notFound"){
@@ -151,7 +149,6 @@ namespace TFTI{
           }
         }
       }
-
       if(i_endTimeSec > -1){
         if( i_endTimeSec < tmNowSec){
           res.remainingSeconds=0;
@@ -179,12 +176,8 @@ namespace TFTI{
           }
         }
       }
-
     }
     return res;
   }
-
 }
-
-
 #endif
