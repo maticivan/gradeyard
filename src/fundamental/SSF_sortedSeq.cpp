@@ -73,7 +73,7 @@ namespace SSF{
     long operator-=(const TTT &);
     long operator-=(const StatSeq &);
     long find(const TTT &, const long & = 0) const;
-    long lowerBound(const TTT &) const;
+    long upperBound(const TTT &) const;
     void clear();
     TTT operator[](const long & ) const;
     virtual ~StatSeq();
@@ -359,7 +359,7 @@ namespace SSF{
     TTT irrelevantValue;
     return irrelevantValue;
   }
-  template<typename TTT> long StatSeq<TTT>::find(const TTT & _v, const long & lowerBoundInsteadOfNegOne) const{
+  template<typename TTT> long StatSeq<TTT>::find(const TTT & _v, const long & upperBoundInsteadOfNegOne) const{
     AVLNode* researcher= _dRoot;
     long found=-1;
     long discardedLeft=0;
@@ -377,12 +377,12 @@ namespace SSF{
         }
       }
     }
-    if(found*lowerBoundInsteadOfNegOne==-1){
+    if(found*upperBoundInsteadOfNegOne==-1){
       return discardedLeft;
     }
     return found;
   }
-  template<typename TTT> long StatSeq<TTT>::lowerBound(const TTT & _v) const{
+  template<typename TTT> long StatSeq<TTT>::upperBound(const TTT & _v) const{
     return find(_v,1);
   }
 }
