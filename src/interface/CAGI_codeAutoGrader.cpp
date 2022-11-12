@@ -43,6 +43,14 @@ namespace CAGI{
     }
     return allCodes[sz-1];
   }
+  std::string removeForbiddenStrings(const std::string& _src, const std::vector<std::string> & forb){
+    std::string src=_src;
+    long fsz=forb.size();
+    for(long i=0; i<fsz;++i){
+      src=SF::findAndReplace(src,forb[i],"");
+    }
+    return src;
+  }
   RTI::CodeAutoGraderInfo getAutoGraderCodeData(const std::string &agParameters, const std::string & offSolution, const std::string & userSolution, const std::string & maxPoints){
     RTI::CodeAutoGraderInfo cInfo;
     cInfo.officialSource=lastCode(offSolution);
@@ -93,6 +101,8 @@ namespace CAGI{
     pos=0;allD=SF::extract(agParameters,pos,"_forbidden_","_/forbidden_");
     if(allD.second==1){
       cInfo.forbiddenStrs=SF::stringToVector(allD.first,"_n*_","_/n*_");
+      cInfo.officialSource=removeForbiddenStrings(cInfo.officialSource,cInfo.forbiddenStrs);
+      cInfo.userSource=removeForbiddenStrings(cInfo.userSource,cInfo.forbiddenStrs);
     }
     cInfo.pointsTestCases.resize(0);
     long numTestCases=cInfo.inputTestCases.size();
@@ -253,7 +263,6 @@ namespace CAGI{
     std::vector<std::string> mDidNotCompile;
     std::vector<std::string> cFlags;
     std::vector<std::vector<std::string> >includes;
-    std::vector<std::vector<std::string> >forbiddenStrs;
     std::vector<std::vector<std::string> >inputTestCases;
     std::vector<std::vector<std::string> >revealTCAfterGrading;
     std::vector<std::vector<double> > scores;
@@ -264,7 +273,6 @@ namespace CAGI{
     mDidNotCompile.resize(twoNC);
     cFlags.resize(twoNC);
     includes.resize(twoNC);
-    forbiddenStrs.resize(twoNC);
     inputTestCases.resize(twoNC);
     revealTCAfterGrading.resize(twoNC);
     labels.resize(twoNC);
@@ -276,7 +284,6 @@ namespace CAGI{
       sources[i]=(it->second).userSource;
       languages[i]=(it->second).language;
       includes[i]=(it->second).includes;
-      forbiddenStrs[i]=(it->second).forbiddenStrs;
       if(testCasesType=="publicTestCases"){
         inputTestCases[i]=(it->second).publicTestCases;
         revealTCAfterGrading[i]=(it->second).publicRevealTestCasesAfterGrading;
@@ -294,7 +301,6 @@ namespace CAGI{
       sources[i]=(it->second).officialSource;
       languages[i]=(it->second).language;
       includes[i]=(it->second).includes;
-      forbiddenStrs[i]=(it->second).forbiddenStrs;
       if(testCasesType=="publicTestCases"){
         inputTestCases[i]=(it->second).publicTestCases;
         revealTCAfterGrading[i]=(it->second).publicRevealTestCasesAfterGrading;
@@ -311,7 +317,7 @@ namespace CAGI{
       ++i;
       ++it;
     }
-    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd,sources,languages,cFlags,includes,forbiddenStrs,inputTestCases);
+    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd,sources,languages,cFlags,includes,inputTestCases);
     if(aGOutput.second==0){
       return 0;
     }
@@ -365,16 +371,15 @@ namespace CAGI{
   std::string executionResult(const PSDI::SessionData & _psd, const std::string & agrParameters, const std::string & offSolution){
     RTI::CodeAutoGraderInfo cInfo=getAutoGraderCodeData(agrParameters,offSolution,"","100");
     std::vector<std::string> sources,languages,cFlags;
-    std::vector<std::vector<std::string> > includes, forbiddenStrs, inputTestCases;
+    std::vector<std::vector<std::string> > includes, inputTestCases;
     sources.resize(1);languages.resize(1);cFlags.resize(1);
-    includes.resize(1);forbiddenStrs.resize(1);inputTestCases.resize(1);
+    includes.resize(1);inputTestCases.resize(1);
     sources[0]=cInfo.officialSource;
     languages[0]=cInfo.language;
     cFlags[0]=cInfo.compilerFlags;
     includes[0]=cInfo.includes;
-    forbiddenStrs[0]=cInfo.forbiddenStrs;
     inputTestCases[0]=cInfo.inputTestCases;
-    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd, sources,languages,cFlags,includes,forbiddenStrs,inputTestCases);
+    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd, sources,languages,cFlags,includes,inputTestCases);
     std::string fR="<h4>Code execution on test cases</h4>";
     if((aGOutput.second==0)||(aGOutput.first.size()!=1)){
       fR+=wrongLengthsOfVectors();
