@@ -1324,7 +1324,7 @@ namespace RTI{
         }
       }
       else{
-        if((BF::isNumeric(sqi.officialAnswer))&&(!BF::isNumeric(sqi.userAnswer)) ){ 
+        if((BF::isNumeric(sqi.officialAnswer))&&(!BF::isNumeric(sqi.userAnswer)) ){
           sqi.userAnswer=BF::doubleToString(AEF::getLastNumericalValue(sqi.userAnswer));
         }
       }
@@ -1372,7 +1372,7 @@ namespace RTI{
       if(allD.second==1){
         it=autoGradingMap.find(allD.first);
         if(it!=itE){
-          newInit+="_in*|_ _gc*|__score_"+(it->second).score+"_/score__comment_"+(it->second).comment+"_/comment__/gc*|_ _lb*|_"+it->first+"_/lb*|_ _/in*|_";
+          newInit+="_in*|_ _gc*|__score_"+(it->second).score+"_/score__comment_"+(it->second).shorterComment+"_/comment__/gc*|_ _lb*|_"+it->first+"_/lb*|_ _/in*|_";
         }
         else{
           newInit+="_in*|_"+grInfo[i]+"_/in*|_";
