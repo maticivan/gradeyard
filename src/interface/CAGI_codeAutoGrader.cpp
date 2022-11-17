@@ -18,21 +18,6 @@
 #ifndef _INCL_CAGI_CodeAutoGrader_CPP
 #define _INCL_CAGI_CodeAutoGrader_CPP
 namespace CAGI{
-  struct GROneTestCase{
-  public:
-    std::string result, input, output, correct;
-  };
-  struct GradingResult{
-  public:
-    double numericScore;
-    std::string score;
-    std::string comment,shorterComment;
-    std::vector<GROneTestCase> testCasesRes;
-  };
-  struct DockerCodeCounter{
-  public:
-    long remainingCodes;
-  } GL_Code_Counter;//will be initialized in mainFunction.cpp
   std::string lastCode(const std::string & _input){
     std::string input=SF::findAndReplace(_input,"_code_","<pre>");
     input=SF::findAndReplace(input,"_/code_","</pre>");
@@ -45,9 +30,16 @@ namespace CAGI{
   }
   std::string removeForbiddenStrings(const std::string& _src, const std::vector<std::string> & forb){
     std::string src=_src;
+    std::string hidingSt;
     long fsz=forb.size();
     for(long i=0; i<fsz;++i){
-      src=SF::findAndReplace(src,forb[i],"");
+      if((forb[i]=="[")||(forb[i]=="]")){
+        hidingSt="seqNotAllowed";
+      }
+      else{
+        hidingSt=forb[i]; 
+      }
+      src=SF::findAndReplace(src,forb[i],GL_Obf.secretOpenTag+hidingSt+GL_Obf.secretCloseTag);
     }
     return src;
   }
@@ -183,11 +175,12 @@ namespace CAGI{
     }
     return 0;
   }
-  GradingResult calculateScore(const std::vector<std::string> &officialOutput, const std::vector<std::string> &userOutput, const std::vector<double> &pts, const std::vector<std::string> & inputTestCases, const std::vector<std::string> &revealAfter, const std::string & mDNCompile){
+  GradingResult calculateScore(const std::string& language,const std::vector<std::string> &officialOutput, const std::vector<std::string> &userOutput, const std::vector<double> &pts, const std::vector<std::string> & inputTestCases, const std::vector<std::string> &revealAfter, const std::string & official_mDNCompile){
     GradingResult res;
-    res.comment="";res.shorterComment="";
+    res.comment="";res.shorterComment="";res.errorMessage="";
     res.numericScore=-100.0;
     res.score="badScore";
+    res.language=language;
     long sz=officialOutput.size();
     if(sz!=userOutput.size()){
       return res;
@@ -201,11 +194,12 @@ namespace CAGI{
     long indicatorOfficialSolutionBad=0;
     long indicatorDidNotCompile=0;
     long i=0;
+    std::string mDNCompile=official_mDNCompile;
     while((i<sz) && (indicatorOfficialSolutionBad==0)){
       if(officialOutput[i] != SF::findAndReplace(officialOutput[i],GF::GL_errorOutputTooBig,"")){
         indicatorOfficialSolutionBad=1;
       }
-      if(officialOutput[i] != SF::findAndReplace(officialOutput[i],GF::GL_errorDidNotCompile,"")){
+      if(officialOutput[i] != SF::findAndReplace(officialOutput[i],"_error*|_yes_/error*|_","")){
         indicatorOfficialSolutionBad=1;
       }
       if(officialOutput[i] ==""){
@@ -228,8 +222,10 @@ namespace CAGI{
         res.comment+="\nCorrect: "+officialOutput[i]+"\n";
         tcRes.input=inputTestCases[i];tcRes.output=userOutput[i];tcRes.correct=officialOutput[i];
       }
-      if(userOutput[i] != SF::findAndReplace(userOutput[i],GF::GL_errorDidNotCompile,"")){
+      if((indicatorDidNotCompile==0)&&(userOutput[i] != SF::findAndReplace(userOutput[i],"_error*|_yes_/error*|_",""))) {
         indicatorDidNotCompile=1;
+        mDNCompile=AGRDI::analyzeError(userOutput[i],language,official_mDNCompile);
+        res.errorMessage=mDNCompile;
       }
       res.testCasesRes[i]=tcRes;
       ++i;
@@ -239,16 +235,19 @@ namespace CAGI{
       res.comment="\nProblem with autograder. Please wait a few minutes and try again.";
       res.testCasesRes.resize(0);
     }
+    res.shorterComment=res.comment;
     if(indicatorDidNotCompile==1){
+      res.shorterComment="\n"+official_mDNCompile;
       res.comment="\n"+mDNCompile;
       res.testCasesRes.resize(0);
     }
     res.score=BF::eraseTrailingZeros(std::to_string(total));
     res.numericScore=total;
-    res.shorterComment=res.comment;
     res.comment="_code_AUTOGRADER COMMENT BEGIN"+res.comment+"\nAUTOGRADER COMMENT END_/code_";
+    res.shorterComment="_code_AUTOGRADER COMMENT BEGIN"+res.shorterComment+"\nAUTOGRADER COMMENT END_/code_";
     if(MWII::GL_WI.getDefaultWebText("ShowAutoGraderComment")=="no"){
       res.comment="";
+      res.shorterComment="";
     }
     return res;
   }
@@ -327,7 +326,7 @@ namespace CAGI{
     i=0;
     GradingResult score1Problem;
     while(i<numCodes){
-      score1Problem=calculateScore(aGOutput.first[2*i+1],aGOutput.first[2*i],scores[2*i],inputTestCases[2*i],revealTCAfterGrading[2*i],mDidNotCompile[2*i]);
+      score1Problem=calculateScore(languages[2*i], aGOutput.first[2*i+1],aGOutput.first[2*i],scores[2*i],inputTestCases[2*i],revealTCAfterGrading[2*i],mDidNotCompile[2*i]);
       if(score1Problem.score!="badScore"){
         oldScores[labels[2*i]]=score1Problem;
       }
