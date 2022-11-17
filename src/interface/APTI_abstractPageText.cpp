@@ -1143,78 +1143,6 @@ namespace APTI{
     subt.setSubTextRecursionDepth(subTextRecursionDepth+1);
     return subt.displayText(_psd,"subText");
   }
-  std::string grResultSummaryTable(const CAGI::GradingResult& rGr){
-    long numR=rGr.testCasesRes.size();
-    long maxNumResInOneRow=10;
-    std::string pillSucc,pillFail,pillNA,currentPill;
-    pillSucc="<span class=\"badge badge-pill bg-success\">$\\pmb{\\checkmark}$</span>";
-    pillFail="<span class=\"badge badge-pill bg-danger\">$\\pmb{\\times}$</span>";
-    pillNA="<span class=\"badge badge-pill bg-secondary\">-</span>";
-    std::stack<std::vector<std::string> > stS;
-    std::vector<std::string> mainL,statusLine,statusLineDefault;
-    mainL.resize(maxNumResInOneRow);
-    statusLine.resize(maxNumResInOneRow);
-    statusLineDefault.resize(maxNumResInOneRow);
-    for(long i=0;i<maxNumResInOneRow;++i){
-      mainL[i]=std::to_string(i+1);
-      statusLineDefault[i]=pillNA;
-    }
-    long i=0;
-    while(i<numR){
-      long j=0;
-      statusLine=statusLineDefault;
-      while((j<maxNumResInOneRow)&&(i<numR)){
-        currentPill=pillFail;
-        if(rGr.testCasesRes[i].result=="success"){
-          currentPill=pillSucc;
-        }
-        statusLine[j]=currentPill;
-        ++j;++i;
-      }
-      stS.push(statusLine);
-    } 
-    stS.push(mainL);
-    return HSF::tableFromStack(stS,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
-  }
-  std::string prepareGrResult(const CAGI::GradingResult & rGr){
-    if(rGr.testCasesRes.size()==0){
-      return "<div class=\"messageBox\"><div class=\"card-body bg-danger text-light\">\n <b>Failed</b></div><div class=\"card-body\">"+rGr.shorterComment+"</div></div>";
-    }
-    long numR=rGr.testCasesRes.size();
-    std::string tRes;
-    std::string niceRes;
-    niceRes+=grResultSummaryTable(rGr);
-    niceRes+="<div id=\"accordion\">\n";
-    for(long i=0;i<numR;++i){
-      niceRes+="<div class=\"card\">\n <div class=\"card-header\" id=\"resultH"+ std::to_string(i+1);
-      niceRes+="\">\n";
-      niceRes+="<button class=\"btn btn-link\" data-toggle=\"collapse\" data-target=\"#resC"+std::to_string(i+1);
-      niceRes+="\" aria-expanded=\"true\" aria-controls=\"resC"+std::to_string(i+1)+"\">\n";
-      tRes="text-danger";
-      if(rGr.testCasesRes[i].result=="success"){
-        tRes="text-success";
-      }
-      niceRes+="<div class=\""+tRes+"\"><h5>Test case "+std::to_string(i+1);
-      niceRes+=" ("+rGr.testCasesRes[i].result+")";
-      niceRes+="</h5></div>  ";
-      niceRes+="</button>\n";
-
-      niceRes+="</div>\n";
-      niceRes+="<div id=\"resC"+std::to_string(i+1)+"\" class=\"collapse\" aria-labelledby=\"resultH"+std::to_string(i+1);
-      niceRes+="\" data-parent=\"#accordion\">\n <div class=\"card-body\">\n";
-      niceRes+="<h5>Input</h5>";
-      niceRes+="<pre>"+rGr.testCasesRes[i].input+"</pre>\n";
-      niceRes+="<h5>Output</h5>";
-      niceRes+="<pre>"+rGr.testCasesRes[i].output+"</pre>\n";
-      if(rGr.testCasesRes[i].result!="success"){
-        niceRes+="<h5>Correct output</h5>";
-        niceRes+="<pre>"+rGr.testCasesRes[i].correct+"</pre>\n";
-      }
-      niceRes+="</div>\n</div>\n</div>\n";
-    }
-    niceRes+="</div>\n";
-    return niceRes;
-  }
   std::string executeAGCodeTest(const PSDI::SessionData & _psd,
                                 const std::string& formulation,
                                 const std::string& officialSolution,
@@ -1251,7 +1179,7 @@ namespace APTI{
         std::map<std::string,CAGI::GradingResult>::const_iterator itGR;
         itGR=autoGradingMap.begin();
         if(itGR!=autoGradingMap.end()){
-          grResult=prepareGrResult(itGR->second);
+          grResult=AGRDI::prepareGrResult(itGR->second);
         }
       }
       else{
