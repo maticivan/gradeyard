@@ -626,13 +626,11 @@ namespace SII{
         if(allD.second==1){
           CAGI::GL_Obf.sequencesNotAllowedExplanation=allD.first;
         }
-
         pos=0;
         allD=SF::extract(initText,pos,"_wNotAllowed_","_/wNotAllowed_");
         if(allD.second==1){
           CAGI::GL_Obf.wordNotAllowed=allD.first;
         }
-
         pos=0;
         allD=SF::extract(initText,pos,"_defaultTexts!*_","_/defaultTexts!*_");
         if(allD.second==1) {
