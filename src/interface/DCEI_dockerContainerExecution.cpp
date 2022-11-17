@@ -55,6 +55,7 @@ namespace DCEI{
     std::string sourceFNBase;
     std::string inDataFNBase;
     std::string outDataFNBase;
+    std::string errDataFNBase;
     std::string dockerCommand;
     std::string folderInContainer;
     std::string myLinuxUserName;
@@ -123,65 +124,71 @@ namespace DCEI{
     }
     return deleteFiles(folderName,sz,fileBaseName,"",extV);
   }
+  std::string bashCommToCompileAndExecute(const std::string & compilerCommand,
+                                          const std::string & inN,
+                                          const std::string & outN,
+                                          const std::string & errN,
+                                          const std::string & executionPrefix,
+                                          const std::string & binName,
+                                          const long & i,
+                                          const long &numTsts,
+                                          const long &timeOut,
+                                          const long &cppIndicator
+                                         ){
+    std::string txtResFile, txtErrorFile, txtInFile;
+    std::string bRes=compilerCommand;
+    bRes+="if [[ $? != 0 ]]; then\n";
+    for(long j=0;j<numTsts;++j){
+      txtResFile=fileFullName(outN,".txt",i,j);
+      txtErrorFile=fileFullName(errN,".txt",i,j);
+      bRes+="   outBegin=\"_error*|_yes_/error*|__eTxt*|_\"\n";
+      bRes+="   outEnd=\"_/eTxt*|_\"\n";
+      bRes+="   out=\"${outBegin} ${output} ${outEnd}\"\n";
+      bRes+="   echo $out > "+txtErrorFile+"\n";
+      bRes+="   echo \""+GF::GL_errorDidNotCompile+"\" > "+txtResFile+"\n";
+    }
+    bRes+="else\n";
+    for(long j=0;j<numTsts;++j){
+      txtInFile=fileFullName(inN,".txt",i,j);
+      txtResFile=fileFullName(outN,".txt",i,j);
+      txtErrorFile=fileFullName(errN,".txt",i,j);
+      bRes+="   out3=$(timeout " + std::to_string(timeOut)+" "+executionPrefix;
+      bRes+=binName;
+      bRes+=" < "+txtInFile;
+      bRes+=" > "+txtResFile+" 2>"+txtResFile+")\n";
+      bRes+="   echo \"compiled\" > "+txtErrorFile+"\n";
+    }
+    if(cppIndicator==1){
+      bRes+="   rm ";
+      bRes+=binName+"\n";
+    }
+    bRes+="fi\n";
+    return bRes;
+    return bRes;
+  }
   std::string bashCommandsToCompileAndExecuteCpp(const std::string & cppSourceFile,
                                                  const std::string & compilerFlags,
                                                  const std::string & inN,
                                                  const std::string & outN,
+                                                 const std::string & errN,
                                                  const std::string &binB,
                                                  const long & i,
                                                  const long &numTsts,
                                                  const long &timeOut){
-    std::string bRes="";
-    std::string binName=fileFullName(binB,"",i);
-    std::string txtResFile;
-    std::string txtInFile;
-    bRes+="output=$(c++ "+cppSourceFile+" -o "+binName +" "+compilerFlags+" 2>&1)\n";
-    bRes+="if [[ $? != 0 ]]; then\n";
-    for(long j=0;j<numTsts;++j){
-      txtResFile=fileFullName(outN,".txt",i,j);
-      bRes+="   echo \""+GF::GL_errorDidNotCompile+"\" > "+txtResFile+"\n";
-    }
-    bRes+="else\n";
-    for(long j=0;j<numTsts;++j){
-      txtInFile=fileFullName(inN,".txt",i,j);
-      txtResFile=fileFullName(outN,".txt",i,j);
-      bRes+="   timeout " + std::to_string(timeOut)+" ./";
-      bRes+=binName;
-      bRes+=" < "+txtInFile;
-      bRes+=" > "+txtResFile+"\n";
-    }
-    bRes+="   rm ";
-    bRes+=binName+"\n";
-    bRes+="fi\n";
-    return bRes;
+    std::string binFName=fileFullName(binB,"",i);
+    std::string cComm="output=$(c++ "+cppSourceFile+" -o "+binFName +" "+compilerFlags+" 2>&1)\n";
+    return bashCommToCompileAndExecute(cComm, inN,outN,errN,"./",binFName,i,numTsts,timeOut,1);
   }
   std::string bashCommandsToCompileAndExecutePython3(const std::string & pySourceFile,
                                                      const std::string & inN,
                                                      const std::string & outN,
+                                                     const std::string & errN,
                                                      const std::string & binB,
                                                      const long & i,
                                                      const long &numTsts,
                                                      const long &timeOut){
-    std::string bRes="";
-    std::string txtResFile;
-    std::string txtInFile;
-    bRes+="output=$(python3 -m py_compile "+pySourceFile+" 2>&1)\n";
-    bRes+="if [[ $? != 0 ]]; then\n";
-    for(long j=0;j<numTsts;++j){
-      txtResFile=fileFullName(outN,".txt",i,j);
-      bRes+="   echo \""+GF::GL_errorDidNotCompile+"\" > "+txtResFile+"\n";
-    }
-    bRes+="else\n";
-    for(long j=0;j<numTsts;++j){
-      txtInFile=fileFullName(inN,".txt",i,j);
-      txtResFile=fileFullName(outN,".txt",i,j);
-      bRes+="   timeout " + std::to_string(timeOut)+" python3 ";
-      bRes+=pySourceFile;
-      bRes+=" < "+txtInFile;
-      bRes+=" > "+txtResFile+"\n";
-    }
-    bRes+="fi\n";
-    return bRes;
+    std::string cComm="output=$(python3 -m py_compile "+pySourceFile+" 2>&1)\n";
+    return bashCommToCompileAndExecute(cComm, inN,outN,errN,"python3 ",pySourceFile,i,numTsts,timeOut,0);
   }
   std::string overwriteBigOutputs(const std::string & fNBase, const std::vector<std::vector<std::string> > & iD, const long & maxSize){
     std::string bRes="";
@@ -233,7 +240,9 @@ namespace DCEI{
         bRes+=bashCommandsToCompileAndExecuteCpp(
           fileFullName(ced.sourceFNBase,wordThatStartWithDot,i),
           ced.compilerFlags[i],
-          ced.inDataFNBase,ced.outDataFNBase,
+          ced.inDataFNBase,
+          ced.outDataFNBase,
+          ced.errDataFNBase,
           ced.sourceFNBase,i,
           ced.inputData[i].size(),
           timeOutTime
@@ -244,7 +253,7 @@ namespace DCEI{
         wordThatStartWithDot+=ced.language[i];
         bRes+=bashCommandsToCompileAndExecutePython3(
           fileFullName(ced.sourceFNBase,wordThatStartWithDot,i),
-          ced.inDataFNBase,ced.outDataFNBase,
+          ced.inDataFNBase,ced.outDataFNBase,ced.errDataFNBase,
           ced.sourceFNBase,i,
           ced.inputData[i].size(),
           timeOutTime
@@ -258,8 +267,9 @@ namespace DCEI{
       numOutsI=ced.inputData[i].size();
       for(long j=0;j<numOutsI;++j){
         bRes+=copyFromOneFolderToAnother(folderKnownToSource,folderHiddenFromSource,fileFullName(ced.outDataFNBase,".txt",i,j));
+        bRes+=copyFromOneFolderToAnother(folderKnownToSource,folderHiddenFromSource,fileFullName(ced.errDataFNBase,".txt",i,j));
       }
-    }
+    } 
     return bRes;
   }
   int executeInContainerAndWriteFiles(const PSDI::SessionData & _psd, const ContainerExecutionData& ced){
@@ -280,16 +290,22 @@ namespace DCEI{
     res.resize(numFiles);
     long szI;
     std::string mFolder=myMountFolder(_psd.my_un)+"/";
-    std::string outFileName;
+    std::string outFileName,errFileName;
     for(long i=0;i<numFiles;++i){
       szI=ced.inputData[i].size();
       res[i].resize(szI);
       for(long j=0;j<szI;++j){
         outFileName=mFolder+ fileFullName(ced.outDataFNBase,".txt",i,j);
+        errFileName=mFolder+ fileFullName(ced.errDataFNBase,".txt",i,j);
         res[i][j]=IOF::fileToString(outFileName,1);
-        res[i][j]=SF::findAndReplace(res[i][j],"<",".");
-        res[i][j]=SF::findAndReplace(res[i][j],">",",");
-        res[i][j]=SF::findAndReplace(res[i][j],"_"," ");
+        if(SF::findAndReplace(res[i][j],GF::GL_errorDidNotCompile,"")==res[i][j]){
+          res[i][j]=SF::findAndReplace(res[i][j],"<",".");
+          res[i][j]=SF::findAndReplace(res[i][j],">",",");
+          res[i][j]=SF::findAndReplace(res[i][j],"_"," ");
+        }
+        else{
+          res[i][j]=IOF::fileToString(errFileName,1);
+        }
       }
     }
     IOF::sys_deleteFolderAndSubfolders(myMountFolder(_psd.my_un));
@@ -418,6 +434,7 @@ namespace DCEI{
     mainCED.sourceFNBase="sfile";
     mainCED.inDataFNBase="ind";
     mainCED.outDataFNBase="outd";
+    mainCED.errDataFNBase="errd";
     mainCED.bashExecFileName="befile";
     mainCED.folderInContainer="/fmountPoint/f"+DD::GL_DBS.getInitExtension();
     mainCED.dockerCommand="docker run --rm --name test_container_001 -v ";
