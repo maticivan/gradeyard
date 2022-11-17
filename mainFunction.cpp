@@ -18,14 +18,13 @@
 #include "src/fundamental/SHF_standardHeaders.cpp"
 #include "src/fundamental/SAIOF_setupAndIO.cpp"
 std::string GL_MAIN_SETUP_FILE_NAME=SAIOF::get_GL_MAIN_SETUP_FILE_NAME();
-std::string GL_VERSION="1.016.2022.11.11";
+std::string GL_VERSION="1.5.2 (2022/11/17)";
 #include "src/fundamental/MTF_mainTable.cpp"
 #include "src/db/DD_databases.cpp"
 #include "src/graphs/MGG_mainGraphs.cpp"
 #include "src/interface/MWII_mainWI.cpp"
 
 int main() {
-
   TMF::Timer timeToGeneratePage;
   timeToGeneratePage.start();
   cgicc::Cgicc ch;
