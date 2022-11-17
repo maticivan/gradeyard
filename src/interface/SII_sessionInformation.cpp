@@ -495,6 +495,11 @@ namespace SII{
       fastUpdatingStat="yes";
       psd.passwordChangeRequested="no";
       psd.passwordChangeStatus="";
+      CAGI::GL_Obf.uniqueRandomCode=RNDF::genRandCode(5);
+      CAGI::GL_Obf.secretOpenTag="Bb"+CAGI::GL_Obf.uniqueRandomCode+"e";
+      CAGI::GL_Obf.secretCloseTag="Eb"+CAGI::GL_Obf.uniqueRandomCode+"e";
+      CAGI::GL_Obf.sequencesNotAllowedExplanation="Arrays, sequences, vectors, and maps were not allowed, but your code tried to use them.";
+      CAGI::GL_Obf.wordNotAllowed="Your code tried to use an illegal word: ";
       envVariables=BI::getEnvVars();
       analyzeEnvVarsAndForms(ch);
       currentCookie=envVariables[24];
@@ -601,6 +606,33 @@ namespace SII{
             psd.displayMonthsInYear=SF::stringToVector(allD.first,"_n*_","_/n*_");
           }
         }
+        AGRDI::GL_AGParameters.colSize=10;
+        pos=0;
+        allD=SF::extract(initText,pos,"_agColSize_","_/agColSize_");
+        if(allD.second==1){
+          AGRDI::GL_AGParameters.colSize=BF::stringToInteger(allD.first);
+          if((AGRDI::GL_AGParameters.colSize<1)||(AGRDI::GL_AGParameters.colSize>30)){
+            AGRDI::GL_AGParameters.colSize=10;
+          }
+        }
+        AGRDI::GL_AGParameters.compilerErrors="yes";
+        pos=0;
+        allD=SF::extract(initText,pos,"_agCErrors_","_/agCErrors_");
+        if(allD.second==1){
+          AGRDI::GL_AGParameters.compilerErrors=allD.first;
+        }
+        pos=0;
+        allD=SF::extract(initText,pos,"_sNotAllowed_","_/sNotAllowed_");
+        if(allD.second==1){
+          CAGI::GL_Obf.sequencesNotAllowedExplanation=allD.first;
+        }
+
+        pos=0;
+        allD=SF::extract(initText,pos,"_wNotAllowed_","_/wNotAllowed_");
+        if(allD.second==1){
+          CAGI::GL_Obf.wordNotAllowed=allD.first;
+        }
+
         pos=0;
         allD=SF::extract(initText,pos,"_defaultTexts!*_","_/defaultTexts!*_");
         if(allD.second==1) {
