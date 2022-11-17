@@ -40,7 +40,13 @@ submitted through the Calculator form.
 _maxNumForSimpson_0_/maxNumForSimpson_
 
 
+Number of columns in auto-grader summary: _agColSize_5_/agColSize_
+Allow autograder to show compiler erros: _agCErrors_yes_/agCErrors_
+Autograder message for solutions that attempt to use illegal sequences: _sNotAllowed_Advanced data structures are not allowed in this problem. You tried to use sequences, arrays, vectors, or maps._/sNotAllowed_
+Autograder message for solutions that attempt to use an illegal word:_wNotAllowed_Your solution tried to use a word that is not allowed. The illegal word is: _/wNotAllowed_
+
 _executePublicTestCases_yes_/executePublicTestCases_
+
 
 _defaultTexts!*_
 _vVPair__vr_Click on the button below when you are ready._/vr__vl_
@@ -77,6 +83,78 @@ var x = setInterval(function() {
 
 </div>
   </div>_/vl__/vVPair_
+  
+  
+  
+  _vVPair__vr_Autograding Failed Message Begin_/vr_
+_vl_<div class="messageBox"><div class="card-body bg-danger text-light"> <b>Failed</b></div>_/vl_
+_/vVPair_
+_vVPair__vr_Autograding Failed Message End_/vr_
+_vl_</div>_/vl_
+_/vVPair_
+_vVPair__vr_Autograder Itemize Begin_/vr_
+_vl_<div id="accordion">_/vl_
+_/vVPair_
+_vVPair__vr_Autograder Itemize End_/vr_
+_vl_</div>_/vl_
+_/vVPair_
+_vVPair__vr_Autograder Raw Message Begin_/vr_
+_vl_<div class="card">
+ <div class="card-header" id="resultH1">
+<button class="btn btn-link" data-toggle="collapse" data-target="#resC1" aria-expanded="true" aria-controls="resC1">
+<div class="text-danger"><h5>Compiler Message</h5></div>  </button>
+</div>
+<div id="resC1" class="collapse" aria-labelledby="resultH1" data-parent="#accordion">
+ <div class="card-body">
+<pre>_/vl__/vVPair_
+_vVPair__vr_Autograder Raw Message End_/vr_
+_vl_</pre>
+</div>
+</div>
+</div>_/vl_
+_/vVPair_
+
+_vVPair__vr_Autograder Explanation Begin_/vr_
+_vl_
+<div class="card">
+ <div class="card-header" id="resultH2">
+<button class="btn btn-link" data-toggle="collapse" data-target="#resC2" aria-expanded="true" aria-controls="resC2">
+<div class="text-danger"><h5>Explanation</h5></div>  </button>
+</div>
+<div id="resC2" class="collapse" aria-labelledby="resultH2" data-parent="#accordion">
+ <div class="card-body"> 
+_/vl_
+_/vVPair_
+
+_vVPair__vr_Autograder Explanation End_/vr_
+_vl_
+</div>
+</div>
+</div>
+_/vl_
+_/vVPair_
+
+_vVPair__vr_Autgrader One Test Case_/vr_
+_vl_
+<div class="card">
+   <div class="card-header" id="resultH_*IDNUMBER*_">
+      <button class="btn btn-link" data-toggle="collapse" data-target="#resC_*IDNUMBER*_" aria-expanded="true" aria-controls="resC_*IDNUMBER*_"> 
+         <div class="_*TEXTCOLOR*_"><h5>Test case _*IDNUMBER*_ (_*TESTRESULT*_)</h5></div>
+      </button>
+   </div>
+   <div id="resC_*IDNUMBER*_" class="collapse" aria-labelledby="resultH_*IDNUMBER*_" data-parent="#accordion"> 
+      <div class="card-body">
+         <h5>Input</h5>
+         <pre>_*TESTCASEINPUT*_</pre>
+         <h5>Output</h5>
+         <pre>_*TESTCASEOUTPUT*_</pre>
+         <h5>Correct output</h5>
+         <pre>_*TESTCASECORRECT*_</pre>
+      </div>
+   </div>
+</div>
+_/vl_
+_/vVPair_
 _/defaultTexts!*_
 
 _defaultWebsiteName_https://gradeyard.com_/defaultWebsiteName_ 
