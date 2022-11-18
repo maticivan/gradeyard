@@ -47,7 +47,10 @@ Autograder message for solutions that attempt to use an illegal word:_wNotAllowe
 
 _executePublicTestCases_yes_/executePublicTestCases_
 
-
+_maxTitleLength_50_/maxTitleLength_
+_codeWordForAutoGenTitle__*AGT*__/codeWordForAutoGenTitle_
+_maxDescLength_1000_/maxDescLength_
+_codeWordForAutoGenDesc__*AGD*__/codeWordForAutoGenDesc_
 _defaultTexts!*_
 _vVPair__vr_Click on the button below when you are ready._/vr__vl_
 <p></p><h2>Timed Exam</h2>
@@ -11869,8 +11872,8 @@ _/systemData!!_
 _textData!!_
  
 
-_title*_Code Editor_/title*_
-_metaDesc*_The code autograder can test your solution to the problem below._/metaDesc*_
+_title*__*AGT*_ _/title*_
+_metaDesc*_Code autograder will test your solution to the following problem. _*AGD*__/metaDesc*_
 <p></p>
  
    _insert_
@@ -11979,8 +11982,8 @@ _textData!!_
  
 
 
- _title*_Solution_/title*_
-_metaDesc*_The document contains the formulation of the problem and its official solution._/metaDesc*_
+ _title*_Solution for _*AGT*__/title*_
+_metaDesc*_The document contains the formulation of the problem and its official solution. _*AGD*__/metaDesc*_
 <p></p>
  
    _insert_
