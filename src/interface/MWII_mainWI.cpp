@@ -40,6 +40,7 @@ namespace MWII{
 #include "MEI_messageElements.h"
 #include "GEI_gradeEvaluators.h"
 #include "CEI_couasElements.h"
+#include "HTII_htmlTitleImprovements.cpp"
 #include "APTI_abstractPageText.h"
 #include "MPTI_mainPageText.h"
 #include "RTI_responseText.h"
