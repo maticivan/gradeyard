@@ -1276,6 +1276,12 @@ namespace APTI{
     if(allD.second==1){
       formulation=allD.first;
     }
+    if(HTII::GL_title.nTGenerations==0){
+      HTII::GL_title.tSuggestion=HTII::extractTextForTD(formulation,HTII::GL_title.maxTitleLength);
+      HTII::GL_title.dSuggestion=HTII::extractTextForTD(formulation,HTII::GL_title.maxDescLength);
+      HTII::GL_title.nTGenerations=1;
+      HTII::GL_title.nDGenerations=1;
+    }
     pos=0; allD=SF::extract(correctVersion,pos,"_agr*|_","_/agr*|_");
     std::string agrParameters="";
     if(allD.second==1){
