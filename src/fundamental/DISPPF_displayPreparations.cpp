@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -54,41 +54,65 @@ namespace DISPPF{
     std::string azm=GF::GL_HIDING_STRING_DISPPF02;
   public:
     std::vector<std::string> formattingTags;
+    std::vector<std::string> toEliminateFromSimpleTexts;
     std::vector<std::string> alakazams;
     HTML_Tags();
   };
   HTML_Tags::HTML_Tags(){
+    long i;
     formattingTags.resize(25);
-    formattingTags[0]="<i>";
-    formattingTags[1]="</i>";
-    formattingTags[2]="<b>";
-    formattingTags[3]="</b>";
-    formattingTags[4]="<u>";
-    formattingTags[5]="</u>";
-    formattingTags[6]="<ul>";
-    formattingTags[7]="</ul>";
-    formattingTags[8]="<li>";
-    formattingTags[9]="</li>";
-    formattingTags[10]="<p>";
-    formattingTags[11]="</p>";
-    formattingTags[12]="<title>";
-    formattingTags[13]="</title>";
-    formattingTags[14]="<h1>";
-    formattingTags[15]="</h1>";
-    formattingTags[16]="<h2>";
-    formattingTags[17]="</h2>";
-    formattingTags[18]="<h3>";
-    formattingTags[19]="</h3>";
-    formattingTags[20]="<h4>";
-    formattingTags[21]="</h4>";
-    formattingTags[22]="<h5>";
-    formattingTags[23]="</h5>";
-    formattingTags[24]="<br>";
+    i=-1;
+    ++i;formattingTags[i]="<i>";
+    ++i;formattingTags[i]="</i>";
+    ++i;formattingTags[i]="<b>";
+    ++i;formattingTags[i]="</b>";
+    ++i;formattingTags[i]="<u>";
+    ++i;formattingTags[i]="</u>";
+    ++i;formattingTags[i]="<ul>";
+    ++i;formattingTags[i]="</ul>";
+    ++i;formattingTags[i]="<li>";
+    ++i;formattingTags[i]="</li>";
+    ++i;formattingTags[i]="<p>";
+    ++i;formattingTags[i]="</p>";
+    ++i;formattingTags[i]="<title>";
+    ++i;formattingTags[i]="</title>";
+    ++i;formattingTags[i]="<h1>";
+    ++i;formattingTags[i]="</h1>";
+    ++i;formattingTags[i]="<h2>";
+    ++i;formattingTags[i]="</h2>";
+    ++i;formattingTags[i]="<h3>";
+    ++i;formattingTags[i]="</h3>";
+    ++i;formattingTags[i]="<h4>";
+    ++i;formattingTags[i]="</h4>";
+    ++i;formattingTags[i]="<h5>";
+    ++i;formattingTags[i]="</h5>";
+    ++i;formattingTags[i]="<br>";
     long sz=formattingTags.size();
     alakazams.resize(sz);
     for(long i=0;i<sz;++i){
       alakazams[i]=azm+std::to_string(i)+"e|";
     }
+    toEliminateFromSimpleTexts.resize(19);
+    i=-1;
+    ++i;toEliminateFromSimpleTexts[i]="<div>";
+    ++i;toEliminateFromSimpleTexts[i]="</div>";
+    ++i;toEliminateFromSimpleTexts[i]="<span>";
+    ++i;toEliminateFromSimpleTexts[i]="</span>";
+    ++i;toEliminateFromSimpleTexts[i]="<code>";
+    ++i;toEliminateFromSimpleTexts[i]="</code>";
+    ++i;toEliminateFromSimpleTexts[i]="<pre>";
+    ++i;toEliminateFromSimpleTexts[i]="</pre>";
+    ++i;toEliminateFromSimpleTexts[i]="\n";
+    ++i;toEliminateFromSimpleTexts[i]="$";
+    ++i;toEliminateFromSimpleTexts[i]="\\left";
+    ++i;toEliminateFromSimpleTexts[i]="\\right";
+    ++i;toEliminateFromSimpleTexts[i]="\\big";
+    ++i;toEliminateFromSimpleTexts[i]="\\bigg";
+    ++i;toEliminateFromSimpleTexts[i]="\\";
+    ++i;toEliminateFromSimpleTexts[i]="begin{eqnarray}";
+    ++i;toEliminateFromSimpleTexts[i]="begin{eqnarray*}";
+    ++i;toEliminateFromSimpleTexts[i]="end{eqnarray}";
+    ++i;toEliminateFromSimpleTexts[i]="end{eqnarray*}";
   }
   HTML_Tags GL_HTML_Tags;
   std::string treatHideReveal(const std::string & _input){
@@ -279,8 +303,6 @@ namespace DISPPF{
     t=mth3.recover(t);
     t=mth2.recover(t);
     t=mth1.recover(t);
-
-
     t=formattingCommands(t);
     t=keeperOfCodesS.recover(t);
     t=keeperOfPresS.recover(t);
