@@ -88,9 +88,44 @@ namespace SII{
       if(psd.createStandardCourseSuccess=="yes"){
         fR+=SF::findAndReplace(MWII::GL_WI.getDefaultWebText("standardCourseCreated"),"_*PAGE*NAME*_",psd.createStandardCourseMainDocName);
       }
+      long pos; std::pair<std::string,int> allD;
+      std::string openT,closeT;
       std::string mTextInMainPosition=mainText.displayText(psd,"mainTextPosition");
-      SF::transferTag(fR,mTextInMainPosition,"<title>","</title>","_title*_","_/title*_");
-      SF::transferTag(fR,mTextInMainPosition,"<meta name=\"description\" content=\"","\">","_metaDesc*_","_/metaDesc*_");
+      std::string titleInterior=SF::getTagInteriorAndRemoveTag(mTextInMainPosition,"_title*_","_/title*_");
+      std::string descInterior=SF::getTagInteriorAndRemoveTag(mTextInMainPosition,"_metaDesc*_","_/metaDesc*_");
+      if((titleInterior=="")||(descInterior=="")){
+        HTII::GL_title.pels=HTII::generatePageElements(mTextInMainPosition);
+      }
+      if(titleInterior==""){
+        titleInterior=HTII::generateTitle(HTII::GL_title.pels);
+      }
+      else{
+        if(HTII::GL_title.tSuggestion!=""){
+          titleInterior=SF::findAndReplace(titleInterior,HTII::GL_title.codewordThatTitleGenerationIsNeeded,HTII::GL_title.tSuggestion);
+        }
+      }
+      openT="<title>"; closeT="</title>";
+      pos=0; allD=SF::extractAndReplace(fR,pos,openT,closeT,0,openT+titleInterior+closeT);
+      if(allD.second==1){
+        fR=allD.first;
+      }
+      if(descInterior==""){
+        descInterior=HTII::generateDescription(HTII::GL_title.pels);
+      }
+      else{
+        if(HTII::GL_title.dSuggestion!=""){
+          descInterior=SF::findAndReplace(descInterior,HTII::GL_title.codewordThatDescGenerationIsNeeded,HTII::GL_title.dSuggestion);
+        }
+      }
+      openT="<meta name=\"description\" content=\""; closeT="\">";
+      pos=0; allD=SF::extractAndReplace(fR,pos,openT,closeT,0,openT+descInterior+closeT);
+      if(allD.second==1){
+        fR=allD.first;
+      }
+    //  SF::transferTag(fR,mTextInMainPosition,"<title>","</title>","_title*_","_/title*_","<title>","</title>",HTII::GL_title.codewordThatTitleGenerationIsNeeded,HTII::GL_title.tSuggestion);
+    //  SF::transferTag(fR,mTextInMainPosition,"<meta name=\"description\" content=\"","\">","_metaDesc*_","_/metaDesc*_","<meta name=\"description\" content=\"","\">",HTII::GL_title.codewordThatDescGenerationIsNeeded,HTII::GL_title.dSuggestion);
+
+
       fR+=mTextInMainPosition;
       if(str_backups_IfCalledFor!=""){
         fR+=BI::textAreaField("probText",str_backups_IfCalledFor,15,100);
@@ -500,6 +535,12 @@ namespace SII{
       CAGI::GL_Obf.secretCloseTag="Eb"+CAGI::GL_Obf.uniqueRandomCode+"e";
       CAGI::GL_Obf.sequencesNotAllowedExplanation="Arrays, sequences, vectors, and maps were not allowed, but your code tried to use them.";
       CAGI::GL_Obf.wordNotAllowed="Your code tried to use an illegal word: ";
+      HTII::GL_title.nTGenerations=0;
+      HTII::GL_title.nDGenerations=0;
+      HTII::GL_title.maxTitleLength=60;
+      HTII::GL_title.maxDescLength=300;
+      HTII::GL_title.codewordThatTitleGenerationIsNeeded="_*autoTitle*_";
+      HTII::GL_title.codewordThatDescGenerationIsNeeded="_*autoDesc*_";
       envVariables=BI::getEnvVars();
       analyzeEnvVarsAndForms(ch);
       currentCookie=envVariables[24];
@@ -575,26 +616,22 @@ namespace SII{
       if(s==1){
         std::string initText=m.getTextData();
         long pos;
-        pos=0;
         std::pair<std::string, int> allD;
-        allD=SF::extract(initText,pos,"_defaultHeaderName_","_/defaultHeaderName_");
+        pos=0; allD=SF::extract(initText,pos,"_defaultHeaderName_","_/defaultHeaderName_");
         if(allD.second==1){
           dHN=allD.first;
           header.initialize(allD.first);
         }
-        pos=0;
-        allD=SF::extract(initText,pos,"_defaultFooterName_","_/defaultFooterName_");
+        pos=0; allD=SF::extract(initText,pos,"_defaultFooterName_","_/defaultFooterName_");
         if(allD.second==1){
           dFN=allD.first;
           footer.initialize(allD.first);
         }
-        pos=0;
-        allD=SF::extract(initText,pos,"_defaultFirstPage_","_/defaultFirstPage_");
+        pos=0; allD=SF::extract(initText,pos,"_defaultFirstPage_","_/defaultFirstPage_");
         if(allD.second==1) {
           dfPage=allD.first;
         }
-        pos=0;
-        allD=SF::extract(initText,pos,"_defaultAlphabet!*_","_/defaultAlphabet!*_");
+        pos=0; allD=SF::extract(initText,pos,"_defaultAlphabet!*_","_/defaultAlphabet!*_");
         if(allD.second==1) {
           MWII::GL_WI.changeAlphabet( allD.first);
           pos=0;allD=SF::extract(initText,pos,"_daysOfTheWeek!*_","_/daysOfTheWeek!*_");
@@ -607,8 +644,7 @@ namespace SII{
           }
         }
         AGRDI::GL_AGParameters.colSize=10;
-        pos=0;
-        allD=SF::extract(initText,pos,"_agColSize_","_/agColSize_");
+        pos=0; allD=SF::extract(initText,pos,"_agColSize_","_/agColSize_");
         if(allD.second==1){
           AGRDI::GL_AGParameters.colSize=BF::stringToInteger(allD.first);
           if((AGRDI::GL_AGParameters.colSize<1)||(AGRDI::GL_AGParameters.colSize>30)){
@@ -616,45 +652,61 @@ namespace SII{
           }
         }
         AGRDI::GL_AGParameters.compilerErrors="yes";
-        pos=0;
-        allD=SF::extract(initText,pos,"_agCErrors_","_/agCErrors_");
+        pos=0; allD=SF::extract(initText,pos,"_agCErrors_","_/agCErrors_");
         if(allD.second==1){
           AGRDI::GL_AGParameters.compilerErrors=allD.first;
         }
-        pos=0;
-        allD=SF::extract(initText,pos,"_sNotAllowed_","_/sNotAllowed_");
+        pos=0; allD=SF::extract(initText,pos,"_maxTitleLength_","_/maxTitleLength_");
+        if(allD.second==1){
+          HTII::GL_title.maxTitleLength=BF::stringToInteger(allD.first);
+          if((HTII::GL_title.maxTitleLength<1)||(HTII::GL_title.maxTitleLength>1000)){
+            HTII::GL_title.maxTitleLength=10;
+          }
+        }
+        pos=0; allD=SF::extract(initText,pos,"_maxDescLength_","_/maxDescLength_");
+        if(allD.second==1){
+          HTII::GL_title.maxDescLength=BF::stringToInteger(allD.first);
+          if((HTII::GL_title.maxDescLength<1)||(HTII::GL_title.maxDescLength>3000)){
+            HTII::GL_title.maxDescLength=300;
+          }
+        }
+        pos=0; allD=SF::extract(initText,pos,"_codeWordForAutoGenTitle_","_/codeWordForAutoGenTitle_");
+        if(allD.second==1){
+          HTII::GL_title.codewordThatTitleGenerationIsNeeded=allD.first;
+        }
+        pos=0; allD=SF::extract(initText,pos,"_codeWordForAutoGenDesc_","_/codeWordForAutoGenDesc_");
+        if(allD.second==1){
+          HTII::GL_title.codewordThatDescGenerationIsNeeded=allD.first;
+        }
+        pos=0; allD=SF::extract(initText,pos,"_sNotAllowed_","_/sNotAllowed_");
         if(allD.second==1){
           CAGI::GL_Obf.sequencesNotAllowedExplanation=allD.first;
         }
-        pos=0;
-        allD=SF::extract(initText,pos,"_wNotAllowed_","_/wNotAllowed_");
+        pos=0; allD=SF::extract(initText,pos,"_wNotAllowed_","_/wNotAllowed_");
         if(allD.second==1){
           CAGI::GL_Obf.wordNotAllowed=allD.first;
         }
-        pos=0;
-        allD=SF::extract(initText,pos,"_defaultTexts!*_","_/defaultTexts!*_");
+        pos=0; allD=SF::extract(initText,pos,"_defaultTexts!*_","_/defaultTexts!*_");
         if(allD.second==1) {
           MWII::GL_WI.updateDefaultWebTexts( allD.first);
         }
-        pos=0;
-        allD=SF::extract(initText,pos,"_showLogInLink_","_/showLogInLink_");
+        pos=0; allD=SF::extract(initText,pos,"_showLogInLink_","_/showLogInLink_");
         if(allD.second==1){
           showLogInLink=allD.first;
           MWII::GL_WI.setLoginLink(showLogInLink);
         }
-        pos=0;
-        allD=SF::extract(initText,pos,"_fastUpdatingStat_","_/fastUpdatingStat_");
+        pos=0; allD=SF::extract(initText,pos,"_fastUpdatingStat_","_/fastUpdatingStat_");
         if(allD.second==1){
           fastUpdatingStat=allD.first;
           MWII::GL_WI.setFastUpdatingStat(fastUpdatingStat);
         }
-        pos=0;allD=SF::extract(initText,pos,"_maxNumForSimpson_","_/maxNumForSimpson_");
+        pos=0; allD=SF::extract(initText,pos,"_maxNumForSimpson_","_/maxNumForSimpson_");
         if(allD.second==1){
           if(BF::isNumeric(allD.first,0)){
             FF::MAXIMAL_NUMBER_OF_INTERVALS_FOR_SIMPSON=BF::stringToInteger(allD.first);
           }
         }
-        pos=0;allD=SF::extract(initText,pos,"_executePublicTestCases_","_/executePublicTestCases_");
+        pos=0; allD=SF::extract(initText,pos,"_executePublicTestCases_","_/executePublicTestCases_");
         if(allD.second==1){
           APTI::GL_studentsAllowedToExecuteCodeOnPublicTestCases=allD.first;
         }
@@ -694,7 +746,7 @@ namespace SII{
             if(scc==1){
               std::string td=sf.getTextData();
               long pos; std::pair<std::string, int> allD;
-              pos=0;allD=SF::extract(td,pos,"_nRespRec*|_","_/nRespRec*|_");
+              pos=0; allD=SF::extract(td,pos,"_nRespRec*|_","_/nRespRec*|_");
               if(allD.second==1){
                 RMD::Response rm;
                 scc=rm.setFromTextName(allD.first);
