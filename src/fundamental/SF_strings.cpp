@@ -1003,27 +1003,16 @@ namespace SF{
     fR.first=output;
     return fR;
   }
-  void transferTag(std::string& dest, std::string& source,
-                   const std::string& oTagDest, const std::string& clTagDest,
-                   const std::string& oTagSrc, const std::string& clTagSrc,
-                   const std::string& _nOTagDest = "default", const std::string& _nClTagDest = "default"){
-    std::string nOTagDest=_nOTagDest;
-    std::string nClTagDest=_nClTagDest;
-    if(nOTagDest=="default"){nOTagDest=oTagDest;}
-    if(nClTagDest=="default"){nClTagDest=clTagDest;}
-    std::pair<std::string,int> allD;long pos;
-    pos=0;allD=extract(source,pos,oTagSrc,clTagSrc);
+  std::string getTagInteriorAndRemoveTag(std::string& source,const std::string& openT, const std::string& closeT){
+    long pos; std::pair<std::string,int> allD;
+    pos=0;allD=extract(source,pos,openT,closeT);
     if(allD.second==0){
-      return;
+      return "";
     }
-    std::string toRemoveFromSrc=oTagSrc+allD.first+clTagSrc;
-    std::string toInsertInDest=nOTagDest+allD.first+nClTagDest;
-    source=findAndReplace(source,toRemoveFromSrc,"");
-    pos=0;allD=extractAndReplace(dest,pos,oTagDest,clTagDest,0,toInsertInDest);
-    if(allD.second==1){
-      dest=allD.first;
-    }
-  }
+    std::string interior=allD.first;
+    source=findAndReplace(source,openT+interior+closeT,"");
+    return interior;
+  } 
   std::set<std::string> stringToSet(const std::string & everything, const std::string & sepKeyB,const std::string & sepKeyE){
     std::set<std::string> fR;
     std::vector<std::string> keys=stringToVector(everything,sepKeyB,sepKeyE);
