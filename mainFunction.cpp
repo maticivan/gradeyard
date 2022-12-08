@@ -18,7 +18,7 @@
 #include "src/fundamental/SHF_standardHeaders.cpp"
 #include "src/fundamental/SAIOF_setupAndIO.cpp"
 std::string GL_MAIN_SETUP_FILE_NAME=SAIOF::get_GL_MAIN_SETUP_FILE_NAME();
-std::string GL_VERSION="1.6.1 (2022/11/18)";
+std::string GL_VERSION="1.8.1 (2022/12/07)";
 #include "src/fundamental/MTF_mainTable.cpp"
 #include "src/db/DD_databases.cpp"
 #include "src/graphs/MGG_mainGraphs.cpp"
@@ -36,7 +36,6 @@ int main() {
   ENCF::GL_SECRET_LOCATION.folder=DD::GL_DBS.getChallengeAnswStorage();
   MWII::GL_WI.getSetupFromString(setups);
   SII::SessionInformation mainSession;
-
   mainSession.initSession(ch);
   std::string queryAnswer="";
   if(mainSession.isFormResponded()==1){
@@ -103,7 +102,6 @@ int main() {
     }
   }
   mainSession.addDebuggingMessagesIfInDebuggingMode();
-
   std::cout<<mainSession.preparePage(queryAnswer)<<"\n";
   mainSession.createRecoveryCommands();
   timeToGeneratePage.end();
