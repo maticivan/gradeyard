@@ -122,10 +122,6 @@ namespace SII{
       if(allD.second==1){
         fR=allD.first;
       }
-    //  SF::transferTag(fR,mTextInMainPosition,"<title>","</title>","_title*_","_/title*_","<title>","</title>",HTII::GL_title.codewordThatTitleGenerationIsNeeded,HTII::GL_title.tSuggestion);
-    //  SF::transferTag(fR,mTextInMainPosition,"<meta name=\"description\" content=\"","\">","_metaDesc*_","_/metaDesc*_","<meta name=\"description\" content=\"","\">",HTII::GL_title.codewordThatDescGenerationIsNeeded,HTII::GL_title.dSuggestion);
-
-
       fR+=mTextInMainPosition;
       if(str_backups_IfCalledFor!=""){
         fR+=BI::textAreaField("probText",str_backups_IfCalledFor,15,100);
@@ -2244,13 +2240,10 @@ namespace SII{
     if((allD.second==1) && (allD.first!="no") && (allD.first!="n")) {
       psd.indChangeRespRecToPrintVersionOfCommonInClassExam=1;
       rawTextInClassExamVersions=SF::stringToVector(allD.first,"_n*_","_/n*_");
-
-
       pos=0;allD=SF::extract(_dForReporting,pos,"_before*|_","_/before*|_");
       if(allD.second==1){psd.pdfBeforeProblems=allD.first;}
       pos=0;allD=SF::extract(_dForReporting,pos,"_after*|_","_/after*|_");
       if(allD.second==1){psd.pdfAfterProblems=allD.first;}
-
       pos=0;allD=SF::extract(_dForReporting,pos,"_preGeneratedCodes*|_","_/preGeneratedCodes*|_");
       if(allD.second==1){preGeneratedCodes=allD.first;}
       pos=0;allD=SF::extract(_dForReporting,pos,"_numExams*|_","_/numExams*|_");
@@ -2265,7 +2258,6 @@ namespace SII{
       if(allD.second==1){
         versionShift=BF::stringToInteger(allD.first);
       }
-
     }
     if(textExists==0){
       return "!failed!: Exam does not exist";
