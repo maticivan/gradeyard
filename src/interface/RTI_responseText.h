@@ -82,6 +82,8 @@ namespace RTI{
     std::string exitStatus;// the function infoFromResponseText will set this to either "badForm" or "ok"
     std::string prefixForExamPDF;
     std::string addNameIndicator;
+    std::string pdfTopOfThePage;
+    std::set<std::string> pdfNewPageSeparators;
     long acceptResp;
     long acceptGrade;
     long displaySol;
@@ -163,6 +165,8 @@ namespace RTI{
     std::string s_fileAllowed_QRTE="_/fa*|_";
     std::string s_autograderInfo_QRTB="_agr*|_";
     std::string s_autograderInfo_QRTE="_/agr*|_";
+    std::string s_latexPrintingInstructions_QRTB="_lpi*|_";
+    std::string s_latexPrintingInstructions_QRTE="_/lpi*|_";
     std::string s_cAllowedTime_QRTB="_cAllT*|_";
     std::string s_cAllowedTime_QRTE="_/cAllT*|_";
     std::string s_cAbsEnd_QRTB="_cAbsEnd*|_";
@@ -232,7 +236,7 @@ namespace RTI{
     std::map<std::string,std::vector<std::string> > userRTAnswMap;
     //key: question number; value = < solution,answer, pointsEarned, graders Comment>
     std::map<std::string,std::vector<std::string> > formRTQsMap;
-    //key: question number; value = <question, formulation, solution, answer, points, displayType, fileAllowed, autoGraderExecutionData>
+    //key: question number; value = <question, formulation, solution, answer, points, displayType, fileAllowed, autoGraderExecutionData,latexPrintingInstructions>
     long numberOfDifferentDevicesThatAccessedTheForm;
     std::set<std::string> allDevicesThatAccessedTheForm;
     std::string modifyMe() const;
