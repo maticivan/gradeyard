@@ -573,7 +573,6 @@ namespace APTI{
         sf.setFromInternalId(sR.first[0]);
       }
       mLine[0]=createLinkToText(sf.getTextName());
-      //mLine[1]=sf.getExternalCodeFromInternalId();
       pos=0;
       othD=sf.getTextData();
       allD=SF::extract(othD,pos,"_documentType!!_","_/documentType!!_");
@@ -598,7 +597,6 @@ namespace APTI{
       if(allD.second==1){
         modifiedOn=allD.first;
       }
-      //mLine[2]=dType;mLine[3]=createdBy;mLine[4]=createdOn;
       mLine[1]=dType;mLine[2]=createdBy;mLine[3]=createdOn;mLine[4]=modifiedOn;
       allLines.push(mLine);
     }
@@ -1336,17 +1334,24 @@ namespace APTI{
     std::map<std::string,std::pair<std::vector<std::string>,std::string> > rgm;
     std::map<std::string,std::pair<std::vector<std::string>,std::string> >::const_iterator itRGM,itRGME;
     CEI::CouasAttributes cIrrelevant;
+    std::string csvInd="no";
     if((_psd.isRoot=="yes")&&(inv=="summary")) {
       rgm=CEI::rawGradesAndStatusFromRespReceiver(cIrrelevant,  _psd,respRecN, 0, 1);
       itRGME=rgm.end();
+      std::map<std::string,std::string>::const_iterator itCSVRM,itCSVRME;
+      itCSVRME=(_psd.respMap).end();
+      itCSVRM=(_psd.respMap).find("csvD");
+      if(itCSVRM!=itCSVRME){
+        csvInd= itCSVRM->second;
+      }
     }
     std::vector<RTI::LocationOfDocuments> locV=respT.getLocations(_psd);
     long i=0;
     long sz=locV.size();
     long stillWorking=1;
-    std::string fR="";
+    std::string fR="", fRCSV="";
     std::string urlTest,urlGrader,linkDispTest,linkDispGr1,linkDispGr2;
-    std::stack<std::vector<std::string> > allLines;
+    std::stack<std::vector<std::string> > allLines, allLinesCSV;
     std::vector<std::string> topL,midL;
     long lsz=6;
     topL.resize(lsz);midL.resize(lsz);long num_gr_jobs=0; long expansionPosition;
@@ -1414,6 +1419,7 @@ namespace APTI{
           }
         }
         allLines.push(midL);
+        if(csvInd=="yes"){allLinesCSV.push(HSF::trimVectorForAssignmentGradesSummaryCSV(midL));}
       }
       else{
         if((inv=="students")&&(locV[i].userName==_psd.my_un)){
@@ -1428,8 +1434,15 @@ namespace APTI{
     }
     if(_psd.isRoot=="yes") {
       SF::flipTheStack(allLines);
+      if(csvInd=="yes"){
+        SF::flipTheStack(allLinesCSV);
+        fRCSV=HSF::tableOrCSVFromStack(allLinesCSV,",",MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
+      }
       allLines.push(topL);
       fR=HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
+      if(csvInd=="yes"){
+        fR+=fRCSV;
+      }
       if(inv!="summary"){
         fR=MWII::GL_WI.getDefaultWebText("solveInvitation");
       }
