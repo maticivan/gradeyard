@@ -37,7 +37,6 @@ namespace CCI{
     if(sz>0){
       std::vector<std::string> temp_args;
       temp_args.clear();
-
       if(sz>1){
         long j=1;
         temp_args.resize(sz-1);
@@ -45,7 +44,6 @@ namespace CCI{
           temp_args[j-1]=iI[j];
           ++j;
         }
-
       }
       if(syntaxCorrect(iI[0],temp_args)==1){
         initialized=1;
@@ -62,8 +60,6 @@ namespace CCI{
           temp_args[sz-1]=defaultValue;
           temp_args[sz]=defaultValue;
           temp_args[sz+1]=defaultValue;
-
-
         }
         if((type=="createUserAdvanced")||(type=="modifyUserAdvanced")){
           //the createUserAdvanced and modifyUserAdvanced are special cases of createUserExtraAdvanced and modifyUserExtraAdvanced
@@ -78,7 +74,6 @@ namespace CCI{
         arguments=std::move(temp_args);
       }
     }
-
   }
   int Command::syntaxCorrect(const std::string & _tp, const std::vector<std::string> & _ta) const{
     // not yet implemented
@@ -86,7 +81,6 @@ namespace CCI{
     // follow the syntax rules
     return 1;
   }
-
   int Command::allowedToExecute(SII::SessionInformation & _s) const{
     std::vector<std::string> openTags,closeTags;
     long sz=17;
@@ -109,7 +103,6 @@ namespace CCI{
     closeTags[7]="</i>";
     openTags[8]="_codeBox_";
     closeTags[8]="_/codeBox_";
-
     openTags[9]="<h1";
     closeTags[9]="</h1>";
     openTags[10]="<h2";
@@ -126,7 +119,6 @@ namespace CCI{
     closeTags[15]="</code>";
     openTags[16]="<pre>";
     closeTags[16]="</pre>";
-
     long asz=arguments.size();
     long i=0;
     while(i<asz){
@@ -146,17 +138,14 @@ namespace CCI{
     }
     return fR;
   }
-
   std::string Command::executeDeleteFile(SII::SessionInformation & _s){
     long correctSizeForThisCommand=1;
     // arguments:
     // 0) externalFileCode
     long sz=arguments.size();
-
     if((type!="deleteFile")||(sz!=correctSizeForThisCommand)){
       return "!failed!:badCommand: Called delete method with wrong number of arguments";
     }
-
     return _s.deleteFile(arguments[0]);
   }
   std::string Command::executeCreateText(SII::SessionInformation & _s){
@@ -170,9 +159,6 @@ namespace CCI{
     }
     return _s.createText(arguments[0],arguments[1]);
   }
-
-
-
   std::string Command::executeModifyText(SII::SessionInformation & _s){
     long correctSizeForThisCommand=2;
     //arguments:
@@ -194,7 +180,6 @@ namespace CCI{
     }
     return _s.deleteText(arguments[0]);
   }
-
   std::string Command::executeCreateForum(SII::SessionInformation & _s){
     long correctSize=3;
     //arguments:
@@ -207,7 +192,6 @@ namespace CCI{
     }
     return _s.createForum(arguments[0],arguments[1],arguments[2]);
   }
-
   std::string Command::executeCreateStandardCourse(SII::SessionInformation & _s){
     long correctSize=2;
     //arguments:
@@ -232,7 +216,6 @@ namespace CCI{
     }
     return _s.createMessage(arguments[0],arguments[1],arguments[2]);
   }
-
   std::string Command::executeModifyMessage(SII::SessionInformation & _s){
     long correctSize=2;
     //arguments:
@@ -255,7 +238,6 @@ namespace CCI{
     }
     return _s.deleteMessage(arguments[0],arguments[1]);
   }
-
   std::string Command::executeCreateCouas(SII::SessionInformation & _s){
     long correctSize=3;
     //arguments:
@@ -268,7 +250,6 @@ namespace CCI{
     }
     return _s.createCouas(arguments[0],arguments[1],arguments[2]);
   }
-
   std::string Command::executeModifyCouas(SII::SessionInformation & _s){
     long correctSize=2;
     //arguments:
@@ -302,7 +283,6 @@ namespace CCI{
     }
     return _s.createGradingForCourse(arguments[0],arguments[1]);
   }
-
   std::string Command::executeCreateRespRec(SII::SessionInformation & _s){
     long correctSizeForThisCommand=2;
     //arguments:
@@ -325,7 +305,6 @@ namespace CCI{
     }
     return _s.modifyRespRec(arguments[0],arguments[1],"no");
   }
-
   std::string Command::executeAddStudentsToExam(SII::SessionInformation & _s){
     long correctSizeForThisCommand=2;
     //arguments:
@@ -337,7 +316,6 @@ namespace CCI{
     }
     return _s.addStudentsToExam(arguments[0],arguments[1]);
   }
-
   std::string Command::executeGenerateExam(SII::SessionInformation & _s){
     long correctSizeForThisCommand=2;
     //arguments:
@@ -349,7 +327,6 @@ namespace CCI{
     }
     return _s.generateExam(arguments[0],arguments[1]);
   }
-
   std::string Command::executeGeneratePdfsForExam(SII::SessionInformation & _s){
     long correctSizeForThisCommand=2;
     //arguments:
@@ -372,7 +349,6 @@ namespace CCI{
     }
     return _s.updateIndividualVersionsOfExam(arguments[0],arguments[1]);
   }
-
   std::string Command::executeExamBackupText(SII::SessionInformation & _s){
     long correctSizeForThisCommand=2;
     //arguments:
@@ -384,7 +360,6 @@ namespace CCI{
     }
     return _s.createExamBackupText(arguments[0],arguments[1]);
   }
-
   std::string Command::executeDistributeExamToStudents(SII::SessionInformation & _s){
     long correctSizeForThisCommand=2;
     //arguments:
@@ -396,7 +371,6 @@ namespace CCI{
     }
     return _s.distributeExamToStudents(arguments[0],arguments[1]);
   }
-
   std::string Command::executeDeleteRespRec(SII::SessionInformation & _s){
     long correctSizeForThisCommand=1;
     //arguments:
@@ -473,7 +447,6 @@ namespace CCI{
     }
     return _s.enrollStudents(arguments[0],arguments[1],arguments[2],arguments[3]);
   }
-
   std::string Command::executeCreateBackupText(SII::SessionInformation &_s){
     long correctSizeForThisCommand=2;
     long sz=arguments.size();
@@ -498,7 +471,6 @@ namespace CCI{
     }
     return _s.createCloneForGuest(arguments[0]);
   }
-
   std::string Command::executeCommand(SII::SessionInformation & _s){
     if(allowedToExecute(_s)!=1){
       return "!failed!: Command cannot be executed";
@@ -512,7 +484,6 @@ namespace CCI{
     if(type=="modifyText"){
       return executeModifyText(_s);
     }
-
     if(type=="deleteText"){
       return executeDeleteText(_s);
     }
@@ -543,7 +514,6 @@ namespace CCI{
     if(type=="createGradingForCourse"){
       return executeCreateGradingForCourse(_s);
     }
-
     if(type=="createResponseReceiver"){
       return executeCreateRespRec(_s);
     }
@@ -565,7 +535,6 @@ namespace CCI{
     if(type=="addStudentsToExam"){
       return executeAddStudentsToExam(_s);
     }
-
     if(type=="deleteResponseReceiver"){
       return executeDeleteRespRec(_s);
     }
@@ -593,7 +562,6 @@ namespace CCI{
     if(type=="addToHierarchy"){
       return executeAddToHierarchy(_s);
     }
-
     if(type=="removeFromHierarchy"){
       return executeRemoveFromHierarchy(_s);
     }
@@ -612,11 +580,9 @@ namespace CCI{
     if(type=="deleteWebsiteForUser"){
       return executeDeleteWebsiteForUser(_s);
     }
-
     if(type=="createWebsiteForUser"){
       return executeCreateWebsiteForUser(_s);
     }
-
     return "!failed!: Command not found";
   }
   std::vector<Command> getAllCommands(const std::string & _st){
