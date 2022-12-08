@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -52,7 +52,6 @@ namespace CEI{
   void CouasListElAtt::setGradeStr(const std::string & grLabel, const std::string & _x){
     grades[grLabel]=_x;
   }
-
   int CouasListElAtt::setFromString(const std::string & rawT){
     int fR=0;
     std::pair<std::string,int> allD;
@@ -61,29 +60,24 @@ namespace CEI{
     if(allD.second==1){
       ++fR;uName=allD.first;
     }
-
     pos=0;allD=SF::extract(rawT,pos,LI::GL_LN.st_clea_sepFNameB,LI::GL_LN.st_clea_sepFNameE);fName="";
     if(allD.second==1){
       ++fR;fName=allD.first;
     }
-
     pos=0;allD=SF::extract(rawT,pos,LI::GL_LN.st_clea_sepLNameB,LI::GL_LN.st_clea_sepLNameE);lName="";
     if(allD.second==1){
       ++fR;lName=allD.first;
     }
-
     pos=0;allD=SF::extract(rawT,pos,LI::GL_LN.st_clea_sepCodeB,LI::GL_LN.st_clea_sepCodeE);code="";
     if(allD.second==1){
       ++fR;code=allD.first;
     }
-
     pos=0;allD=SF::extract(rawT,pos,LI::GL_LN.st_clea_sepGradeB,LI::GL_LN.st_clea_sepGradeE);
     if(allD.second==1){
       ++fR;
       setGradeStr(LI::GL_LN.defaultGradeName,allD.first);
     }
     return fR;
-
   }
   std::string CouasListElAtt::putIntoString(const int & compactStringIndicator) const{
     std::string fR="";
@@ -105,9 +99,7 @@ namespace CEI{
       grStr="";
 
     }
-
     fR+=LI::GL_LN.st_clea_sepGradeB+grStr+LI::GL_LN.st_clea_sepGradeE;
-
     return fR;
   }
   int CouasListElAtt::operator<(const CouasListElAtt & oth) const{
@@ -129,19 +121,16 @@ namespace CEI{
     return 0;
   }
   std::string CouasAttributes::prepareGradeFormula(const PSDI::SessionData & _psd,const std::string & rawFormula, const std::set<std::string> & grIncomplete, const long &remainingRecDepth) const{
-
     if(remainingRecDepth==0){
       return "";
     }
     std::string fR;
     std::vector<std::string> codesOfAssignmentsToGetGradesFrom=SF::stringToVector(rawFormula,LI::GL_LN.st_sepGetFromB,LI::GL_LN.st_sepGetFromE);
     long numA=codesOfAssignmentsToGetGradesFrom.size();
-
     for(long i=0;i<numA;++i){
       CouasElement cEl_i(_psd);
       std::string scc=ICEI::initFromCode(_psd,cEl_i,codesOfAssignmentsToGetGradesFrom[i]);
       if(scc!="failed"){
-
       }
     }
     return fR;
@@ -149,7 +138,6 @@ namespace CEI{
   std::string CouasAttributes::setFromStringEasySteps(const std::string &rawT){
     mUserN="";mFirstN="";mLastN="";rawText=rawT;
     mCreated="";mText="";eType="";mElements="";mtTitle="";bossCode="";bossName="";
-
     std::pair<std::string,int> allD;
     long pos;
     pos=0;allD=SF::extract(rawT,pos,LI::GL_LN.s_tDataB,LI::GL_LN.s_tDataE);
@@ -162,7 +150,6 @@ namespace CEI{
       return "failed";
     }
     std::string mSData=allD.first;
-
     pos=0;allD=SF::extract(mE,pos,LI::GL_LN.st_sepUNameB,LI::GL_LN.st_sepUNameE);
     if(allD.second==1){
       mUserN=allD.first;
@@ -170,7 +157,6 @@ namespace CEI{
     pos=0;allD=SF::extract(mE,pos,LI::GL_LN.st_sepFNameB,LI::GL_LN.st_sepFNameE);
     if(allD.second==1){
       mFirstN=allD.first;
-
     }
     pos=0;allD=SF::extract(mE,pos,LI::GL_LN.st_sepLNameB,LI::GL_LN.st_sepLNameE);
     if(allD.second==1){
@@ -200,7 +186,6 @@ namespace CEI{
     if(allD.second==1){
         bossName=allD.first;
     }
-
     grDisplays.clear();
     pos=0;allD=SF::extract(mE,pos,LI::GL_LN.st_sepGrDisplB,LI::GL_LN.st_sepGrDisplE);
     if(allD.second==1){
@@ -213,14 +198,12 @@ namespace CEI{
     }
     return mE;
   }
-
   int CouasAttributes::setFromString(const std::string &rawT, const std::map<std::string,CouasListElAtt> & gMap){
     std::string mE=setFromStringEasySteps(rawT);
     if(mE=="failed"){
       return 0;
     }
     std::pair<std::string,int> allD;
-
     gradeData.clear();
     long sz=gMap.size();
     if(sz>0){
@@ -234,7 +217,6 @@ namespace CEI{
     }
     return 1;
   }
-
   std::string CouasAttributes::putIntoString(const int & compactStringIndicator, const std::string & masterKey) const{
     std::string preparedText="";
     if(eType!=""){
@@ -252,16 +234,12 @@ namespace CEI{
     preparedText+="\n";
     preparedText+=LI::GL_LN.st_sepGrDisplB+ SF::mapToString(grDisplays,LI::GL_LN.st_sepLabelB,LI::GL_LN.st_sepLabelE,LI::GL_LN.st_sepValueB,LI::GL_LN.st_sepValueE,"\n")+LI::GL_LN.st_sepGrDisplE+"\n";
     preparedText+=LI::GL_LN.st_sepGradeFormulaB+ SF::mapToString(grFormulas,LI::GL_LN.st_sepGradeFSB,LI::GL_LN.st_sepGradeFSE,LI::GL_LN.st_sepGradeFMB,LI::GL_LN.st_sepGradeFME,"\n")+LI::GL_LN.st_sepGradeFormulaE+"\n";
-
     std::string elsData="";
-
-
     long sz=gradeData.size();
     for(long i=0;i<sz;++i){
       elsData+= LI::GL_LN.st_sepIndElB+(gradeData[i]).putIntoString(compactStringIndicator)+LI::GL_LN.st_sepIndElE;
       elsData+="\n";
     }
-
     if(masterKey==""){
       preparedText+="\n"+LI::GL_LN.st_sepElementsB+elsData+LI::GL_LN.st_sepElementsE+LI::GL_LN.st_sepCTextE;
     }
@@ -347,7 +325,6 @@ namespace CEI{
       }
     }
   }
-
   CouasElement::CouasElement(const PSDI::SessionData & _psd,const std:: string & mE, const std::string & mC){
     initialize(_psd,mE,mC);
   }
@@ -371,7 +348,6 @@ namespace CEI{
     }
     return mToEdit;
   }
-
   std::string CouasElement::getRawText() const{return coaa.rawText;}
   std::string CouasElement::type() const{return coaa.eType;}
   std::string CouasElement::title() const{return coaa.mtTitle;}
@@ -424,7 +400,6 @@ namespace CEI{
         allD=SF::getEverythingBefore(mainFormula,pos,"@@");
         if(allD.second==1){
           rhs=allD.first;
-
           posIn=0;allDIn=SF::extract(rhs,posIn,LI::GL_LN.st_sepGetFromB,LI::GL_LN.st_sepGetFromE);
           if(allDIn.second==1){
             rhs=allDIn.first;
@@ -433,7 +408,6 @@ namespace CEI{
               lhs="{"+allDIn.first+"}";
               fR[lhs]=rhs;
             }
-
           }
         }
       }
@@ -464,12 +438,9 @@ namespace CEI{
         ++itG;++j;
       }
       dVTNDBA=displVarsThatNeedDBAccess(coaa.grDisplays,coaa.grFormulas);
-
     }
-
     long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
     if(start<0){start=0;}
-
     long cnt=0;
     std::string currentSc=_psd.sortCriterion;
     while(cnt<sz){
@@ -496,8 +467,6 @@ namespace CEI{
           fR[i]=allD.first;
           displVar=itDS->second;
           itD=dVTNDBA.find(displVar);
-
-
           if(itD!=itDE){
             displName=fR[i];
             fR[i]="";
@@ -524,7 +493,6 @@ namespace CEI{
             fR[i]+="</a>";
           }
         }
-
         ++itDS;
       }
       if( (currentSc!=sortCrs[i])&&(accessAll==1)){
@@ -558,25 +526,16 @@ namespace CEI{
         }
       }
     }
-
     return fR;
   }
-
-
   std::map<std::string,std::pair<std::vector<std::string>,std::string> > rawGradesAndStatusFromRespReceiver(CouasAttributes & m_coaaI, const PSDI::SessionData & _psd,const std::string &respRecCode, const int & submit, const int & solvingStatus){
     std::map<std::string,std::pair<std::vector<std::string>, std::string> >fR;
-
-
     std::string myUserName=_psd.my_un;
-
     RTI::Response rrt(respRecCode,"no",myUserName);
-
-
     if(rrt.isInitialized()!=1){
       return fR;
     }
     RTI::ResponderInfo res=rrt.infoFromResponseText(_psd,"df");
-
     std::vector<RTI::ResponderInfo> rV;
     std::vector<std::string> rsV;
     std::vector<RTI::LocationOfDocuments> ldocs=rrt.getLocations(_psd);
@@ -606,7 +565,6 @@ namespace CEI{
           }
         }
       }
-
     }
     else{
       if(res.documentType=="gradeOfResponse"){
@@ -615,28 +573,25 @@ namespace CEI{
         sz=1;
         maxgcs=(res.gradersComments).size();
       }
-
     }
-
-
     std::map<std::string,CouasListElAtt> mapGr;
     std::map<std::string,CouasListElAtt>::const_iterator itMM,itMME;
     if(submit==1){
       mapGr=gradeDataToMap(m_coaaI.gradeData);
     }
     if(maxgcs>0){
-      std::vector<std::string> mLine,emptyLine;
+      std::vector<std::string> mLine,emptyLine,alternativeLine;
       std::pair<std::vector<std::string>,std::string> pairML;
       long lsz=3+maxgcs; emptyLine.resize(lsz);
       for(long j=0;j<lsz;++j){
         emptyLine[j]="-";
       }
-
       std::stack<std::vector<std::string> > allLines;
       std::map<std::string,std::string>::const_iterator it,itE;
       long pos;std::pair<std::string,int> allD;
       double score;
       int workIsDone=0;
+      long qNum;
       for(long i=0;i<sz;++i){
         mLine=emptyLine;
         long cs=((rV[i]).gradersComments).size();
@@ -646,14 +601,21 @@ namespace CEI{
           score=0.0;
           itE=((rV[i]).gradersComments).end();
           it=((rV[i]).gradersComments).begin();
-
+          alternativeLine=mLine;
           while(it!=itE){
             pos=0;allD=SF::extract(it->second,pos,"_score_","_/score_");
             if(allD.second==1){
               mLine[j]=allD.first;
               score+=BF::stringToDouble(mLine[j]);
+              qNum=BF::stringToIntegerRemoveStart(it->first)+1;
+              if( (qNum>1) && (qNum<lsz-1) ){
+                alternativeLine[qNum]=mLine[j];
+              }
             }
             ++it;++j;
+          }
+          if(j!=lsz-1){
+            mLine=alternativeLine;
           }
         }
         mLine[0]=(rV[i]).idInfoData;
@@ -666,14 +628,11 @@ namespace CEI{
             if(itMM!=itMME){
               (mapGr[(rV[i]).solverUserName]).setGradeStr(LI::GL_LN.defaultGradeName,mLine[lsz-1]);
               workIsDone=1;
-
             }
             else{
               mLine[lsz-1]+=" *";
             }
           }
-
-
         }
         else{
           mLine[lsz-1]="N/A";
@@ -688,22 +647,17 @@ namespace CEI{
         MCWCPI::modifyCouasWithoutCheckingPermissions(_psd,m_coaaI.myCode,newGrData);
       }
     }
-
     return fR;
   }
-
   std::string CouasElement::gradeFromRespReceiver(const PSDI::SessionData & _psd,const int & submit){
     std::map<std::string,std::pair<std::vector<std::string>,std::string> > resm=rawGradesAndStatusFromRespReceiver(coaa,_psd,_psd.rrgrader,submit,0);
-
     long msz=resm.size();
     if(msz==0){
       return "";
     }
     std::map<std::string,std::pair<std::vector<std::string>,std::string> >::const_iterator itRM,itRME;
     itRM=resm.begin();itRME=resm.end();
-
     long lsz=((itRM->second).first).size();
-
     std::vector<std::string> topLine,mLine,emptyLine;
     topLine.resize(lsz);emptyLine.resize(lsz);
     for(long j=0;j<lsz;++j){
@@ -715,8 +669,6 @@ namespace CEI{
       topLine[j]=std::to_string(j-1);
     }
     topLine[lsz-1]="$\\Sigma$";
-
-
     std::string fR="", fRCSV="";
     if(lsz>3){
       while(itRM!=itRME){
@@ -729,12 +681,9 @@ namespace CEI{
       fRCSV=HSF::tableOrCSVFromStack(allLinesCSV,",",MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
       allLines.push(topLine);
       fR= HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
-
     }
-
     return fR+fRCSV;
   }
-
   std::string CouasElement::bossLink(const PSDI::SessionData & _psd, const std::string & bC,const std::string &_bN) const{
     std::map<std::string,std::string> nenvv;
     nenvv["s1"]="u11";
@@ -746,29 +695,20 @@ namespace CEI{
     return HSF::createButtonLink(BI::updatedLinkNewEnvVars(_psd.respMap,nenvv),MWII::GL_WI.getDefaultWebText("Back to")+" "+bN);
   }
   std::string CouasElement::displayCouas(const PSDI::SessionData & _psd,const std::string & _numInList, const std::string & _numOnEachSide) const{
-
     std::string csvInd="no";
     int accessAll=allowedToSeeAllGrades(_psd);
     if(accessAll!=0){
       std::map<std::string,std::string>::const_iterator itRM,itRME;
       itRME=(_psd.respMap).end();
       itRM=(_psd.respMap).find("csvD");
-
       if(itRM!=itRME){
         csvInd= itRM->second;
       }
     }
-
-
-
-
     long nT=(coaa.gradeData).size();
-
     long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
     if((start<0)||(start>nT-1)){start=0;}
     long numb=BF::stringToInteger(_numInList);
-
-
     if(numb<0){numb=0;}
     long end=start+numb;
     if((end<0)||(end>nT)){
@@ -777,7 +717,6 @@ namespace CEI{
     if(accessAll==0){
       start=0;end=nT;
     }
-
     std::string formInit="",formEnd="";
     std::string couasEditRequest=_psd.couasEditReq;
     long customDisplayNumItems=(coaa.grDisplays).size();
@@ -794,23 +733,14 @@ namespace CEI{
       formEnd+=BI::submButton("al",MWII::GL_WI.getDefaultWebText("Submit"));
       formEnd+="</div></FORM> \n";
     }
-
-
-
-
     long base_lsz=2;
     long lsz=base_lsz;
     std::vector<std::string> topLine,mLine;
-
     std::stack<std::vector<std::string> > allLines, allLinesCSV;
-
-
     lsz+=customDisplayNumItems;
     if(customDisplayNumItems==0){
       ++lsz;
     }
-
-
     topLine.resize(lsz);mLine.resize(lsz);
     topLine[0]=MWII::GL_WI.getDefaultWebText("Name");
     topLine[1]=MWII::GL_WI.getDefaultWebText("userName");
@@ -848,7 +778,6 @@ namespace CEI{
           }
           else{
             long j=0;
-
             itG=(coaa.grDisplays).begin();itGE=(coaa.grDisplays).end();
             while(itG!=itGE){
               mLine[base_lsz+j]=clea.getGradeStr(itG->second);
@@ -862,8 +791,6 @@ namespace CEI{
           allLinesCSV.push(mLine);
         }
       }
-
-
     }
     if(totalLinesAdded<1){return "";}
     SF::flipTheStack(allLines);
@@ -885,7 +812,6 @@ namespace CEI{
       fR+="<h2>"+coaa.mtTitle+"</h2>";
     }
     fR+= scroller+mainTable;
-
     if(coaa.bossCode!=""){
       std::string bLn=bossLink(_psd,coaa.bossCode,coaa.bossName);
       fR=bLn+fR+bLn;
@@ -925,7 +851,6 @@ namespace CEI{
           (coaa.gradeData)[i].setGradeStr(LI::GL_LN.defaultGradeName,newGr);
         }
       }
-
     }
     if(changesMade==1){
       return coaa.putIntoString(0,_psd.masterKey);
@@ -967,10 +892,7 @@ namespace CEI{
         (coaa.gradeData)[i]=it->second;
         ++it;++i;
       }
-
       return coaa.putIntoString(messageForGradeErasing,_psd.masterKey);
-
-
     }
     return "";
   }
