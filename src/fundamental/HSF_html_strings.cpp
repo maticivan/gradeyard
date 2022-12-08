@@ -83,6 +83,18 @@ namespace HSF{
       dType=allSDInTemp.first;
     }
   }
+  std::vector<std::string> trimVectorForAssignmentGradesSummaryCSV(const std::vector<std::string> &in){
+    long sz=in.size();
+    if(sz<5){return in;}
+    std::vector<std::string> outV;
+    sz-=4;
+    outV.resize(sz);
+    outV[0]=in[0];
+    for(long i=1;i<sz;++i){
+      outV[i]=in[i+1];
+    }
+    return outV;
+  }
   std::string tableOrCSVFromStack(std::stack<std::vector<std::string> > &st, const std::string & separator,const std::string & tOpenTag,const std::string &thOpenTag){
     if(st.empty()){
       return "";
