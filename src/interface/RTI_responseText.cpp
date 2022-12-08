@@ -187,7 +187,7 @@ namespace RTI{
     std::vector<std::string> secondComp;
     std::pair<std::string,int> allD;
     long pos;
-    long ssz=8;
+    long ssz=9;
     secondComp.resize(ssz);
     pos=0;allD=SF::extract(_s,pos,s_label_QRTB,s_label_QRTE);
     if(allD.second==0){
@@ -228,6 +228,10 @@ namespace RTI{
     pos=0;allD=SF::extract(_s,pos, s_autograderInfo_QRTB, s_autograderInfo_QRTE);
     if(allD.second==1){
       secondComp[7]=allD.first;
+    }
+    pos=0;allD=SF::extract(_s,pos, s_latexPrintingInstructions_QRTB, s_latexPrintingInstructions_QRTE);
+    if(allD.second==1){
+      secondComp[8]=allD.first;
     }
     fR.second=secondComp;
     return fR;
@@ -648,8 +652,6 @@ namespace RTI{
               fR+="<B>"+MWII::GL_WI.getDefaultWebText("Comment")+":</B> ";
             }
             fR+=DISPPF::prepareForHTMLDisplay( commentText);
-
-
           }
         }
         fR+="\n</font>\n</div></div>\n";
@@ -921,6 +923,14 @@ namespace RTI{
           if(allD.second==1){
             rInf.addNameIndicator=allD.first;
           }
+          pos=0;allD=SF::extract(pdfOptionsRaw,pos,"_pageTop*|_","_/pageTop*|_");
+          if(allD.second==1){
+            rInf.pdfTopOfThePage=allD.first;
+          }
+          pos=0;allD=SF::extract(pdfOptionsRaw,pos,"_newPageSeparators*|_","_/newPageSeparators*|_");
+          if(allD.second==1){
+            rInf.pdfNewPageSeparators=SF::stringToSet(allD.first,"_n*_","_/n*_");
+          }
         }
       }
       std::vector<std::string> userAsV;
@@ -980,7 +990,6 @@ namespace RTI{
             rInf.submittedAnswers[tmpUsr.first]=tmpUsr.second[1];
           }
       }
-
       std::map<std::string,std::string>::const_iterator itAct;
       itAct=_psd.respMap.find("act");
       if(itAct!=_psd.respMap.end()){
@@ -1645,6 +1654,7 @@ namespace RTI{
         sqi.userPointsEarned=(itu->second)[2];
       }
       sqi.autoGraderCodeData=CAGI::getAutoGraderCodeData((itf->second)[7],sqi.officialSolution,sqi.userAnswer,sqi.maxPoints);
+      lD_sq.lPInst=LMF::getPrintingInstructions((itf->second)[8]);
       lD_sq.formulation=sqi.formulation;
       lD_sq.questionType=sqi.displType;
       lD_sq.multipleChoicesSt=sqi.allChoicesSt;
@@ -1679,9 +1689,6 @@ namespace RTI{
         totalScore+=singleProblemScore;
       }
       else{
-        if(res.documentType==st_responseToTest){
-          totalScore=-999.99;
-        }
         everythingGraded=0;
       }
       ++itf;
@@ -1721,6 +1728,8 @@ namespace RTI{
       lD_ep.answerBoxLatexTemplate=MWII::GL_WI.getDefaultWebText("answerBoxLatexTemplate");
       lD_ep.prefix=res.prefixForExamPDF;
       lD_ep.addNameIndicator=res.addNameIndicator;
+      lD_ep.pdfTopOfThePage=res.pdfTopOfThePage;
+      lD_ep.pdfNewPageSeparators=res.pdfNewPageSeparators;
       return LMF::prepareExamForPrinting(lD_ep,_psd.indChangeRespRecToPrintVersionOfCommonInClassExam,_psd.pdfBeforeProblems,_psd.pdfAfterProblems);
     }
     if(parametersForBackToGradeRoom!=""){
