@@ -158,6 +158,37 @@ namespace BF{
     fR*=sign;
     return fR;
   }
+  std::string removeNonNumericStart(const std::string & _s){
+    std::string res;
+    long sz=_s.length();
+    int stillOK=1;
+    while(stillOK&&(sz>0)){
+      --sz;
+      if( (_s[sz]>='0')&&(_s[sz]<='9') ){
+        res = _s[sz]+res;
+      }
+      else{
+        stillOK=1;
+      }
+    }
+    if(sz<1){return res;}
+    stillOK=0;++sz;
+    while(stillOK && (sz>0)){
+      --sz;
+      if( (_s[sz]=='-')||(_s[sz]=='+')){
+        res = _s[sz] + res;
+      }
+      else{
+        if( (_s[sz]!=' ')&&(_s[sz]!='\t')&&(_s[sz]!='\n') ){
+          stillOK=0;
+        }
+      }
+    }
+    return res;
+  }
+long stringToIntegerRemoveStart(const std::string& _s){
+    return stringToInteger(removeNonNumericStart(_s));
+  }
   double stringToDouble(const std::string &_s){
     std::string t=cleanSpaces(_s,1);
     double sign=1.0;
