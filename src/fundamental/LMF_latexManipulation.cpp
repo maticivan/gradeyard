@@ -19,6 +19,9 @@
 #ifndef _INCL_LATEXMANIPULATION_CPP
 #define _INCL_LATEXMANIPULATION_CPP
 namespace LMF{
+  struct LPrintingInstructions{
+    long numChoicesInOneLine;
+  };
   struct LatexDataSingleQuestion{
     std::string formulation;
     std::string questionType;
@@ -27,6 +30,7 @@ namespace LMF{
     long questionNumber;
     std::string solution;
     std::string answer;
+    LPrintingInstructions lPInst;
   };
   struct LatexDataExamPaper{
     std::string studentName;
@@ -39,8 +43,20 @@ namespace LMF{
     std::string answerBoxLatexTemplate;
     std::string prefix;
     std::string addNameIndicator;
+    std::string pdfTopOfThePage;
+    std::set<std::string> pdfNewPageSeparators;
     std::stack<LatexDataSingleQuestion> questionsStack;
   };
+  LPrintingInstructions getPrintingInstructions(const std::string & rawText){
+    LPrintingInstructions fR;
+    fR.numChoicesInOneLine=-1;
+    std::pair<std::string,int> allD; long pos;
+    pos=0; allD=SF::extract(rawText,pos,"_choicesInLine*_","_/choicesInLine*_");
+    if(allD.second==1){
+      fR.numChoicesInOneLine=BF::stringToInteger(allD.first);
+    }
+    return fR;
+  }
   long calculateWidth(const std::string & _input){
     std::string input=_input;
     std::string input2=input;
@@ -86,7 +102,7 @@ namespace LMF{
     return countNLines + (input.length() / 150);
   }
   std::string prepareMultipleChoiceText(const std::string & mcst){
-    long numCharactersToSwithToLines=120;
+    long numCharactersToSwitchToLines=120;
     std::string fRSpaces="", fRNLines="";
     std::string fRSpacesStart="\n\n \\vspace{0.3cm}\n \\noindent ";
     std::string fRNLinesStart="\n\n \\vspace{0.3cm}\n \\noindent ";
@@ -109,10 +125,42 @@ namespace LMF{
       doneFirst=1;
     }
     long wdth=calculateWidth(fRSpaces);
-    if(wdth>numCharactersToSwithToLines){
+    if(wdth>numCharactersToSwitchToLines){
       return fRNLinesStart+ fRNLines;
     }
     return fRSpacesStart+ fRSpaces;
+  }
+  std::string prepareMultipleChoiceText(const std::string & mcst,const long& chInOneLine){
+    std::string currentLine="", entireText="";
+    std::string startLine="\n\n \\vspace{0.3cm}\n \\noindent ";
+    std::vector<std::string> mcVect=SF::stringToVector(mcst,"_rb*_","_/rb*_");
+    long vSize=mcVect.size();
+    std::vector<std::string> vPair;
+    long flushed=1;
+    for(long i=0;i<vSize;++i){
+      vPair=SF::stringToVector(mcVect[i],"_vl*_","_/vl*_");
+      if(vPair[0]!="N"){
+        if(flushed==0){
+          currentLine+="\\hfill ";
+        }
+        else{
+          currentLine+="\n\n \\noindent ";
+        }
+        if(vPair.size()>1){
+          currentLine+=vPair[1]+" ";
+        }
+        flushed=0;
+      }
+      if(i%chInOneLine == chInOneLine-1){
+        entireText+=currentLine;
+        currentLine="";
+        flushed=1;
+      }
+    }
+    if(flushed==0){
+      entireText+=currentLine;
+    }
+    return entireText;
   }
   std::string htmlToLatexPictures(const std::string & _input){
     std::string input=_input;
@@ -170,7 +218,12 @@ namespace LMF{
     fR+="{\\bf ("+sq.pointsSt+" points)}";
     fR+=sq.formulation;
     if(sq.questionType=="radioButtonsField"){
-      fR+=prepareMultipleChoiceText(sq.multipleChoicesSt);
+      if(sq.lPInst.numChoicesInOneLine>1){
+        fR+=prepareMultipleChoiceText(sq.multipleChoicesSt,sq.lPInst.numChoicesInOneLine);
+      }
+      else{
+        fR+=prepareMultipleChoiceText(sq.multipleChoicesSt);
+      }
     }
     if(sq.questionType=="textInputField"){
       fR+=exam.answerBoxLatexTemplate;
@@ -284,20 +337,29 @@ namespace LMF{
     SF::flipTheStack(problems);
     std::string singleProblem;long pHeight;
     long currentHeight=0;
+    long problemCounter=0;
     while(!problems.empty()){
       singleProblem=prepareSingleProblemForPrinting(problems.top(),exam);
-      pHeight=calculateProblemHeight(singleProblem);
-      if(currentHeight>0){
-        if(currentHeight+pHeight>maxHeightForPage){
-          fR+=pageBreakString;
-          currentHeight=pHeight;
+      if(exam.pdfNewPageSeparators.size()<1){
+        pHeight=calculateProblemHeight(singleProblem);
+        if(currentHeight>0){
+          if(currentHeight+pHeight>maxHeightForPage){
+            fR+=pageBreakString;
+            currentHeight=pHeight;
+          }
+          else{
+            currentHeight+=pHeight;
+          }
         }
         else{
-          currentHeight+=pHeight;
+          currentHeight=pHeight;
         }
       }
       else{
-        currentHeight=pHeight;
+        if((exam.pdfNewPageSeparators).find(std::to_string(problemCounter))!=(exam.pdfNewPageSeparators).end()){
+          fR+=pageBreakString;
+        }
+        ++problemCounter;
       }
       fR+=singleProblem;
       fR+=problemBreakString;
@@ -305,7 +367,11 @@ namespace LMF{
     }
     fR= "\n\\begin{enumerate}\n"+ fR+"\\end{enumerate}\n%%%EXAM VERSION END%%%";
     if(indInClass==0){
-      fR= "\\noindent {\\bf "+exam.studentName+"}\n\n"+fR;
+      std::string nmToAdd="\\begin{center} {\\bf "+exam.studentName+"} \\end{center}\n\n";
+      if(exam.addNameIndicator=="no"){
+        nmToAdd="";
+      }
+      fR=exam.pdfTopOfThePage+ nmToAdd+fR;
       fR="\n\n \\begin{document}"+fR+"\n\n\\end{document} \n";
       fR=exam.examPreambleLatexTemplate+fR;
     }
