@@ -203,8 +203,25 @@ Status is one of the following: n/a/
 _pdfOptions*_  
  _pref*_f__/pref*_ 
  _addName*_yes_/addName*_
-
 _/pdfOptions*_
+
+Add the following tags inside pdfOptions for 
+additional customizations.
+
+_pageTop*|_
+\begin{center}{\Large Exam Name}\end{center}
+\begin{center}{Semester}\end{center}
+_/pageTop*|_
+
+The program will try to insert page breaks by 
+analyzing the characters. If you want to stop
+the program from guessing where to put page 
+breaks, you can list the problem numbers. The 
+page breaks will be placed after the problems
+that are listed here.
+_newPageSeparators*|_ 
+_n*_3_/n*_ _n*_8_/n*_
+_/newPageSeparators*|_
 
 
 ***************************************************
@@ -333,5 +350,4 @@ _vVPair__vr_\end{solution}_/vr__vl__/hideReveal_</div><p></p>_/vl__/vVPair_
 _/defaultFindReplace!*_
 
 _skipInitFolders*!_no_/skipInitFolders*!_
-
 
