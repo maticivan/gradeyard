@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -19,10 +19,8 @@
 
 namespace LNF{
   std::string collectLabels(std::map<std::string,std::map<std::string,long> > & mainMap, const std::string _input){
-
     std::string input=_input+"\\label{endL|endL}";
     std::string output="";
-
     long pos=0,posIn;
     std::pair<std::string,int> allD1,allD2,allDCat,allDLab;
     std::string category,label;
@@ -52,9 +50,7 @@ namespace LNF{
         currentNum=1;
       }
       else{
-
         //Step 0: Check if the label already exists:
-
         if( (it->second).find(label) != (it->second).end() ){
           currentNum=-777;
         }
@@ -66,17 +62,14 @@ namespace LNF{
           //Step 2: Correction of the label with correct number;
           (it->second)[label]=currentNum;
         }
-
       }
       output+=allD1.first;
       output+=std::to_string(currentNum);
-
       allD1=SF::getEverythingBefore(input,pos,"\\label{");
       allD2=SF::getEverythingBefore(input,pos,"}");
     }
     output+=allD1.first;
     return output;
-
   }
   std::string replaceReferences(const std::map<std::string,std::map<std::string,long> > & mainMap,const std::string & _input){
     std::map<std::string,std::map<std::string,long> >::const_iterator itM,itME=mainMap.cend();
@@ -112,7 +105,6 @@ namespace LNF{
       }
       output+=allD1.first;
       output+=std::to_string(currentNum);
-
       allD1=SF::getEverythingBefore(input,pos,"\\ref{");
       allD2=SF::getEverythingBefore(input,pos,"}");
     }
@@ -120,14 +112,9 @@ namespace LNF{
     return output;
   }
   std::string labelsAndNumbers(const std::string & input){
-
-
     std::map<std::string,std::map<std::string,long> > mainCategoryMap;
     std::string output=collectLabels(mainCategoryMap,input);
-
     output=replaceReferences(mainCategoryMap,output);
-
-
     return output;
   }
 }
