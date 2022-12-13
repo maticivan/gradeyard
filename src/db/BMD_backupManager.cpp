@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -20,6 +20,7 @@
 #define _INCL_WI_BACKUPMANAGER_CPP
 
 namespace BMD{
+  
   std::string recoveryTextWithCustomData(const std::string & textName, const std::string &customData, const std::string &recCommand){
     std::string recText="";
     recText+="_command_\n";
@@ -30,15 +31,19 @@ namespace BMD{
     recText+="START EDITING AFTER THIS LINE _nc***_";
     recText+=customData;
     recText+="_/nc***_\n DO NOT EDIT THIS LINE  _/command_";
-
     return recText;
   }
-  std::string recoveryMainText(const std::string & textName, const std::string &recoveryCommand = "createText"){
+  std::string recoveryMainText(const std::string & textName, const std::string &recoveryCommand, const std::string &rType){
     std::string recText="";
     TMD::MText sf;
     int sc=sf.setFromTextName(textName);
     if(sc==1){
-      recText=recoveryTextWithCustomData(textName,sf.getTextData(),recoveryCommand);
+      if(rType=="latex"){
+        recText=AICD::prepareLatexText(sf.getTextData());
+      }
+      else{
+        recText=recoveryTextWithCustomData(textName,sf.getTextData(),recoveryCommand);
+      }
     }
     return recText;
   }
@@ -71,17 +76,15 @@ namespace BMD{
     }
     return recText;
   }
-
-  std::string recovery(const std::string & dbName, const std::string & textName){
+  std::string recovery(const std::string & dbName, const std::string & textName,const std::string& rType){
     if(dbName=="Texts"){
-      return recoveryMainText(textName);
+      return recoveryMainText(textName,"createText",rType);
     }
     if(dbName=="Responses"){
       return recoveryResponse(textName);
     }
     return "";
   }
-
   std::string convertNumberToDBRowNameTexts(const long &j){
     std::pair<std::vector<std::string>, std::string> sR=(DD::GL_MAIN_DB.dbsM["mainText"])[j];
     TMD::MText sf;
@@ -101,7 +104,4 @@ namespace BMD{
     return convertNumberToDBRowNameTexts(j);
   }
 }
-
-
-
 #endif
