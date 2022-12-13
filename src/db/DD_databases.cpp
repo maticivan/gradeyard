@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -50,5 +50,6 @@ namespace DD{
 #include "TMD_textManagement.cpp"
 #include "RMD_responseManagement.cpp"
 #include "SD_stat.cpp"
+#include "AICD_abstractInsertCenter.cpp"
 #include "BMD_backupManager.cpp"
 #endif
