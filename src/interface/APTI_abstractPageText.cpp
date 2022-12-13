@@ -1129,7 +1129,7 @@ namespace APTI{
 
     return std::pair<std::string,std::string>(fR,label);
   }
-  std::string AbstractText::createSubText(const PSDI::SessionData & _psd, const std::string & textName){
+  std::string AbstractText::createSubText(const PSDI::SessionData & _psd, const std::string & textName) const{
     if(subTextRecursionDepth>maxRecursionDepth){
       return "";
     }
@@ -1190,7 +1190,7 @@ namespace APTI{
     displStr=SF::findAndReplace(displStr,"_*gradingResult*_",grResult);
     return displStr;
   }
-  std::string AbstractText::createCodeTest(const PSDI::SessionData & _psd, const std::string & respRecCode, const std::string & qLabel, const std::string & baseText){
+  std::string AbstractText::createCodeTest(const PSDI::SessionData & _psd, const std::string & respRecCode, const std::string & qLabel, const std::string & baseText) const{
     if(GL_studentsAllowedToExecuteCodeOnPublicTestCases!="yes"){
       return "";
     }
@@ -1619,7 +1619,7 @@ namespace APTI{
     return fR;
   }
   std::string AbstractText::treatInserts(const PSDI::SessionData &_psd, const std::string & _raw,const std::string & _iB, const std::string & _iE){
-    std::string fR="",replacement;
+  /*  std::string fR="",replacement;
     std::string tempSt;
     long pos=0,lastPos=0,posIn;
     std::pair<std::string,int> allD,allDIn;
@@ -1643,6 +1643,8 @@ namespace APTI{
       fR+=_raw[i];
     }
     return fR;
+*/
+    return AICD::treatGeneralInsert(*this,_psd,_raw,_iB,_iE);
   }
   std::string AbstractText::prepareProblem(const PSDI::SessionData & _psd, const std::string & _raw) const{
     std::string fR="";
@@ -2078,7 +2080,7 @@ namespace APTI{
     }
     return res;
   }
-  std::string AbstractText::createItemTable(const PSDI::SessionData & _psd, const std::string & _td){
+  std::string AbstractText::createItemTable(const PSDI::SessionData & _psd, const std::string & _td) const{
      std::string iTable;
      std::string categoryName="notFound",categoryCode="notFound",folder="notFound";
      long numItems=0;
