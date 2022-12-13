@@ -80,7 +80,7 @@ namespace APTI{
     std::string s_couas="courseAssignment";
     std::string s_respRecStatus="responseReceiverStatus";
     std::string s_codeTest="codeTest";
-    std::string s_codeTestInNotes="codeTestInNotes"; 
+    std::string s_codeTestInNotes="codeTestInNotes";
     std::string s_internalLink="internalLink";
     std::string s_buttonLink="buttonLink";
     std::string s_invitationToSolve="invitationToSolve";
@@ -100,15 +100,15 @@ namespace APTI{
     long subTextRecursionDepth=0;
     long maxRecursionDepth=10;
     std::map<std::string,std::string> getTranslationMap(const std::string & ) const;
-    std::string createSubText(const PSDI::SessionData &,const std::string &);
-    std::string createCodeTest(const PSDI::SessionData &,const std::string &, const std::string &, const std::string &);
+    std::string createSubText(const PSDI::SessionData &,const std::string &) const;
+    std::string createCodeTest(const PSDI::SessionData &,const std::string &, const std::string &, const std::string &) const;
     std::string createCodeTestInNotes(const PSDI::SessionData &,const std::string &,const std::string &,const std::string&);
     std::string createUserPermitInfo(const PSDI::SessionData &,const std::string &);
     std::string createRespRecStatusDisplay(const PSDI::SessionData & , const std::string & ) const;
     std::string createMessageDisplay(const PSDI::SessionData &,const std::string &);
     std::string createSolvingInvitation(const PSDI::SessionData &,const std::string &,const std::string &,const std::string & ) const;
     std::string createCouasDisplay(const PSDI::SessionData &,const std::string &);
-    std::string createItemTable(const PSDI::SessionData &,const std::string &);
+    std::string createItemTable(const PSDI::SessionData &,const std::string &) const;
     std::string createInternalLink(const PSDI::SessionData &, const std::string &, const std::string &) const;
     std::string createTextAreaField(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string & ="notFound", const std::string & ="notFound");
     std::string createTextInputField(const std::string &, const std::string &, const std::string &, const std::string &, const std::string &);
@@ -144,7 +144,6 @@ namespace APTI{
     std::string createLinkToFile(const std::string &, const std::string &, const std::string &, const std::string &) const;
     std::string createLinkToResponseReceiver(const std::string &, const std::string &) const;
     std::string createLinkToSwitchSortCriterion(const std::string & , const std::string & , const std::string & , const std::string &) const;
-    std::string evaluateInsert(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &);
     std::string createListOfUsers(const PSDI::SessionData & ,const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfTexts(const PSDI::SessionData & ,const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfFiles(const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
@@ -183,6 +182,7 @@ namespace APTI{
     std::string groupsInPermission(const std::set<std::string> & ) const;
     std::string nicelyFormattedSystemData(const PSDI::SessionData  &) const;
     std::string sysDataIfNeededAndAllowed(const PSDI::SessionData  &) const;
+    std::string evaluateInsert(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &);
     std::string treatInserts(const PSDI::SessionData &, const std::string &,const std::string &, const std::string &);
     std::string prepareProblem(const PSDI::SessionData  & , const std::string &  ) const;
     std::string convertVariablesToValues(const PSDI::SessionData  & ,const std::string &) const;
