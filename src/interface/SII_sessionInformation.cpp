@@ -2741,6 +2741,26 @@ namespace SII{
     std::vector<std::string> backupTexts=SF::stringToVector(_txts,"_n*!_","_/n*!_");
     long sz=backupTexts.size();
     str_backups_IfCalledFor="";
+    if((sz==2)&&(backupTexts[0]=="toLatex")){
+      std::vector<std::string> docNames=SF::stringToVector(backupTexts[1],"_n*!_","_/n*!_");
+      std::string lStart;
+      lStart=MWII::GL_WI.getDefaultWebText("notesPreambleLatexTemplate");
+      if(lStart=="notesPreambleLatexTemplate"){
+        lStart=MWII::GL_WI.getDefaultWebText("examPreambleLatexTemplate");
+      }
+      long pos; std::pair<std::string,int> allD;
+      pos=0; allD=SF::extract(backupTexts[1],pos,"_lStart*!_","_/lStart*!_");
+      if(allD.second==1){
+        lStart=allD.first;
+      } 
+      str_backups_IfCalledFor+=lStart+"\n\n \\begin{document}\n";
+      long szd=docNames.size();
+      for(long i=0;i<szd;++i){
+        str_backups_IfCalledFor+=BMD::recovery(_db,docNames[i],"latex");
+      }
+      str_backups_IfCalledFor+="\n\n\\end{document} \n";
+      return "!success!";
+    }
     if((sz==3) && (backupTexts[0]=="range") && (BF::isNumeric(backupTexts[1],0)) && (BF::isNumeric(backupTexts[2],0)) ){
       long start=BF::stringToInteger(backupTexts[1]);
       long end=BF::stringToInteger(backupTexts[2]);
@@ -2753,7 +2773,7 @@ namespace SII{
       }
     }
     for(long i=0;i<sz;++i){
-      str_backups_IfCalledFor+=SF::findAndReplace(BMD::recovery(_db,backupTexts[i]),"!verbSave!","*fjkl3"+GL_MAIN_SETUP_FILE_NAME+"2!3211");
+      str_backups_IfCalledFor+=SF::findAndReplace(BMD::recovery(_db,backupTexts[i],"basic"),"!verbSave!","*fjkl3"+GL_MAIN_SETUP_FILE_NAME+"2!3211");
     }
     return "!success!";
   }
