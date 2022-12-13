@@ -201,7 +201,7 @@ namespace LMF{
     input=SF::findAndReplace(input,"</ul>","\\end{itemize}");
     input=SF::findAndReplace(input,"<center>","\\begin{center}");
     input=SF::findAndReplace(input,"</center>","\\end{center}");
-    input=SF::findAndReplace(input,"<li>","\\item");
+    input=SF::findAndReplace(input,"<li>","\\item ");
     input=SF::findAndReplace(input,"</li>","");
     input=SF::findAndReplace(input,"<br>","\n\n");
     input=SF::findAndReplace(input,"<p>","\n\n");
