@@ -1619,31 +1619,6 @@ namespace APTI{
     return fR;
   }
   std::string AbstractText::treatInserts(const PSDI::SessionData &_psd, const std::string & _raw,const std::string & _iB, const std::string & _iE){
-  /*  std::string fR="",replacement;
-    std::string tempSt;
-    long pos=0,lastPos=0,posIn;
-    std::pair<std::string,int> allD,allDIn;
-    allD=SF::extract(_raw,pos,_iB,_iE);
-    while(allD.second==1){
-      tempSt="";
-      for(long i=lastPos;i<pos;++i){
-        tempSt+=_raw[i];
-      }
-      posIn=0;
-      replacement=evaluateInsert(_psd, allD.first,_iB,_iE);
-      allDIn=SF::extractAndReplace(tempSt,posIn,_iB,_iE,0,replacement);
-      if(allDIn.second==1){
-        fR+=allDIn.first;
-      }
-      lastPos=pos;
-      allD=SF::extract(_raw,pos,_iB,_iE);
-    }
-    pos=_raw.length();
-    for(long i=lastPos;i<pos;++i){
-      fR+=_raw[i];
-    }
-    return fR;
-*/
     return AICD::treatGeneralInsert(*this,_psd,_raw,_iB,_iE);
   }
   std::string AbstractText::prepareProblem(const PSDI::SessionData & _psd, const std::string & _raw) const{
