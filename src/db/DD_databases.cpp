@@ -21,23 +21,15 @@
 #define _INCL_DATABASES_CPP
 
 #include "DSD_dbSetup.cpp"
-
 namespace DD{
   DSD::Setup GL_DBS;
   const long GL_IND_ALLOW_WEBSITE_CLONES=0;
 }
-
-
-
 #include "MWID_mainWebsiteInit.cpp"
 
 namespace DD{
   MWID::MainDB GL_MAIN_DB;
 }
-
-
-
-
 
 #include "CD_counters.cpp"
 #include "WUD_users.cpp"
