@@ -21,7 +21,11 @@
 
 
 namespace AICD{
-  std::string prepareLatexText(const std::string& , const long& =10);
+  struct LatexReplacements{
+    std::vector<std::string> htmlTs;
+    std::vector<std::string> latexTs;
+  } GL_ReplStrings;
+  std::string prepareLatexTextRecText(const std::string& , const long& =10);
   std::string removeTag(const std::string& _in, const std::string &tOpen, const std::string &tClose){
     long pos; std::pair<std::string,int> allD;
     pos=0;allD=SF::extractAndReplace(_in,pos,tOpen,tClose,0,"");
@@ -40,7 +44,7 @@ namespace AICD{
   }
   std::string createSubText(const std::string& textName, const long& remRecDepth){
     if(remRecDepth<1){return "";}
-    return prepareLatexText(rawTextData(textName),remRecDepth-1);
+    return prepareLatexTextRecText(rawTextData(textName),remRecDepth-1);
   }
   std::string extractFSOfProblem(const std::string &probName, const std::string& versionLabel,const std::string & oTag, const std::string &cTag){
     std::string correctVersion=TWDVF::singleVersion(rawTextData(probName),BF::stringToInteger(versionLabel));
@@ -222,15 +226,18 @@ namespace AICD{
   }
   std::string additionalCustomizationForProblemsAndSolutions(const std::string& in){
     std::string out=in;
-    out=SF::findAndReplace(out,"\\begin{problem}","\n\\noindent{\\bf Problem} ");
-    out=SF::findAndReplace(out,"\\end{problem}","\n");
-    out=SF::findAndReplace(out,"\\begin{solution}","\n\\noindent{\\bf Solution.} ");
-    out=SF::findAndReplace(out,"\\end{solution}","\n");
-    out=SF::findAndReplace(out,"\\begin{box}","\\begin{tcolorbox}\n");
-    out=SF::findAndReplace(out,"\\end{box}","\n\\end{tcolorbox}");
+    long sz=GL_ReplStrings.htmlTs.size();
+    if(sz!=GL_ReplStrings.latexTs.size()){
+      return in;
+    }
+    for(long i=0;i<sz;++i){
+      if(GL_ReplStrings.htmlTs[i]!=GL_ReplStrings.latexTs[i]){
+        out=SF::findAndReplace(out,GL_ReplStrings.htmlTs[i],GL_ReplStrings.latexTs[i]);
+      }
+    }
     return out;
   }
-  std::string prepareLatexText(const std::string& _in, const long& insertRemainingDepth ){
+  std::string prepareLatexTextRecText(const std::string& _in, const long& insertRemainingDepth ){
     std::string res=_in;
     long pos; std::pair<std::string,int> allD;
     pos=0; allD=SF::extract(res,pos,"_textData!!_","_/textData!!_");
@@ -246,13 +253,15 @@ namespace AICD{
     LatexSource ls;
     std::string placeHolderWithIrrelevantValue;
     res= treatGeneralInsert(ls,placeHolderWithIrrelevantValue, res,"_insert_","_/insert_");
-    res=LNF::labelsAndNumbers(res);
+    return res;
+  }
+  std::string prepareLatexText(const std::string& _in, const long& insertRemainingDepth = 10 ){
+    std::string res=prepareLatexTextRecText(_in,insertRemainingDepth);
     res=LNF::labelsAndNumbers(res);
     res=LMF::htmlToLatexFormatting(res);
     res=htmlHTagsToLatex(res);
     res=additionalCustomizationForProblemsAndSolutions(res);
     return res;
   }
-
 }
 #endif
