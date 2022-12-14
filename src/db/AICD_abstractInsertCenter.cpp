@@ -25,7 +25,7 @@ namespace AICD{
     std::vector<std::string> htmlTs;
     std::vector<std::string> latexTs;
   } GL_ReplStrings;
-  std::string prepareLatexTextRecText(const std::string& , const long& =10);
+  std::string prepareLatexTextRec(const std::string& , const long& =10);
   std::string removeTag(const std::string& _in, const std::string &tOpen, const std::string &tClose){
     long pos; std::pair<std::string,int> allD;
     pos=0;allD=SF::extractAndReplace(_in,pos,tOpen,tClose,0,"");
@@ -44,7 +44,7 @@ namespace AICD{
   }
   std::string createSubText(const std::string& textName, const long& remRecDepth){
     if(remRecDepth<1){return "";}
-    return prepareLatexTextRecText(rawTextData(textName),remRecDepth-1);
+    return prepareLatexTextRec(rawTextData(textName),remRecDepth-1);
   }
   std::string extractFSOfProblem(const std::string &probName, const std::string& versionLabel,const std::string & oTag, const std::string &cTag){
     std::string correctVersion=TWDVF::singleVersion(rawTextData(probName),BF::stringToInteger(versionLabel));
@@ -237,7 +237,7 @@ namespace AICD{
     }
     return out;
   }
-  std::string prepareLatexTextRecText(const std::string& _in, const long& insertRemainingDepth ){
+  std::string prepareLatexTextRec(const std::string& _in, const long& insertRemainingDepth ){
     std::string res=_in;
     long pos; std::pair<std::string,int> allD;
     pos=0; allD=SF::extract(res,pos,"_textData!!_","_/textData!!_");
@@ -256,7 +256,7 @@ namespace AICD{
     return res;
   }
   std::string prepareLatexText(const std::string& _in, const long& insertRemainingDepth = 10 ){
-    std::string res=prepareLatexTextRecText(_in,insertRemainingDepth);
+    std::string res=prepareLatexTextRec(_in,insertRemainingDepth);
     res=LNF::labelsAndNumbers(res);
     res=LMF::htmlToLatexFormatting(res);
     res=htmlHTagsToLatex(res);
