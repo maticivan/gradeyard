@@ -2733,6 +2733,25 @@ namespace SII{
     return er;
     return "!failed! Could not find the document.";
   }
+  AICD::LatexReplacements createLatexReplacementStrings(){
+    AICD::LatexReplacements res;
+    long sz=6;
+    res.htmlTs.resize(sz);
+    res.latexTs.resize(sz);
+    res.htmlTs[0]="\\begin{problem}";
+    res.latexTs[0]=MWII::GL_WI.getDefaultWebText("\\noindent{\\bf Problem} ");
+    res.htmlTs[1]="\\end{problem}";
+    res.latexTs[1]=MWII::GL_WI.getDefaultWebText("%%endProblem");
+    res.htmlTs[2]="\\begin{solution}";
+    res.latexTs[2]=MWII::GL_WI.getDefaultWebText("\\noindent{\\bf Solution.} ");
+    res.htmlTs[3]="\\end{solution}";
+    res.latexTs[3]=MWII::GL_WI.getDefaultWebText("%%endSolution");
+    res.htmlTs[4]="\\begin{box}";
+    res.latexTs[4]=MWII::GL_WI.getDefaultWebText("\\begin{box}");
+    res.htmlTs[5]="\\end{box}";
+    res.latexTs[5]=MWII::GL_WI.getDefaultWebText("\\end{box}");
+    return res;
+  }
   std::string SessionInformation::backupDBs(const std::string & _db, const std::string & _txts){
     //WARNING: not implemented properly yet: permission checking is too restrictive
     if(allowedToRemoveFromHierarchy(_db,_txts)==0){
@@ -2742,6 +2761,9 @@ namespace SII{
     long sz=backupTexts.size();
     str_backups_IfCalledFor="";
     if((sz==2)&&(backupTexts[0]=="toLatex")){
+      if(AICD::GL_ReplStrings.htmlTs.size()<1){
+        AICD::GL_ReplStrings = createLatexReplacementStrings();
+      }
       std::vector<std::string> docNames=SF::stringToVector(backupTexts[1],"_n*!_","_/n*!_");
       std::string lStart;
       lStart=MWII::GL_WI.getDefaultWebText("notesPreambleLatexTemplate");
@@ -2752,7 +2774,7 @@ namespace SII{
       pos=0; allD=SF::extract(backupTexts[1],pos,"_lStart*!_","_/lStart*!_");
       if(allD.second==1){
         lStart=allD.first;
-      } 
+      }
       str_backups_IfCalledFor+=lStart+"\n\n \\begin{document}\n";
       long szd=docNames.size();
       for(long i=0;i<szd;++i){
