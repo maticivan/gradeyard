@@ -55,7 +55,7 @@ namespace RTI{
   public:
     std::string language, officialSource,userSource,codeToEmbed,messageDidNotCompile,compilerFlags;
     std::vector<std::string> inputTestCases,revealTestCasesAfterGrading,publicTestCases,
-    publicRevealTestCasesAfterGrading, includes,forbiddenStrs;
+    publicRevealTestCasesAfterGrading, includes,dbIncludes, forbiddenStrs;
     std::vector<double> pointsTestCases,publicPointsTestCases;
   };
   struct SingleQuestionInfo{
