@@ -37,7 +37,7 @@ namespace CAGI{
         hidingSt="seqNotAllowed";
       }
       else{
-        hidingSt=forb[i]; 
+        hidingSt=forb[i];
       }
       src=SF::findAndReplace(src,forb[i],GL_Obf.secretOpenTag+hidingSt+GL_Obf.secretCloseTag);
     }
@@ -88,6 +88,15 @@ namespace CAGI{
     pos=0;allD=SF::extract(agParameters,pos,"_includes_","_/includes_");
     if(allD.second==1){
       cInfo.includes=SF::stringToVector(allD.first,"_n*_","_/n*_");
+    }
+    cInfo.dbIncludes.resize(0);
+    pos=0;allD=SF::extract(agParameters,pos,"_dbIncludes_","_/dbIncludes_");
+    if(allD.second==1){
+      cInfo.dbIncludes=SF::stringToVector(allD.first,"_n*_","_/n*_");
+      long dbinsz=cInfo.dbIncludes.size();
+      for(long i=0;i<dbinsz;++i){
+        cInfo.dbIncludes[i]=lastCode(TMD::rawTextData(cInfo.dbIncludes[i]));
+      }
     }
     cInfo.forbiddenStrs.resize(0);
     pos=0;allD=SF::extract(agParameters,pos,"_forbidden_","_/forbidden_");
@@ -261,7 +270,7 @@ namespace CAGI{
     std::vector<std::string> languages;
     std::vector<std::string> mDidNotCompile;
     std::vector<std::string> cFlags;
-    std::vector<std::vector<std::string> >includes;
+    std::vector<std::vector<std::string> >includes,dbIncludes;
     std::vector<std::vector<std::string> >inputTestCases;
     std::vector<std::vector<std::string> >revealTCAfterGrading;
     std::vector<std::vector<double> > scores;
@@ -272,6 +281,7 @@ namespace CAGI{
     mDidNotCompile.resize(twoNC);
     cFlags.resize(twoNC);
     includes.resize(twoNC);
+    dbIncludes.resize(twoNC);
     inputTestCases.resize(twoNC);
     revealTCAfterGrading.resize(twoNC);
     labels.resize(twoNC);
@@ -283,6 +293,7 @@ namespace CAGI{
       sources[i]=(it->second).userSource;
       languages[i]=(it->second).language;
       includes[i]=(it->second).includes;
+      dbIncludes[i]=(it->second).dbIncludes;
       if(testCasesType=="publicTestCases"){
         inputTestCases[i]=(it->second).publicTestCases;
         revealTCAfterGrading[i]=(it->second).publicRevealTestCasesAfterGrading;
@@ -300,6 +311,7 @@ namespace CAGI{
       sources[i]=(it->second).officialSource;
       languages[i]=(it->second).language;
       includes[i]=(it->second).includes;
+      dbIncludes[i]=(it->second).dbIncludes;
       if(testCasesType=="publicTestCases"){
         inputTestCases[i]=(it->second).publicTestCases;
         revealTCAfterGrading[i]=(it->second).publicRevealTestCasesAfterGrading;
@@ -316,7 +328,7 @@ namespace CAGI{
       ++i;
       ++it;
     }
-    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd,sources,languages,cFlags,includes,inputTestCases);
+    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd,sources,languages,cFlags,includes,dbIncludes,inputTestCases);
     if(aGOutput.second==0){
       return 0;
     }
@@ -370,15 +382,16 @@ namespace CAGI{
   std::string executionResult(const PSDI::SessionData & _psd, const std::string & agrParameters, const std::string & offSolution){
     RTI::CodeAutoGraderInfo cInfo=getAutoGraderCodeData(agrParameters,offSolution,"","100");
     std::vector<std::string> sources,languages,cFlags;
-    std::vector<std::vector<std::string> > includes, inputTestCases;
+    std::vector<std::vector<std::string> > includes, dbIncludes,inputTestCases;
     sources.resize(1);languages.resize(1);cFlags.resize(1);
-    includes.resize(1);inputTestCases.resize(1);
+    includes.resize(1);dbIncludes.resize(1);inputTestCases.resize(1);
     sources[0]=cInfo.officialSource;
     languages[0]=cInfo.language;
     cFlags[0]=cInfo.compilerFlags;
     includes[0]=cInfo.includes;
+    dbIncludes[0]=cInfo.dbIncludes;
     inputTestCases[0]=cInfo.inputTestCases;
-    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd, sources,languages,cFlags,includes,inputTestCases);
+    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd, sources,languages,cFlags,includes,dbIncludes,inputTestCases);
     std::string fR="<h4>Code execution on test cases</h4>";
     if((aGOutput.second==0)||(aGOutput.first.size()!=1)){
       fR+=wrongLengthsOfVectors();
