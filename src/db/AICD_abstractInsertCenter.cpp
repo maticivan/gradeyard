@@ -35,20 +35,13 @@ namespace AICD{
     }
     return _in;
   }
-  std::string rawTextData(const std::string& textName){
-    TMD::MText sf;
-    int sc=sf.setFromTextName(textName);
-    if(sc==1){
-      return sf.getTextData();
-    }
-    return "";
-  }
+
   std::string createSubText(const std::string& textName, const long& remRecDepth){
     if(remRecDepth<1){return "";}
-    return prepareLatexTextRec(rawTextData(textName),remRecDepth-1);
+    return prepareLatexTextRec(TMD::rawTextData(textName),remRecDepth-1);
   }
   std::string extractFSOfProblem(const std::string &probName, const std::string& versionLabel,const std::string & oTag, const std::string &cTag){
-    std::string correctVersion=TWDVF::singleVersion(rawTextData(probName),BF::stringToInteger(versionLabel));
+    std::string correctVersion=TWDVF::singleVersion(TMD::rawTextData(probName),BF::stringToInteger(versionLabel));
     long pos; std::pair<std::string,int> allD;
     pos=0; allD=SF::extract(correctVersion,pos,oTag,cTag);
     if(allD.second==1){
