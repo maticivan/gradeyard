@@ -196,7 +196,7 @@ namespace LMF{
     input=SF::findAndReplace(input,"<code>","\\verb@");
     input=SF::findAndReplace(input,"</code>","@");
     input=SF::findAndReplace(input,"<pre>","\\begin{verbatim}");
-    input=SF::findAndReplace(input,"</pre>","\\end{verbatim}");
+    input=SF::findAndReplace(input,"</pre>","\\end{verbatim}\n");
     input=SF::findAndReplace(input,"\\newline","\\\\");
     input=SF::findAndReplace(input,"<ul>","\\begin{itemize}");
     input=SF::findAndReplace(input,"</ul>","\\end{itemize}");
