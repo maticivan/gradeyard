@@ -2732,10 +2732,11 @@ namespace SII{
     std::string er= submitEnrollmentReport(_reportName,_couas,students);
     return er;
     return "!failed! Could not find the document.";
-  }
+  } 
   AICD::LatexReplacements createLatexReplacementStrings(){
     AICD::LatexReplacements res;
-    long sz=6;
+    res.websiteURL=MWII::GL_WI.getWSURL();
+    long sz=8;
     res.htmlTs.resize(sz);
     res.latexTs.resize(sz);
     res.htmlTs[0]="\\begin{problem}";
@@ -2750,6 +2751,10 @@ namespace SII{
     res.latexTs[4]=MWII::GL_WI.getDefaultWebText("\\begin{box}");
     res.htmlTs[5]="\\end{box}";
     res.latexTs[5]=MWII::GL_WI.getDefaultWebText("\\end{box}");
+    res.htmlTs[6]="\\begin{proof}";
+    res.latexTs[6]=MWII::GL_WI.getDefaultWebText("\\noindent{\\bf Proof.} ");
+    res.htmlTs[7]="\\end{proof}";
+    res.latexTs[7]=MWII::GL_WI.getDefaultWebText("%%endProof");
     return res;
   }
   std::string SessionInformation::backupDBs(const std::string & _db, const std::string & _txts){
