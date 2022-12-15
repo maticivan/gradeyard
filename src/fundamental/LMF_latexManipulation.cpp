@@ -164,6 +164,7 @@ namespace LMF{
   }
   std::string htmlToLatexPictures(const std::string & _input){
     std::string input=_input;
+    input=SF::findAndReplace(input,"\"/>","\">");
     long pos;
     std::pair<std::string,int> allD;
     pos=0;allD=SF::extract(input,pos,"<img ","\">");
@@ -204,7 +205,7 @@ namespace LMF{
     input=SF::findAndReplace(input,"<li>","\\item ");
     input=SF::findAndReplace(input,"</li>","");
     input=SF::findAndReplace(input,"<br>","\n\n");
-    input=SF::findAndReplace(input,"<p>","\n\n");
+    input=SF::findAndReplace(input,"<p>","\n\n\\vspace{0.1cm}\n\\noindent ");
     input=SF::findAndReplace(input,"<div>","\n\n");
     input=SF::findAndReplace(input,"</p>","");
     input=SF::findAndReplace(input,"</div>","");
