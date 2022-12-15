@@ -22,6 +22,7 @@
 
 namespace AICD{
   struct LatexReplacements{
+    std::string websiteURL;
     std::vector<std::string> htmlTs;
     std::vector<std::string> latexTs;
   } GL_ReplStrings;
@@ -55,6 +56,15 @@ namespace AICD{
     }
     return "";
   }
+  std::string createLatexButtonLink(const std::string &uRL, const std::string &label){
+      return "\n\n\\verb@"+uRL+"@";
+  }
+  std::string createLatexInternalLink(const std::string & lN, const std::string & pageName){
+    std::string link="\n\n\\verb@";
+    link+=GL_ReplStrings.websiteURL+"/index.cgi?page="+pageName;
+    link+="@";
+    return link;
+  }
   std::string evaluateLatexInsert(const std::string& _insText, const long& remRecDepth){
     long pos; std::pair<std::string,int> allD;
     std::vector<std::string> allArgs=SF::stringToVector(_insText,"_n*_","_/n*_");
@@ -79,8 +89,12 @@ namespace AICD{
             pos=0;allD=SF::extract(allArgs[2],pos,"&el0=","&");
             return "\n\\begin{solution}\n"+extractFSOfProblem(pName,allD.first,"_sl*|_","_/sl*|_")+"\n\\end{solution}\n";
           }
-          return "";
+          return createLatexButtonLink(allArgs[2],allArgs[1]);
         }
+        return "";
+      }
+      if((allArgs[0]=="internalLink")&&(sz==3)){
+        return createLatexInternalLink(allArgs[1],allArgs[2]);
       }
       /*
       if((allArgs[0]==s_codeTest) && (sz==4)){
@@ -255,12 +269,33 @@ namespace AICD{
     res= treatGeneralInsert(ls,placeHolderWithIrrelevantValue, res,"_insert_","_/insert_");
     return res;
   }
+  std::string hyperLinks(const std::string& in){
+    std::string out=in;
+    std::string urlOnly;std::string linkPart;
+    long pos; std::pair<std::string,int> allD;
+    pos=0; allD=SF::extract(out,pos,"<a","</a>");
+    while(allD.second==1){
+      linkPart=allD.first;
+      urlOnly="broken url";
+      pos=0; allD=SF::extract(linkPart,pos,"href=\"","\"");
+      if(allD.second==1){
+        urlOnly=allD.first;
+      }
+      pos=0; allD=SF::extractAndReplace(out,pos,"<a","</a>",0,"\n\n\\verb@"+urlOnly+"@");
+      if(allD.second==1){
+        out=allD.first;
+      }
+      pos=0; allD=SF::extract(out,pos,"<a","</a>");
+    }
+    return out;
+  }
   std::string prepareLatexText(const std::string& _in, const long& insertRemainingDepth = 10 ){
     std::string res=prepareLatexTextRec(_in,insertRemainingDepth);
     res=LNF::labelsAndNumbers(res);
     res=LMF::htmlToLatexFormatting(res);
     res=htmlHTagsToLatex(res);
     res=additionalCustomizationForProblemsAndSolutions(res);
+    res=hyperLinks(res);
     return res;
   }
 }
