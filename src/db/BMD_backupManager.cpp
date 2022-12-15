@@ -20,7 +20,7 @@
 #define _INCL_WI_BACKUPMANAGER_CPP
 
 namespace BMD{
-  
+
   std::string recoveryTextWithCustomData(const std::string & textName, const std::string &customData, const std::string &recCommand){
     std::string recText="";
     recText+="_command_\n";
@@ -44,7 +44,7 @@ namespace BMD{
       else{
         recText=recoveryTextWithCustomData(textName,sf.getTextData(),recoveryCommand);
       }
-    }
+    } 
     return recText;
   }
   std::string deleteCommand(const std::string & deleteCommandName, const std::string & documentName){
