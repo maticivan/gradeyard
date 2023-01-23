@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -18,7 +18,6 @@
 
 #ifndef _INCL_AICD_ABSTRACT_INSERT_CENTER_CPP
 #define _INCL_AICD_ABSTRACT_INSERT_CENTER_CPP
-
 
 namespace AICD{
   struct LatexReplacements{
@@ -89,97 +88,6 @@ namespace AICD{
       if((allArgs[0]=="internalLink")&&(sz==3)){
         return createLatexInternalLink(allArgs[1],allArgs[2]);
       }
-      /*
-      if((allArgs[0]==s_codeTest) && (sz==4)){
-        return createCodeTest(_psd,allArgs[1],allArgs[2], allArgs[3]);
-      }
-      if((allArgs[0]==s_codeTestInNotes) && (sz==4)){
-        return createCodeTestInNotes(_psd,allArgs[1],allArgs[2],allArgs[3]);
-      }
-      if((allArgs[0]==s_message)&&(sz==2)){
-        return createMessageDisplay(_psd,allArgs[1]);
-      }
-      if((allArgs[0]==s_invitationToSolve)&&(sz==4)){
-        return createSolvingInvitation(_psd,allArgs[1],allArgs[2],allArgs[3]);
-      }
-      if((allArgs[0]==s_couas)&&(sz==2)){
-        return createCouasDisplay(_psd,allArgs[1]);
-      }
-      if((allArgs[0]==s_respRecStatus)&&(sz==2)){
-        return createRespRecStatusDisplay(_psd,allArgs[1]);
-      }
-      if((allArgs[0]==s_internalLink)&&(sz==3)){
-        return createInternalLink(_psd,allArgs[1],allArgs[2]);
-      }
-      if((allArgs[0]==s_buttonLink)&&(sz==3)){
-        return HSF::createButtonLink(allArgs[2],allArgs[1]);
-      }
-      if((allArgs[0]==s_itemTable)&&(sz==2)){
-        return createItemTable(_psd,allArgs[1]);
-      }
-      if((allArgs[0]==s_textAreaReqField)&&(sz==5)){
-        return createTextAreaField(_psd,allArgs[1],allArgs[2],allArgs[3],allArgs[4]);
-      }
-      if((allArgs[0]==s_textAreaReqField)&&(sz==7)){
-        return createTextAreaField(_psd,allArgs[1],allArgs[2],allArgs[3],allArgs[4],allArgs[5],allArgs[6]);
-      }
-      if((allArgs[0]==s_textInputReqField)&&(sz==6)){
-        if( (allArgs[1]=="reqBC") && (allArgs[2]=="question") ){
-          std::string possibleReplacement=SF::getElFromMapOrNotFoundMessage(_psd.respMap,"question","notFound");
-          if(possibleReplacement!="notFound"){
-            allArgs[4]=possibleReplacement;
-          }
-        }
-        return createTextInputField(allArgs[1],allArgs[2],allArgs[3],allArgs[4],allArgs[5]);
-      }
-      if((allArgs[0]==s_radioButtonsField)&&(sz==7)){
-        return createRadioButtonsField(allArgs[1],allArgs[2],allArgs[3],allArgs[4],allArgs[5],allArgs[6]);
-      }
-      if((allArgs[0]==s_antiSpamChallengeField)&&((sz==5)||(sz==6))){
-        if(_psd.my_un!="visitor"){return "";}
-        std::string _ln="8";
-        if(sz==6){
-          _ln=allArgs[5];
-        }
-        return createAntiSpamField(allArgs[1],allArgs[2],allArgs[3],allArgs[4],_ln);
-      }
-      if((allArgs[0]==s_fileReqField)&&(sz==4)){
-        return createFileRequestField(allArgs[1],allArgs[2],allArgs[3]);
-      }
-      if((allArgs[0]==s_formInitialization)&&(sz==3)){
-        return initializeForm(allArgs[1],allArgs[2]);
-      }
-      if((allArgs[0]==s_formPlacement)&&(sz==2)){
-        return placeFormInText(allArgs[1]);
-      }
-      if((allArgs[0]==s_formPlacement)&&(sz==4)){
-        return placeFormInText(allArgs[1],allArgs[2],allArgs[3]);
-      }
-      if((allArgs[0]==s_userPermits)&&(sz==2)){
-        return createUserPermitInfo(_psd,allArgs[1]);
-      }
-      if((allArgs[0]==s_formInsertRedirect)&&(sz==2)){
-        return setRedirectInfo(allArgs[1]);
-      }
-      if((allArgs[0]==s_statAnalysis)&&(sz==2)){
-        return createStatAnalysisPage(_psd,allArgs[1]);
-      }
-      if((allArgs[0]==s_logInLink)&&(sz==1)){
-        return createLogInLink();
-      }
-      if((allArgs[0]==s_cloneInvitation)&&(sz==1)){
-        return createCloneInvitation(_psd);
-      }
-      if((allArgs[0]==s_cRestore) && (sz==2)){
-        return createRestoreCommand(_psd,allArgs[1]);
-      }
-      if((allArgs[0]==s_listFromDB)&&(sz==4)){
-        return createListFromDB(_psd,allArgs[1],allArgs[2],allArgs[3]);
-      }
-      if((allArgs[0]==s_answerToQuery)&&(sz==1)){
-        return createAnswerToTheQuery(_psd);
-      }
-      */
     }
     return "";
   }
