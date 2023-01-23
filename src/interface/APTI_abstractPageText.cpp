@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -1548,6 +1548,9 @@ namespace APTI{
         }
         if((allArgs[0]==s_buttonLink)&&(sz==3)){
           return HSF::createButtonLink(allArgs[2],allArgs[1]);
+        }
+        if((allArgs[0]==s_svgAdd)&&(sz==4)){
+          return SVGF::addAllSVGs(allArgs[3],BF::stringToDouble(allArgs[1]),BF::stringToDouble(allArgs[2]));
         }
         if((allArgs[0]==s_itemTable)&&(sz==2)){
           return createItemTable(_psd,allArgs[1]);
