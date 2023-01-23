@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -17,7 +17,6 @@
 
 #ifndef _INCL_SAIOF_CPP
 #define _INCL_SAIOF_CPP
-
 
 #include "SSF_sortedSeq.cpp"
 #include "BF_bijFunction.cpp"
@@ -37,6 +36,7 @@
 #include "SPREPF_statPreparation.cpp"
 #include "PASF_patternAnalysisStrings.cpp"
 #include "DERF_derangements.cpp"
+#include "SVGF_svgManipulation.cpp"
 
 namespace SAIOF{
   int match(const std::string & st1, const std::string & st2,  long direction=1){
