@@ -1717,8 +1717,7 @@ namespace SII{
     //WARNING: not implemented properly yet: permission checking is too restrictive
     if(allowedToModifyCouas(_couasId,"!*!")==0){
       return "!failed!: Not allowed";
-    }
-    GF::GL_DEB_MESSAGES.addMessage("Modifying couas");
+    } 
     return MCWCPI::modifyCouasWithoutCheckingPermissions(psd,_couasId,_couasData);
   }
   std::string SessionInformation::deleteMessage(const std::string & _messId,const std::string & _collectorId){
