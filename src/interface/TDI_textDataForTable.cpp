@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -20,14 +20,12 @@
 #define _INCL_TEXTDATAFORTABLE_CPP
 
 namespace TDI{
-
   int allowedToManuallyInputSystemData(const PSDI::SessionData& psd,const std::string & _sysData, const std::string & existingPermissions, const std:: string & existingDataType){
     if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
       return 1;
     }
     return 0;
   }
-
   std::string prepareSystemData(const std::string & tCreated,
                                                     const std::string & createdBy,
                                                     const std::string & tModified,
@@ -59,7 +57,6 @@ namespace TDI{
     std::pair<std::string,int> allSD_o=SF::extract(_oText,pos,LI::GL_LN.s_sysDataB,LI::GL_LN.s_sysDataE);
     pos=0;
     std::pair<std::string,int> allTD_n=SF::extract(_nText,pos,LI::GL_LN.s_tDataB,LI::GL_LN.s_tDataE);
-
     TMF::Timer tm;
     long indicatorAdvancedUser=1;
     std::string tNow=tm.timeString();
@@ -70,15 +67,10 @@ namespace TDI{
     std::string perm="_permission__name_read_/name__userOrGroup_everyone_/userOrGroup__/permission_\n";
     perm+="_permission__name_write_/name__userOrGroup_"+psd.my_un+"_/userOrGroup__/permission_\n";
     std::string dType="regularText";
-
-
-
     if(allSD_o.second==1){
         std::string tModifiedThatWeDontCareAbout;
         std::string modifiedByThatWeDontCareAbout;
         HSF::parametersFromString(allSD_o.first,tCreated,createdBy,tModifiedThatWeDontCareAbout,modifiedByThatWeDontCareAbout,perm,dType);
-
-
     }
     if(allSD_n.second==1){
       indicatorAdvancedUser=0;
@@ -87,7 +79,6 @@ namespace TDI{
       }
     }
     std::string textData="";
-
     if(allTD_n.second==1){
       indicatorAdvancedUser=0;
       textData=allTD_n.first;
@@ -99,19 +90,14 @@ namespace TDI{
     newSystemData=prepareSystemData(tCreated,createdBy,tModified,modifiedBy,perm,dType);
     fR=LI::GL_LN.s_sysDataB+newSystemData+LI::GL_LN.s_sysDataE+LI::GL_LN.s_tDataB+textData+LI::GL_LN.s_tDataE;
     return fR;
-
   }
-
   std::string couasTextString(const std::string & mCreated, const std::string & mUserN, const std::string & mFirstN,
                               const std::string & mLastN, const std::string & preparedText){
     std::string textDataM="";
     textDataM+=LI::GL_LN.st_sepCreatedB+mCreated+LI::GL_LN.st_sepCreatedE;
-
     textDataM+=LI::GL_LN.st_sepUNameB+mUserN+LI::GL_LN.st_sepUNameE;
     textDataM+=LI::GL_LN.st_sepFNameB+ mFirstN+LI::GL_LN.st_sepFNameE;
     textDataM+=LI::GL_LN.st_sepLNameB+mLastN+LI::GL_LN.st_sepLNameE;
-
-
     textDataM+=LI::GL_LN.st_sepCTextB;
     textDataM+=preparedText;
     textDataM+=LI::GL_LN.st_sepCTextE;
