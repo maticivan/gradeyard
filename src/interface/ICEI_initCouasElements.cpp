@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -22,8 +22,6 @@ namespace ICEI{
 
 
   std::string initFromRawText(const PSDI::SessionData & _psd,CEI::CouasElement & cEl, const std::string & rawText,const std::string &cCode){
-
-
     int scc=cEl.initialize(_psd, rawText, cCode);
     if(scc==0){
       return "failed";
@@ -39,7 +37,6 @@ namespace ICEI{
     std::string rawText=myC.getTextData();
     return initFromRawText(_psd,cEl,rawText,cCode);
   }
-
   std::set<std::string> missingGradesOfStudent(const CEI::CouasListElAtt & st, const std::set<std::string> & neededGrades){
     std::set<std::string> fR;
     std::set<std::string>::const_iterator it=neededGrades.begin(),itE=neededGrades.end();
@@ -73,7 +70,6 @@ namespace ICEI{
     fR.type="";
     fR.evaluationFormulas=currentFormulas;
     std::map<std::string,std::string>::const_iterator it,itE=currentFormulas.end();
-
     return fR;
   }
   std::map<std::string,std::string> getExplicitGrades(const std::map<std::string,CEI::CouasListElAtt> & mM){
@@ -102,11 +98,8 @@ namespace ICEI{
     for(long i=0;i<sz;++i){
       fR.insert(v[i]);
     }
-
     return fR;
-
   }
-
   std::set<std::string> codesOfDocumentsThatNeedToBeRead(const std::map<std::string,GEI::GEvalData> & mm){
     std::set<std::string> fR,tmp;
     std::map<std::string,GEI::GEvalData>::const_iterator it=mm.begin(),itE=mm.end();
@@ -177,8 +170,6 @@ namespace ICEI{
       fR+="_k*!_"+SF::findAndReplace(SF::findAndReplace((*itS),"{","{_"),"}","_}")+"_/k*!_"+"_v*!_"+(*itS)+"_/v*!_";
       ++itS;
     }
-
-
     fR+="_/gradesNeeded!*_";
     fR+="_searchReplace_";
     fR+="_v*a_";
@@ -193,7 +184,6 @@ namespace ICEI{
     fR=SF::findAndReplace(fR,"_}","}");
     return fR;
   }
-
   std::pair<CEI::CouasListElAtt,int> updateGrades(const CEI::CouasListElAtt &st, const GEI::GEvalData & ged,
                                              const std::map<std::string, std::map<std::string,CEI::CouasListElAtt> > & recursiveCalculations){
     std::pair<CEI::CouasListElAtt,int> fR;
@@ -221,13 +211,10 @@ namespace ICEI{
     if(remainingRecDepth<1){
       return fR;
     }
-
     CEI::CouasListElAtt tmp;
     long sz=0;
-
     std::pair<std::string,int> allD;
     long pos;
-
     pos=0;allD=SF::extract(rawText,pos,LI::GL_LN.st_sepElementsEncB,LI::GL_LN.st_sepElementsEncE);
     std::string gdr="";
     if(allD.second==0){
@@ -244,7 +231,7 @@ namespace ICEI{
       sz=gdrv.size();
       for(long i=0;i<sz;++i){
         tmp.setFromString(gdrv[i]);
-        fR[tmp.getUName()]=tmp;
+        fR[tmp.getUName()]=tmp; 
         allStudents.insert(tmp.getUName());
       }
     }
@@ -262,12 +249,10 @@ namespace ICEI{
         if(allD.second==1){
           ged.evaluationFormulas=SF::stringToMap(allD.first,LI::GL_LN.st_sepGradeFSB,LI::GL_LN.st_sepGradeFSE,LI::GL_LN.st_sepGradeFMB,LI::GL_LN.st_sepGradeFME);
         }
-
         ged.explicitGrades=getExplicitGrades(fR);
         std::set<std::string> missedGrades=missingGrades(fR,ged.gradesToOutput);
         if(missedGrades.size()>0){
           // We first identify all codes that need to be read
-
           std::set<std::string> toRead= codesOfDocumentsThatNeedToBeRead(ged);
           std::set<std::string>::const_iterator itS1,itS1E;
           itS1=toRead.begin();itS1E=toRead.end();
@@ -285,10 +270,8 @@ namespace ICEI{
             }
             ++itSM;
           }
-
         }
     }
-
     return fR;
   }
   std::map<std::string,CEI::CouasListElAtt>  calculateGradesFromCode(const std::string &cCode, const std::string & masterKey, const long & remainingRecDepth ){
