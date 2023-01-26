@@ -1851,7 +1851,7 @@ namespace APTI{
       return "";
     }
     CCFI::ArgsPowerModifyForm apmf;
-    apmf.textToModify=cEl.getRawText();
+    apmf.textToModify=CCFI::hideEncryptedTextInCouas(cEl.getRawText());
     apmf.linkForm="index.cgi?comEx=yes&";
     apmf.linkForm+=MWII::GL_WI.get_e_parPage();
     apmf.linkForm+="="+tName+"&s1=u11&r1=";
