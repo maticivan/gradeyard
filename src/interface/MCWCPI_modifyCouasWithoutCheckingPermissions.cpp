@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -21,7 +21,26 @@
 
 
 namespace MCWCPI{
-
+  std::string transferTheEncryptedTextFromOldToNew(const std::string& oldT, const std::string& newT){
+    std::pair<std::string,int> allD; long pos;
+    pos=0; allD=SF::extract(oldT,pos,"_*@scode**!!!_","_/*@scode**!!!_");
+    if(allD.second==0){
+      return newT;
+    }
+    std::string encText=allD.first;
+    pos=0; allD=SF::extract(newT,pos,"_*@scode**!!!_","_/*@scode**!!!_");
+    if(allD.second==0){
+      return newT;
+    }
+    if(allD.first!="<ENCRYPTED TEXT - DO NOT TOUCH>"){
+      return newT;
+    }
+    pos=0; allD=SF::extractAndReplace(newT,pos,"_*@scode**!!!_","_/*@scode**!!!_",0,"_*@scode**!!!_"+encText+"_/*@scode**!!!_");
+    if(allD.second==0){
+      return newT;
+    }
+    return allD.first;
+  }
   std::pair<std::string,std::string> mCouasWCPAdv(const PSDI::SessionData & psd,const std::string & _couasId, const std::string & _couasData){
     CAD::CouAs myCouas;
     int couasExists=myCouas.setFromExternalCode(_couasId);
@@ -40,16 +59,13 @@ namespace MCWCPI{
         indicatorAdvancedUser=1;
       }
     }
-
     std::string oldData=myCouas.getTextData();
     result.second=oldData;
     std::string mDataProcessed=_couasData,uNM=psd.my_un,uFN=psd.myFirstName,uLN=psd.myLastName,nSt="";
     if(indicatorAdvancedUser==0){
       mDataProcessed="";
       std::string oldDT="";
-
       std::string createdTM;
-
       pos=0;allD=SF::extract(_couasData,pos,"_user_","_/user_");
       if(allD.second==1){
         mDataProcessed=_couasData;
@@ -57,7 +73,6 @@ namespace MCWCPI{
       else{
         TMF::Timer tm;
         createdTM=tm.timeString();
-
         pos=0;allD=SF::extract(oldData,pos,LI::GL_LN.s_tDataB,LI::GL_LN.s_tDataE);
         if(allD.second==1){
           oldDT=allD.first;
@@ -77,14 +92,10 @@ namespace MCWCPI{
           if(allD.second==1){
             uLN=allD.first;
           }
-
-
         }
-
         mDataProcessed+="_created_";
         mDataProcessed+= createdTM;
         mDataProcessed+="_/created_";
-
         mDataProcessed+="_user_"+uNM+"_/user_";
         mDataProcessed+="_firstName_"+uFN+"_/firstName_";
         mDataProcessed+="_lastName_"+uLN+"_/lastName_";
@@ -92,29 +103,24 @@ namespace MCWCPI{
         mDataProcessed+=_couasData;
         mDataProcessed+="_/couasText!*_";
       }
-
     }
     else{
       mDataProcessed=_couasData;
     }
-    myCouas.setTextData(TDI::prepareTextForTextTableRaw(psd,mDataProcessed,oldData));
+    myCouas.setTextData(TDI::prepareTextForTextTableRaw(psd,transferTheEncryptedTextFromOldToNew(oldData,mDataProcessed),oldData));
     myCouas.putInDB();
     result.first="!success!";
-
     return result;
   }
-
   std::string modifyCouasWithoutCheckingPermissions(const PSDI::SessionData & psd,const std::string & _couasId, const std::string & _couasData){
     return mCouasWCPAdv(psd,_couasId,_couasData).first;
   }
-
   std::string modifyCouasWithoutCheckingPermissionsAndCreateRecoveryCommand(PSDI::SessionData & psd,const std::string & _couasId, const std::string & _couasData){
     std::pair<std::string,std::string> res=mCouasWCPAdv(psd,_couasId,_couasData);
     if(res.first=="!success!"){
       psd.recoveryOperationNames.push("enrollment");
       psd.recoveryOperationCommands.push(BMD::recoveryTextWithCustomData(_couasId,res.second,"modifyCourseAssignment"));
     }
-
     return res.first;
   }
 }
