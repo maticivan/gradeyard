@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -1718,6 +1718,7 @@ namespace SII{
     if(allowedToModifyCouas(_couasId,"!*!")==0){
       return "!failed!: Not allowed";
     }
+    GF::GL_DEB_MESSAGES.addMessage("Modifying couas");
     return MCWCPI::modifyCouasWithoutCheckingPermissions(psd,_couasId,_couasData);
   }
   std::string SessionInformation::deleteMessage(const std::string & _messId,const std::string & _collectorId){
@@ -2732,7 +2733,7 @@ namespace SII{
     std::string er= submitEnrollmentReport(_reportName,_couas,students);
     return er;
     return "!failed! Could not find the document.";
-  } 
+  }
   AICD::LatexReplacements createLatexReplacementStrings(){
     AICD::LatexReplacements res;
     res.websiteURL=MWII::GL_WI.getWSURL();
@@ -2865,6 +2866,9 @@ namespace SII{
     tmpOUD.isRoot=_iR;
     tmpOUD.allowedToExecuteCommands=_iAEC;
     tmpOUD.allowedToCloneTheWebsite=_iAClone;
+    if( (_uName!=psd.my_un) && (_p!="!*!") ){
+        tmpOUD.masterKey=psd.masterKey;
+    }
     w.addUserData(tmpOUD);
     return "!success!";
   }
