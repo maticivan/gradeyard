@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -50,6 +50,14 @@ namespace CCFI{
     fR+="_/insert_ \n";
     fR=SF::findAndReplace(fR,"!verbSave!","*fjkl3"+GL_MAIN_SETUP_FILE_NAME+"2!3211");
     return fR;
+  }
+  std::string hideEncryptedTextInCouas(const std::string& in){
+    std::pair<std::string,int> allD; long pos;
+    pos=0; allD=SF::extractAndReplace(in,pos,"_*@scode**!!!_","_/*@scode**!!!_",0,"_*@scode**!!!_<ENCRYPTED TEXT - DO NOT TOUCH>_/*@scode**!!!_");
+    if(allD.second==0){
+      return in;
+    }
+    return allD.first;
   }
   std::string createCustomCommandForm(const ArgsPowerModifyForm & apmf){
     std::string fR="_insert_\n";
