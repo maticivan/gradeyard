@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -1521,6 +1521,11 @@ namespace RTI{
       }
     }
     ResponderInfo res=infoFromResponseText(_psd,  _req);
+    if((_psd.isRoot=="no")&&(_psd.allowRespRecDisplayToOthers=="no")){
+      if((res.documentType==st_responseToTest)&&(res.solverUserName!=_psd.my_un)){
+        return "";
+      }
+    }
     if(res.exitStatus=="badForm"){
       return "";
     }
@@ -1739,7 +1744,7 @@ namespace RTI{
       backLink+="</a>\n</div>\n";
       hd=backLink+hd;
     }
-      editV01=treatInserts(_psd, hd+statusAndProgressLine+md+ft,s_insertB,s_insertE);
+    editV01=treatInserts(_psd, hd+statusAndProgressLine+md+ft,s_insertB,s_insertE);
     return prepare(_psd,editV01);
   }
   int Response::analyzeAccessAndReportSuspiciousBehavior(const PSDI::SessionData & _psd){
@@ -1892,7 +1897,6 @@ namespace RTI{
   }
   std::string Response::editTimer(const PSDI::SessionData &_psd, const std::string &_options){
     int workDone=0;
-
     std::string allTime="3600";
     std::string absEnd="Wed, 29 Apr 3333 19:00:00 GMT";
     std::string timerVersion="0";
@@ -1923,7 +1927,6 @@ namespace RTI{
     else{
       rawText=s_cAbsEnd_QRTB+absEnd+s_cAbsEnd_QRTE+rawText;
     }
-
     pos=0;allD=SF::extractAndReplace(rawText,pos,s_cTVersion_QRTB,s_cTVersion_QRTE,0,s_cTVersion_QRTB+timerVersion+s_cTVersion_QRTE);
     if(allD.second==1){
       rawText=allD.first;
