@@ -51,6 +51,9 @@ _maxTitleLength_50_/maxTitleLength_
 _codeWordForAutoGenTitle__*AGT*__/codeWordForAutoGenTitle_
 _maxDescLength_1000_/maxDescLength_
 _codeWordForAutoGenDesc__*AGD*__/codeWordForAutoGenDesc_
+_allowRespRecToOthers_yes_/allowRespRecToOthers_
+
+
 _defaultTexts!*_
 _vVPair__vr_Click on the button below when you are ready._/vr__vl_
 <p></p><h2>Timed Exam</h2>
@@ -158,6 +161,46 @@ _vl_
 </div>
 _/vl_
 _/vVPair_
+
+_vVPair__vr_\noindent{\bf Problem} _/vr_
+_vl_
+\begin{tcolorbox}[ 
+                  boxsep=1pt,
+                  left=5pt,
+                  right=5pt,
+                  top=2pt,
+                  arc=1pt,
+                  boxrule=1pt,toprule=1pt,
+                  colback=white
+                  ]
+\noindent{\bf Problem} _/vl_
+_/vVPair_
+_vVPair__vr_%%endProblem_/vr_
+_vl_
+\end{tcolorbox}
+_/vl_
+_/vVPair_
+_vVPair__vr_\noindent{\bf Solution.} _/vr_
+_vl_
+%% Solution begin
+\noindent{\bf Solution.} _/vl_
+_/vVPair_
+_vVPair__vr_%%endSolution_/vr_
+_vl_ \hfill $\Box$ 
+_/vl_
+_/vVPair_
+_vVPair__vr_\begin{box}_/vr_
+_vl_
+\begin{tcolorbox}
+_/vl_
+_/vVPair_
+
+_vVPair__vr_\end{box}_/vr_
+_vl_
+\end{tcolorbox}
+_/vl_
+_/vVPair_
+
 _/defaultTexts!*_
 
 _defaultWebsiteName_https://gradeyard.com_/defaultWebsiteName_ 
@@ -550,6 +593,12 @@ _insert_
 _n*_buttonLink_/n*_
 _n*_Backup with Range_/n*_
 _n*_?page=backupRangeCommand_/n*_
+_/insert_  
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Backup to Latex_/n*_
+_n*_?page=backupLatexCommand_/n*_
 _/insert_  
 
 
@@ -12045,4 +12094,106 @@ _/n*!!***!_
 _/nextCommand!*!!_  
 
 
+
+
+_nextCommand!*!!_ 
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000119_/n*!!***!_
+_n*!!***!_backupLatexCommand_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_contentAdministrator_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+_textData!!_
+ 
+ 
+_insert_
+_n*_text_/n*_
+_n*_inclCommands_/n*_
+_/insert_
+
+ <H3>Command: Backup to Latex</H3>
+
+_insert_
+_n*_formInitialization_/n*_
+_n*_reqCommand_/n*_
+_n*_index.cgi?comEx=yes_/n*_
+_/insert_
+
+
+_insert_
+_n*_textAreaField_/n*_
+_n*_reqCommand_/n*_
+_n*_commands_/n*_ 
+_n*_The command is pre-filled with some parameters. You should list the range of the id numbers of texts that you want to backup.   _/n*_
+_n*_DO NOT EDIT THIS LINE     -----> _command_
+DO NOT EDIT THIS LINE     -----> _nc***_backup_/nc***_
+DO NOT EDIT THIS LINE     -----> _nc***_Texts_/nc***_
+EDIT AFTER THE SYMBOL -----> _nc***_  
+_n*!_toLatex_/n*!_
+_n*!_
+_lStart*!_ 
+ 
+\documentclass[twoside]{book}
+\newcommand\DS{\displaystyle}
+\newcommand\TS{\textstyle}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{times}
+\usepackage{mathptmx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{tcolorbox}
+\newcommand{\vect}[1]{\mathbf{#1}}
+%%%%%%%%%%%%
+\topmargin -1in \oddsidemargin -15.5mm \evensidemargin -15.5mm
+\textwidth 19.2cm \textheight 23.5cm 
+
+
+
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{problem}{Problem}[chapter]
+\newtheorem{solution}{Solution}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+
+_/lStart*!_
+_n*!_text01_/n*!_
+_n*!_text02_/n*!_
+_n*!_text03_/n*!_
+_/n*!_ 
+_/nc***_ <-----  STOP EDITING AFTER THIS SYMBOL
+DO NOT EDIT THIS LINE     -----> _/command__/n*_
+_/insert_
+_insert_
+_n*_formPlacement_/n*_
+_n*_reqCommand_/n*_
+_/insert_ 
+
+
+_/textData!!_
+
+_/n*!!***!_
+_/nextCommand!*!!_  
 
