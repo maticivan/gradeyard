@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -48,6 +48,7 @@ namespace PSDI{
     std::string createStandardCourseMainDocName;
     std::string createStandardCourseSuccess;
     std::string queryAnswerPlaceHolder;
+    std::string allowRespRecDisplayToOthers;
     std::map<std::string,std::string> respMap;
     std::map<std::string,std::string> encryptionMap;
     std::stack<std::string> recoveryOperationCommands;
