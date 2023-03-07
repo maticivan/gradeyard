@@ -526,6 +526,7 @@ namespace SII{
       fastUpdatingStat="yes";
       psd.passwordChangeRequested="no";
       psd.passwordChangeStatus="";
+      psd.allowRespRecDisplayToOthers="no";
       CAGI::GL_Obf.uniqueRandomCode=RNDF::genRandCode(5);
       CAGI::GL_Obf.secretOpenTag="Bb"+CAGI::GL_Obf.uniqueRandomCode+"e";
       CAGI::GL_Obf.secretCloseTag="Eb"+CAGI::GL_Obf.uniqueRandomCode+"e";
@@ -607,7 +608,7 @@ namespace SII{
         psd.masterKey=(psd.myWU).getMasterKeyFromRAM("sigmaM");
       }
       GF::GL_DEB_MESSAGES.addMessage("The current cookie is |"+currentCookie+"|\n");
-       TMD::MText m;
+      TMD::MText m;
       int s=m.setFromTextName("mainTextInitializer");
       if(s==1){
         std::string initText=m.getTextData();
@@ -673,6 +674,10 @@ namespace SII{
         pos=0; allD=SF::extract(initText,pos,"_codeWordForAutoGenDesc_","_/codeWordForAutoGenDesc_");
         if(allD.second==1){
           HTII::GL_title.codewordThatDescGenerationIsNeeded=allD.first;
+        }
+        pos=0; allD=SF::extract(initText,pos,"_allowRespRecToOthers_","_/allowRespRecToOthers_");
+        if(allD.second==1){
+          psd.allowRespRecDisplayToOthers=allD.first;
         }
         pos=0; allD=SF::extract(initText,pos,"_sNotAllowed_","_/sNotAllowed_");
         if(allD.second==1){
@@ -1717,7 +1722,7 @@ namespace SII{
     //WARNING: not implemented properly yet: permission checking is too restrictive
     if(allowedToModifyCouas(_couasId,"!*!")==0){
       return "!failed!: Not allowed";
-    } 
+    }
     return MCWCPI::modifyCouasWithoutCheckingPermissions(psd,_couasId,_couasData);
   }
   std::string SessionInformation::deleteMessage(const std::string & _messId,const std::string & _collectorId){
