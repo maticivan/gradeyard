@@ -37,6 +37,8 @@
 #include "PASF_patternAnalysisStrings.cpp"
 #include "DERF_derangements.cpp"
 #include "SVGF_svgManipulation.cpp"
+#include "ASMRIF_asmReadInstructions.cpp"
+#include "ASMCF_asmCompiler.cpp"
 
 namespace SAIOF{
   int match(const std::string & st1, const std::string & st2,  long direction=1){
