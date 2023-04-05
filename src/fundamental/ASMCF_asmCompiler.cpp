@@ -24,16 +24,22 @@ namespace ASMCF{
   struct ASMRules{
   public:
     std::string labelPrefix;
+    std::string lr_labelPrefix;
     std::string asmObjectName;
     std::string pointerPrefix;
+    std::string linkRegisterName;
+    std::string returnStatement;
     std::string sepB;
     std::string sepE;
+    std::string branchAndLink;
+    char branchingChar;
     std::map<std::string,std::string> branchingMap;
     std::map<std::string,std::string> simpleInstructionsMap;
   };
   ASMRules stringToRules(const std::string& in){
     ASMRules res;
     res.labelPrefix="l"+RNDF::genRandCode(5);
+    res.lr_labelPrefix="lrp"+RNDF::genRandCode(5);
     std::pair<std::string,int> allD; long pos;
     pos=0;allD=SF::extract(in,pos,"_branchingMap_","_/branchingMap_");
     SF::varValPairs(allD.first,"_vVPair_", "_/vVPair_","_vr_","_/vr_","_vl_","_/vl_",res.branchingMap);
@@ -51,17 +57,68 @@ namespace ASMCF{
     res.sepE="_/asm_";
     pos=0;allD=SF::extract(in,pos,"_asmSeparatorE_","_/asmSeparatorE_");
     if(allD.second){res.sepE=allD.first;}
+    res.linkRegisterName="lr";
+    pos=0;allD=SF::extract(in,pos,"_linkRegisterName_","_/linkRegisterName_");
+    if(allD.second){res.linkRegisterName=allD.first;}
+    res.returnStatement="ret";
+    pos=0;allD=SF::extract(in,pos,"_returnStatement_","_/returnStatement_");
+    if(allD.second){res.returnStatement=allD.first;}
+    res.branchingChar='b';
+    res.branchAndLink="bl";
+    pos=0;allD=SF::extract(in,pos,"_branchAndLink_","_/branchAndLink_");
+    if(allD.second){
+      res.branchAndLink=allD.first;
+      res.branchingChar=(allD.first)[0];
+    }
     return res;
   }
-  std::string branchingToCPP(const ASMRIF::Arm64Instruction& asmInst, const ASMRules& rules){
+
+  struct ErrorAndLRManager{
+  public:
+    long nextNumberToBeUsed;
+    std::string codeForRet;
+    std::string errorMessages;
+    ErrorAndLRManager();
+    std::string makeLabelAndAdvanceTheNumber(const ASMRules&);
+  };
+  ErrorAndLRManager::ErrorAndLRManager(){
+    nextNumberToBeUsed=5+RNDF::randNum(50);
+  }
+  std::string ErrorAndLRManager::makeLabelAndAdvanceTheNumber(const ASMRules& rls){
+    std::string label=rls.lr_labelPrefix+std::to_string(nextNumberToBeUsed);
+    codeForRet+="if(*(";
+    codeForRet+=rls.asmObjectName+".";
+    codeForRet+=rls.pointerPrefix;
+    codeForRet+=rls.linkRegisterName;
+    codeForRet+=")==";
+    codeForRet+=std::to_string(nextNumberToBeUsed);
+    codeForRet+="){goto "+label+";}\n";
+    nextNumberToBeUsed+=5+RNDF::randNum(50);
+    return label;
+  }
+  std::string labelForRetStart(const ASMRules& rls){
+    return rls.lr_labelPrefix+"StartOfRet";
+  }
+  std::string branchingToCPP(const ASMRIF::Arm64Instruction& asmInst, const ASMRules& rules, ErrorAndLRManager& lman){
     std::string label=rules.labelPrefix+asmInst.arg1.argName;
-    if(asmInst.name=="b"){
+    std::string branchInst;
+    branchInst+=rules.branchingChar;
+    if(asmInst.name==branchInst){
       return "goto "+label+";";
+    }
+    if(asmInst.name==rules.branchAndLink){
+      std::string blInstructions;
+      blInstructions+="*("+rules.asmObjectName+"."+rules.pointerPrefix+rules.linkRegisterName+")="+std::to_string(lman.nextNumberToBeUsed)+";\n";
+      blInstructions+="goto "+label+";\n";
+      blInstructions+=lman.makeLabelAndAdvanceTheNumber(rules)+":";
+      return blInstructions;
     }
     std::map<std::string,std::string>::const_iterator it;
     it=rules.branchingMap.find(asmInst.name);
     if(it==rules.branchingMap.end()){
-      return "Error: Branching instruction "+asmInst.name+" not supported.";
+      std::string eMess="Error: \'"+asmInst.name+"\' not supported.";
+      lman.errorMessages+=eMess+"\\n";
+      return eMess;
     }
     return it->second+"{goto "+label+";}";
   }
@@ -108,26 +165,47 @@ namespace ASMCF{
     out=addOneArgument(asmInst,out,"_*arg4*_",asmInst.arg4, rules);
     return out;
   }
-  std::string asmToCPP(const ASMRIF::Arm64Instruction& asmInst, const ASMRules& rules){
+  std::string asmToCPP(const ASMRIF::Arm64Instruction& asmInst, const ASMRules& rules, ErrorAndLRManager& lman){
     if(asmInst.name=="label"){
       return rules.labelPrefix+asmInst.arg1.argName+":";
     }
-    if(asmInst.name[0]=='b'){
-      return branchingToCPP(asmInst,rules);
+    if(asmInst.name==rules.returnStatement){
+      return "goto "+labelForRetStart(rules)+";";
+    }
+    if(asmInst.name[0]==rules.branchingChar){
+      return branchingToCPP(asmInst,rules,lman);
     }
     std::string attemptInst=simpleInstructionToCPP(asmInst,rules);
     if(attemptInst!=""){
       return addArguments(asmInst,attemptInst,rules);
     }
-    return "Error: Instruction "+asmInst.name+" not supported.";
+    std::string eMess="Error: \'"+asmInst.name+"\' not supported.";
+    lman.errorMessages+=eMess+"\\n";
+    return eMess;
+  }
+  std::string blAfterProcessing(const std::string& code, const ASMRules& rules, const ErrorAndLRManager& lman){
+    if(lman.codeForRet==""){return code;}
+    std::string pref;
+    pref+="goto "+rules.lr_labelPrefix+"AfterRet;\n";
+    pref+=labelForRetStart(rules)+":\n";
+    pref+=lman.codeForRet;
+    pref+="std::cout<<\"Error: Link Register violation\\n\";";
+    pref+="goto "+rules.lr_labelPrefix+"AfterASMCode;\n";
+    pref+=rules.lr_labelPrefix+"AfterRet:\n";
+    std::string suffix=rules.lr_labelPrefix+"AfterASMCode:\n";
+    return pref+code+suffix;
   }
   std::string asmToCPP(const std::vector<ASMRIF::Arm64Instruction>& asmInst, const ASMRules& rules){
     std::string res;
+    ErrorAndLRManager lman;
     long sz=asmInst.size();
     for(long i=0;i<sz;++i){
-      res+=asmToCPP(asmInst[i],rules)+"\n";
+      res+=asmToCPP(asmInst[i],rules,lman)+"\n";
     }
-    return res;
+    if(lman.errorMessages!=""){
+      return "std::cout<<\""+lman.errorMessages+"\\n\";";
+    }
+    return blAfterProcessing(res,rules,lman);
   }
   std::string createCPPCode(const std::string& input, const ASMRules& rules){
     std::string out=input;
@@ -147,6 +225,6 @@ namespace ASMCF{
   std::string assemblerComponentToCPP(const std::string &src, const std::string& stRules){
     ASMRules ar=stringToRules(stRules);
     return createCPPCode(src,ar);
-  } 
+  }
 }
 #endif
