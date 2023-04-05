@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -68,6 +68,11 @@ namespace CAGI{
     pos=0;allD=SF::extract(agParameters,pos,"_compilerErrorMessage_","_/compilerErrorMessage_");
     if(allD.second==1){
       cInfo.messageDidNotCompile=allD.first;
+    }
+    cInfo.asmRules="";
+    pos=0;allD=SF::extract(agParameters,pos,"_asmRules_","_/asmRules_");
+    if(allD.second==1){
+      cInfo.asmRules=lastCode(TMD::rawTextData(allD.first));    
     }
     cInfo.compilerFlags="-std=c++11";
     pos=0;allD=SF::extract(agParameters,pos,"_compilerFlags_","_/compilerFlags_");
@@ -167,6 +172,10 @@ namespace CAGI{
     if(cInfo.codeToEmbed!=testEmbed){
       cInfo.officialSource=SF::findAndReplace(cInfo.codeToEmbed,"_*embedHere*_",cInfo.officialSource);
       cInfo.userSource=SF::findAndReplace(cInfo.codeToEmbed,"_*embedHere*_",cInfo.userSource);
+      if(cInfo.asmRules!=""){
+        cInfo.officialSource=ASMCF::assemblerComponentToCPP(cInfo.officialSource,cInfo.asmRules);
+        cInfo.userSource=ASMCF::assemblerComponentToCPP(cInfo.userSource,cInfo.asmRules);
+      }
     }
     return cInfo;
   }
@@ -269,6 +278,7 @@ namespace CAGI{
     std::vector<std::string> sources;
     std::vector<std::string> languages;
     std::vector<std::string> mDidNotCompile;
+    //std::vector<std::string> aRules;
     std::vector<std::string> cFlags;
     std::vector<std::vector<std::string> >includes,dbIncludes;
     std::vector<std::vector<std::string> >inputTestCases;
@@ -279,6 +289,7 @@ namespace CAGI{
     sources.resize(twoNC);
     languages.resize(twoNC);
     mDidNotCompile.resize(twoNC);
+    //aRules.resize(twoNC);
     cFlags.resize(twoNC);
     includes.resize(twoNC);
     dbIncludes.resize(twoNC);
@@ -305,6 +316,7 @@ namespace CAGI{
         scores[i]=(it->second).pointsTestCases;
       }
       mDidNotCompile[i]=(it->second).messageDidNotCompile;
+      //aRules[i]=(it->second).asmRules;
       cFlags[i]=(it->second).compilerFlags;
       labels[i]=it->first;
       ++i;
@@ -323,6 +335,7 @@ namespace CAGI{
         scores[i]=(it->second).pointsTestCases;
       }
       mDidNotCompile[i]=(it->second).messageDidNotCompile;
+      //aRules[i]=(it->second).asmRules;
       cFlags[i]=(it->second).compilerFlags;
       labels[i]=it->first;
       ++i;
