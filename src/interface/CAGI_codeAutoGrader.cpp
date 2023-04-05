@@ -72,7 +72,7 @@ namespace CAGI{
     cInfo.asmRules="";
     pos=0;allD=SF::extract(agParameters,pos,"_asmRules_","_/asmRules_");
     if(allD.second==1){
-      cInfo.asmRules=lastCode(TMD::rawTextData(allD.first));    
+      cInfo.asmRules=lastCode(TMD::rawTextData(allD.first));
     }
     cInfo.compilerFlags="-std=c++11";
     pos=0;allD=SF::extract(agParameters,pos,"_compilerFlags_","_/compilerFlags_");
@@ -278,7 +278,6 @@ namespace CAGI{
     std::vector<std::string> sources;
     std::vector<std::string> languages;
     std::vector<std::string> mDidNotCompile;
-    //std::vector<std::string> aRules;
     std::vector<std::string> cFlags;
     std::vector<std::vector<std::string> >includes,dbIncludes;
     std::vector<std::vector<std::string> >inputTestCases;
@@ -289,7 +288,6 @@ namespace CAGI{
     sources.resize(twoNC);
     languages.resize(twoNC);
     mDidNotCompile.resize(twoNC);
-    //aRules.resize(twoNC);
     cFlags.resize(twoNC);
     includes.resize(twoNC);
     dbIncludes.resize(twoNC);
@@ -316,7 +314,6 @@ namespace CAGI{
         scores[i]=(it->second).pointsTestCases;
       }
       mDidNotCompile[i]=(it->second).messageDidNotCompile;
-      //aRules[i]=(it->second).asmRules;
       cFlags[i]=(it->second).compilerFlags;
       labels[i]=it->first;
       ++i;
@@ -335,7 +332,6 @@ namespace CAGI{
         scores[i]=(it->second).pointsTestCases;
       }
       mDidNotCompile[i]=(it->second).messageDidNotCompile;
-      //aRules[i]=(it->second).asmRules;
       cFlags[i]=(it->second).compilerFlags;
       labels[i]=it->first;
       ++i;
