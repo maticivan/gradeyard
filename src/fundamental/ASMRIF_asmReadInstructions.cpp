@@ -96,7 +96,6 @@ namespace ASMRIF{
     if(y==""){return 1;}
     return 0;
   }
-
   std::string getNextDeref(const std::string& st, long& pos){
     std::string res;
     long sz=st.length();
@@ -375,11 +374,8 @@ namespace ASMRIF{
         expandInstructionStack(instStack,instLines[i]);
       }
     }
-
     return SF::stackToVector(instStack);
   }
-
-
   std::string transformProgram(const std::string& in){
     std::string out=in;
     std::pair<std::string,int> allD; long pos;
