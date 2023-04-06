@@ -2395,6 +2395,39 @@ namespace SII{
     }
     return "notFound";
   }
+  std::map<std::string,std::string> SessionInformation::mapNamesRawTexts(const std::set<std::string>& s){
+    std::map<std::string,std::string> m;
+    std::set<std::string>::const_iterator it,itE;
+    itE=s.end();
+    it=s.begin();
+    while(it!=itE){
+      TMD::MText dbText;
+      int exists=dbText.setFromTextName(*it);
+      if(exists){
+        long pos; std::pair<std::string,int> allD;
+        pos=0;allD=SF::extract(dbText.getTextData(),pos,s_tDataB,s_tDataE);
+        if(allD.second){
+          m[*it]=allD.first;
+        }
+      }
+      ++it;
+    }
+    return m;
+  }
+  std::string SessionInformation::getOfflineAutograderData(const std::string& raw){
+    std::string rawAGData=SF::vectorToString(SF::stringToVector(raw,"_agr*|_","_/agr*|_") ,"","");
+    std::string rawDBIncl=SF::vectorToString(SF::stringToVector(rawAGData,"_dbIncludes_","_/dbIncludes_"),"","");
+    std::set<std::string> dbIncludes=SF::vectorToSet(SF::stringToVector(rawDBIncl,"_n*_","_/n*_"));
+    std::set<std::string> asmRules=SF::vectorToSet(SF::stringToVector(rawAGData,"_asmRules_","_/asmRules_"));
+    std::map<std::string,std::string> m_dbIncl=mapNamesRawTexts(dbIncludes);
+    std::map<std::string,std::string> m_asmRl=mapNamesRawTexts(asmRules);
+    std::string textResult="_offlineData*|_\n_offDBIncludes*|_\n";
+    textResult+=SF::mapToString(m_dbIncl,"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_");
+    textResult+="\n_/offDBIncludes*|_\n\n_offASMRules*|_";
+    textResult+=SF::mapToString(m_asmRl,"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_");
+    textResult+="\n_/offASMRules*|_\n\n_/offlineData*|_\n\n";
+    return textResult;
+  }
   std::string SessionInformation::createExamBackupText(const std::string & _eName, const std::string & _commandsAndOptions){
     if(allowedToCreateRespRec()==0){
       return "!failed!: Not allowed";
@@ -2422,6 +2455,7 @@ namespace SII{
     if(allD.second==1){
       masterRRAction=allD.first;
     }
+    std::string offlineAGData=getOfflineAutograderData(rawTextRespRec);
     pos=0;allD=SF::extract(rawTextRespRec,pos,s_tDataB,s_tDataE);
     if(allD.second==1){
       std::vector<std::vector<std::string> > allStudentFileNames=SF::stringToMatrix(allD.first,"_st*|_","_/st*|_","_n*|_","_/n*|_");
@@ -2433,7 +2467,7 @@ namespace SII{
         }
       }
     }
-    psd.respRecBackupText = createRRBackup(_eName,masterRRAction)+psd.respRecBackupText;
+    psd.respRecBackupText =offlineAGData+ createRRBackup(_eName,masterRRAction)+psd.respRecBackupText;
     return "!success!: "+respRecRequested;
   }
   std::string SessionInformation::distributeExamToStudents(const std::string & _examTemplateName, const std::string & _distributionText){
