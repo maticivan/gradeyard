@@ -43,8 +43,28 @@ namespace CAGI{
     }
     return src;
   }
+  OfflineAutograderData oagDataFromString(const std::string& data){
+    OfflineAutograderData res;
+    res.isEmpty=1;
+    std::pair<std::string,int> allD; long pos;
+    pos=0;allD=SF::extract(data,pos,"_offlineData*|_","_/offlineData*|_");
+    if(allD.second==0){return res;}
+    std::string rawD=allD.first;
+    pos=0;allD=SF::extract(rawD,pos,"_offDBIncludes*|_","_/offDBIncludes*|_");
+    if(allD.second){
+      res.isEmpty=0;
+      SF::varValPairs(allD.first,"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_",res.dbIncludes);
+    }
+    pos=0;allD=SF::extract(rawD,pos,"_offASMRules*|_","_/offASMRules*|_");
+    if(allD.second){
+      res.isEmpty=0;
+      SF::varValPairs(allD.first,"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_",res.asmRules);
+    }
+    return res;
+  }
   RTI::CodeAutoGraderInfo getAutoGraderCodeData(const std::string &agParameters, const std::string & offSolution, const std::string & userSolution, const std::string & maxPoints){
     RTI::CodeAutoGraderInfo cInfo;
+    OfflineAutograderData offlineAGData=oagDataFromString(agParameters);
     cInfo.officialSource=lastCode(offSolution);
     cInfo.userSource=lastCode(userSolution);
     std::pair<std::string,int> allD; long pos;
@@ -72,7 +92,15 @@ namespace CAGI{
     cInfo.asmRules="";
     pos=0;allD=SF::extract(agParameters,pos,"_asmRules_","_/asmRules_");
     if(allD.second==1){
-      cInfo.asmRules=lastCode(TMD::rawTextData(allD.first));
+      if(offlineAGData.isEmpty){
+        cInfo.asmRules=lastCode(TMD::rawTextData(allD.first));
+      }
+      else{
+        std::map<std::string,std::string>::const_iterator it=offlineAGData.asmRules.find(allD.first);
+        if(it!=offlineAGData.asmRules.end()){
+          cInfo.asmRules=lastCode(it->second);
+        } 
+      }
     }
     cInfo.compilerFlags="-std=c++11";
     pos=0;allD=SF::extract(agParameters,pos,"_compilerFlags_","_/compilerFlags_");
@@ -99,8 +127,23 @@ namespace CAGI{
     if(allD.second==1){
       cInfo.dbIncludes=SF::stringToVector(allD.first,"_n*_","_/n*_");
       long dbinsz=cInfo.dbIncludes.size();
-      for(long i=0;i<dbinsz;++i){
-        cInfo.dbIncludes[i]=lastCode(TMD::rawTextData(cInfo.dbIncludes[i]));
+      if(offlineAGData.isEmpty){
+        for(long i=0;i<dbinsz;++i){
+          cInfo.dbIncludes[i]=lastCode(TMD::rawTextData(cInfo.dbIncludes[i]));
+        }
+      }
+      else{
+        std::map<std::string,std::string>::const_iterator it,itE;
+        itE=offlineAGData.dbIncludes.end();
+        for(long i=0;i<dbinsz;++i){
+          it=offlineAGData.dbIncludes.find(cInfo.dbIncludes[i]);
+          if(it==itE){
+            cInfo.dbIncludes[i]="";
+          }
+          else{
+            cInfo.dbIncludes[i]=lastCode(it->second);
+          }
+        }
       }
     }
     cInfo.forbiddenStrs.resize(0);
