@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -1012,7 +1012,7 @@ namespace SF{
     std::string interior=allD.first;
     source=findAndReplace(source,openT+interior+closeT,"");
     return interior;
-  } 
+  }
   std::set<std::string> stringToSet(const std::string & everything, const std::string & sepKeyB,const std::string & sepKeyE){
     std::set<std::string> fR;
     std::vector<std::string> keys=stringToVector(everything,sepKeyB,sepKeyE);
@@ -1044,14 +1044,17 @@ namespace SF{
     }
     return fR;
   }
-  std::string mapToString(const std::map<std::string,std::string> & m, const std::string & sepKeyB,const std::string & sepKeyE,const std::string & sepValB,const std::string & sepValE,const std::string &formattingSeparator=""){
+  std::string mapToString(const std::map<std::string,std::string> & m,const std::string &beginSeparator,const std::string &endSeparator, const std::string & sepKeyB,const std::string & sepKeyE,const std::string & sepValB,const std::string & sepValE){
     std::string fR="";
     std::map<std::string,std::string>::const_iterator it=m.begin(),itE=m.end();
     while(it!=itE){
-      fR+=sepKeyB+(it->first)+sepKeyE+sepValB+(it->second)+sepValE+formattingSeparator;
+      fR+=beginSeparator+sepKeyB+(it->first)+sepKeyE+sepValB+(it->second)+sepValE+endSeparator;
       ++it;
     }
     return fR;
+  }
+  std::string mapToString(const std::map<std::string,std::string> & m, const std::string & sepKeyB,const std::string & sepKeyE,const std::string & sepValB,const std::string & sepValE,const std::string &formattingSeparator = ""){
+    return mapToString(m,"",formattingSeparator,sepKeyB,sepKeyE,sepValB,sepValE);
   }
   std::string updateVarsWithVals(const std::string & input, const std::map<std::string,std::string> & sr, const std::string & sB, const std::string &sE){
     std::string output=input;
