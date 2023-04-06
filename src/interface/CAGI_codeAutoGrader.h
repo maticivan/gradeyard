@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -26,6 +26,12 @@ namespace CAGI{
     std::string sequencesNotAllowedExplanation;
     std::string wordNotAllowed;
   } GL_Obf;
+  struct OfflineAutograderData{
+  public:
+    std::map<std::string,std::string> dbIncludes;
+    std::map<std::string,std::string> asmRules;
+    int isEmpty;
+  };
   struct GROneTestCase{
   public:
     std::string result, input, output, correct;
