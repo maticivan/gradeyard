@@ -212,6 +212,8 @@ namespace SII{
     std::string updateExamDocument(const std::string &,const std::string &,const std::string &);
     std::string createRRBackup(const std::string& , const std::string & ) const;
     SPREPF::StatData prepareStatData() const;
+    std::map<std::string,std::string> mapNamesRawTexts(const std::set<std::string>& );
+    std::string getOfflineAutograderData(const std::string& );
     TMF::Timer timeToGenerateWebsite;
   public:
     SessionInformation();
