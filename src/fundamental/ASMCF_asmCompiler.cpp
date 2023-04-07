@@ -33,6 +33,8 @@ namespace ASMCF{
     std::string sepE;
     std::string branchAndLink;
     char branchingChar;
+    char singlePrecisionFloatReg;
+    char singlePrecisionIntReg;
     std::map<std::string,std::string> branchingMap;
     std::map<std::string,std::string> simpleInstructionsMap;
   };
@@ -70,9 +72,18 @@ namespace ASMCF{
       res.branchAndLink=allD.first;
       res.branchingChar=(allD.first)[0];
     }
+    res.singlePrecisionIntReg='w';
+    res.singlePrecisionFloatReg='s';
+    pos=0;allD=SF::extract(in,pos,"_singlePrecisionFloat_","_/singlePrecisionFloat_");
+    if(allD.second){
+      res.singlePrecisionFloatReg=(allD.first)[0];
+    }
+    pos=0;allD=SF::extract(in,pos,"_smallerInt_","_/smallerInt_");
+    if(allD.second){
+      res.singlePrecisionIntReg=(allD.first)[0];
+    }
     return res;
   }
-
   struct ErrorAndLRManager{
   public:
     long nextNumberToBeUsed;
@@ -145,7 +156,7 @@ namespace ASMCF{
       std::string pointerValue="(*("+rules.asmObjectName+"."+rules.pointerPrefix+argRepl.argName+"))";
       pointerValue+=shiftAddition;
       std::string castingType="(long*)";
-      if(argRepl.argName[0]=='w'){
+      if(((argRepl.argName)[0]==rules.singlePrecisionIntReg)||((argRepl.argName)[0]==rules.singlePrecisionFloatReg)){
         castingType="(int*)";
       }
       std::string castedPointer=castingType+"("+pointerValue+")";
