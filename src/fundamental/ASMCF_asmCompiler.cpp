@@ -141,7 +141,7 @@ namespace ASMCF{
     }
     return it->second;
   }
-  std::string addOneArgument(const ASMRIF::Arm64Instruction& asmInst, const std::string &in, const std::string& findName, const ASMRIF::Arm64InstrArg& argRepl, const ASMRules& rules){
+  std::string addOneArgument(const ASMRIF::Arm64Instruction& asmInst, const std::string &in, const std::string& findName, const ASMRIF::Arm64InstrArg& argRepl, const ASMRIF::Arm64InstrArg& prevArg, const ASMRules& rules){
     if(argRepl.derefIndicator){
       std::string replString;
       std::string shiftAddition;
@@ -156,7 +156,7 @@ namespace ASMCF{
       std::string pointerValue="(*("+rules.asmObjectName+"."+rules.pointerPrefix+argRepl.argName+"))";
       pointerValue+=shiftAddition;
       std::string castingType="(long*)";
-      if(((argRepl.argName)[0]==rules.singlePrecisionIntReg)||((argRepl.argName)[0]==rules.singlePrecisionFloatReg)){
+      if(((prevArg.argName)[0]==rules.singlePrecisionIntReg)||((prevArg.argName)[0]==rules.singlePrecisionFloatReg)){
         castingType="(int*)";
       }
       std::string castedPointer=castingType+"("+pointerValue+")";
@@ -170,10 +170,12 @@ namespace ASMCF{
   }
   std::string addArguments(const ASMRIF::Arm64Instruction& asmInst,const std::string &in, const ASMRules& rules){
     std::string out=in;
-    out=addOneArgument(asmInst,out,"_*arg1*_",asmInst.arg1, rules);
-    out=addOneArgument(asmInst,out,"_*arg2*_",asmInst.arg2, rules);
-    out=addOneArgument(asmInst,out,"_*arg3*_",asmInst.arg3, rules);
-    out=addOneArgument(asmInst,out,"_*arg4*_",asmInst.arg4, rules);
+    ASMRIF::Arm64InstrArg placeHolderInsteadOfArg0;
+    placeHolderInsteadOfArg0.argName="^^^NotAnArgument";
+    out=addOneArgument(asmInst,out,"_*arg1*_",asmInst.arg1, placeHolderInsteadOfArg0, rules);
+    out=addOneArgument(asmInst,out,"_*arg2*_",asmInst.arg2, asmInst.arg1, rules);
+    out=addOneArgument(asmInst,out,"_*arg3*_",asmInst.arg3, asmInst.arg2, rules);
+    out=addOneArgument(asmInst,out,"_*arg4*_",asmInst.arg4, asmInst.arg3, rules);
     return out;
   }
   std::string asmToCPP(const ASMRIF::Arm64Instruction& asmInst, const ASMRules& rules, ErrorAndLRManager& lman){
