@@ -99,7 +99,7 @@ namespace CAGI{
         std::map<std::string,std::string>::const_iterator it=offlineAGData.asmRules.find(allD.first);
         if(it!=offlineAGData.asmRules.end()){
           cInfo.asmRules=lastCode(it->second);
-        } 
+        }
       }
     }
     cInfo.compilerFlags="-std=c++11";
@@ -444,7 +444,11 @@ namespace CAGI{
     dbIncludes[0]=cInfo.dbIncludes;
     inputTestCases[0]=cInfo.inputTestCases;
     std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd, sources,languages,cFlags,includes,dbIncludes,inputTestCases);
-    std::string fR="<h4>Code execution on test cases</h4>";
+    std::string fR;
+    fR+="<H2> Code source</H2><P></P> <textarea name=\"probSource\" rows=\"15\"";
+    fR+=" cols=\"100\">";
+    fR+=cInfo.officialSource+"</textarea>\n";
+    fR+="<p></p><h2>Code execution on test cases</h2>";
     if((aGOutput.second==0)||(aGOutput.first.size()!=1)){
       fR+=wrongLengthsOfVectors();
       return fR;
