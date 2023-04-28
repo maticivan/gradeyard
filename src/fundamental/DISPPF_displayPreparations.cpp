@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -236,21 +236,20 @@ namespace DISPPF{
       ws.resize(2);
       ws[0]="1";ws[1]="2";
       dollarsToLatexSymbols(t);
-    }
-    std::string oldT=t;
+    } 
+    std::string tForTesting1=t;
+    tForTesting1=SF::findAndReplace(tForTesting1,"_/comment_"," _/comment_");
+    std::string tForTesting2=tForTesting1;
     long sz=GF::GL_DANGERS.strings.size();
     for(long i=0;i<sz;++i){
-      t=SF::findAndReplace(t,GF::GL_DANGERS.strings[i],"");
+      tForTesting2=SF::findAndReplace(tForTesting2,GF::GL_DANGERS.strings[i],"");
     }
-    if( (oldT!=t) && (rs.exitWithErrorIfUnsafe==1)){
+    if( (tForTesting1!=tForTesting2) && (rs.exitWithErrorIfUnsafe==1)){
       return "unsafeInput";
     }
-    else{
-      t=oldT;
-      sz=GF::GL_DANGERS.veryBadStrings.size();
-      for(long i=0;i<sz;++i){
-        t=SF::findAndReplace(t,GF::GL_DANGERS.veryBadStrings[i],"");
-      }
+    sz=GF::GL_DANGERS.veryBadStrings.size();
+    for(long i=0;i<sz;++i){
+      t=SF::findAndReplace(t,GF::GL_DANGERS.veryBadStrings[i],"");
     }
     PTKF::PlainTextKeeper mth1("m01");
     indicatorSafety=PTKF::removeToSafety(mth1,t,"\\(","\\)");
