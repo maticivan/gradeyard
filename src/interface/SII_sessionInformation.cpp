@@ -2035,22 +2035,23 @@ namespace SII{
         else{
           nextProblem=SF::findAndReplace(nextProblem,"_p*|_"+allD.first+"_/p*|_",allD.first);
         }
-          (fR.possibleVersions)[i]=TWDVF::identifyVersions(nextProblem);
-          pos=0;allD=SF::extract(nextProblem,pos,"_lb*|_","_/lb*|_");
-          if(allD.second==1){
-            (fR.problemLabels)[i]=allD.first;
-          }
-          else{
-            (fR.problemLabels)[i]="Q"+BF::padded(i+1,10,"0");
-            nextProblem += "_lb*|_"+(fR.problemLabels)[i]+"_/lb*|_";
-          }
-          fR.textForRespReceiver+="_in*|_"+nextProblem+"_/in*|_\n";
+        (fR.possibleVersions)[i]=TWDVF::identifyVersions(nextProblem);
+        pos=0;allD=SF::extract(nextProblem,pos,"_lb*|_","_/lb*|_");
+        if(allD.second==1){
+          (fR.problemLabels)[i]=allD.first;
+        }
+        else{
+          (fR.problemLabels)[i]="Q"+BF::padded(i+1,10,"0");
+          nextProblem += "_lb*|_"+(fR.problemLabels)[i]+"_/lb*|_";
+        }
+        fR.textForRespReceiver+="_in*|_"+nextProblem+"_/in*|_\n";
       }
     }
     return fR;
   }
   std::string SessionInformation::enrollExistingStudentsToExam(const ExamAttributes & ea, const std::string & d,const std::string &docName){
     std::string cntrName="examCounter";
+    long studentRandomizer=RNDF::randNum(10000);
     long pos;std::pair<std::string,int> allD;
     long filesToAllowFromStudentEnrollmentDoc=0;
     pos=0;allD=SF::extract(d,pos,"_nf*|_","_/nf*|_");
@@ -2095,6 +2096,7 @@ namespace SII{
     std::vector<std::string> tempStV;
     std::string sep_B,sep_E;
     for(long i=0;i<numStudents;++i){
+      ++studentRandomizer;
       vectStData=SF::stringToVector(vectStudents[i],"_n*|_","_/n*|_");
       szSD=vectStData.size();
       if(szSD<5){
@@ -2150,7 +2152,7 @@ namespace SII{
             sep_B="v"+(ea.problemLabels)[j]+"*|_";
             sep_E="_/"+sep_B;
             sep_B="_"+sep_B;
-            respText+=sep_B+std::to_string((ea.possibleVersions)[j][RNDF::randNum((ea.possibleVersions)[j].size())])+sep_E+"\n";
+            respText+=sep_B+std::to_string((ea.possibleVersions)[j][studentRandomizer % (ea.possibleVersions)[j].size() ])+sep_E+ "\n";
           }
           exResp.setTextData(prepareTextForTextTable(respText,"!noOldData!"));
           exResp.putInDB();
