@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -29,15 +29,43 @@ namespace TWDVF{
     while((b<sz)&&((in[b]==' ')||(in[b]=='\t')||(in[b]=='\n')||(in[b]=='\r'))){
       ++b;
     }
-
     for(long i=b;i<sz;++i){
       output+=in[i];
     }
     return output;
-
-
+  }
+  std::vector<long> identifyPermutationExtension(const std::string& sReplace){
+    std::vector<long> pExtensionL;
+    std::string p_B="_permutationExtension_";
+    std::string p_E="_/permutationExtension_";
+    long pos=0;
+    std::pair<std::string,int> allD=SF::extract(sReplace,pos,p_B,p_E);
+    if(allD.second==0){return pExtensionL;}
+    std::vector<std::string> pExtensionS=SF::stringToVector(allD.first,"_n*_","_/n*_");
+    long eSz=pExtensionS.size();
+    if(eSz<1){return pExtensionL;}
+    pExtensionL.resize(eSz);
+    for(long i=0;i<eSz;++i){
+      pExtensionL[i]=BF::stringToInteger(pExtensionS[i]);
+    }
+    return pExtensionL;
+  }
+  long applyPermutation(const std::string& sReplace, const long& _w){
+    std::vector<long> pExt=identifyPermutationExtension(sReplace);
+    long eSz=pExt.size();
+    if(eSz<1){return _w;}
+    if(_w<0){return 0;}
+    return pExt[_w%eSz];
   }
   std::vector<long> identifyVersions(const std::string & _input){
+    std::vector<long> pExtension=identifyPermutationExtension(_input);
+    long eSz=pExtension.size();
+    if(eSz>0){
+      for(long i=0;i<eSz;++i){
+        pExtension[i]=i;
+      }
+      return pExtension;
+    }
     std::set<long> allVs;
     long pos=0;
     std::pair<std::string,int> allD=SF::extract(_input,pos,"_v*","_");
@@ -121,14 +149,12 @@ namespace TWDVF{
       ++it;
     }
     _o=SF::findAndReplace(_o,searchFor, replaceWith);
-
   }
   std::vector<std::string> getAssignmentVector(const std::string & manyLinesSeparatedBySeparators){
     std::vector<std::string> fR;
     std::string separator="@@";
     std::set<std::string> s;
     std::string input=manyLinesSeparatedBySeparators+separator+GF::GL_HIDING_STRING_TWDVF+separator+GF::GL_HIDING_STRING_TWDVF+separator;
-
     std::string oneLine="";
     long pos;
     std::pair<std::string,int> allD;
@@ -148,7 +174,55 @@ namespace TWDVF{
     }
     return fR;
   }
-  std::string singleVersion(const std::string & _input, const long & _v){
+  std::vector<std::vector<std::string> > getSteganographyMatrix(const std::string& _in){
+    std::vector<std::vector<std::string> > m;
+    std::vector<std::string> raw=SF::stringToVector(_in,"_steg*|_","_/steg*|_");
+    long mSz=raw.size();
+    if(mSz<1){return m;}
+    m.resize(mSz);
+    for(long i=0;i<mSz;++i){
+      m[i]=SF::stringToVector(raw[i],"_n*_","_/n*_");
+    }
+    return m;
+  }
+  std::vector<long> convertToSeqBase(const std::vector<long>& b, long x){
+      std::vector<long> res;
+      long sz=b.size();
+      if(sz<1){return res;}
+      long i=0;
+      res.resize(sz);
+      while(i<sz){
+          res[i]=0;++i;
+      }
+      i=0;
+      while((i<sz)&&(x>0)){
+          res[i]= x % b[i];
+          x/=b[i];
+          ++i;
+      }
+      return res;
+  }
+  std::string applySteganography(const std::string& _in, const long& _w){
+    std::vector<std::vector<std::string> > stegM=getSteganographyMatrix(_in);
+    long len=stegM.size();
+    if(len<1){return _in;}
+    std::vector<long> base;
+    base.resize(len);
+    for(long i=0;i<len;++i){
+      base[i]=stegM[i].size();
+    }
+    std::vector<long> conv=convertToSeqBase(base,_w);
+    std::string out=_in;
+    long pos; std::pair<std::string,int> allD;
+    for(long i=0;i<len;++i){
+      pos=0; allD=SF::extractAndReplace(out,pos,"_steg*|_","_/steg*|_",0,stegM[i][conv[i]]);
+      if(allD.second==1){
+        out=allD.first;
+      }
+    }
+    return out;
+  }
+  std::string singleVersion(const std::string & _input, const long & _w){
     std::string s_B="_searchReplace_";
     std::string s_E="_/searchReplace_";
     std::string s_Bi,s_Ei;
@@ -157,19 +231,17 @@ namespace TWDVF{
     if(allD.second==0){
       return _input;
     }
-    std::string searchReplace=allD.first;
-
+    std::string searchReplace=applySteganography(allD.first,_w);
+    long v=applyPermutation(searchReplace,_w);
     std::vector<std::string> srAllVersions,srMyVersion;
     s_Bi="_v*a_";s_Ei="_/v*a_";
-    srAllVersions=SF::stringToVector(_input,s_Bi,s_Ei);
-    s_Bi="v*"+std::to_string(_v)+"_";s_Ei="_/"+s_Bi;s_Bi="_"+s_Bi;
-    srMyVersion=SF::stringToVector(_input,s_Bi,s_Ei);
-
+    srAllVersions=SF::stringToVector(searchReplace,s_Bi,s_Ei);
+    s_Bi="v*"+std::to_string(v)+"_";s_Ei="_/"+s_Bi;s_Bi="_"+s_Bi;
+    srMyVersion=SF::stringToVector(searchReplace,s_Bi,s_Ei);
     std::map<std::string,std::string> allSearchReplacements;
     long sz,szv;
     std::pair<std::string,std::string> assignment;
     sz=srAllVersions.size();
-
     std::vector<std::string> assignmentVect;
     for(long i=0;i<sz;++i){
       assignmentVect=getAssignmentVector(srAllVersions[i]);
@@ -178,7 +250,6 @@ namespace TWDVF{
         assignment=getSidesOfTheAssignment(assignmentVect[j]);
         allSearchReplacements[assignment.first]=assignment.second;
       }
-
     }
     sz=srMyVersion.size();
     for(long i=0;i<sz;++i){
@@ -188,18 +259,12 @@ namespace TWDVF{
         assignment=getSidesOfTheAssignment(assignmentVect[j]);
         allSearchReplacements[assignment.first]=assignment.second;
       }
-
     }
-
-
     allD=SF::eraseStuffBetween(_input,s_B,s_E);
     std::string output=allD.first;
-
-
     // STEP 1: Formulas that can be evaluated
     std::pair<std::string,std::string> nextVar;
     nextVar.first=".";
-
     while(nextVar.first!="") {
       nextVar=findVarThatEvaluates(allSearchReplacements);
       if(nextVar.first!=""){
@@ -214,16 +279,12 @@ namespace TWDVF{
         performSearchReplace(allSearchReplacements,output,nextVar.first,nextVar.second);
       }
     }
-
-
     return output;
-
   }
   std::string prepareProblemForTest(const std::string & _input, const long & _v){
     std::string output=singleVersion(_input,_v);
     long pos=0;
     std::pair<std::string,int> allD=SF::extract(output,pos,"_rbAll*|_", "_/rbAll*|_" );
-
     if(allD.second==1){
       std::string newStr="_rbAll*|_\n";
       std::vector<std::string> vectCh=SF::stringToVector(allD.first,"_rb*_","_/rb*_");
@@ -237,7 +298,6 @@ namespace TWDVF{
           newStr+=smst[0]+"_/vl*_ _vl*_<B>("+smst[0]+")</B> "+smst[1]+"_/vl*_ ";
           newStr+="_/rb*_\n";
         }
-
       }
       newStr+="_/rbAll*|_";
       pos=0;
