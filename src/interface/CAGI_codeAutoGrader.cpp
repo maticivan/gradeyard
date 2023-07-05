@@ -213,11 +213,17 @@ namespace CAGI{
     }
     std::string testEmbed=SF::findAndReplace(cInfo.codeToEmbed,"_*embedHere*_","");
     if(cInfo.codeToEmbed!=testEmbed){
-      cInfo.officialSource=SF::findAndReplace(cInfo.codeToEmbed,"_*embedHere*_",cInfo.officialSource);
-      cInfo.userSource=SF::findAndReplace(cInfo.codeToEmbed,"_*embedHere*_",cInfo.userSource);
-      if(cInfo.asmRules!=""){
-        cInfo.officialSource=ASMCF::assemblerComponentToCPP(cInfo.officialSource,cInfo.asmRules);
-        cInfo.userSource=ASMCF::assemblerComponentToCPP(cInfo.userSource,cInfo.asmRules);
+      if(cInfo.language=="py"){
+        cInfo.officialSource=PISI::embedPythonCode(cInfo.codeToEmbed,cInfo.officialSource);
+        cInfo.userSource=PISI::embedPythonCode(cInfo.codeToEmbed,cInfo.userSource);
+      }
+      else{
+        cInfo.officialSource=SF::findAndReplace(cInfo.codeToEmbed,"_*embedHere*_",cInfo.officialSource);
+        cInfo.userSource=SF::findAndReplace(cInfo.codeToEmbed,"_*embedHere*_",cInfo.userSource);
+        if(cInfo.asmRules!=""){
+          cInfo.officialSource=ASMCF::assemblerComponentToCPP(cInfo.officialSource,cInfo.asmRules);
+          cInfo.userSource=ASMCF::assemblerComponentToCPP(cInfo.userSource,cInfo.asmRules);
+        }
       }
     }
     return cInfo;
