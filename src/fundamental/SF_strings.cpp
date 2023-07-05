@@ -403,6 +403,15 @@ namespace SF{
       fR.insert(_v[i]);
     }
     return fR;
+  } 
+  std::string reverseString(const std::string& input){
+    std::string result;
+    long i=input.size();
+    while(i>0){
+      --i;
+      result+=input[i];
+    }
+    return result;
   }
   std::string findAndReplace(const std::string &input,
                           const std::string &_searchFor,
@@ -472,7 +481,6 @@ namespace SF{
       replw[0]=_replaceWith;
       return findAndReplace(input,searchFor,replw,all,caseSensitive);
   }
-
   long getFirstPosition(const std::string &input,
                         const long & _pos,
                         const std::string &searchFor,
@@ -1080,7 +1088,7 @@ namespace SF{
     return clearStack(v);
   }
   template<typename TTT>
-  std::vector<TTT> stackToVector(std::stack<TTT> & st){
+  std::vector<TTT> stackToVector(std::stack<TTT> & st){//returns flipped stack as a vector
     std::vector<TTT> fR;
     long sz=st.size();
     if(sz>0){
@@ -1091,6 +1099,26 @@ namespace SF{
       }
     }
     return fR;
+  }
+  std::vector<std::string> getLines(const std::string& input, char lineSeparator='\n'){
+    std::stack<std::string> linesStack;
+    std::string nextLine;
+    long sz=input.length();
+    long i=0;
+    while(i<sz){
+      if(input[i]==lineSeparator){
+        linesStack.push(nextLine);
+        nextLine="";
+      }
+      else{
+        nextLine+=input[i];
+      }
+      ++i;
+    }
+    if(nextLine!=""){
+      linesStack.push(nextLine);
+    }
+    return stackToVector(linesStack);
   }
   std::string incrementString(const std::string & x){
       std::string res=x;
