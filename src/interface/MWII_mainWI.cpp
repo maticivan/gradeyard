@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -57,6 +57,7 @@ namespace MWII{
 #include "CAGI_codeAutoGrader.h"
 #include "EMAI_errorMessageAnalysis.cpp"
 #include "AGRDI_autoGraderResultDisplay.cpp"
+#include "PISI_pythonIndentationSupport.cpp"
 #include "CAGI_codeAutoGrader.cpp"
 #include "APTI_abstractPageText.cpp"
 #include "MPTI_mainPageText.cpp"
