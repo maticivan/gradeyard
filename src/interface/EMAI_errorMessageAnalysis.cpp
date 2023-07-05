@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -19,24 +19,16 @@
 #ifndef _INCL_EMAI_ErrorMessageAnalysis_CPP
 #define _INCL_EMAI_ErrorMessageAnalysis_CPP
 namespace EMAI{
-  std::string reverseString(const std::string& in){
-    std::string out;
-    long ln=in.length();
-    for(long i=0;i<ln;++i){
-      out+=in[ln-i-1];
-    }
-    return out;
-  }
   std::string removeFileNames(const std::string& in, const std::string &extension){
-    std::string inRev=reverseString(in);
-    std::string extRev=reverseString("."+extension);
+    std::string inRev=SF::reverseString(in);
+    std::string extRev=SF::reverseString("."+extension);
     long pos;std::pair<std::string,int> allD;
     pos=0; allD=SF::extractAndReplace(inRev,pos,extRev," ",0,"PPCeliFniam\n");
     while(allD.second==1){
       inRev=allD.first;
       pos=0; allD=SF::extractAndReplace(inRev,pos,extRev," ",0,"PPCeliFniam\n");
     }
-    inRev=reverseString(inRev);
+    inRev=SF::reverseString(inRev);
     inRev=SF::findAndReplace(inRev,"mainFileCPP","mainFile.cpp");
     return inRev;
   }
