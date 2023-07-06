@@ -93,6 +93,9 @@ namespace SII{
       std::string mTextInMainPosition=mainText.displayText(psd,"mainTextPosition");
       std::string titleInterior=SF::getTagInteriorAndRemoveTag(mTextInMainPosition,"_title*_","_/title*_");
       std::string descInterior=SF::getTagInteriorAndRemoveTag(mTextInMainPosition,"_metaDesc*_","_/metaDesc*_");
+      mTextInMainPosition=SF::findAndReplace(mTextInMainPosition,"_*titleVar*_",titleInterior);
+      mTextInMainPosition=SF::findAndReplace(mTextInMainPosition,"_*pageVar*_",psd.pageRequested);
+      mTextInMainPosition=SF::findAndReplace(mTextInMainPosition,"_*pageVar-1*_",(psd.pageRequested).substr(0,(psd.pageRequested).length()-1));  
       if((titleInterior=="")||(descInterior=="")){
         HTII::GL_title.pels=HTII::generatePageElements(mTextInMainPosition);
       }
