@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -24,7 +24,6 @@ namespace AGRDI{
     long colSize;
     std::string compilerErrors;
   } GL_AGParameters;
-
   std::string grResultSummaryTable(const CAGI::GradingResult& rGr){
     long numR=rGr.testCasesRes.size();
     long maxNumResInOneRow=GL_AGParameters.colSize;
@@ -79,6 +78,22 @@ namespace AGRDI{
     res+=MWII::GL_WI.getDefaultWebText("Autograder Itemize End");
     return res;
   }
+  CAGI::GROneTestCase improveTestCaseDisplay(const CAGI::GROneTestCase& in){
+    CAGI::GROneTestCase out=in;
+    std::string displayInput,displayOutputOfficial,displayOutputUser;
+    std::pair<std::string,int> allD; long pos;
+    pos=0; allD=SF::extract(in.correct,pos,"|inD|","|/inD|");
+    if(allD.second==0){return in;}
+    out.input=allD.first;
+    pos=0; allD=SF::extract(in.correct,pos,"|outD|","|/outD|");
+    if(allD.second==0){return in;}
+    out.correct=allD.first;
+    pos=0; allD=SF::extract(in.output,pos,"|outD|","|/outD|");
+    if(allD.second==1){
+      out.output=allD.first;
+    }
+    return out;
+  }
   std::string prepareOneTestCase(const CAGI::GROneTestCase& tc, const long& num){
     std::string resultPrepared=MWII::GL_WI.getDefaultWebText("Autgrader One Test Case");
     resultPrepared=SF::findAndReplace(resultPrepared,"_*IDNUMBER*_",std::to_string(num));
@@ -108,7 +123,7 @@ namespace AGRDI{
     niceRes+=grResultSummaryTable(rGr);
     niceRes+=MWII::GL_WI.getDefaultWebText("Autograder Itemize Begin");
     for(long i=0;i<numR;++i){
-      niceRes+=prepareOneTestCase(rGr.testCasesRes[i],i+1);
+      niceRes+=prepareOneTestCase(improveTestCaseDisplay(rGr.testCasesRes[i]),i+1);
     }
     niceRes+=MWII::GL_WI.getDefaultWebText("Autograder Itemize End");
     return niceRes;
@@ -118,10 +133,6 @@ namespace AGRDI{
     if(GL_AGParameters.compilerErrors!="yes"){
       return officialShortError;
     }
-    if(language=="py"){
-      res=officialShortError;
-      return res;
-    }
     res=errorMessage;
     long pos; std::pair<std::string,int> allD;
     pos=0;allD=SF::extract(errorMessage,pos,"_eTxt*|_","_/eTxt*|_");
@@ -129,7 +140,7 @@ namespace AGRDI{
       res=allD.first;
     }
     res=EMAI::adjustIfForbiddenWordWasUsed(res);
-    res=EMAI::removeFileNames(res,"cpp");
+    res=EMAI::removeFileNames(res,language);
     return res;
   }
 
