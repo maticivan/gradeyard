@@ -23,13 +23,13 @@ namespace EMAI{
     std::string inRev=SF::reverseString(in);
     std::string extRev=SF::reverseString("."+extension);
     long pos;std::pair<std::string,int> allD;
-    pos=0; allD=SF::extractAndReplace(inRev,pos,extRev," ",0,"PPCeliFniam\n");
+    pos=0; allD=SF::extractAndReplace(inRev,pos,extRev," ",0,"YPPCeliFniam\n");
     while(allD.second==1){
       inRev=allD.first;
-      pos=0; allD=SF::extractAndReplace(inRev,pos,extRev," ",0,"PPCeliFniam\n");
+      pos=0; allD=SF::extractAndReplace(inRev,pos,extRev," ",0,"YPPCeliFniam\n");
     }
     inRev=SF::reverseString(inRev);
-    inRev=SF::findAndReplace(inRev,"mainFileCPP","mainFile.cpp");
+    inRev=SF::findAndReplace(inRev,"mainFileCPPY","mainFile."+extension);
     return inRev;
   }
   std::string adjustIfForbiddenWordWasUsed(const std::string& rawError){
