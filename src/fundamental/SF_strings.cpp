@@ -19,7 +19,6 @@
 #ifndef _INCL_SF_STRINGS_CPP
 #define _INCL_SF_STRINGS_CPP
 
-
 namespace SF{
   template<class T1, class T2>
   class TwoValues{
@@ -403,7 +402,7 @@ namespace SF{
       fR.insert(_v[i]);
     }
     return fR;
-  } 
+  }
   std::string reverseString(const std::string& input){
     std::string result;
     long i=input.size();
@@ -453,17 +452,16 @@ namespace SF{
               }
             }
             if(all==0){
-              searchFor=searchFor+endS;
+              oldPos=pos;
             }
           }
         }
-        else{
+        if((allD.second==0)||(all==0)){
           pos=len;
           for(long i=oldPos;i<pos;++i){
             output+=input[i];
           }
         }
-
       }
       return output;
   }
@@ -497,7 +495,6 @@ namespace SF{
                             const long &_pos,
                             const std::vector<std::string> &searchFor,
                             const int& caseSensitive=0){
-
     long ln=searchFor.size();
     if((ln==fPositions.size())&&(ln>0)){
       for(long i=0;i<ln;++i){
@@ -927,6 +924,24 @@ namespace SF{
     }
     return out;
   }
+  void assignValueFromMap(const std::map<std::string,std::string>& mM, const std::string &key, std::string& valAssignIfInMap){
+    std::map<std::string,std::string>::const_iterator it=mM.find(key);
+    if(it!=mM.end()){
+      valAssignIfInMap=it->second;
+    }
+  }
+  void assignValueFromMap(const std::map<std::string,std::string>& mM, const std::string &key, std::vector<std::string>& valAssignIfInMap){
+    std::map<std::string,std::string>::const_iterator it=mM.find(key);
+    if(it!=mM.end()){
+      valAssignIfInMap=SF::stringToVector(it->second,"_n*_","_/n*_");
+    }
+  }
+  void assignValueFromMap(const std::map<std::string,std::string>& mM, const std::string &key, long& valAssignIfInMap){
+    std::map<std::string,std::string>::const_iterator it=mM.find(key);
+    if(it!=mM.end()){
+      valAssignIfInMap=BF::stringToInteger(it->second);
+    }
+  }
   void varValPairs(const std::string & input,
                                                 const std::string & sepVarValB, const std::string & sepVarValE,
                                                 const std::string & sepVarB,const std::string & sepVarE,
@@ -1018,7 +1033,7 @@ namespace SF{
       return "";
     }
     std::string interior=allD.first;
-    source=findAndReplace(source,openT+interior+closeT,"");
+    source=findAndReplace(source,openT+interior+closeT,"",0);
     return interior;
   }
   std::set<std::string> stringToSet(const std::string & everything, const std::string & sepKeyB,const std::string & sepKeyE){
@@ -1197,6 +1212,14 @@ namespace SF{
       ++i;
     }
     return res;
+  }
+  std::string wrapTextToPreventAlphabetChange(const std::string & t){
+    if(GF::GL_Alphabet=="english"){return t;}
+    return "_doNotChangeAlphabet*_"+t+"_/doNotChangeAlphabet*_";
+  }
+  template<typename T>
+  void assignToConst(const T& receiver, const T& sender){
+    *(T*)(&receiver)=sender;
   }
 }
 #endif
