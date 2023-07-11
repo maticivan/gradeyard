@@ -353,7 +353,7 @@ namespace APTI{
     }
     fR.second+=_linkText;
     if( (_editType=="n") && (_linkText=="") ){
-      fR.second = "_doNotChangeAlphabet*_"+fR.second+"_/doNotChangeAlphabet*_";
+      fR.second = SF::wrapTextToPreventAlphabetChange(fR.second); 
     }
     return fR;
   }
@@ -1090,9 +1090,6 @@ namespace APTI{
     }
     return STI::statAnalysis(_stA);
   }
-  std::string AbstractText::createAnswerToTheQuery(const PSDI::SessionData & _psd) const{
-    return _psd.queryAnswerPlaceHolder;
-  }
   std::string AbstractText::createCloneInvitation(const PSDI::SessionData & _psd){
     if(DD::GL_IND_ALLOW_WEBSITE_CLONES==0){
       return "";
@@ -1242,12 +1239,12 @@ namespace APTI{
     }
     return displStr;
   }
-
   std::string AbstractText::createCodeTestInNotes(const PSDI::SessionData & _psd,
                                                   const std::string & problemName,
                                                   const std::string & problemVersion,
                                                   const std::string & baseText){
     if(GL_studentsAllowedToExecuteCodeOnPublicTestCases!="yes"){
+      GF::GL_DEB_MESSAGES.addMessage("not allowed");
       return "";
     }
     MPTI::MainText problemText;
@@ -1615,7 +1612,8 @@ namespace APTI{
           return createListFromDB(_psd,allArgs[1],allArgs[2],allArgs[3]);
         }
         if((allArgs[0]==s_answerToQuery)&&(sz==1)){
-          return createAnswerToTheQuery(_psd);
+          SF::assignToConst(_psd.queryAnswRequired,1);
+          return _psd.queryAnswPlaceHolder;
         }
       }
     }
