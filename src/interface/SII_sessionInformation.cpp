@@ -93,9 +93,6 @@ namespace SII{
       std::string mTextInMainPosition=mainText.displayText(psd,"mainTextPosition");
       std::string titleInterior=SF::getTagInteriorAndRemoveTag(mTextInMainPosition,"_title*_","_/title*_");
       std::string descInterior=SF::getTagInteriorAndRemoveTag(mTextInMainPosition,"_metaDesc*_","_/metaDesc*_");
-      mTextInMainPosition=SF::findAndReplace(mTextInMainPosition,"_*titleVar*_",titleInterior);
-      mTextInMainPosition=SF::findAndReplace(mTextInMainPosition,"_*pageVar*_",psd.pageRequested);
-      mTextInMainPosition=SF::findAndReplace(mTextInMainPosition,"_*pageVar-1*_",(psd.pageRequested).substr(0,(psd.pageRequested).length()-1));  
       if((titleInterior=="")||(descInterior=="")){
         HTII::GL_title.pels=HTII::generatePageElements(mTextInMainPosition);
       }
@@ -161,9 +158,11 @@ namespace SII{
       afterFormRepl=SF::findAndReplace(afterFormRepl,"_MY*USERNAME*_",psd.my_un);
     }
     timeToGenerateWebsite.end();
-    afterFormRepl=SF::findAndReplace(afterFormRepl,"!verbSave!","");
-    afterFormRepl=SF::findAndReplace(afterFormRepl,"*fjkl3"+GL_MAIN_SETUP_FILE_NAME+"2!3211","!verbSave!");
-    afterFormRepl=SF::findAndReplace(afterFormRepl, psd.queryAnswerPlaceHolder,queryAnswer);
+    if(psd.queryAnswRequired){
+      afterFormRepl=SF::findAndReplace(afterFormRepl,"!verbSave!","");
+      afterFormRepl=SF::findAndReplace(afterFormRepl,"*fjkl3"+GL_MAIN_SETUP_FILE_NAME+"2!3211","!verbSave!");
+      afterFormRepl=SF::findAndReplace(afterFormRepl, psd.queryAnswPlaceHolder,queryAnswer);
+    } 
     if(fastUpdatingStat=="yes"){
       std::map<std::string,std::string>::const_iterator it=psd.respMap.find("delFStat");
       if(it!=psd.respMap.end()){
@@ -208,7 +207,8 @@ namespace SII{
     psd.probVersionsOfChangedRespRec="";
     psd.pdfNameForInclassExam="";
     psd.masterKey="";
-    psd.queryAnswerPlaceHolder="_*"+RNDF::genRandCode(15)+"_*qAsnw_";
+    psd.queryAnswRequired=0;
+    psd.queryAnswPlaceHolder="_*"+RNDF::genRandCode(15)+"_*qAsnw_";
     psd.displayDaysInWeek.resize(0);
     psd.displayMonthsInYear.resize(0);
     indicatorInitialized=0;
@@ -615,23 +615,37 @@ namespace SII{
       int s=m.setFromTextName("mainTextInitializer");
       if(s==1){
         std::string initText=m.getTextData();
-        long pos;
-        std::pair<std::string, int> allD;
-        pos=0; allD=SF::extract(initText,pos,"_defaultHeaderName_","_/defaultHeaderName_");
+        std::map<std::string,std::string> mParameters;
+        std::map<std::string,std::string>::const_iterator itMP;
+        SF::varValPairs(initText,"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_",mParameters);
+        //long pos;        std::pair<std::string, int> allD;
+        /*pos=0; allD=SF::extract(initText,pos,"_defaultHeaderName_","_/defaultHeaderName_");
         if(allD.second==1){
           dHN=allD.first;
           header.initialize(allD.first);
+        }*/
+        itMP=mParameters.find("defaultHeaderName");
+        if(itMP!=mParameters.end()){
+          dHN=itMP->second;
+          header.initialize(dHN);
         }
-        pos=0; allD=SF::extract(initText,pos,"_defaultFooterName_","_/defaultFooterName_");
+        /*pos=0; allD=SF::extract(initText,pos,"_defaultFooterName_","_/defaultFooterName_");
         if(allD.second==1){
           dFN=allD.first;
           footer.initialize(allD.first);
+        }*/
+        itMP=mParameters.find("defaultFooterName");
+        if(itMP!=mParameters.end()){
+          dFN=itMP->second;
+          footer.initialize(dFN);
         }
-        pos=0; allD=SF::extract(initText,pos,"_defaultFirstPage_","_/defaultFirstPage_");
+        /*pos=0; allD=SF::extract(initText,pos,"_defaultFirstPage_","_/defaultFirstPage_");
         if(allD.second==1) {
           dfPage=allD.first;
-        }
-        pos=0; allD=SF::extract(initText,pos,"_defaultAlphabet!*_","_/defaultAlphabet!*_");
+        }*/
+        SF::assignValueFromMap(mParameters,"defaultFirstPage",dfPage);
+
+        /*pos=0; allD=SF::extract(initText,pos,"_defaultAlphabet!*_","_/defaultAlphabet!*_");
         if(allD.second==1) {
           MWII::GL_WI.changeAlphabet( allD.first);
           pos=0;allD=SF::extract(initText,pos,"_daysOfTheWeek!*_","_/daysOfTheWeek!*_");
@@ -642,78 +656,146 @@ namespace SII{
           if(allD.second==1){
             psd.displayMonthsInYear=SF::stringToVector(allD.first,"_n*_","_/n*_");
           }
+        }*/
+        itMP=mParameters.find("defaultAlphabet");
+        if(itMP!=mParameters.end()){
+          MWII::GL_WI.changeAlphabet(itMP->second);
+          SF::assignValueFromMap(mParameters,"daysOfTheWeek",psd.displayDaysInWeek);
+          SF::assignValueFromMap(mParameters,"namesOfTheMonths",psd.displayMonthsInYear);
         }
+
         AGRDI::GL_AGParameters.colSize=10;
-        pos=0; allD=SF::extract(initText,pos,"_agColSize_","_/agColSize_");
+        /*pos=0; allD=SF::extract(initText,pos,"_agColSize_","_/agColSize_");
         if(allD.second==1){
           AGRDI::GL_AGParameters.colSize=BF::stringToInteger(allD.first);
           if((AGRDI::GL_AGParameters.colSize<1)||(AGRDI::GL_AGParameters.colSize>30)){
             AGRDI::GL_AGParameters.colSize=10;
           }
+        }*/
+        SF::assignValueFromMap(mParameters,"agColSize",AGRDI::GL_AGParameters.colSize);
+        if((AGRDI::GL_AGParameters.colSize<1)||(AGRDI::GL_AGParameters.colSize>30)){
+          AGRDI::GL_AGParameters.colSize=10;
         }
+
         AGRDI::GL_AGParameters.compilerErrors="yes";
-        pos=0; allD=SF::extract(initText,pos,"_agCErrors_","_/agCErrors_");
+        /*pos=0; allD=SF::extract(initText,pos,"_agCErrors_","_/agCErrors_");
         if(allD.second==1){
           AGRDI::GL_AGParameters.compilerErrors=allD.first;
-        }
-        pos=0; allD=SF::extract(initText,pos,"_maxTitleLength_","_/maxTitleLength_");
+        }*/
+        SF::assignValueFromMap(mParameters,"agCErrors",AGRDI::GL_AGParameters.compilerErrors);
+
+        /*pos=0; allD=SF::extract(initText,pos,"_maxTitleLength_","_/maxTitleLength_");
         if(allD.second==1){
           HTII::GL_title.maxTitleLength=BF::stringToInteger(allD.first);
           if((HTII::GL_title.maxTitleLength<1)||(HTII::GL_title.maxTitleLength>1000)){
             HTII::GL_title.maxTitleLength=10;
           }
+        }*/
+        SF::assignValueFromMap(mParameters,"maxTitleLength",HTII::GL_title.maxTitleLength);
+        if((HTII::GL_title.maxTitleLength<1)||(HTII::GL_title.maxTitleLength>1000)){
+          HTII::GL_title.maxTitleLength=10;
         }
-        pos=0; allD=SF::extract(initText,pos,"_maxDescLength_","_/maxDescLength_");
+
+        /*pos=0; allD=SF::extract(initText,pos,"_maxDescLength_","_/maxDescLength_");
         if(allD.second==1){
           HTII::GL_title.maxDescLength=BF::stringToInteger(allD.first);
           if((HTII::GL_title.maxDescLength<1)||(HTII::GL_title.maxDescLength>3000)){
             HTII::GL_title.maxDescLength=300;
           }
+        }*/
+
+        SF::assignValueFromMap(mParameters,"maxDescLength",HTII::GL_title.maxDescLength);
+        if((HTII::GL_title.maxDescLength<1)||(HTII::GL_title.maxDescLength>3000)){
+          HTII::GL_title.maxDescLength=300;
         }
-        pos=0; allD=SF::extract(initText,pos,"_codeWordForAutoGenTitle_","_/codeWordForAutoGenTitle_");
+
+
+        /*pos=0; allD=SF::extract(initText,pos,"_codeWordForAutoGenTitle_","_/codeWordForAutoGenTitle_");
         if(allD.second==1){
           HTII::GL_title.codewordThatTitleGenerationIsNeeded=allD.first;
-        }
-        pos=0; allD=SF::extract(initText,pos,"_codeWordForAutoGenDesc_","_/codeWordForAutoGenDesc_");
+        }*/
+
+        SF::assignValueFromMap(mParameters,"codeWordForAutoGenTitle",HTII::GL_title.codewordThatTitleGenerationIsNeeded);
+
+        /*pos=0; allD=SF::extract(initText,pos,"_codeWordForAutoGenDesc_","_/codeWordForAutoGenDesc_");
         if(allD.second==1){
           HTII::GL_title.codewordThatDescGenerationIsNeeded=allD.first;
-        }
-        pos=0; allD=SF::extract(initText,pos,"_allowRespRecToOthers_","_/allowRespRecToOthers_");
+        }*/
+
+        SF::assignValueFromMap(mParameters,"codeWordForAutoGenDesc",HTII::GL_title.codewordThatDescGenerationIsNeeded);
+
+        /*pos=0; allD=SF::extract(initText,pos,"_allowRespRecToOthers_","_/allowRespRecToOthers_");
         if(allD.second==1){
           psd.allowRespRecDisplayToOthers=allD.first;
-        }
-        pos=0; allD=SF::extract(initText,pos,"_sNotAllowed_","_/sNotAllowed_");
+        }*/
+        SF::assignValueFromMap(mParameters,"allowRespRecToOthers",psd.allowRespRecDisplayToOthers);
+
+        /*pos=0; allD=SF::extract(initText,pos,"_sNotAllowed_","_/sNotAllowed_");
         if(allD.second==1){
           CAGI::GL_Obf.sequencesNotAllowedExplanation=allD.first;
-        }
+        }*/
+        SF::assignValueFromMap(mParameters,"sNotAllowed",CAGI::GL_Obf.sequencesNotAllowedExplanation);
+
+        /*
         pos=0; allD=SF::extract(initText,pos,"_wNotAllowed_","_/wNotAllowed_");
         if(allD.second==1){
           CAGI::GL_Obf.wordNotAllowed=allD.first;
-        }
-        pos=0; allD=SF::extract(initText,pos,"_defaultTexts!*_","_/defaultTexts!*_");
-        if(allD.second==1) {
-          MWII::GL_WI.updateDefaultWebTexts( allD.first);
-        }
-        pos=0; allD=SF::extract(initText,pos,"_showLogInLink_","_/showLogInLink_");
+        }*/
+
+        SF::assignValueFromMap(mParameters,"wNotAllowed",CAGI::GL_Obf.wordNotAllowed);
+
+        /*pos=0; allD=SF::extract(initText,pos,"_executePublicTestCases_","_/executePublicTestCases_");
         if(allD.second==1){
-          showLogInLink=allD.first;
-          MWII::GL_WI.setLoginLink(showLogInLink);
+          APTI::GL_studentsAllowedToExecuteCodeOnPublicTestCases=allD.first;
         }
-        pos=0; allD=SF::extract(initText,pos,"_fastUpdatingStat_","_/fastUpdatingStat_");
-        if(allD.second==1){
-          fastUpdatingStat=allD.first;
-          MWII::GL_WI.setFastUpdatingStat(fastUpdatingStat);
-        }
-        pos=0; allD=SF::extract(initText,pos,"_maxNumForSimpson_","_/maxNumForSimpson_");
+        */
+
+        SF::assignValueFromMap(mParameters,"executePublicTestCases",APTI::GL_studentsAllowedToExecuteCodeOnPublicTestCases);
+
+        /*pos=0; allD=SF::extract(initText,pos,"_maxNumForSimpson_","_/maxNumForSimpson_");
         if(allD.second==1){
           if(BF::isNumeric(allD.first,0)){
             FF::MAXIMAL_NUMBER_OF_INTERVALS_FOR_SIMPSON=BF::stringToInteger(allD.first);
           }
+        }*/
+
+        SF::assignValueFromMap(mParameters,"maxNumForSimpson",FF::MAXIMAL_NUMBER_OF_INTERVALS_FOR_SIMPSON);
+
+
+        /*pos=0; allD=SF::extract(initText,pos,"_defaultTexts!*_","_/defaultTexts!*_");
+        if(allD.second==1) {
+          MWII::GL_WI.updateDefaultWebTexts( allD.first);
+        }*/
+        itMP=mParameters.find("defaultTexts");
+        if(itMP!=mParameters.end()){
+          MWII::GL_WI.updateDefaultWebTexts(itMP->second);
         }
-        pos=0; allD=SF::extract(initText,pos,"_executePublicTestCases_","_/executePublicTestCases_");
+
+        /*pos=0; allD=SF::extract(initText,pos,"_showLogInLink_","_/showLogInLink_");
         if(allD.second==1){
-          APTI::GL_studentsAllowedToExecuteCodeOnPublicTestCases=allD.first;
+          showLogInLink=allD.first;
+          MWII::GL_WI.setLoginLink(showLogInLink);
+        }*/
+        itMP=mParameters.find("showLogInLink");
+        if(itMP!=mParameters.end()){
+          showLogInLink=itMP->second;
+          MWII::GL_WI.setLoginLink(showLogInLink);
         }
+
+
+
+        /*pos=0; allD=SF::extract(initText,pos,"_fastUpdatingStat_","_/fastUpdatingStat_");
+        if(allD.second==1){
+          fastUpdatingStat=allD.first;
+          MWII::GL_WI.setFastUpdatingStat(fastUpdatingStat);
+        }
+        */
+        itMP=mParameters.find("fastUpdatingStat");
+        if(itMP!=mParameters.end()){
+          fastUpdatingStat=itMP->second;
+          MWII::GL_WI.setFastUpdatingStat(fastUpdatingStat);
+        }
+
         if(MWII::GL_WI.getRedirectOverwrite()!="notFound"){
           std::pair<std::string,std::string> twoCodes=SF::oneWordToTwoWords(MWII::GL_WI.getRedirectOverwrite());
           TMD::MText sf;
