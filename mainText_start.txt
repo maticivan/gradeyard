@@ -1,4 +1,4 @@
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -26,35 +26,32 @@ _/permission_
 _/permissionString!!_
 _/systemData!!_
 _textData!!_
-_defaultHeaderName_mainTextHeader_/defaultHeaderName_
-
-_defaultFooterName_mainTextFooter_/defaultFooterName_
-
-_defaultFirstPage_mainTextFirstPage_/defaultFirstPage_
+_vVPair__vr_defaultHeaderName_/vr__vl_mainTextHeader_/vl__/vVPair_
+_vVPair__vr_defaultFooterName_/vr__vl_mainTextFooter_/vl__/vVPair_
+_vVPair__vr_defaultFirstPage_/vr__vl_mainTextFirstPage_/vl__/vVPair_
 
 
 Set the following number to 10000 if you wish to enable a meaningful numerical approximatins to integrals.
 Set it to something smaller than 10 if you wish to completely disable numerical approximations for integrals. If this
-is disabled, then the website will only evaluate the integrals of polynomials. This parameter mostly affects the queries 
+is disabled, then the website will only evaluate the integrals of polynomials. This parameter mostly affects the queries
 submitted through the Calculator form.
-_maxNumForSimpson_0_/maxNumForSimpson_
+_vVPair__vr_maxNumForSimpson_/vr__vl_0_/vl__/vVPair_
+
+Number of columns in auto-grader summary: _vVPair__vr_agColSize_/vr__vl_5_/vl__/vVPair_
+Allow autograder to show compiler errors: _vVPair__vr_agCErrors_/vr__vl_yes_/vl__/vVPair_
+Autograder message for solutions that attempt to use illegal sequences: _vVPair__vr_sNotAllowed_/vr__vl_Advanced data structures are not allowed in this problem. You tried to use sequences, arrays, vectors, or maps._/vl__/vVPair_
+Autograder message for solutions that attempt to use an illegal word: _vVPair__vr_wNotAllowed_/vr__vl_Your solution tried to use a word that is not allowed. The illegal word is:_/vl__/vVPair_
+
+_vVPair__vr_executePublicTestCases_/vr__vl_yes_/vl__/vVPair_
+
+_vVPair__vr_maxTitleLength_/vr__vl_50_/vl__/vVPair_
+_vVPair__vr_codeWordForAutoGenTitle_/vr__vl__*AGT*__/vl__/vVPair_
+_vVPair__vr_maxDescLength_/vr__vl_1000_/vl__/vVPair_
+_vVPair__vr_codeWordForAutoGenDesc_/vr__vl__*AGD*__/vl__/vVPair_
+_vVPair__vr_allowRespRecToOthers_/vr__vl_yes_/vl__/vVPair_
 
 
-Number of columns in auto-grader summary: _agColSize_5_/agColSize_
-Allow autograder to show compiler erros: _agCErrors_yes_/agCErrors_
-Autograder message for solutions that attempt to use illegal sequences: _sNotAllowed_Advanced data structures are not allowed in this problem. You tried to use sequences, arrays, vectors, or maps._/sNotAllowed_
-Autograder message for solutions that attempt to use an illegal word:_wNotAllowed_Your solution tried to use a word that is not allowed. The illegal word is: _/wNotAllowed_
-
-_executePublicTestCases_yes_/executePublicTestCases_
-
-_maxTitleLength_50_/maxTitleLength_
-_codeWordForAutoGenTitle__*AGT*__/codeWordForAutoGenTitle_
-_maxDescLength_1000_/maxDescLength_
-_codeWordForAutoGenDesc__*AGD*__/codeWordForAutoGenDesc_
-_allowRespRecToOthers_yes_/allowRespRecToOthers_
-
-
-_defaultTexts!*_
+_vVPair__vr_defaultTexts_/vr__vl_
 _vVPair__vr_Click on the button below when you are ready._/vr__vl_
 <p></p><h2>Timed Exam</h2>
 <p>The timer will be activated once the problems are displayed for solving. </p>
@@ -64,11 +61,11 @@ _vVPair__vr_Click on the button below when you are ready._/vr__vl_
 <p>Click on the button below when you are ready.</p>_/vl__/vVPair_
 _vVPair__vr_Comment_/vr__vl_No_/vl__/vVPair_
 _vVPair__vr_TimerJS_/vR__vl_ <div class="card bg-primary text-white">
-    <div class="card-body"> 
+    <div class="card-body">
 
 <b><span id="gytimer"></span></b>
 
-<script> 
+<script>
 var maxTime = _|*tmSeconds*|_;
 var end = new Date().getTime()+maxTime*1000;
 var x = setInterval(function() {
@@ -89,9 +86,9 @@ var x = setInterval(function() {
 
 </div>
   </div>_/vl__/vVPair_
-  
-  
-  
+
+
+
   _vVPair__vr_Autograding Failed Message Begin_/vr_
 _vl_<div class="messageBox"><div class="card-body bg-danger text-light"> <b>Failed</b></div>_/vl_
 _/vVPair_
@@ -128,7 +125,7 @@ _vl_
 <div class="text-danger"><h5>Explanation</h5></div>  </button>
 </div>
 <div id="resC2" class="collapse" aria-labelledby="resultH2" data-parent="#accordion">
- <div class="card-body"> 
+ <div class="card-body">
 _/vl_
 _/vVPair_
 
@@ -144,11 +141,11 @@ _vVPair__vr_Autgrader One Test Case_/vr_
 _vl_
 <div class="card">
    <div class="card-header" id="resultH_*IDNUMBER*_">
-      <button class="btn btn-link" data-toggle="collapse" data-target="#resC_*IDNUMBER*_" aria-expanded="true" aria-controls="resC_*IDNUMBER*_"> 
+      <button class="btn btn-link" data-toggle="collapse" data-target="#resC_*IDNUMBER*_" aria-expanded="true" aria-controls="resC_*IDNUMBER*_">
          <div class="_*TEXTCOLOR*_"><h5>Test case _*IDNUMBER*_ (_*TESTRESULT*_)</h5></div>
       </button>
    </div>
-   <div id="resC_*IDNUMBER*_" class="collapse" aria-labelledby="resultH_*IDNUMBER*_" data-parent="#accordion"> 
+   <div id="resC_*IDNUMBER*_" class="collapse" aria-labelledby="resultH_*IDNUMBER*_" data-parent="#accordion">
       <div class="card-body">
          <h5>Input</h5>
          <pre>_*TESTCASEINPUT*_</pre>
@@ -164,7 +161,7 @@ _/vVPair_
 
 _vVPair__vr_\noindent{\bf Problem} _/vr_
 _vl_
-\begin{tcolorbox}[ 
+\begin{tcolorbox}[
                   boxsep=1pt,
                   left=5pt,
                   right=5pt,
@@ -186,7 +183,7 @@ _vl_
 \noindent{\bf Solution.} _/vl_
 _/vVPair_
 _vVPair__vr_%%endSolution_/vr_
-_vl_ \hfill $\Box$ 
+_vl_ \hfill $\Box$
 _/vl_
 _/vVPair_
 _vVPair__vr_\begin{box}_/vr_
@@ -201,20 +198,19 @@ _vl_
 _/vl_
 _/vVPair_
 
-_/defaultTexts!*_
+_/vl__/vVPair_
 
-_defaultWebsiteName_https://gradeyard.com_/defaultWebsiteName_ 
-
+ 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -249,14 +245,14 @@ _textData!!_
   <meta name="description" content="Grade yard content management system">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="_THIS*WEBSITE*URL*_/css/gradeyard.css">   
+  <link rel="stylesheet" href="_THIS*WEBSITE*URL*_/css/gradeyard.css">
   <script src="_THIS*WEBSITE*URL*_/js/jquery.min.js"></script>
-  <script src="_THIS*WEBSITE*URL*_/js/p.min.js"></script> 
- 
+  <script src="_THIS*WEBSITE*URL*_/js/p.min.js"></script>
 
 
 
-<SCRIPT LANGUAGE="javascript"> 
+
+<SCRIPT LANGUAGE="javascript">
 <!--
 function toggle(hidingDiv, linkDiv,revealName,hideName) {
 	var hidingT = document.getElementById(hidingDiv);
@@ -269,7 +265,7 @@ function toggle(hidingDiv, linkDiv,revealName,hideName) {
 		hidingT.style.display = "block";
 		linkT.innerHTML = hideName;
 	}
-} 
+}
 //-->
 </SCRIPT>
 
@@ -280,11 +276,11 @@ function toggle(hidingDiv, linkDiv,revealName,hideName) {
 </head>
 <body>
 
- 
+
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 <div class="container">
-  <a class="navbar-brand" href="index.cgi"> 
-<svg width="40" height="40" class="d-block">   
+  <a class="navbar-brand" href="index.cgi">
+<svg width="40" height="40" class="d-block">
 <polyline points="5,5 10,5 35,30 35,35 30,35 5,10 5,5 10,5" style="fill:none;stroke:currentColor;stroke-width:3"/>
 <polyline points="20,5 30,5 35,10 35,20 20,5 30,5" style="fill:none;stroke:currentColor;stroke-width:3"/>
 <polyline points="5,20 20,35 10,35 5,30 5,20 20,35" style="fill:none;stroke:currentColor;stroke-width:3"/>
@@ -296,25 +292,25 @@ function toggle(hidingDiv, linkDiv,revealName,hideName) {
     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
       <li class="nav-item">
         <a class="nav-link" href="index.cgi">Home</a>
-      </li> 
+      </li>
       <li class="nav-item">
         <a class="nav-link" href="index.cgi?page=query">Math</a>
-      </li> 
+      </li>
 
       <li class="nav-item">
         <a class="nav-link" href="index.cgi?page=formulasAndCode">Writing</a>
-      </li> 
+      </li>
       <li class="nav-item">
         <a class="nav-link" href="index.cgi?page=planets">Planets</a>
-      </li> 
+      </li>
     </ul>
 <hr/>
-_LOGIN*OUT*REGISTER*NAVBAR*_  
-  </div>  
+_LOGIN*OUT*REGISTER*NAVBAR*_
+  </div>
 </div>
 </nav>
 <div class="container">
-   
+
 
   <div class="row">
 <div class="col-sm-4">
@@ -335,16 +331,16 @@ _**LINKS*LINE3*_
  </div>
 </div>
 
-  
- 
- 
+
+
+
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_   
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -370,7 +366,7 @@ _/permission_
 
 _/permissionString!!_
 _/systemData!!_
-_textData!!_ 
+_textData!!_
 
 <div class="container">
 <hr/>
@@ -378,9 +374,9 @@ _textData!!_
 <small>
 <ul class="list-inline" >
 <li class="list-inline-item"> CMS:  <a  href="https://gradeyard.com"> GradeYard</a> </li>
-<li class="list-inline-item"> CSS framework:  <a href="https://getbootstrap.com">Bootstrap</a> </li>  
-<li class="list-inline-item"> Math formulas: <a href="https://www.mathjax.org">MathJax</a> </li>  
-</ul> 
+<li class="list-inline-item"> CSS framework:  <a href="https://getbootstrap.com">Bootstrap</a> </li>
+<li class="list-inline-item"> Math formulas: <a href="https://www.mathjax.org">MathJax</a> </li>
+</ul>
 </small>
 </footer>
 </div>
@@ -393,12 +389,12 @@ _textData!!_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -435,7 +431,7 @@ _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -462,7 +458,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -498,174 +494,174 @@ _insert_
 _n*_buttonLink_/n*_
 _n*_New text_/n*_
 _n*_?page=createTextCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_Edit text_/n*_
 _n*_?page=modifyTextCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_Delete text_/n*_
 _n*_?page=deleteTextCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_Delete file_/n*_
 _n*_?page=deleteFileCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_New Resp. Receiver_/n*_
 _n*_?page=createRRCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_Edit Resp. Receiver_/n*_
 _n*_?page=modifyRRCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_Delete Resp. Receiver_/n*_
 _n*_?page=deleteRRCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_New User_/n*_
 _n*_?page=createUserCommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_New User Adv._/n*_
 _n*_?page=createUserACommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_New User Extra Adv._/n*_
 _n*_?page=createUserEACommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_Edit User_/n*_
 _n*_?page=modifyUserCommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Edit User Adv._/n*_
 _n*_?page=modifyUserACommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Edit User Extra Adv._/n*_
 _n*_?page=modifyUserEACommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Delete User_/n*_
 _n*_?page=deleteUserCommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Add to Hierarchy_/n*_
 _n*_?page=addToHierarchyCommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Remove from Hierarchy_/n*_
 _n*_?page=removeFromHierarchyCommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Backup_/n*_
 _n*_?page=backupCommand_/n*_
-_/insert_  
+_/insert_
 
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Backup with Range_/n*_
 _n*_?page=backupRangeCommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Backup to Latex_/n*_
 _n*_?page=backupLatexCommand_/n*_
-_/insert_  
+_/insert_
 
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_New Message_/n*_
 _n*_?page=createMessageCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_New Topic_/n*_
 _n*_?page=createMessageACommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_Edit Message_/n*_
 _n*_?page=modifyMessageCommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Delete Message_/n*_
 _n*_?page=deleteMessageCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_New Forum_/n*_
 _n*_?page=createForumCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_New CouAs_/n*_
 _n*_?page=createCouasCommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Edit CouAs_/n*_
 _n*_?page=modifyCouasCommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Delete CouAs_/n*_
 _n*_?page=deleteCouasCommand_/n*_
-_/insert_  
+_/insert_
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Assign Graders_/n*_
 _n*_?page=assignGradersCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_Enroll Students_/n*_
 _n*_?page=enrollStudentsCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_New Website_/n*_
 _n*_?page=createWebsiteCommand_/n*_
-_/insert_  
+_/insert_
 _insert_
 _n*_buttonLink_/n*_
 _n*_Delete Website_/n*_
 _n*_?page=deleteWebsiteCommand_/n*_
-_/insert_  
+_/insert_
 
 </p>
 </div>
@@ -674,10 +670,10 @@ _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -710,7 +706,7 @@ _textData!!_
 _insert_
 _n*_text_/n*_
 _n*_inclCommands_/n*_
-_/insert_ 
+_/insert_
  <H2>Command Insert Form</H2>
 _insert_
 _n*_formInitialization_/n*_
@@ -731,16 +727,16 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -787,7 +783,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting. It is also OK to scrape data from the website and copy paste multiple file codes.
 The program will identify the codes as items between new line symbol and the tab symbol._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
@@ -798,19 +794,19 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -857,14 +853,14 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_createText_/nc***_
 LINE TO EDIT                       -----> _nc***_NameOfTheTextToCreate_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 
-                             (your web text goes here) 
+                             (your web text goes here)
 
 
 _/nc***_ <-----  STOP EDITING AFTER THIS SYMBOL
@@ -873,18 +869,18 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -932,14 +928,14 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_modifyText_/nc***_
 LINE TO EDIT                       -----> _nc***_NameOfTheTextToModify_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 
-                             (your replacement text goes here) 
+                             (your replacement text goes here)
 
 
 _/nc***_ <-----  STOP EDITING AFTER THIS SYMBOL
@@ -948,18 +944,18 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
-
-  
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1005,7 +1001,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_deleteText_/nc***_
@@ -1015,19 +1011,19 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1075,14 +1071,14 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_createResponseReceiver_/nc***_
 LINE TO EDIT                       -----> _nc***_NameOfTheRRToCreate_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 
-                             (your response receiver text goes here) 
+                             (your response receiver text goes here)
 
 
 _/nc***_ <-----  STOP EDITING AFTER THIS SYMBOL
@@ -1091,18 +1087,18 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1150,14 +1146,14 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_modifyResponseReceiver_/nc***_
 LINE TO EDIT                       -----> _nc***_NameOfTheRRToModify_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 
-                             (your replacement text for response receiver) 
+                             (your replacement text for response receiver)
 
 
 _/nc***_ <-----  STOP EDITING AFTER THIS SYMBOL
@@ -1166,15 +1162,15 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1220,7 +1216,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_deleteResponseReceiver_/nc***_
@@ -1230,17 +1226,17 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1286,7 +1282,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_createUser_/nc***_
@@ -1302,16 +1298,16 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1360,7 +1356,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_createUserAdvanced_/nc***_
@@ -1378,17 +1374,17 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1436,7 +1432,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_createUserExtraAdvanced_/nc***_
@@ -1455,18 +1451,18 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1513,7 +1509,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_modifyUser_/nc***_
@@ -1528,19 +1524,19 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1588,7 +1584,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_modifyUserAdvanced_/nc***_
@@ -1605,17 +1601,17 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1661,7 +1657,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_modifyUserExtraAdvanced_/nc***_
@@ -1679,15 +1675,15 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1734,7 +1730,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_deleteUser_/nc***_
@@ -1744,19 +1740,19 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1802,7 +1798,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_addToHierarchy_/nc***_
@@ -1813,15 +1809,15 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1869,7 +1865,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_removeFromHierarchy_/nc***_
@@ -1880,15 +1876,15 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -1935,12 +1931,12 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. You should list the names of texts that you want to backup. The output will be a text document that consists of commands. The execution of the commands will put the saved texts to the database._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_backup_/nc***_
 DO NOT EDIT THIS LINE     -----> _nc***_Texts_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 _n*!_planets_/n*!_
 _n*!_sampleProblem01_/n*!_
 _n*!_sampleProblem02_/n*!_
@@ -1950,18 +1946,18 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2008,12 +2004,12 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. You should list the range of the id numbers of texts that you want to backup. The first number <code>alpha</code> is the start of the range. The second number <code>beta</code> is the end of the range. The site will backup all documents whose index is $\geq$ <code>alpha</code> and $\lneq$ <code>beta</code>. The output will be a text document that consists of commands. The execution of the commands will put the saved texts to the database._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_backup_/nc***_
 DO NOT EDIT THIS LINE     -----> _nc***_Texts_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 _n*!_range_/n*!_
 _n*!_alpha_/n*!_
 _n*!_beta_/n*!_
@@ -2023,19 +2019,19 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2082,14 +2078,14 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_This command rarely needs to be executed directly. The forum handles message creations automatically.  _/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_createMessage_/nc***_
 LINE TO EDIT                       -----> _nc***_userNameOfCreator_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 
-                             (message text goes here) 
+                             (message text goes here)
 
 
 _/nc***_ <-----  STOP EDITING AFTER THIS SYMBOL
@@ -2099,17 +2095,17 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2156,21 +2152,21 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_This command rarely needs to be executed directly. The forum handles message creations automatically. This advanced form creates a topic that collects other messages. It differs from the ordinary <code>createMessage</code> command only in the body. The body of the message has the tags (<code>_!verbSave!title!_</code> - <code>_/!verbSave!title!_</code>); (<code>_!verbSave!mType!*_</code> - <code>_/!verbSave!mType!*_</code>); and (<code>_/!verbSave!els!*_</code>- <code>_/!verbSave!els!*_</code>).
 _/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_createMessage_/nc***_
 LINE TO EDIT                       -----> _nc***_userNameOfCreator_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 
 _title!*_[Title of your topic]_/title!*_
-_mType!*_mColl_/mType!*_ 
+_mType!*_mColl_/mType!*_
 _els!*_
 _n_codeOfMessage1_/n_
 _n_codeOfMessage2_/n_
 _n_codeOfMessage3_/n_
-_/els!*_ 
+_/els!*_
 
 
 _/nc***_ <-----  STOP EDITING AFTER THIS SYMBOL
@@ -2180,19 +2176,19 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2239,14 +2235,14 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_This command rarely needs to be executed directly. The forum handles message creations automatically.  _/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_modifyMessage_/nc***_
 LINE TO EDIT                       -----> _nc***_messageCode_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 
-                             (replacement text for the message) 
+                             (replacement text for the message)
 
 
 _/nc***_ <-----  STOP EDITING AFTER THIS SYMBOL
@@ -2255,16 +2251,16 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2312,7 +2308,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_This command rarely needs to be executed directly. The forum handles message creations automatically.  _/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_deleteMessage_/nc***_
@@ -2323,19 +2319,19 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2382,12 +2378,12 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_This is creates a forum.  _/n*_
 _n*_DO NOT EDIT THIS LINE               -----> _command_
 DO NOT EDIT THIS LINE               -----> _nc***_createForum_/nc***_
 user who created or _!myself!_       -----> _nc***__!myself!__/nc***_
-EDIT AFTER THE SYMBOL           -----> _nc***_  
+EDIT AFTER THE SYMBOL           -----> _nc***_
 
 _createMessagePermits!*_
 _permission__userOrGroup_permitName_/userOrGroup__/permission_
@@ -2404,17 +2400,17 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2462,13 +2458,13 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
-_n*_It is better to start from one the 
+_n*_commands_/n*_
+_n*_It is better to start from one the
 <a href="?page=administratorMain">course templates</a>. You can edit the parameters in the template and obtain a customization for your course. Making the course from scratch can take a while and will involve creating supporting course pages. _/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_createCourseAssignment_/nc***_
 LINE TO EDIT                       -----> _nc***_usernameOfCreator_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 
                              _title!*_[Title ]_/title!*_
 
@@ -2482,18 +2478,18 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2539,14 +2535,14 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_ _/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_modifyCourseAssignment_/nc***_
 LINE TO EDIT                       -----> _nc***_courseAssignmentCode_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 
-                            
+
 (replacement data and parameters)
 
 
@@ -2556,16 +2552,16 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2613,7 +2609,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_ _/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_deleteCourseAssignment_/nc***_
@@ -2624,16 +2620,16 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2679,12 +2675,12 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The course created from one of the <a href="?page=administratorMain">templates</a> will have custom buttons and links to assign graders. This raw version of the command should probably never be used. Instead of listing the graders explicitly, you can replace the text with a single letter <code>a</code> or a single letter <code>s</code>. The obtained parameter will look like <code>_nc!verbSave!***_a__nc!verbSave!***_</code> or <code>_nc!verbSave!***_s__nc!verbSave!***_</code>. The code <code>a</code> means that all students will become graders. The exams will be randomly distributed among themselves. Nobody would know who is their grader. The students will also not know whose exam they are grading. The code <code>s</code> means that each student will self-grade their own work._/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_assignGraders_/nc***_
 LINE TO EDIT                       -----> _nc***_examResponseReceiverCode_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 
 _n*_userNameOfGrader1_/n*_
 _n*_userNameOfGrader2_/n*_
@@ -2696,16 +2692,16 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2752,19 +2748,19 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The course created from one of the <a href="?page=administratorMain">templates</a> will have custom buttons and links to enroll students. _/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_enrollStudents_/nc***_
 LINE TO EDIT                       -----> _nc***_couasCode_/nc***_
-LINE TO EDIT                       -----> _nc***_documentToWriteReport_/nc***_ 
-LINE TO EDIT                       -----> _nc***_prefixToAddToExternalIds_/nc***_ 
+LINE TO EDIT                       -----> _nc***_documentToWriteReport_/nc***_
+LINE TO EDIT                       -----> _nc***_prefixToAddToExternalIds_/nc***_
 
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 
-Scraped data from the college website. The current version of the program will understand the data from Oracle People Soft portals such as CUNYFirst. 
+Scraped data from the college website. The current version of the program will understand the data from Oracle People Soft portals such as CUNYFirst.
 
-Alternatively, you can put students directly in the following way 
+Alternatively, you can put students directly in the following way
 _n*_
 _id*_12345_/id*_
 _first*_FirstName01_/first*_
@@ -2778,16 +2774,16 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2833,7 +2829,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_This command works only if the website allows cloning. If there is a member with username <code>mathLessons</code>, and this username is put in the command, then the new website will be created at the subdomain <code>sites/mathLessons</code>. The new site will start as empty with initializing texts only. The administrator will be <code>mathLessons</code>. The initial password will be the same as the one that <code>mathLessons</code> had here at the time when the command was executed. If the website <code>sites/mathLessons</code> already exists, then the command will delete it first and then create a new one. _/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_createWebsiteForUser_/nc***_
@@ -2843,16 +2839,16 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2898,7 +2894,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_This command works only if the website allows cloning. If there is a member with username <code>mathLessons</code>, and this username is put in the command, then the new website may exist at the subdomain <code>sites/mathLessons</code>. The following command will delete the website and wipe out all the data. _/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_deleteWebsiteForUser_/nc***_
@@ -2913,11 +2909,11 @@ _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -2953,10 +2949,10 @@ _n*_index.cgi?uploadFile=yes&fileType=pdf_/n*_
 _/insert_
 _insert_
 _n*_fileRequestField_/n*_
-_n*_reqFile_/n*_ 
+_n*_reqFile_/n*_
 _n*_userPDF_/n*_
 _n*_Place a pdf file for upload_/n*_
- 
+
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
@@ -2965,11 +2961,11 @@ _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3002,10 +2998,10 @@ _textData!!_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3091,22 +3087,22 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_regUser_/n*_
 _n*_antiSpamCode_/n*_
-_n*_Code from the picture:_/n*_ 
+_n*_Code from the picture:_/n*_
 _n*_10_/n*_
 
 _/insert_
- 
+
 
 _insert_
 _n*_formPlacement_/n*_
 _n*_regUser_/n*_
-_/insert_ 
+_/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3138,11 +3134,11 @@ _textData!!_<H2>Problem with Passwords</H2>
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3174,10 +3170,10 @@ _textData!!_<H2>Problem with Username</H2>
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3209,10 +3205,10 @@ _textData!!_<H2>Problem with Username</H2>
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3245,10 +3241,10 @@ _textData!!_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3277,15 +3273,15 @@ _/systemData!!_
 
 _textData!!_
 <p></p>
-<H1>Wrong Username or Password</H1> 
+<H1>Wrong Username or Password</H1>
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3320,11 +3316,11 @@ _textData!!_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3376,24 +3372,24 @@ _n*_Password:_/n*_
 _n*_password_/n*_
 _n*_30_/n*_
 _/insert_
- 
+
 _insert_
 _n*_redirectRequest_/n*_
-_n*_logInUser_/n*_ 
-_/insert_ 
+_n*_logInUser_/n*_
+_/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_logInUser_/n*_
-_/insert_ 
+_/insert_
 <p>No account? _insert__n*_internalLink_/n*__n*_Register_/n*__n*_registration_/n*__/insert_</p>
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3445,11 +3441,11 @@ _n*__/n*_
 _n*_80_/n*_
 _/insert_
 
- 
+
 _insert_
 _n*_formPlacement_/n*_
 _n*_searchForUser_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 
 
@@ -3474,18 +3470,18 @@ _n*__/n*_
 _n*_80_/n*_
 _/insert_
 
- 
+
 _insert_
 _n*_formPlacement_/n*_
 _n*_searchForUser_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3539,21 +3535,21 @@ _n*__/n*_
 _n*_80_/n*_
 _/insert_
 
- 
+
 _insert_
 _n*_formPlacement_/n*_
 _n*_searchForText_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3581,12 +3577,12 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
-<H1> Databases</H1> 
+<H1> Databases</H1>
 <table class="table table-striped">
 <thead class="table-dark">
 <tr>
 <th>Name and link</th>
-<th>Category</th> 
+<th>Category</th>
 </tr>
  </thead><tbody>
 <tr><td><A href="index.cgi?page=listTexts">Texts</A></td><td>Manual</td></tr>
@@ -3607,11 +3603,11 @@ _textData!!_
 </div>
 _/textData!!_
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3644,12 +3640,12 @@ _textData!!_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3703,20 +3699,20 @@ _n*__/n*_
 _n*_80_/n*_
 _/insert_
 
- 
+
 _insert_
 _n*_formPlacement_/n*_
 _n*_searchForRespRecs_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3747,7 +3743,7 @@ _/insert_
 
 
 _systemText*!_
-<H2> 
+<H2>
 _sectionHD*!_
 _defaultHD*!_
 Add New File
@@ -3772,7 +3768,7 @@ _/actionText*!_
 _/insert_
 
 
-  
+
 
 _insert_
 _n*_textInputField_/n*_
@@ -3787,7 +3783,7 @@ _insert_
 _n*_fileRequestField_/n*_
 _n*_addFile_/n*_
 _n*_sbF_/n*_
-_n*_ _/n*_ 
+_n*_ _/n*_
 _/insert_
 
 
@@ -3796,19 +3792,19 @@ _n*_formPlacement_/n*_
 _n*_addFile_/n*_
 _n*_0_/n*_
 _n*_Upload_/n*_
-_/insert_ 
+_/insert_
 _/systemText*!_
 
 
 _/textData!!_
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3828,14 +3824,14 @@ _userOrGroup_root_/userOrGroup_
 _/permission_
 
 _/permissionString!!__documentType!!_regularText_/documentType!!__/systemData!!__textData!!_
- 
+
   <H2>User Information</H2>
 <h3> Permits </h3>
  _hideReveal__revealTitle_Show permits_/revealTitle__hideTitle_Hide permits_/hideTitle_
 _insert_
 _n*_userPermits_/n*_
 _n*__vr_uName_/vr__/n*_
-_/insert_  
+_/insert_
  _/hideReveal_
 
 <h3>User Edit</h3>
@@ -3863,12 +3859,12 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_  
+_/insert_
  _/hideReveal_
- 
+
 _/textData!!_
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -3877,7 +3873,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3897,17 +3893,17 @@ _userOrGroup_root_/userOrGroup_
 _/permission_
 
 _/permissionString!!__documentType!!_regularText_/documentType!!__/systemData!!__textData!!_
-  
+
    <H2>User Information</H2>
 <h3> Permits </h3>
  _hideReveal__revealTitle_Show permits_/revealTitle__hideTitle_Hide permits_/hideTitle_
 _insert_
 _n*_userPermits_/n*_
 _n*__vr_uName_/vr__/n*_
-_/insert_  
+_/insert_
  _/hideReveal_
-  
-  
+
+
  <H2>Advanced User Edit</H2>
 _insert_
 _n*_formInitialization_/n*_
@@ -3919,7 +3915,7 @@ _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
 _n*_commands_/n*_
 _n*_Place commands in the window below. If you do not want to change an attribute, then leave the symbols "!*!" _/n*_
-_n*_ 
+_n*_
  _command_
  _nc***_modifyUserAdvanced_/nc***_
 username: _nc***_**sF!!_/nc***_
@@ -3934,16 +3930,16 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_  
+_/insert_
 _/textData!!_
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -3963,7 +3959,7 @@ _userOrGroup_root_/userOrGroup_
 _/permission_
 
 _/permissionString!!__documentType!!_regularText_/documentType!!__/systemData!!__textData!!_
-   
+
  <H2>Extra Advanced User Edit</H2>
 _insert_
 _n*_formInitialization_/n*_
@@ -3975,7 +3971,7 @@ _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
 _n*_commands_/n*_
 _n*_Place commands in the window below. If you do not want to change an attribute, then leave the symbols "!*!" _/n*_
-_n*_ 
+_n*_
  _command_
  _nc***_modifyUserExtraAdvanced_/nc***_
 username: _nc***_**sF!!_/nc***_
@@ -3991,10 +3987,10 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_  
+_/insert_
 _/textData!!_
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -4003,7 +3999,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -4041,10 +4037,10 @@ _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -4072,16 +4068,16 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
-_insert__n*_message_/n*__n*_**sF!!_/n*__/insert_ 
+_insert__n*_message_/n*__n*_**sF!!_/n*__/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -4119,12 +4115,12 @@ _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -4152,18 +4148,18 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
-_insert__n*_courseAssignment_/n*__n*_**sF!!_/n*__/insert_  
+_insert__n*_courseAssignment_/n*__n*_**sF!!_/n*__/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -4192,7 +4188,6 @@ _/systemData!!_
 
 _textData!!_
 
-_doNotChangeAlphabet*_ 
 <H1>Assignment Creation Tutorial (!!! DO NOT EDIT !!!)</H1>
 <p>Warning: Do not edit this document from the web portal. Any editing will break the codes below.</p>
 
@@ -4200,193 +4195,193 @@ _doNotChangeAlphabet*_
 <h2> Fast course creation (standard course)</h2>
 
 <p>The code below will create grading documents, the main course page, and few supporting pages</p>
-_/doNotChangeAlphabet*_ 
+
 _hideReveal__revealTitle_Show code_/revealTitle__hideTitle_Hide code_/hideTitle_
 _codeBox_
 _command_
 _nc***_createStandardCourse_/nc***_
-_nc***_ 
+_nc***_
 _variablesMain_
 
 
 _vVPair_
 _vr_docName_/vr_
 _vl_s2134m4100_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_courseNumber_/vr_
 _vl_MTH4000_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_courseName_/vr_
 _vl_Bridge to Higher Mathemtaics_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_semester_/vr_
 _vl_Spring 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_sectionCode_/vr_
 _vl_JMWB_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_classTime_/vr_
 _vl_MoWe 12:25PM - 2:05PM_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_classPlace_/vr_
 _vl_online_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_officeHoursTime_/vr_
 _vl_Mo 2:10PM - 4:10PM_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_officeHoursPlace_/vr_
 _vl_online_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_variablesExtension_/vr_
 _vl_Var_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_gradingExtension_/vr_
 _vl_Gr_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_adminExtension_/vr_
 _vl_Ad_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_instructorExtension_/vr_
 _vl_Ins_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_forumExtension_/vr_
 _vl_Fr_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_policiesExtension_/vr_
 _vl_Pl_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_zoomClassExtension_/vr_
 _vl_Sch_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_zoomOHFile_/vr_
 _vl_s2134OHSch_/vl_
-_/vVPair_ 
- 
+_/vVPair_
 
 
- 
+
+
 _vVPair_
 _vr_hw1date_/vr_
 _vl_Monday, February 1, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_hw2date_/vr_
 _vl_Wednesday, February 3, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_hw3date_/vr_
 _vl_Wednesday, February 10, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw4date_/vr_
 _vl_Wednesday, February 24, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_m1wdate_/vr_
 _vl_Wednesday, March 3, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_hw5date_/vr_
 _vl_Wednesday, March 17, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_m1odate_/vr_
 _vl_Wednesday, March 17, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw6date_/vr_
 _vl_Monday, April 5, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_m2wdate_/vr_
 _vl_Wednesday, April 7, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_hw7date_/vr_
 _vl_Wednesday, April 21, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_hw8date_/vr_
 _vl_Wednesday, April 28, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw9date_/vr_
 _vl_Wednesday, May 12, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw8date_/vr_
 _vl_Monday, May 17, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
@@ -4394,23 +4389,23 @@ _/vVPair_
 _vVPair_
 _vr_m2odate_/vr_
 _vl_Wednesday, April 21, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_dateForFinal_/vr_
 _vl_TBA_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_mainGradingDocument_/vr_
 _vl_***REPLACE***WITH***MAIN_GRADING_DOC***_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_mainForumPage_/vr_
 _vl_***REPLACE***WITH***MAIN_FORUM_PAGE***_/vl_
-_/vVPair_ 
+_/vVPair_
 _/variablesMain_
 
 
@@ -4567,15 +4562,15 @@ _couasName!*_{mtCouas}_/couasName!*__couasText!*_
 _title!*_Midterms_/title!*__bossC!*_{mainCouas}_/bossC!*__bossN!*_Grade summary_/bossN!*_
 _grDisplay!*_
 _label!__pos_0_/pos__disp_M1_/disp__/label!__value!_{mw1}_/value!_
-_label!__pos_1_/pos__disp_M2_/disp__/label!__value!_{mw2}_/value!_ 
-_label!__pos_2_/pos__disp_M3_/disp__/label!__value!_{mw3}_/value!_ 
+_label!__pos_1_/pos__disp_M2_/disp__/label!__value!_{mw2}_/value!_
+_label!__pos_2_/pos__disp_M3_/disp__/label!__value!_{mw3}_/value!_
 _label!__pos_3_/pos__disp_T_/disp__/label!__value!_{result}_/value!_
 _/grDisplay!*_
 _grFormulas!*__fScope!*_all_/fScope!*__fmath!*_
 {result}=0.4*({mw1})+0.4*({mw2})+0.2*({mw3})@@
-{mw1}=_getFrom_{mw1Couas}_/getFrom_@@ 
-{mw2}=_getFrom_{mw2Couas}_/getFrom_@@ 
-{mw3}=_getFrom_{mw3Couas}_/getFrom_@@ 
+{mw1}=_getFrom_{mw1Couas}_/getFrom_@@
+{mw2}=_getFrom_{mw2Couas}_/getFrom_@@
+{mw3}=_getFrom_{mw3Couas}_/getFrom_@@
 _/fmath!*_
 _/grFormulas!*_
 
@@ -4590,7 +4585,7 @@ _grFormulas!*__/grFormulas!*_
 
 _/couasText!*__/couas!*_
 
- 
+
 
 
 
@@ -4606,7 +4601,7 @@ _grFormulas!*__/grFormulas!*_
 
 _/couasText!*__/couas!*_
 
- 
+
 
 
 
@@ -4618,7 +4613,7 @@ _grFormulas!*__/grFormulas!*_
 
 _/couasText!*__/couas!*_
 
- 
+
 
 
 
@@ -4666,7 +4661,7 @@ _/templateContent_
 
 _templateName_documentMain_/templateName_
 _templateContent_
- 
+
 _verVar!**!_*variables*_/verVar!**!_
 
 <h3>MTH4120:  Introduction to Probability (_vr_semester_/vr_)</h3>
@@ -4725,12 +4720,12 @@ _n*_ _vr_courseNumber_/vr_ (_vr_semester_/vr_) Home_/n*_
 _n*__vr_docName_/vr__/n*_
 _/verIns!**!_
 <h3>Grades for _vr_courseNumber_/vr_ (_vr_semester_/vr_)</h3>
-<p> 
-_verIns!**!__n*_courseAssignment_/n*__n*__vr_mainGradingDocument_/vr__/n*__/verIns!**!_  
+<p>
+_verIns!**!__n*_courseAssignment_/n*__n*__vr_mainGradingDocument_/vr__/n*__/verIns!**!_
 </p>
 
 
-<h3>Assignments</h3> 
+<h3>Assignments</h3>
 <table class="table table-striped">
 <thead class="table-dark">
 <tr><th>Date</th><th>Assignment</th><th>Link</th></tr></thead>
@@ -4740,39 +4735,39 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH01_/n*_
 _n*_HW 1_/n*_
 _n*_students_/n*_
-_/insert_ 
+_/insert_
  _insert_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH01_/n*_
 _n*_grading job_/n*_
 _n*_graders_/n*_
-_/insert_ 
+_/insert_
 </td></tr>
 <tr><td>_vr_hw2date_/vr_</td><td>Homework 2</td><td>_insert_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_students_/n*_
-_/insert_ 
+_/insert_
  _insert_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_grading job_/n*_
 _n*_graders_/n*_
-_/insert_ 
+_/insert_
 </td></tr>
 <tr><td>_vr_hw3date_/vr_</td><td>Homework 3</td><td></td></tr>
 <tr><td>_vr_hw4date_/vr_</td><td>Homework 4</td><td></td></tr>
 <tr><td>_vr_m1wdate_/vr_</td><td>Midterm 1 </td><td></td></tr>
-<tr><td>_vr_hw5date_/vr_</td><td>Homework 5</td><td></td></tr> 
+<tr><td>_vr_hw5date_/vr_</td><td>Homework 5</td><td></td></tr>
 <tr><td>_vr_hw6date_/vr_</td><td>Homework 6</td><td></td></tr>
 <tr><td>_vr_hw7date_/vr_</td><td>Homework 7</td><td></td></tr>
 <tr><td>_vr_m2wdate_/vr_</td><td>Midterm 2 </td><td></td></tr>
-<tr><td>_vr_hw8date_/vr_</td><td>Homework 8</td><td></td></tr> 
+<tr><td>_vr_hw8date_/vr_</td><td>Homework 8</td><td></td></tr>
 <tr><td>_vr_hw9date_/vr_</td><td>Homework 9</td><td></td></tr>
 <tr><td>_vr_dateForFinal_/vr_</td><td>Final</td><td></td></tr>
 </tbody>
-</table>  
+</table>
 
 _/templateContent_
 
@@ -4824,7 +4819,7 @@ _/verIns!**!_
 <h4>Parameters </h4>
 <p>Code for the main grading document: _vr_mainGradingDocument_/vr_; Code for the main forum document: _vr_mainForumPage_/vr_</p>
 <h4>Quiz 1 (HW1)</h4>
-<p>Problems: 
+<p>Problems:
 _verIns!**!_
 _n*_internalLink_/n*_
 _n*_policiesQ01_/n*_
@@ -4865,7 +4860,7 @@ _/hideReveal_
 
 
 <h4>HW2</h4>
-<p>Problems: 
+<p>Problems:
 _verIns!**!_
 _n*_internalLink_/n*_
 _n*_mth4120hw02Q01_/n*_
@@ -4889,7 +4884,7 @@ _n*_internalLink_/n*_
 _n*_mth4120hw02Q05_/n*_
 _n*_mth4120hw02Q05_/n*_
 _/verIns!**!_.<br>
-Exam document: _vr_docName_/vr_EH02; Permissions: _vr_docName_/vr_EH02p; Grading observation: 
+Exam document: _vr_docName_/vr_EH02; Permissions: _vr_docName_/vr_EH02p; Grading observation:
 _verIns!**!_
 _n*_internalLink_/n*_
 _n*__vr_docName_/vr__vr_gradingObservationH02Extension_/vr__/n*_
@@ -4924,9 +4919,9 @@ _/verIns!**!_
 
 <h3>Forum: _vr_courseNumber_/vr_ (_vr_semester_/vr_)</h3>
 
-_verIns!**!__n*_message_/n*__n*__vr_mainForumPage_/vr__/n*__/verIns!**!_  
+_verIns!**!__n*_message_/n*__n*__vr_mainForumPage_/vr__/n*__/verIns!**!_
 _/templateContent_
- 
+
 
 
 _templateName_policies_/templateName_
@@ -4940,7 +4935,7 @@ _/verIns!**!_
 <h3>Course Policies: _vr_courseNumber_/vr_  (_vr_semester_/vr_)</h3>
 <p> Under construction</p>
 _/templateContent_
-   
+
 
 
 _templateName_gradingObservationH02_/templateName_
@@ -4952,14 +4947,14 @@ _n*_ _vr_courseNumber_/vr_ (_vr_semester_/vr_) Home_/n*_
 _n*__vr_docName_/vr__/n*_
 _/verIns!**!_
 <h2> HW2 grading invitation</h2>
-Place the code in the text that students have access to. 
+Place the code in the text that students have access to.
 
  _verIns!**!_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_students_/n*_
-_/verIns!**!_ 
+_/verIns!**!_
 
 
  _verIns!**!_
@@ -4967,7 +4962,7 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_graders_/n*_
-_/verIns!**!_ 
+_/verIns!**!_
 
 <h2>HW2 grading observation</h2>
  _verIns!**!_
@@ -4975,17 +4970,17 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_summary_/n*_
-_/verIns!**!_ 
+_/verIns!**!_
 
 _/templateContent_
 
 
- 
+
 
 
 _/templatesMain_
 
- 
+
 
 
 
@@ -4995,22 +4990,21 @@ _key_admin_/key__val_root_/val_
 _key_instructor_/key__val_root_/val_
 _/specialInstructions_
 
-_/nc***_ _nc***_na_/nc***_ 
+_/nc***_ _nc***_na_/nc***_
 _/command_
 _/codeBox_
 _/hideReveal_
 
-_doNotChangeAlphabet*_ 
 <h2>Create grading for the entire course</h2>
 <p>The code below will create multiple course/assignments in couas database.</p>
-_/doNotChangeAlphabet*_ 
+
 _hideReveal__revealTitle_Show code_/revealTitle__hideTitle_Hide code_/hideTitle_
 _codeBox_
 _command_
-_nc***_createGradingForCourse_/nc***_ 
-template for creation of the grading scheme: 
+_nc***_createGradingForCourse_/nc***_
+template for creation of the grading scheme:
 _nc***_
- 
+
 _couas!*_
 
 _couasName!*_{mainCouas}_/couasName!*__couasText!*_
@@ -5048,7 +5042,7 @@ _label!__pos_2_/pos__disp_Q3_/disp__/label!__value!_{quiz3}_/value!_
 _label!__pos_3_/pos__disp_T_/disp__/label!__value!_{result}_/value!_
 _/grDisplay!*_
 _grFormulas!*__fScope!*_all_/fScope!*__fmath!*_
-{result}=0.33*({quiz1}@1)*(({quiz1}+25)&100)+0.33*({quiz2}@1)*(({quiz2}+25)&100)+0.34*({quiz3}@1)*(({quiz3}+25)&100)@@ 
+{result}=0.33*({quiz1}@1)*(({quiz1}+25)&100)+0.33*({quiz2}@1)*(({quiz2}+25)&100)+0.34*({quiz3}@1)*(({quiz3}+25)&100)@@
 {quiz1}=_getFrom_{q1Couas}_/getFrom_@@
 {quiz2}=_getFrom_{q2Couas}_/getFrom_@@
 {quiz3}=_getFrom_{q3Couas}_/getFrom_@@
@@ -5149,9 +5143,8 @@ _/command_
 _/codeBox_
 _/hideReveal_
 <p></p>
-_doNotChangeAlphabet*_ 
 <h2>Adding Individual Students</h2>
-<p>This is a code to add a few students to the class.</p> _/doNotChangeAlphabet*_ 
+<p>This is a code to add a few students to the class.</p>
 _hideReveal__revealTitle_Show code_/revealTitle__hideTitle_Hide code_/hideTitle_
 _codeBox_
 _command_
@@ -5159,7 +5152,7 @@ _nc***_enrollStudents_/nc***_
 courseAssignmentCode: _nc***_ReplaceWithActualIdCodeForTheMainCouas_/nc***_
 placeToWriteReport: _nc***_enrollmentM5000_/nc***_
 prefixForExternalId: _nc***_CB_/nc***_
-students to be added  
+students to be added
 _nc***_
 _n*_
 _id*_1122334455_/id*_
@@ -5167,9 +5160,9 @@ _first*_F001_/first*_
 _last*_L001_/last*_
 _email*_f01.l01@baruchmail.cuny.edu_/email*_
 _/n*_
- 
 
-_/nc***_ 
+
+_/nc***_
 _/command_
 _/codeBox_
 _/hideReveal_
@@ -5177,9 +5170,8 @@ _/hideReveal_
 
 
 <p></p>
-_doNotChangeAlphabet*_ 
 <h2>Mass enrollment</h2>
-<p>This code can be used to add students to the course. The database of students can be harvested from the CUNYfirst portal. It is sufficient to copy and paste the content displayed html. Make sure to include the entire table and little bit of text before and after the table (the algorithm will figure out where are the students and their CUNY ids). In the end, you need to add the email addresses of the students (separated by commas). They can be obtained from the link "notify all students". Example of the command is shown below </p>_/doNotChangeAlphabet*_ 
+<p>This code can be used to add students to the course. The database of students can be harvested from the CUNYfirst portal. It is sufficient to copy and paste the content displayed html. Make sure to include the entire table and little bit of text before and after the table (the algorithm will figure out where are the students and their CUNY ids). In the end, you need to add the email addresses of the students (separated by commas). They can be obtained from the link "notify all students". Example of the command is shown below </p>
 _hideReveal__revealTitle_Show code_/revealTitle__hideTitle_Hide code_/hideTitle_
 _codeBox_
 _command_
@@ -5187,34 +5179,34 @@ _nc***_enrollStudents_/nc***_
 courseAssignmentCode: _nc***_ReplaceWithActualIdCodeForTheMainCouas_/nc***_
 placeToWriteReport: _nc***_enrollmentM5000_/nc***_
 prefixForExternalId: _nc***_CB_/nc***_
-students to be added  
+students to be added
 _nc***_
- 	
+
 Julius Caesar
-								
-	
+
+
 Faculty Center
-		
+
 Advisor Center
-		
+
 Search
 
-								
-														
-	
+
+
+
 my schedule
-		
+
 class roster
-		
+
 grade roster
-		
+
 voe roster
-		
+
 my textbook/material
 
-														
+
 Class Roster
- 
+
 2020 Fall Term | Regular Academic Session | Baruch College | Undergraduate
 Expand / Collapse
 change class
@@ -5234,10 +5226,10 @@ Enrollment Capacity
 Enrolled
 28
 31
-Enrolled Students	Find | Zoom Enrolled Students |  Download        First Show previous row (inactive button) (Alt+,) 1-31 of 31 Show next row (inactive button) (Alt+.) Last 
+Enrolled Students	Find | Zoom Enrolled Students |  Download        First Show previous row (inactive button) (Alt+,) 1-31 of 31 Show next row (inactive button) (Alt+.) Last
  	Notify	ID	Name	Grade Basis	Units	Program and Plan	Level	CUNY Login
-Row1	
- 
+Row1
+
 11223344
 Washington, George
 GRD
@@ -5246,7 +5238,7 @@ Undergraduate -
 Mathematics BA/NB Human Resource Minor/IND  with HON in NYC Stu Minor
 Upper JR
 someOtherText
-Row8	
+Row8
 
 11223355
 Adams, John
@@ -5256,8 +5248,8 @@ Undergraduate -
 Actuarial Science BA/Black & Hispanic Studies Minor
 Lower SR
 john.adams55
-Row9		
- 
+Row9
+
 11223366
 Jefferson, Thomas
 GRD
@@ -5266,8 +5258,8 @@ Undergraduate -
 Finance BBA/Mathematics Minor
 Lower SR
 thomas.jefferson60
-Row31		
- 
+Row31
+
 11224455
 Madison, James
 GRD
@@ -5276,7 +5268,7 @@ Undergraduate -
 Actuarial Science BA
 Upper SO
 james.madison06
-Row88	
+Row88
 
 22334455
 Adams,John Quincy
@@ -5291,13 +5283,12 @@ Clear All
 _emails!*_student01@gmail.com, student02@gmail.com, student03@gmail.com, student04@gmail.com, student05@gmail.com
 _/emails!*_
 
-_/nc***_ 
+_/nc***_
 _/command_
 _/codeBox_
-_/hideReveal_ 
-_doNotChangeAlphabet*_ 
+_/hideReveal_
 <h2>Generate exam</h2>
-<p>This code will create the exam in the database _cde_responceReceiver_/cde_.</p>_/doNotChangeAlphabet*_ 
+<p>This code will create the exam in the database _cde_responceReceiver_/cde_.</p>
 _hideReveal__revealTitle_Show code_/revealTitle__hideTitle_Hide code_/hideTitle_
 _codeBox_
 _command_
@@ -5318,22 +5309,22 @@ _examOptions*|_
 ****************       _sf*|_n_/sf*|_      **************
 ***************************************************
 
-Status is one of the following: n/a/q/s/c/sc/p/sp 
+Status is one of the following: n/a/q/s/c/sc/p/sp
  n - not available. Exam is closed and questions are not shown
  a - active. Exam is open and students can submit responses to questions
- q - exam is closed for answering. 
+ q - exam is closed for answering.
          The questions and responses are displayed
- s - exam is closed for answering. 
+ s - exam is closed for answering.
          The questions, responses, and official answers are displayed
 
- p - exam is closed for answering. 
+ p - exam is closed for answering.
          The questions, responses, and points from the grader are displayed.
- sp - exam is closed for answering. 
+ sp - exam is closed for answering.
          The questions, responses, points, and official solutions are displayed.
 
- c - exam is closed for answering. 
+ c - exam is closed for answering.
          The questions, responses, points, and the comments by the grader are displayed.
- sc - exam is closed for answering. 
+ sc - exam is closed for answering.
          The questions, responses, points, grader's comments, and official solutions are displayed.
 
 
@@ -5347,7 +5338,7 @@ Status is one of the following: n/a/
  n - not available. Grading is closed and nothing is shown to the grader
  a - active. Grades can be submitted by the grader.
 
-                                
+
 
 ***************************************************
 *** SECTION 3: LABEL ON THE SUBMIT BUTTON ***
@@ -5371,41 +5362,41 @@ _problems*|_
 
 _in*|_
 _p*|_MTH000M1P01_/p*|_
-_pt*|_20_/pt*|_ 
+_pt*|_20_/pt*|_
 _lb*|_Q01_/lb*|_
 _/in*|_
 
 _in*|_
 _p*|_MTH000M1P02_/p*|_
-_pt*|_20_/pt*|_ 
+_pt*|_20_/pt*|_
 _lb*|_Q02_/lb*|_
 _/in*|_
 
 _in*|_
 _p*|_MTH000M1P03_/p*|_
-_pt*|_20_/pt*|_ 
+_pt*|_20_/pt*|_
 _lb*|_Q03_/lb*|_
 _/in*|_
 
 _in*|_
 _p*|_MTH000M1P04_/p*|_
-_pt*|_20_/pt*|_ 
+_pt*|_20_/pt*|_
 _lb*|_Q04_/lb*|_
 _/in*|_
 
 _in*|_
 _p*|_MTH000M1P05_/p*|_
-_pt*|_20_/pt*|_ 
+_pt*|_20_/pt*|_
 _lb*|_Q05_/lb*|_
 _/in*|_
- 
+
 _/problems*|_
 
 _students*|_
 Number of files that students will be allowed to submit:
 _nf*|_3_/nf*|_
 
-Master document with permissions. 
+Master document with permissions.
 _ms*|_MTH000M1Permissions_/ms*|_ //if this line is missing then the master document will be created
 
 _st*|__n*|_F008 L008_/n*|__n*|_na_/n*|__n*|_us008_/n*|__n*|_799_/n*|__/st*|_
@@ -5413,11 +5404,11 @@ _st*|__n*|_F009 L009_/n*|__n*|_na_/n*|__n*|_us009_/n*|__n*|_799_/n*|__/st*|_
 _st*|__n*|_F010 L010_/n*|__n*|_na_/n*|__n*|_us010_/n*|__n*|_799_/n*|__/st*|_
 _st*|__n*|_F011 L011_/n*|__n*|_na_/n*|__n*|_us011_/n*|__n*|_799_/n*|__/st*|_
 _st*|__n*|_F012 L012_/n*|__n*|_na_/n*|__n*|_us012_/n*|__n*|_799_/n*|__/st*|_
- 
+
 
 _/students*|_
 
-_/nc***_ 
+_/nc***_
 _/command_
 
 _/codeBox_
@@ -5425,29 +5416,27 @@ _/hideReveal_
 <p></p>
 
 
-_doNotChangeAlphabet*_ 
 <h2>Add students to existing exam</h2>
-<p>This code will update the exam in the database _cde_responceReceiver_/cde_.</p>_/doNotChangeAlphabet*_ 
+<p>This code will update the exam in the database _cde_responceReceiver_/cde_.</p>
 _hideReveal__revealTitle_Show code_/revealTitle__hideTitle_Hide code_/hideTitle_
 _codeBox_
 _command_
 _nc***_addStudentsToExam_/nc***_
 _nc***_MTH000M1Problems_/nc***_
-_nc***_ 
+_nc***_
 _st*|__n*|_F515 L515_/n*|__n*|_na_/n*|__n*|_us515_/n*|__n*|_799_/n*|__/st*|_
-_st*|__n*|_F516 L516_/n*|__n*|_na_/n*|__n*|_us516_/n*|__n*|_799_/n*|__/st*|_  
+_st*|__n*|_F516 L516_/n*|__n*|_na_/n*|__n*|_us516_/n*|__n*|_799_/n*|__/st*|_
 Number of files that students will be allowed to submit:
-_nf*|_3_/nf*|_ 
-_/nc***_ 
+_nf*|_3_/nf*|_
+_/nc***_
 _/command_
 
 _/codeBox_
 _/hideReveal_
 <p></p>
 
-_doNotChangeAlphabet*_ 
 <h2>Self Grading</h2>
- <p>The code below is used to assign students to grade each other exams.</p>_/doNotChangeAlphabet*_ 
+ <p>The code below is used to assign students to grade each other exams.</p>
 
 _hideReveal__revealTitle_Show code_/revealTitle__hideTitle_Hide code_/hideTitle_
 _codeBox_
@@ -5466,14 +5455,14 @@ _/nc***_ etc.
  _/command_
 
 
- 
+
  _command_
 This command can be used to assign all students to be graders for their own work on a particular assignment.
  _nc***_assignGraders_/nc***_
  _nc***_MTH500M1Problems_/nc***_ _nc***_s_/nc***_ etc.
  _/command_
 
- 
+
  _command_
 This command can be used to assign all students to be graders on a particular assignment
  _nc***_assignGraders_/nc***_
@@ -5482,16 +5471,15 @@ This command can be used to assign all students to be graders on a particular as
 _/codeBox_
 _/hideReveal_
 <p></p>
-_doNotChangeAlphabet*_ 
 <h2>Create single couas</h2>
-<p>The code below will create course/assignment in couas database.</p>_/doNotChangeAlphabet*_ 
+<p>The code below will create course/assignment in couas database.</p>
 
 _hideReveal__revealTitle_Show code_/revealTitle__hideTitle_Hide code_/hideTitle_
 _codeBox_
 _command_
 _nc***_createCourseAssignment_/nc***_
 name of user who created the course or assignment: _nc***_us011_/nc***_
-text to be put in the database: 
+text to be put in the database:
 _nc***_
 _title!*_Course 2_/title!*_
  some other data
@@ -5504,13 +5492,13 @@ _/hideReveal_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -5576,7 +5564,7 @@ _/insert_
  _insert_
 _n*_formPlacement_/n*_
 _n*_passCh_/n*_
-_/insert_ 
+_/insert_
 
 
 _insert_
@@ -5586,12 +5574,12 @@ _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_ 
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -5618,7 +5606,7 @@ _/permission_
 _/permissionString!!_
 _/systemData!!_
 
-_textData!!_ 
+_textData!!_
 
 ***************************************************
 ***                MAIN SETUP OF THE EXAM             ***
@@ -5632,22 +5620,22 @@ _textData!!_
 ****************       _sf*|_n_/sf*|_      **************
 ***************************************************
 
-Status is one of the following: n/a/q/s/c/sc/p/sp 
+Status is one of the following: n/a/q/s/c/sc/p/sp
  n - not available. Exam is closed and questions are not shown
  a - active. Exam is open and students can submit responses to questions
- q - exam is closed for answering. 
+ q - exam is closed for answering.
          The questions and responses are displayed
- s - exam is closed for answering. 
+ s - exam is closed for answering.
          The questions, responses, and official answers are displayed
 
- p - exam is closed for answering. 
+ p - exam is closed for answering.
          The questions, responses, and points from the grader are displayed.
- sp - exam is closed for answering. 
+ sp - exam is closed for answering.
          The questions, responses, points, and official solutions are displayed.
 
- c - exam is closed for answering. 
+ c - exam is closed for answering.
          The questions, responses, points, and the comments by the grader are displayed.
- sc - exam is closed for answering. 
+ sc - exam is closed for answering.
          The questions, responses, points, grader's comments, and official solutions are displayed.
 
 
@@ -5661,7 +5649,7 @@ Status is one of the following: n/a/
  n - not available. Grading is closed and nothing is shown to the grader
  a - active. Grades can be submitted by the grader.
 
-                                
+
 
 ***************************************************
 *** SECTION 3: LABEL ON THE SUBMIT BUTTON ***
@@ -5675,7 +5663,7 @@ Status is one of the following: n/a/
 _iinf*|_
 _|*timer*|_
 _/iinf*|_
- 
+
 _notOpen*|_
 <H2>The exam is not ready yet</H2>
 <P>You should visit this page during the time when your exam is scheduled.</P>
@@ -5687,12 +5675,12 @@ _/noGrading*|_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -5725,13 +5713,13 @@ _textData!!_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -5760,11 +5748,11 @@ _/systemData!!_
 
 _textData!!_
 <H2>Signed In</H2>
-<p>You are already signed in.</p> 
+<p>You are already signed in.</p>
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -5773,7 +5761,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -5816,7 +5804,7 @@ _/insert_
 
 </div>
 
- 
+
 <h2>_vr_aType_/vr_ _vr_aNum_/vr_  grading</h2>
 
 _insert_
@@ -5864,7 +5852,7 @@ _n*_buttonLink_/n*_
 _n*_& Sol_/n*_
 _n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0s00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
 _/insert_
- 
+
 _insert_
 _n*_buttonLink_/n*_
 _n*_& Pts_/n*_
@@ -5905,7 +5893,7 @@ _/insert_
 
 _insert_
 _n*_buttonLink_/n*_
-_n*_CSV_/n*_ 
+_n*_CSV_/n*_
 _n*_index.cgi?page=GrMain&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr_&csvD=yes_/n*_
 _/insert_
 
@@ -5979,12 +5967,12 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/n*_
 _n*__vr_aType_/vr_  _vr_aNum_/vr__/n*_
 _n*_summary_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -5992,7 +5980,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -6033,30 +6021,30 @@ _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
 _n*_commands_/n*_
 _n*_Insert the exam problems by editing the form below._/n*_
-_n*_ 
+_n*_
  _command_
 DO NOT EDIT THIS LINE:_nc***_generateExam_/nc***_
-EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_ 
+EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_
 START EDITING AFTER THIS LINE_nc***_
 _problems*|_
 
- 
+
 _in*|_
 _p*|_sampleProblem01_/p*|_
-_pt*|_33_/pt*|_  
+_pt*|_33_/pt*|_
 _/in*|_
- 
+
 
 _in*|_
 _p*|_sampleProblem02_/p*|_
-_pt*|_33_/pt*|_  
+_pt*|_33_/pt*|_
 _/in*|_
 
 _in*|_
 _p*|_sampleProblem03_/p*|_
-_pt*|_34_/pt*|_  
+_pt*|_34_/pt*|_
 _/in*|_
- 
+
 _/problems*|_
 
 _students*|_
@@ -6066,29 +6054,29 @@ RECOMMENDED DO NOT EDIT THIS LINE _stLocation*|__vr_docName_/vr_St_/stLocation*|
 Number of files that students will be allowed to submit:
 _nf*|_3_/nf*|_
 
- 
- 
+
+
 
 _/students*|_
-_/nc***_  
+_/nc***_
  _/command__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
-
-
- 
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -6116,7 +6104,7 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 
  <H2>Enrollment of students in the course</H2>
 _insert_
@@ -6129,10 +6117,10 @@ _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
 _n*_commands_/n*_
 _n*_Enroll students by editing the form below. The students could also be entered by copy-pasting the displayed page from CUNY first enrollment website._/n*_
-_n*_ 
+_n*_
  _command_
 DO NOT EDIT THIS LINE:_nc***_enrollStudents_/nc***_
-COURSE CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_mainGradingDocument_/vr__/nc***_ 
+COURSE CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_mainGradingDocument_/vr__/nc***_
 REPORT DOCUMENT (RECOMMENDED DO NOT EDIT): _nc***__vr_docName_/vr_St_/nc***_
 PREFIX FOR EXTERNAL ID (RECOMMENDED DO NOT EDIT): _nc***_CB_/nc***_
 START EDITING AFTER THIS LINE_nc***_
@@ -6150,18 +6138,18 @@ _last*_LastName02_/last*_
 _email*_f02.l02@emailProvider.com_/email*_
 _/n*_
 
-_/nc***_  
+_/nc***_
  _/command__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -6169,11 +6157,11 @@ _/nextCommand!*!!_
 
 
 
- 
- 
 
- 
-_nextCommand!*!!_ 
+
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -6201,7 +6189,7 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 
  <H2>Mass enrollment of students in the course</H2>
 _insert_
@@ -6214,39 +6202,39 @@ _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
 _n*_commands_/n*_
 _n*_ The students could also be entered by copy-pasting the displayed page from CUNY first enrollment website._/n*_
-_n*_ 
+_n*_
  _command_
 DO NOT EDIT THIS LINE:_nc***_enrollStudents_/nc***_
-COURSE CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_mainGradingDocument_/vr__/nc***_ 
+COURSE CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_mainGradingDocument_/vr__/nc***_
 REPORT DOCUMENT (RECOMMENDED DO NOT EDIT): _nc***__vr_docName_/vr_St_/nc***_
 PREFIX FOR EXTERNAL ID (RECOMMENDED DO NOT EDIT): _nc***_CB_/nc***_
 START EDITING AFTER THIS LINE_nc***_
- 
+
 Julius Caesar
-								
-	
+
+
 Faculty Center
-		
+
 Advisor Center
-		
+
 Search
 
-								
-														
-	
+
+
+
 my schedule
-		
+
 class roster
-		
+
 grade roster
-		
+
 voe roster
-		
+
 my textbook/material
 
-														
+
 Class Roster
- 
+
 2020 Fall Term | Regular Academic Session | Baruch College | Undergraduate
 Expand / Collapse
 change class
@@ -6266,10 +6254,10 @@ Enrollment Capacity
 Enrolled
 28
 31
-Enrolled Students	Find | Zoom Enrolled Students |  Download        First Show previous row (inactive button) (Alt+,) 1-31 of 31 Show next row (inactive button) (Alt+.) Last 
+Enrolled Students	Find | Zoom Enrolled Students |  Download        First Show previous row (inactive button) (Alt+,) 1-31 of 31 Show next row (inactive button) (Alt+.) Last
  	Notify	ID	Name	Grade Basis	Units	Program and Plan	Level	CUNY Login
-Row1	
- 
+Row1
+
 11223344
 Washington, George
 GRD
@@ -6278,7 +6266,7 @@ Undergraduate -
 Mathematics BA/NB Human Resource Minor/IND  with HON in NYC Stu Minor
 Upper JR
 someOtherText
-Row8	
+Row8
 
 11223355
 Adams, John
@@ -6288,8 +6276,8 @@ Undergraduate -
 Actuarial Science BA/Black & Hispanic Studies Minor
 Lower SR
 john.adams55
-Row9		
- 
+Row9
+
 11223366
 Jefferson, Thomas
 GRD
@@ -6298,8 +6286,8 @@ Undergraduate -
 Finance BBA/Mathematics Minor
 Lower SR
 thomas.jefferson60
-Row31		
- 
+Row31
+
 11224455
 Madison, James
 GRD
@@ -6308,7 +6296,7 @@ Undergraduate -
 Actuarial Science BA
 Upper SO
 james.madison06
-Row88	
+Row88
 
 22334455
 Adams,John Quincy
@@ -6324,18 +6312,18 @@ _emails!*_student01@gmail.com, student02@gmail.com, student03@gmail.com, student
 _/emails!*_
 
 
-_/nc***_  
+_/nc***_
  _/command__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -6345,7 +6333,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -6373,7 +6361,7 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 
  <H2>Assign Graders</H2>
 _insert_
@@ -6386,11 +6374,11 @@ _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
 _n*_commands_/n*_
 _n*_Assign the graders by editing the form below._/n*_
-_n*_ 
+_n*_
  _command_
 DO NOT EDIT THIS LINE:_nc***_assignGraders_/nc***_
-EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_ 
-GRADING PARAMETER (a-all assigned random jobs; s-self grading; see manual for advanced features)_nc***_a_/nc***_  
+EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_
+GRADING PARAMETER (a-all assigned random jobs; s-self grading; see manual for advanced features)_nc***_a_/nc***_
  _/command__/n*_
 
 
@@ -6401,22 +6389,22 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
-
-
- 
+_/nextCommand!*!!_
 
 
 
 
 
 
-_nextCommand!*!!_ 
+
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -6444,8 +6432,8 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
- 
+
+
 
  <H2>Generate PDF files for exam</H2>
 _insert_
@@ -6456,19 +6444,19 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with required parameters and it is best if you just keep them at their default values._/n*_
-_n*_ 
+_n*_
  _command_
 DO NOT EDIT THIS LINE:_nc***_generatePdfsForExam_/nc***_
-EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_ 
+EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_
 START EDITING AFTER THIS LINE_nc***_
 
 **********************************************
 *** _clearFolder*|_no_/clearFolder*|_ ***
 **********************************************
-If you want to generate latex documents for in-class exams, then in the following command you should replace the word no 
-with versions of the exams. 
+If you want to generate latex documents for in-class exams, then in the following command you should replace the word no
+with versions of the exams.
 
 *****************************************************
 *** _inClassExams*|_no_/inClassExams*|_ ***
@@ -6482,21 +6470,21 @@ _n*_10_/n*_
 _n*_randomizeOnlyFirstTime_/n*_
 _/inCommandInsert_
 
-  
-_/nc***_  
+
+_/nc***_
  _/command__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -6506,7 +6494,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -6543,12 +6531,12 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with required parameters and it is best if you just keep them at their default values._/n*_
-_n*_ 
+_n*_
  _command_
 DO NOT EDIT THIS LINE:_nc***_updateVersionsForExam_/nc***_
-EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_ 
+EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_
 START EDITING AFTER THIS LINE_nc***_
 
 _listVersions*|_
@@ -6561,34 +6549,34 @@ _n*_randomizeOnlyFirstTime_/n*_
 _/inCommandInsert_
 
 _/listVersions*|_
- 
+
 _stCustomizations*|_
-REPLACE this text with commands corresponding to those 
-students whose assignments you want to customize. Replace the 
+REPLACE this text with commands corresponding to those
+students whose assignments you want to customize. Replace the
 number 0 with an appropriate version number.
 _/stCustomizations*|_
 
- 
+
 
 _inCommandInsert_
 _n*_listEnrolledStudentData_/n*_
-_n*__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/n*_ 
+_n*__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/n*_
 _/inCommandInsert_
 
- 
 
- 
-_/nc***_  
+
+
+_/nc***_
  _/command__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -6601,7 +6589,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -6629,8 +6617,8 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
- 
+
+
 
  <H2>Generate standard course</H2>
 _insert_
@@ -6641,205 +6629,205 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some of the required parameters._/n*_
-_n*_ 
+_n*_
  _command_
-DO NOT EDIT THIS LINE:_nc***_createStandardCourse_/nc***_ 
+DO NOT EDIT THIS LINE:_nc***_createStandardCourse_/nc***_
 START EDITING AFTER THIS LINE_nc***_
-  
+
 _variablesMain_
 
 _vVPair_
 _vr_docName_/vr_
 _vl_s2134m0001_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_courseNumber_/vr_
 _vl_MTH0001_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_courseName_/vr_
 _vl_Introduction to Mathematics_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_semester_/vr_
 _vl_Spring 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_sectionCode_/vr_
 _vl_JMWB_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_classTime_/vr_
 _vl_MoWe 12:25PM - 2:05PM_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_classPlace_/vr_
 _vl_online_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_officeHoursTime_/vr_
 _vl_We 2:10PM - 4:10PM_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_officeHoursPlace_/vr_
 _vl_online_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_variablesExtension_/vr_
 _vl_Var_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_gradingExtension_/vr_
 _vl_Gr_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_adminExtension_/vr_
 _vl_Ad_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_instructorExtension_/vr_
 _vl_Ins_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_forumExtension_/vr_
 _vl_Fr_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_policiesExtension_/vr_
 _vl_Pl_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_zoomClassExtension_/vr_
 _vl_Sch_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_zoomOHFile_/vr_
 _vl_s2134OHSch_/vl_
-_/vVPair_ 
- 
- 
- 
+_/vVPair_
+
+
+
 _vVPair_
 _vr_hw1date_/vr_
 _vl_Monday, February 1, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_hw2date_/vr_
 _vl_Wednesday, February 3, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_hw3date_/vr_
 _vl_Wednesday, February 10, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw4date_/vr_
 _vl_Wednesday, February 24, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_m1wdate_/vr_
 _vl_Wednesday, March 3, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_hw5date_/vr_
 _vl_Wednesday, March 17, 2134_/vl_
-_/vVPair_ 
- 
+_/vVPair_
+
 _vVPair_
 _vr_hw6date_/vr_
 _vl_Monday, April 5, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_m2wdate_/vr_
 _vl_Wednesday, April 7, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_hw7date_/vr_
 _vl_Wednesday, April 21, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_hw8date_/vr_
 _vl_Wednesday, April 28, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw9date_/vr_
 _vl_Wednesday, May 12, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw8date_/vr_
 _vl_Monday, May 17, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
- 
+
 
 _vVPair_
 _vr_dateForFinal_/vr_
 _vl_TBA_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_mainGradingDocument_/vr_
 _vl_***REPLACE***WITH***MAIN_GRADING_DOC***_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_mainForumPage_/vr_
 _vl_***REPLACE***WITH***MAIN_FORUM_PAGE***_/vl_
-_/vVPair_ 
+_/vVPair_
 _/variablesMain_
 
 
@@ -6996,13 +6984,13 @@ _couasName!*_{mtCouas}_/couasName!*__couasText!*_
 _title!*_Midterms_/title!*__bossC!*_{mainCouas}_/bossC!*__bossN!*_Grade summary_/bossN!*_
 _grDisplay!*_
 _label!__pos_0_/pos__disp_M1_/disp__/label!__value!_{mw1}_/value!_
-_label!__pos_1_/pos__disp_M2_/disp__/label!__value!_{mw2}_/value!_  
+_label!__pos_1_/pos__disp_M2_/disp__/label!__value!_{mw2}_/value!_
 _label!__pos_2_/pos__disp_T_/disp__/label!__value!_{result}_/value!_
 _/grDisplay!*_
 _grFormulas!*__fScope!*_all_/fScope!*__fmath!*_
 {result}=0.5*({mw1})+0.5*({mw2})@@
-{mw1}=_getFrom_{mw1Couas}_/getFrom_@@ 
-{mw2}=_getFrom_{mw2Couas}_/getFrom_@@  
+{mw1}=_getFrom_{mw1Couas}_/getFrom_@@
+{mw2}=_getFrom_{mw2Couas}_/getFrom_@@
 _/fmath!*_
 _/grFormulas!*_
 
@@ -7017,7 +7005,7 @@ _grFormulas!*__/grFormulas!*_
 
 _/couasText!*__/couas!*_
 
- 
+
 
 
 
@@ -7033,10 +7021,10 @@ _grFormulas!*__/grFormulas!*_
 
 _/couasText!*__/couas!*_
 
- 
 
 
- 
+
+
 
 
 
@@ -7084,54 +7072,54 @@ _/templateContent_
 
 _templateName_documentMain_/templateName_
 _templateContent_
- 
+
 _verVar!**!_*variables*_/verVar!**!_
 
 <h3>_vr_courseNumber_/vr_: _vr_courseName_/vr_ (_vr_semester_/vr_)</h3>
 
 
 <p></p> <div>
-                           
+
 
 
              _insert_
             _n*_buttonLink_/n*_
             _n*_Assignments and Grades_/n*_
             _n*_?page=_vr_docName_/vr__vr_gradingExtension_/vr__/n*_
-           _/insert_  
+           _/insert_
 
              _insert_
             _n*_buttonLink_/n*_
             _n*_Lecture Notes_/n*_
             _n*_?page=_vr_docName_/vr_Notes_/n*_
-           _/insert_ 
-             
+           _/insert_
+
             _insert_
              _n*_buttonLink_/n*_
               _n*_Zoom information_/n*_
                 _n*_?page=_vr_docName_/vr__vr_zoomClassExtension_/vr__/n*_
              _/insert_
-       
+
         </div>
 
  <p></p>
 <div class="row">
-   <div class="col-sm-6">    
+   <div class="col-sm-6">
         <div><b>Instructor:</b> Julius Caesar</div>
         <div><b>Class website:</b> <a href="https://gradeyard.com">gradeyard.com</a></div>
         <div><b>email:</b> Julius.Caesar@baruch.cuny.edu</div>
         <div> <b>Class time:</b> _vr_classTime_/vr_ </div>
-        <div>  <b>Class location:</b> _vr_classPlace_/vr_ 
+        <div>  <b>Class location:</b> _vr_classPlace_/vr_
                       _insert_
                             _n*_internalLink_/n*_
                             _n*_(Zoom information)_/n*_
                             _n*__vr_docName_/vr__vr_zoomClassExtension_/vr__/n*_
                       _/insert_
        </div>
-        <div>  <b>Section code:</b> _vr_sectionCode_/vr_ </div> 
-        
+        <div>  <b>Section code:</b> _vr_sectionCode_/vr_ </div>
+
         <div> <b>Office hours time:</b> _vr_officeHoursTime_/vr_ </div>
-        <div>  <b>Office hours location:</b> _vr_officeHoursPlace_/vr_ 
+        <div>  <b>Office hours location:</b> _vr_officeHoursPlace_/vr_
                       _insert_
                             _n*_internalLink_/n*_
                             _n*_(Zoom information)_/n*_
@@ -7140,22 +7128,22 @@ _verVar!**!_*variables*_/verVar!**!_
         </div>
    </div>
 
-   <div class="col-sm-6">    
-        
+   <div class="col-sm-6">
+
         <div><b>Grading formula</b></div>
         <div> Homeworks and quizzes: 25%</div>
          <div> Midterms: 50%</div>
          <div> Final: 25%</div>
-          
+
         <div>  <b>Forum:</b> _insert_
             _n*_internalLink_/n*_
             _n*__vr_semester_/vr_ $\to$ _vr_courseNumber_/vr_ _/n*_
             _n*__vr_docName_/vr__vr_forumExtension_/vr__/n*_
        _/insert_
         </div>
-          
+
    </div>
- 
+
 </div>
 
 
@@ -7189,12 +7177,12 @@ _n*_ _vr_courseNumber_/vr_ (_vr_semester_/vr_) Home_/n*_
 _n*__vr_docName_/vr__/n*_
 _/verIns!**!_
 <h3>Grades for _vr_courseNumber_/vr_ (_vr_semester_/vr_)</h3>
-<p> 
-_verIns!**!__n*_courseAssignment_/n*__n*__vr_mainGradingDocument_/vr__/n*__/verIns!**!_  
+<p>
+_verIns!**!__n*_courseAssignment_/n*__n*__vr_mainGradingDocument_/vr__/n*__/verIns!**!_
 </p>
 
 
-<h3>Assignments</h3> 
+<h3>Assignments</h3>
 <table class="table table-striped">
 <thead class="table-dark">
 <tr><th>Date</th><th>Assignment</th><th>Link</th></tr></thead>
@@ -7204,39 +7192,39 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH01_/n*_
 _n*_HW 1_/n*_
 _n*_students_/n*_
-_/insert_ 
+_/insert_
  _insert_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH01_/n*_
 _n*_grading job_/n*_
 _n*_graders_/n*_
-_/insert_ 
+_/insert_
 </td></tr>
 <tr><td>_vr_hw2date_/vr_</td><td>Homework 2</td><td>_insert_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_students_/n*_
-_/insert_ 
+_/insert_
  _insert_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_grading job_/n*_
 _n*_graders_/n*_
-_/insert_ 
+_/insert_
 </td></tr>
 <tr><td>_vr_hw3date_/vr_</td><td>Homework 3</td><td></td></tr>
 <tr><td>_vr_hw4date_/vr_</td><td>Homework 4</td><td></td></tr>
 <tr><td>_vr_m1wdate_/vr_</td><td>Midterm 1 </td><td></td></tr>
-<tr><td>_vr_hw5date_/vr_</td><td>Homework 5</td><td></td></tr> 
+<tr><td>_vr_hw5date_/vr_</td><td>Homework 5</td><td></td></tr>
 <tr><td>_vr_hw6date_/vr_</td><td>Homework 6</td><td></td></tr>
 <tr><td>_vr_hw7date_/vr_</td><td>Homework 7</td><td></td></tr>
 <tr><td>_vr_m2wdate_/vr_</td><td>Midterm 2 </td><td></td></tr>
-<tr><td>_vr_hw8date_/vr_</td><td>Homework 8</td><td></td></tr> 
+<tr><td>_vr_hw8date_/vr_</td><td>Homework 8</td><td></td></tr>
 <tr><td>_vr_hw9date_/vr_</td><td>Homework 9</td><td></td></tr>
 <tr><td>_vr_dateForFinal_/vr_</td><td>Final</td><td></td></tr>
 </tbody>
-</table> 
+</table>
 
 _/templateContent_
 
@@ -7290,11 +7278,11 @@ _n*_Mass Enrollment_/n*_
 _n*_index.cgi?page=commandMassEnrollment&ev0=docName&el0=_vr_docName_/vr_&ev1=mainGradingDocument&el1=_vr_mainGradingDocument_/vr__/n*_
 _/verIns!**!_
 </div>
- 
+
 
 <h4>Parameters </h4>
 <p>Code for the main grading document: _vr_mainGradingDocument_/vr_; Code for the main forum document: _vr_mainForumPage_/vr_</p>
-  
+
 _/templateContent_
 
 
@@ -7311,9 +7299,9 @@ _/verIns!**!_
 
 <h3>Forum: _vr_courseNumber_/vr_ (_vr_semester_/vr_)</h3>
 
-_verIns!**!__n*_message_/n*__n*__vr_mainForumPage_/vr__/n*__/verIns!**!_  
+_verIns!**!__n*_message_/n*__n*__vr_mainForumPage_/vr__/n*__/verIns!**!_
 _/templateContent_
- 
+
 
 
 _templateName_policies_/templateName_
@@ -7327,7 +7315,7 @@ _/verIns!**!_
 <h3>Course Policies: _vr_courseNumber_/vr_  (_vr_semester_/vr_)</h3>
 <p> Under construction</p>
 _/templateContent_
-   
+
 
 
 _templateName_gradingObservationH02_/templateName_
@@ -7339,14 +7327,14 @@ _n*_ _vr_courseNumber_/vr_ (_vr_semester_/vr_) Home_/n*_
 _n*__vr_docName_/vr__/n*_
 _/verIns!**!_
 <h2> HW2 grading invitation</h2>
-Place the code in the text that students have access to. 
+Place the code in the text that students have access to.
 
  _verIns!**!_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_students_/n*_
-_/verIns!**!_ 
+_/verIns!**!_
 
 
  _verIns!**!_
@@ -7354,7 +7342,7 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_graders_/n*_
-_/verIns!**!_ 
+_/verIns!**!_
 
 <h2>HW2 grading observation</h2>
  _verIns!**!_
@@ -7362,17 +7350,17 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_summary_/n*_
-_/verIns!**!_ 
+_/verIns!**!_
 
 _/templateContent_
 
 
- 
+
 
 
 _/templatesMain_
 
- 
+
 
 
 _specialInstructions_
@@ -7380,27 +7368,27 @@ _specialInstructions_
 _key_admin_/key__val_root_/val_
 _key_instructor_/key__val_root_/val_
 _/specialInstructions_
- 
-_/nc***_  _nc***_na_/nc***_ 
+
+_/nc***_  _nc***_na_/nc***_
  _/command__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
- 
- 
 
-_nextCommand!*!!_ 
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -7428,8 +7416,8 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
- 
+
+
 
  <H2>Generate standard course</H2>
 _insert_
@@ -7440,193 +7428,193 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some of the required parameters._/n*_
-_n*_ 
+_n*_
  _command_
-DO NOT EDIT THIS LINE:_nc***_createStandardCourse_/nc***_ 
+DO NOT EDIT THIS LINE:_nc***_createStandardCourse_/nc***_
 START EDITING AFTER THIS LINE_nc***_
-  
+
 _variablesMain_
 
 _vVPair_
 _vr_docName_/vr_
 _vl_s2134m4000_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_courseNumber_/vr_
 _vl_MTH4000_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_courseName_/vr_
 _vl_Bridge to Higher Mathematics_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_semester_/vr_
 _vl_Spring 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_sectionCode_/vr_
 _vl_JMWB_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_classTime_/vr_
 _vl_MoWe 12:25PM - 2:05PM_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_classPlace_/vr_
 _vl_online_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_officeHoursTime_/vr_
 _vl_We 2:10PM - 4:10PM_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_officeHoursPlace_/vr_
 _vl_online_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_variablesExtension_/vr_
 _vl_Var_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_gradingExtension_/vr_
 _vl_Gr_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_adminExtension_/vr_
 _vl_Ad_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_instructorExtension_/vr_
 _vl_Ins_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_forumExtension_/vr_
 _vl_Fr_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_policiesExtension_/vr_
 _vl_Pl_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_zoomClassExtension_/vr_
 _vl_Sch_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_zoomOHFile_/vr_
 _vl_s2134OHSch_/vl_
-_/vVPair_ 
- 
- 
- 
+_/vVPair_
+
+
+
 _vVPair_
 _vr_hw1date_/vr_
 _vl_Monday, February 1, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_hw2date_/vr_
 _vl_Wednesday, February 3, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_hw3date_/vr_
 _vl_Wednesday, February 10, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw4date_/vr_
 _vl_Wednesday, February 24, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_m1wdate_/vr_
 _vl_Wednesday, March 3, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_hw5date_/vr_
 _vl_Wednesday, March 17, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_m1odate_/vr_
 _vl_Wednesday, March 17, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw6date_/vr_
 _vl_Monday, April 5, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_m2wdate_/vr_
 _vl_Wednesday, April 7, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_hw7date_/vr_
 _vl_Wednesday, April 21, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_hw8date_/vr_
 _vl_Wednesday, April 28, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw9date_/vr_
 _vl_Wednesday, May 12, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw8date_/vr_
 _vl_Monday, May 17, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
@@ -7634,23 +7622,23 @@ _/vVPair_
 _vVPair_
 _vr_m2odate_/vr_
 _vl_Wednesday, April 21, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_dateForFinal_/vr_
 _vl_TBA_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_mainGradingDocument_/vr_
 _vl_***REPLACE***WITH***MAIN_GRADING_DOC***_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_mainForumPage_/vr_
 _vl_***REPLACE***WITH***MAIN_FORUM_PAGE***_/vl_
-_/vVPair_ 
+_/vVPair_
 _/variablesMain_
 
 
@@ -7807,15 +7795,15 @@ _couasName!*_{mtCouas}_/couasName!*__couasText!*_
 _title!*_Midterms_/title!*__bossC!*_{mainCouas}_/bossC!*__bossN!*_Grade summary_/bossN!*_
 _grDisplay!*_
 _label!__pos_0_/pos__disp_M1_/disp__/label!__value!_{mw1}_/value!_
-_label!__pos_1_/pos__disp_M2_/disp__/label!__value!_{mw2}_/value!_ 
-_label!__pos_2_/pos__disp_M3_/disp__/label!__value!_{mw3}_/value!_ 
+_label!__pos_1_/pos__disp_M2_/disp__/label!__value!_{mw2}_/value!_
+_label!__pos_2_/pos__disp_M3_/disp__/label!__value!_{mw3}_/value!_
 _label!__pos_3_/pos__disp_T_/disp__/label!__value!_{result}_/value!_
 _/grDisplay!*_
 _grFormulas!*__fScope!*_all_/fScope!*__fmath!*_
 {result}=0.4*({mw1})+0.4*({mw2})+0.2*({mw3})@@
-{mw1}=_getFrom_{mw1Couas}_/getFrom_@@ 
-{mw2}=_getFrom_{mw2Couas}_/getFrom_@@ 
-{mw3}=_getFrom_{mw3Couas}_/getFrom_@@ 
+{mw1}=_getFrom_{mw1Couas}_/getFrom_@@
+{mw2}=_getFrom_{mw2Couas}_/getFrom_@@
+{mw3}=_getFrom_{mw3Couas}_/getFrom_@@
 _/fmath!*_
 _/grFormulas!*_
 
@@ -7830,7 +7818,7 @@ _grFormulas!*__/grFormulas!*_
 
 _/couasText!*__/couas!*_
 
- 
+
 
 
 
@@ -7846,7 +7834,7 @@ _grFormulas!*__/grFormulas!*_
 
 _/couasText!*__/couas!*_
 
- 
+
 
 
 
@@ -7858,7 +7846,7 @@ _grFormulas!*__/grFormulas!*_
 
 _/couasText!*__/couas!*_
 
- 
+
 
 
 
@@ -7906,54 +7894,54 @@ _/templateContent_
 
 _templateName_documentMain_/templateName_
 _templateContent_
- 
+
 _verVar!**!_*variables*_/verVar!**!_
 
 <h3>_vr_courseNumber_/vr_: _vr_courseName_/vr_ (_vr_semester_/vr_)</h3>
 
 
 <p></p> <div>
-                           
+
 
 
              _insert_
             _n*_buttonLink_/n*_
             _n*_Assignments and Grades_/n*_
             _n*_?page=_vr_docName_/vr__vr_gradingExtension_/vr__/n*_
-           _/insert_  
+           _/insert_
 
              _insert_
             _n*_buttonLink_/n*_
             _n*_Lecture Notes_/n*_
             _n*_?page=_vr_docName_/vr_Notes_/n*_
-           _/insert_ 
-             
+           _/insert_
+
             _insert_
              _n*_buttonLink_/n*_
               _n*_Zoom information_/n*_
                 _n*_?page=_vr_docName_/vr__vr_zoomClassExtension_/vr__/n*_
              _/insert_
-       
+
         </div>
 
  <p></p>
 <div class="row">
-   <div class="col-sm-6">    
+   <div class="col-sm-6">
         <div><b>Instructor:</b> Julius Caesar</div>
         <div><b>Class website:</b> <a href="https://gradeyard.com">gradeyard.com</a></div>
         <div><b>email:</b> Julius.Caesar@baruch.cuny.edu</div>
         <div> <b>Class time:</b> _vr_classTime_/vr_ </div>
-        <div>  <b>Class location:</b> _vr_classPlace_/vr_ 
+        <div>  <b>Class location:</b> _vr_classPlace_/vr_
                       _insert_
                             _n*_internalLink_/n*_
                             _n*_(Zoom information)_/n*_
                             _n*__vr_docName_/vr__vr_zoomClassExtension_/vr__/n*_
                       _/insert_
        </div>
-        <div>  <b>Section code:</b> _vr_sectionCode_/vr_ </div> 
-        
+        <div>  <b>Section code:</b> _vr_sectionCode_/vr_ </div>
+
         <div> <b>Office hours time:</b> _vr_officeHoursTime_/vr_ </div>
-        <div>  <b>Office hours location:</b> _vr_officeHoursPlace_/vr_ 
+        <div>  <b>Office hours location:</b> _vr_officeHoursPlace_/vr_
                       _insert_
                             _n*_internalLink_/n*_
                             _n*_(Zoom information)_/n*_
@@ -7962,22 +7950,22 @@ _verVar!**!_*variables*_/verVar!**!_
         </div>
    </div>
 
-   <div class="col-sm-6">    
-        
+   <div class="col-sm-6">
+
         <div><b>Grading formula</b></div>
         <div> Homeworks and quizzes: 25%</div>
          <div> Midterms: 50%</div>
          <div> Final: 25%</div>
-          
+
         <div>  <b>Forum:</b> _insert_
             _n*_internalLink_/n*_
             _n*__vr_semester_/vr_ $\to$ _vr_courseNumber_/vr_ _/n*_
             _n*__vr_docName_/vr__vr_forumExtension_/vr__/n*_
        _/insert_
         </div>
-          
+
    </div>
- 
+
 </div>
 
 
@@ -8011,12 +7999,12 @@ _n*_ _vr_courseNumber_/vr_ (_vr_semester_/vr_) Home_/n*_
 _n*__vr_docName_/vr__/n*_
 _/verIns!**!_
 <h3>Grades for _vr_courseNumber_/vr_ (_vr_semester_/vr_)</h3>
-<p> 
-_verIns!**!__n*_courseAssignment_/n*__n*__vr_mainGradingDocument_/vr__/n*__/verIns!**!_  
+<p>
+_verIns!**!__n*_courseAssignment_/n*__n*__vr_mainGradingDocument_/vr__/n*__/verIns!**!_
 </p>
 
 
-<h3>Assignments</h3> 
+<h3>Assignments</h3>
 <table class="table table-striped">
 <thead class="table-dark">
 <tr><th>Date</th><th>Assignment</th><th>Link</th></tr></thead>
@@ -8026,39 +8014,39 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH01_/n*_
 _n*_HW 1_/n*_
 _n*_students_/n*_
-_/insert_ 
+_/insert_
  _insert_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH01_/n*_
 _n*_grading job_/n*_
 _n*_graders_/n*_
-_/insert_ 
+_/insert_
 </td></tr>
 <tr><td>_vr_hw2date_/vr_</td><td>Homework 2</td><td>_insert_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_students_/n*_
-_/insert_ 
+_/insert_
  _insert_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_grading job_/n*_
 _n*_graders_/n*_
-_/insert_ 
+_/insert_
 </td></tr>
 <tr><td>_vr_hw3date_/vr_</td><td>Homework 3</td><td></td></tr>
 <tr><td>_vr_hw4date_/vr_</td><td>Homework 4</td><td></td></tr>
 <tr><td>_vr_m1wdate_/vr_</td><td>Midterm 1 </td><td></td></tr>
-<tr><td>_vr_hw5date_/vr_</td><td>Homework 5</td><td></td></tr> 
+<tr><td>_vr_hw5date_/vr_</td><td>Homework 5</td><td></td></tr>
 <tr><td>_vr_hw6date_/vr_</td><td>Homework 6</td><td></td></tr>
 <tr><td>_vr_hw7date_/vr_</td><td>Homework 7</td><td></td></tr>
 <tr><td>_vr_m2wdate_/vr_</td><td>Midterm 2 </td><td></td></tr>
-<tr><td>_vr_hw8date_/vr_</td><td>Homework 8</td><td></td></tr> 
+<tr><td>_vr_hw8date_/vr_</td><td>Homework 8</td><td></td></tr>
 <tr><td>_vr_hw9date_/vr_</td><td>Homework 9</td><td></td></tr>
 <tr><td>_vr_dateForFinal_/vr_</td><td>Final</td><td></td></tr>
 </tbody>
-</table> 
+</table>
 
 _/templateContent_
 
@@ -8111,11 +8099,11 @@ _n*_Mass Enrollment_/n*_
 _n*_index.cgi?page=commandMassEnrollment&ev0=docName&el0=_vr_docName_/vr_&ev1=mainGradingDocument&el1=_vr_mainGradingDocument_/vr__/n*_
 _/verIns!**!_
 </div>
- 
+
 
 <h4>Parameters </h4>
 <p>Code for the main grading document: _vr_mainGradingDocument_/vr_; Code for the main forum document: _vr_mainForumPage_/vr_</p>
-  
+
 _/templateContent_
 
 
@@ -8132,9 +8120,9 @@ _/verIns!**!_
 
 <h3>Forum: _vr_courseNumber_/vr_ (_vr_semester_/vr_)</h3>
 
-_verIns!**!__n*_message_/n*__n*__vr_mainForumPage_/vr__/n*__/verIns!**!_  
+_verIns!**!__n*_message_/n*__n*__vr_mainForumPage_/vr__/n*__/verIns!**!_
 _/templateContent_
- 
+
 
 
 _templateName_policies_/templateName_
@@ -8148,7 +8136,7 @@ _/verIns!**!_
 <h3>Course Policies: _vr_courseNumber_/vr_  (_vr_semester_/vr_)</h3>
 <p> Under construction</p>
 _/templateContent_
-   
+
 
 
 _templateName_gradingObservationH02_/templateName_
@@ -8160,14 +8148,14 @@ _n*_ _vr_courseNumber_/vr_ (_vr_semester_/vr_) Home_/n*_
 _n*__vr_docName_/vr__/n*_
 _/verIns!**!_
 <h2> HW2 grading invitation</h2>
-Place the code in the text that students have access to. 
+Place the code in the text that students have access to.
 
  _verIns!**!_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_students_/n*_
-_/verIns!**!_ 
+_/verIns!**!_
 
 
  _verIns!**!_
@@ -8175,7 +8163,7 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_graders_/n*_
-_/verIns!**!_ 
+_/verIns!**!_
 
 <h2>HW2 grading observation</h2>
  _verIns!**!_
@@ -8183,17 +8171,17 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_summary_/n*_
-_/verIns!**!_ 
+_/verIns!**!_
 
 _/templateContent_
 
 
- 
+
 
 
 _/templatesMain_
 
- 
+
 
 
 _specialInstructions_
@@ -8201,30 +8189,30 @@ _specialInstructions_
 _key_admin_/key__val_root_/val_
 _key_instructor_/key__val_root_/val_
 _/specialInstructions_
- 
-_/nc***_  _nc***_na_/nc***_ 
+
+_/nc***_  _nc***_na_/nc***_
  _/command__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
- 
- 
- 
- 
-  
 
-_nextCommand!*!!_ 
+
+
+
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -8252,8 +8240,8 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
- 
+
+
 
  <H2>Generate standard course</H2>
 _insert_
@@ -8264,205 +8252,205 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some of the required parameters._/n*_
-_n*_ 
+_n*_
  _command_
-DO NOT EDIT THIS LINE:_nc***_createStandardCourse_/nc***_ 
+DO NOT EDIT THIS LINE:_nc***_createStandardCourse_/nc***_
 START EDITING AFTER THIS LINE_nc***_
-  
+
 _variablesMain_
 
 _vVPair_
 _vr_docName_/vr_
 _vl_f2134Prob_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_courseNumber_/vr_
 _vl_PreMFE001_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_courseName_/vr_
 _vl_Probability Theory for Financial Applications_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_semester_/vr_
 _vl_Fall 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_sectionCode_/vr_
 _vl_AAA_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_classTime_/vr_
 _vl_Tuesday 7:00PM - 11:00PM_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_classPlace_/vr_
 _vl_online_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_officeHoursTime_/vr_
 _vl_Tuesday 10:00PM - 11:00PM_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_officeHoursPlace_/vr_
 _vl_online_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_variablesExtension_/vr_
 _vl_Var_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_gradingExtension_/vr_
 _vl_Gr_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_adminExtension_/vr_
 _vl_Ad_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_instructorExtension_/vr_
 _vl_Ins_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_forumExtension_/vr_
 _vl_Fr_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_policiesExtension_/vr_
 _vl_Pl_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_zoomClassExtension_/vr_
 _vl_Sch_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_zoomOHFile_/vr_
 _vl_s2134OHSch_/vl_
-_/vVPair_ 
- 
- 
- 
+_/vVPair_
+
+
+
 _vVPair_
 _vr_hw1date_/vr_
 _vl_Monday, February 1, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_hw2date_/vr_
 _vl_Wednesday, February 3, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_hw3date_/vr_
 _vl_Wednesday, February 10, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw4date_/vr_
 _vl_Wednesday, February 24, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_m1wdate_/vr_
 _vl_Wednesday, March 3, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_hw5date_/vr_
 _vl_Wednesday, March 17, 2134_/vl_
-_/vVPair_ 
- 
+_/vVPair_
+
 _vVPair_
 _vr_hw6date_/vr_
 _vl_Monday, April 5, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_m2wdate_/vr_
 _vl_Wednesday, April 7, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_hw7date_/vr_
 _vl_Wednesday, April 21, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _vVPair_
 _vr_hw8date_/vr_
 _vl_Wednesday, April 28, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw9date_/vr_
 _vl_Wednesday, May 12, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_hw8date_/vr_
 _vl_Monday, May 17, 2134_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
- 
+
 
 _vVPair_
 _vr_dateForFinal_/vr_
 _vl_TBA_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_mainGradingDocument_/vr_
 _vl_***REPLACE***WITH***MAIN_GRADING_DOC***_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_mainForumPage_/vr_
 _vl_***REPLACE***WITH***MAIN_FORUM_PAGE***_/vl_
-_/vVPair_ 
+_/vVPair_
 _/variablesMain_
 
 
@@ -8483,7 +8471,7 @@ _label!__pos_3_/pos__disp_G_/disp__/label!__value!_{letterG}_/value!_
 _/grDisplay!*_
 _grFormulas!*__fScope!*_all_/fScope!*__fmath!*_
 {result}=0.6*{homeworks}+0.4*({final}&100)@@
-{homeworks}=_getFrom_{hwCouas}_/getFrom_@@ 
+{homeworks}=_getFrom_{hwCouas}_/getFrom_@@
 {final}=_getFrom_{finalCouas}_/getFrom_@@
 {letterG}=_getFrom_{letterGCouas}_/getFrom_@@
 _/fmath!*_
@@ -8579,7 +8567,7 @@ _grDisplay!*__/grDisplay!*_
 _grFormulas!*__/grFormulas!*_
 
 _/couasText!*__/couas!*_
-      
+
 
 
 _couas!*_
@@ -8626,54 +8614,54 @@ _/templateContent_
 
 _templateName_documentMain_/templateName_
 _templateContent_
- 
+
 _verVar!**!_*variables*_/verVar!**!_
 
 <h3>_vr_courseNumber_/vr_: _vr_courseName_/vr_ (_vr_semester_/vr_)</h3>
 
 
 <p></p> <div>
-                           
+
 
 
              _verIns!**!_
             _n*_buttonLink_/n*_
             _n*_Assignments and Grades_/n*_
             _n*_?page=_vr_docName_/vr__vr_gradingExtension_/vr__/n*_
-           _/verIns!**!_ 
+           _/verIns!**!_
 
              _verIns!**!_
             _n*_buttonLink_/n*_
             _n*_Lecture Notes_/n*_
             _n*_?page=_vr_docName_/vr_Notes_/n*_
-           _/verIns!**!_ 
-             
+           _/verIns!**!_
+
             _verIns!**!_
              _n*_buttonLink_/n*_
               _n*_Zoom information_/n*_
                 _n*_?page=_vr_docName_/vr__vr_zoomClassExtension_/vr__/n*_
              _/verIns!**!_
-       
+
         </div>
 
  <p></p>
 <div class="row">
-   <div class="col-sm-6">    
+   <div class="col-sm-6">
         <div><b>Instructor:</b>Firstname Lastname</div>
         <div><b>Class website:</b> <a href="https://gradeyard.com">gradeyard.com</a></div>
         <div><b>email:</b> Firstname.Lastname@baruch.cuny.edu</div>
         <div> <b>Class time:</b> _vr_classTime_/vr_ </div>
-        <div>  <b>Class location:</b> _vr_classPlace_/vr_ 
+        <div>  <b>Class location:</b> _vr_classPlace_/vr_
                       _insert_
                             _n*_internalLink_/n*_
                             _n*_(Zoom information)_/n*_
                             _n*__vr_docName_/vr__vr_zoomClassExtension_/vr__/n*_
                       _/insert_
        </div>
-        <div>  <b>Section code:</b> _vr_sectionCode_/vr_ </div> 
-        
+        <div>  <b>Section code:</b> _vr_sectionCode_/vr_ </div>
+
         <div> <b>Office hours time:</b> _vr_officeHoursTime_/vr_ </div>
-        <div>  <b>Office hours location:</b> _vr_officeHoursPlace_/vr_ 
+        <div>  <b>Office hours location:</b> _vr_officeHoursPlace_/vr_
                       _insert_
                             _n*_internalLink_/n*_
                             _n*_(Zoom information)_/n*_
@@ -8682,21 +8670,21 @@ _verVar!**!_*variables*_/verVar!**!_
         </div>
    </div>
 
-   <div class="col-sm-6">    
-        
+   <div class="col-sm-6">
+
         <div><b>Grading formula</b></div>
-        <div> Homeworks and quizzes: 60%</div> 
+        <div> Homeworks and quizzes: 60%</div>
          <div> Final: 40%</div>
-          
+
         <div>  <b>Forum:</b> _insert_
             _n*_internalLink_/n*_
             _n*__vr_semester_/vr_ $\to$ _vr_courseNumber_/vr_ _/n*_
             _n*__vr_docName_/vr__vr_forumExtension_/vr__/n*_
        _/insert_
         </div>
-          
+
    </div>
- 
+
 </div>
 
 
@@ -8730,12 +8718,12 @@ _n*_ _vr_courseNumber_/vr_ (_vr_semester_/vr_) Home_/n*_
 _n*__vr_docName_/vr__/n*_
 _/verIns!**!_
 <h3>Grades for _vr_courseNumber_/vr_ (_vr_semester_/vr_)</h3>
-<p> 
-_verIns!**!__n*_courseAssignment_/n*__n*__vr_mainGradingDocument_/vr__/n*__/verIns!**!_   
+<p>
+_verIns!**!__n*_courseAssignment_/n*__n*__vr_mainGradingDocument_/vr__/n*__/verIns!**!_
 </p>
 
 
-<h3>Assignments</h3> 
+<h3>Assignments</h3>
 <table class="table table-striped">
 <thead class="table-dark">
 <tr><th>Date</th><th>Assignment</th><th>Link</th></tr></thead>
@@ -8745,35 +8733,35 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH01_/n*_
 _n*_HW 1_/n*_
 _n*_students_/n*_
-_/insert_ 
+_/insert_
  _insert_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH01_/n*_
 _n*_grading job_/n*_
 _n*_graders_/n*_
-_/insert_ 
+_/insert_
 </td></tr>
 <tr><td>_vr_hw2date_/vr_</td><td>Homework 2</td><td>_insert_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_students_/n*_
-_/insert_ 
+_/insert_
  _insert_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_grading job_/n*_
 _n*_graders_/n*_
-_/insert_ 
+_/insert_
 </td></tr>
 <tr><td>_vr_hw3date_/vr_</td><td>Homework 3</td><td></td></tr>
-<tr><td>_vr_hw4date_/vr_</td><td>Homework 4</td><td></td></tr> 
-<tr><td>_vr_hw5date_/vr_</td><td>Homework 5</td><td></td></tr> 
+<tr><td>_vr_hw4date_/vr_</td><td>Homework 4</td><td></td></tr>
+<tr><td>_vr_hw5date_/vr_</td><td>Homework 5</td><td></td></tr>
 <tr><td>_vr_hw6date_/vr_</td><td>Homework 6</td><td></td></tr>
-<tr><td>_vr_hw7date_/vr_</td><td>Homework 7</td><td></td></tr>  
+<tr><td>_vr_hw7date_/vr_</td><td>Homework 7</td><td></td></tr>
 <tr><td>_vr_dateForFinal_/vr_</td><td>Final</td><td></td></tr>
 </tbody>
-</table> 
+</table>
 
 _/templateContent_
 
@@ -8827,11 +8815,11 @@ _n*_Mass Enrollment_/n*_
 _n*_index.cgi?page=commandMassEnrollment&ev0=docName&el0=_vr_docName_/vr_&ev1=mainGradingDocument&el1=_vr_mainGradingDocument_/vr__/n*_
 _/verIns!**!_
 </div>
- 
+
 
 <h4>Parameters </h4>
 <p>Code for the main grading document: _vr_mainGradingDocument_/vr_; Code for the main forum document: _vr_mainForumPage_/vr_</p>
-  
+
 _/templateContent_
 
 
@@ -8848,9 +8836,9 @@ _/verIns!**!_
 
 <h3>Forum: _vr_courseNumber_/vr_ (_vr_semester_/vr_)</h3>
 
-_insert__n*_message_/n*__n*__vr_mainForumPage_/vr__/n*__/insert_  
+_insert__n*_message_/n*__n*__vr_mainForumPage_/vr__/n*__/insert_
 _/templateContent_
- 
+
 
 
 _templateName_policies_/templateName_
@@ -8864,7 +8852,7 @@ _/verIns!**!_
 <h3>Course Policies: _vr_courseNumber_/vr_  (_vr_semester_/vr_)</h3>
 <p> Under construction</p>
 _/templateContent_
-   
+
 
 
 _templateName_gradingObservationH02_/templateName_
@@ -8876,14 +8864,14 @@ _n*_ _vr_courseNumber_/vr_ (_vr_semester_/vr_) Home_/n*_
 _n*__vr_docName_/vr__/n*_
 _/verIns!**!_
 <h2> HW2 grading invitation</h2>
-Place the code in the text that students have access to. 
+Place the code in the text that students have access to.
 
   _verIns!**!_
 _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_students_/n*_
-_/verIns!**!_ 
+_/verIns!**!_
 
 
  _verIns!**!_
@@ -8891,7 +8879,7 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_graders_/n*_
-_/verIns!**!_ 
+_/verIns!**!_
 
 <h2>HW2 grading observation</h2>
  _verIns!**!_
@@ -8899,17 +8887,17 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr_EH02_/n*_
 _n*_HW 2_/n*_
 _n*_summary_/n*_
-_/verIns!**!_ 
+_/verIns!**!_
 
 _/templateContent_
 
 
- 
+
 
 
 _/templatesMain_
 
- 
+
 
 
 _specialInstructions_
@@ -8917,35 +8905,35 @@ _specialInstructions_
 _key_admin_/key__val_root_/val_
 _key_instructor_/key__val_root_/val_
 _/specialInstructions_
- 
-_/nc***_  _nc***_na_/nc***_ 
+
+_/nc***_  _nc***_na_/nc***_
  _/command__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
- 
- 
- 
- 
- 
- 
- 
- 
- 
 
-_nextCommand!*!!_ 
+
+
+
+
+
+
+
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -8976,16 +8964,16 @@ _textData!!_
 <h3>Create Course from Template</h3>
 <p> Choose one of the following templates for courses. Follow the link, modify the parameters (if you wish) and submit the obtained form. <ul><li>_insert__n*_internalLink_/n*_
 _n*_Course with three midterms_/n*_
-_n*_templateThreeMidterms_/n*__/insert_  
+_n*_templateThreeMidterms_/n*__/insert_
 </li><li>
 _insert__n*_internalLink_/n*_
 _n*_Course with two midterms_/n*_
-_n*_templateTwoMidterms_/n*__/insert_  
+_n*_templateTwoMidterms_/n*__/insert_
 </li>
 <li>
 _insert__n*_internalLink_/n*_
 _n*_Course with no midterms (7 homeworks + final)_/n*_
-_n*_templateNoMidterms7Homeworks_/n*__/insert_  
+_n*_templateNoMidterms7Homeworks_/n*__/insert_
 </li>
 </ul>
 </p>
@@ -8994,14 +8982,14 @@ _n*_templateNoMidterms7Homeworks_/n*__/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
- 
 
-_nextCommand!*!!_ 
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -9019,12 +9007,12 @@ _/permissionString!!__documentType!!_problem_/documentType!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 _tx*|_ What is the capital of the United States?
 _/tx*|_
 _sl*|_
 The correct solution is B. The capital of the United States is Washington D.C. It's not New York, not Jersey City. It is Washington D.C.  _/sl*|_
-_aw*|_B_/aw*|_ 
+_aw*|_B_/aw*|_
 _rq*|_radioButtonsField_/rq*|_
 _rbAll*|_
 _rb*__vl*_A_/vl*_ _vl*_ Moscow_/vl*_ _/rb*_
@@ -9034,12 +9022,12 @@ _rb*__vl*_D_/vl*_ _vl*_ Jersey City_/vl*_ _/rb*_
 _rb*__vl*_E_/vl*_ _vl*_ Miami _/vl*_  _/rb*_
 _rb*__vl*_N_/vl*_ _vl*_  _/vl*_  _/rb*_
 _/rbAll*|_
- 
+
  _lpi*|_
 _choicesInLine*_3_/choicesInLine*_
 _/lpi*|_
- 
- 
+
+
 _searchReplace_
 
 _v*a_
@@ -9049,21 +9037,21 @@ _/v*a_
 _v*0_
 {e_e}=1 @@
 _/v*0_
- 
-      
+
+
 _/searchReplace_
- 
-       
+
+
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -9081,27 +9069,27 @@ _/permissionString!!__documentType!!_problem_/documentType!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 _tx*|_ Evaluate $\frac{{x1}+{x2}\cdot{x3}}{{den}}$.
 _/tx*|_
 
 
 
 
-_sl*|_We first evaluate the numerator and obtain ${x1}+{x2}\cdot {x3}={num}$. Thus the final answer is 
+_sl*|_We first evaluate the numerator and obtain ${x1}+{x2}\cdot {x3}={num}$. Thus the final answer is
 \begin{eqnarray*}
 \frac{{x1}+{x2}\cdot{x3}}{{den}}=\frac{{num}}{{den}}={answer}.
 \end{eqnarray*}
 _/sl*|_
-_aw*|_{answer}_/aw*|_ 
+_aw*|_{answer}_/aw*|_
 _rq*|_textInputField_/rq*|_
- 
+
 
 _searchReplace_
 
 _v*a_
 {num}={den}*{answer}@@
-{x1}={num}-{x2}*{x3}@@ 
+{x1}={num}-{x2}*{x3}@@
 _/v*a_
 
 _v*0_
@@ -9188,14 +9176,14 @@ _/searchReplace_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -9213,16 +9201,16 @@ _/permissionString!!__documentType!!_problem_/documentType!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 _tx*|_ Prove that there exist positive integers $a$ and $b$ such that $a+b=20$.
 _/tx*|_
 _sl*|_
 The existence of these two numbers is easy to prove. One choice for $a$ and $b$ is $a=11$ and $b=9$._/sl*|_
-_aw*|_na_/aw*|_ 
+_aw*|_na_/aw*|_
 _rq*|_textAreaField_/rq*|_
- 
- 
- 
+
+
+
 _searchReplace_
 
 _v*a_
@@ -9232,13 +9220,13 @@ _/v*a_
 _v*0_
 {e_e}=1 @@
 _/v*0_
- 
- _/searchReplace_    
+
+ _/searchReplace_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -9246,7 +9234,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -9264,10 +9252,10 @@ _/permissionString!!__documentType!!_problem_/documentType!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 _tx*|_  <p>Create a C++ program that reads two integers $x$ and $y$ from user input and calculates ${alpha}x + {beta}y+{alpha+beta}$.
 </p>
- 
+
 <p>You should not use sequences, arrays, or any commands that include this symbol: $[$ </p>
 _/tx*|_
 
@@ -9279,7 +9267,7 @@ _sl*|_ <p>This is an easy problem that illustrates how to use the automatic code
 It is even incorrect;
 int x=8;//the only correct line in my code.
 </pre>
-</p> 
+</p>
 
 <p>It is important to note that as a safety precausion <code>#include<???></code> commands will be commented out by compiler both for the official solution and the student's submission. The official solution has to list the libraries that have to be included. The auto-grader will add those libraries instead of the ones that are commented out. In order to have a nicer exposition, I will include the <code>iostream</code> library in the beginning of my solution. However, even if I did not do that, the code would add this library.</p>
 <p>And now, we will write the last code-block that will be sent to the auto-grader.  </p>
@@ -9293,8 +9281,8 @@ int main(){
 }
 </pre>
 _/sl*|_
-_aw*|_na_/aw*|_ 
-_rq*|_textAreaField_/rq*|_ 
+_aw*|_na_/aw*|_
+_rq*|_textAreaField_/rq*|_
  _agr*|_
 _language_cpp_/language_
 _publicTestCases_
@@ -9323,29 +9311,29 @@ _searchReplace_
 _v*a_
 {alpha+beta}= {alpha}+{beta}@@
 _/v*a_
-_v*0_ 
+_v*0_
 {alpha}=9@@
 {beta}=2@@
 
 _/v*0_
-  _v*1_ 
+  _v*1_
 {alpha}=8@@
 {beta}=3@@
 
 _/v*1_
-     _v*2_ 
+     _v*2_
 {alpha}=5@@
 {beta}=10@@
 
 _/v*2_
-   
+
 _/searchReplace_
-       
+
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -9354,7 +9342,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -9372,7 +9360,7 @@ _/permissionString!!__documentType!!_problem_/documentType!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 
 
 _tx*|_  <p>Create a function in C++ whose input is an integer $k$ followed by a vector <code>v</code> of $k$ integers and the output is the {maxmin} element. Your code should replace the text <code>// ??? //</code> below
@@ -9381,7 +9369,7 @@ long {mElement}(const std::vector< long > & v){
 // ??? //
 }
 </pre>
-</p> 
+</p>
 _/tx*|_
 
 
@@ -9402,8 +9390,8 @@ for(long i=1;i<sz;++i){
 return m;
 </pre>
 _/sl*|_
-_aw*|_na_/aw*|_ 
-_rq*|_textAreaField_/rq*|_ 
+_aw*|_na_/aw*|_
+_rq*|_textAreaField_/rq*|_
  _agr*|_
 _language_cpp_/language_
 _testCases_
@@ -9422,7 +9410,7 @@ _/pointsTestCases_
 _revealTestCasesAfterGrading_
 _n*_yes_/n*__n*_yes_/n*__n*_no_/n*_
 _/revealTestCasesAfterGrading_
-_embedIntoCode_ 
+_embedIntoCode_
 long {mElement}(const std::vector < long > & v){
   _*embedHere*_
 }
@@ -9446,29 +9434,29 @@ _searchReplace_
 _v*a_
 {alpha+beta}= {alpha}+{beta}@@
 _/v*a_
-_v*0_ 
+_v*0_
 {maxmin}=maximal@@
 {command}=m < v[i]@@
 {mElement}=maxElement@@
 _/v*0_
-  _v*1_ 
+  _v*1_
 {maxmin}=minimal@@
 {command}=m > v[i]@@
 {mElement}=minElement@@
 
 _/v*1_
- 
-   
+
+
 _/searchReplace_
-       
 
 
- 
+
+
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -9476,7 +9464,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -9494,16 +9482,16 @@ _/permissionString!!__documentType!!_problem_/documentType!!_
 _/systemData!!_
 
 _textData!!_
- 
- 
- 
- 
+
+
+
+
 _tx*|_  <p>Create a python program that reads two positive integers $x$ and $y$ from user input and calculates the number of integers in the interval $[x,x+y]$ that are divisible by ${alpha}$. The integers $x$ and $y$ are provided in a single line and they are separated by a space character. You can input these two integers with the command:
 <pre>
 x, y = map(int, input().split())
 </pre>
 </p>
- 
+
 _/tx*|_
 
 
@@ -9514,7 +9502,7 @@ _sl*|_ <p>This is an easy problem that illustrates how to use the automatic code
 It is even incorrect;
 int x=8 #the only correct line in my code.
 </pre>
-</p> 
+</p>
 
 <p>It is important to note that as a safety precaution <code>import ???</code> commands will be commented out before execution both for the official solution and the student's submission. The official solution has to list the libraries that have to be imported. The auto-grader will add those libraries instead of the ones that are commented out. </p>
 <p>And now, we will write the last code-block that will be sent to the auto-grader.  </p>
@@ -9532,14 +9520,14 @@ else:
 	print((largestDivisibleNumber-smallestDivisibleNumber) // {alpha} +1)
 </pre>
 _/sl*|_
-_aw*|_na_/aw*|_ 
-_rq*|_textAreaField_/rq*|_ 
+_aw*|_na_/aw*|_
+_rq*|_textAreaField_/rq*|_
  _agr*|_
 _language_py_/language_
 _testCases_
 _n*_15 21_/n*_ _n*_23 30_/n*_ _n*_41 50_/n*_
 _/testCases_
- 
+
 _pointsTestCases_
 _n*_7_/n*__n*_8_/n*__n*_10_/n*_
 _/pointsTestCases_
@@ -9553,28 +9541,28 @@ _searchReplace_
 _v*a_
 {alpha+beta}= {alpha}+{beta}@@
 _/v*a_
-_v*0_ 
-{alpha}=9@@ 
+_v*0_
+{alpha}=9@@
 
 _/v*0_
-  _v*1_ 
-{alpha}=8@@ 
+  _v*1_
+{alpha}=8@@
 
 _/v*1_
-     _v*2_ 
-{alpha}=5@@ 
+     _v*2_
+{alpha}=5@@
 
 _/v*2_
-   
-_/searchReplace_
-       
 
- 
+_/searchReplace_
+
+
+
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -9584,7 +9572,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -9602,69 +9590,69 @@ _/permissionString!!__documentType!!_systemText_/documentType!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 _vVPair_
 _vr_randNum01Length03_/vr_
 _vl__randomCode_3_/randomCode__/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_randNum01Length05_/vr_
 _vl__randomCode_5_/randomCode__/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_randNum01Length10_/vr_
 _vl__randomCode_10_/randomCode__/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_randNum02Length03_/vr_
 _vl__randomCode_3_/randomCode__/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_randNum02Length05_/vr_
 _vl__randomCode_5_/randomCode__/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_randNum02Length10_/vr_
 _vl__randomCode_10_/randomCode__/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_randNum03Length03_/vr_
 _vl__randomCode_3_/randomCode__/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_randNum03Length05_/vr_
 _vl__randomCode_5_/randomCode__/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_randNum03Length10_/vr_
 _vl__randomCode_10_/randomCode__/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -9683,34 +9671,34 @@ _/systemData!!_
 
 _textData!!_
   <h3>You are allowed to have your website</h3>
-<p> Your site will be at  _cde__THIS*WEBSITE*URL*_/_GUEST*SITES*__MY*USERNAME*__/cde_</p> 
+<p> Your site will be at  _cde__THIS*WEBSITE*URL*_/_GUEST*SITES*__MY*USERNAME*__/cde_</p>
 <p><b>Warning:</b> If you already have the website at this subdomain, clicking on the button <b>Create/Reset</b> will delete the current version. It will reset the database to the initial state. </p>
 <p>     _insert_
             _n*_buttonLink_/n*_
             _n*_Create/Reset_/n*_
             _n*_?page=createWebsite_/n*_
-           _/insert_  
+           _/insert_
 
-  
+
 
     _insert_
             _n*_buttonLink_/n*_
             _n*_Delete_/n*_
             _n*_?page=deleteWebsite_/n*_
-           _/insert_  
+           _/insert_
 </p>
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -9735,13 +9723,13 @@ _textData!!_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -9763,7 +9751,7 @@ _textData!!_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -9772,7 +9760,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -9814,7 +9802,7 @@ _/insert_
 
 </div>
 
- 
+
 <h2>_vr_aType_/vr_ _vr_aNum_/vr_  grading</h2>
 
 _insert_
@@ -9875,7 +9863,7 @@ _n*_buttonLink_/n*_
 _n*_& Sol_/n*_
 _n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0s00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
 _/insert_
- 
+
 _insert_
 _n*_buttonLink_/n*_
 _n*_& Pts_/n*_
@@ -9932,7 +9920,7 @@ _/insert_
 
 _insert_
 _n*_buttonLink_/n*_
-_n*_CSV_/n*_ 
+_n*_CSV_/n*_
 _n*_index.cgi?page=GrMain&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr_&csvD=yes_/n*_
 _/insert_
 
@@ -9978,7 +9966,7 @@ _n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_&rdd=gr&fP=GrMain&fv0=
 _/insert_
 </div>
 \begin{box}<b>Exam creation and customization</b>
-<br><b>Warning:</b> It is not safe, nice, nor polite to use some of the operations in this category <b>after</b> the students have started working on the assignment. 
+<br><b>Warning:</b> It is not safe, nice, nor polite to use some of the operations in this category <b>after</b> the students have started working on the assignment.
 <ul>
 <li><b>Create:</b> If the exam is not created yet, this button will take you to the page where you can insert the problems and customize the parameters. If the exam already exists, you need to first delete the exam from the <code>Response Receiver</code> database before creating it again.</li>
 <li><b>Backup:</b> Puts student answers in a form that can be used as a backup command and that can be used in offline grading tools.</li>
@@ -10019,12 +10007,12 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/n*_
 _n*__vr_aType_/vr_  _vr_aNum_/vr__/n*_
 _n*_summary_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -10034,7 +10022,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10056,7 +10044,7 @@ _textData!!_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -10064,7 +10052,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10085,18 +10073,18 @@ _textData!!_
 <H2> Restore Text From Backup </H2>
 _insert_
 _n*_commandRestoreFromBackup_/n*_
-_n*__vr_docName_/vr__/n*_ 
+_n*__vr_docName_/vr__/n*_
 _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10117,18 +10105,18 @@ _textData!!_
 <H2> Undo Course Creation </H2>
 _insert_
 _n*_commandRestoreFromBackup_/n*_
-_n*__vr_docName_/vr__/n*_ 
+_n*__vr_docName_/vr__/n*_
 _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10149,15 +10137,15 @@ _textData!!_
 <H2> Undo Student Enrollment </H2>
 _insert_
 _n*_commandRestoreFromBackup_/n*_
-_n*__vr_docName_/vr__/n*_ 
+_n*__vr_docName_/vr__/n*_
 _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10178,17 +10166,17 @@ _textData!!_
 <H2> Undo Assignment Creation </H2>
 _insert_
 _n*_commandRestoreFromBackup_/n*_
-_n*__vr_docName_/vr__/n*_ 
+_n*__vr_docName_/vr__/n*_
 _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10216,12 +10204,12 @@ _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10241,40 +10229,40 @@ _/systemData!!_
 _textData!!_
 
 <div class="row">
-   <div class="col-sm-6">    
+   <div class="col-sm-6">
 
 _insert_
 _n*_buttonLink_/n*_
 _n*__vr_pageName_/vr__/n*_
 _n*_?page=_vr_pageName_/vr__/n*_
-_/insert_  
- 
+_/insert_
+
    </div>
 
-   <div class="col-sm-6">     
+   <div class="col-sm-6">
 _insert_
 _n*_buttonLink_/n*_
 _n*_Back to stat_/n*_
 _n*_?page=listStat_/n*_
-_/insert_  
+_/insert_
    </div>
- 
+
 </div>
 
 <H2> Statistics for page _vr_pageName_/vr_ </H2>
 _insert_
 _n*_statAnalysis_/n*_
-_n*__vr_docName_/vr__/n*_ 
+_n*__vr_docName_/vr__/n*_
 _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10318,22 +10306,22 @@ _n*__/n*_
 _n*_80_/n*_
 _/insert_
 
- 
+
 _insert_
 _n*_formPlacement_/n*_
 _n*_searchForStItem_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
-
- 
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10356,29 +10344,29 @@ _textData!!_
 _vVPair_
 _vr_antiSpamSize_/vr_
 _vl_5_/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 _vVPair_
 _vr_reqTitle_/vr_
 _vl_Question?_/vl_
-_/vVPair_ 
+_/vVPair_
 
 _vVPair_
 _vr_antiSpamTitle_/vr_
 _vl_Prove that you are not a robot._/vl_
-_/vVPair_ 
+_/vVPair_
 
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
- 
 
-_nextCommand!*!!_ 
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10399,22 +10387,22 @@ _textData!!_
 
 <p></p>
 
- 
+
 <div class="row">
         <div class="col-md-2">
 _insert_
 _n*_buttonLink_/n*_
 _n*_Calculator_/n*_
 _n*_?page=queryCalculator_/n*_
-_/insert_  
+_/insert_
 
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Clear_/n*_
 _n*_?page=query_/n*_
-_/insert_  
- 
+_/insert_
+
 
 
 </div>
@@ -10426,84 +10414,84 @@ _insert_
 _n*_buttonLink_/n*_
 _n*_Coin_/n*_
 _n*_?page=queryCoinDie_/n*_
-_/insert_  
- 
+_/insert_
+
 
  _insert_
 _n*_buttonLink_/n*_
 _n*_Permutation_/n*_
 _n*_?page=queryRandomPermutation_/n*_
-_/insert_  
- 
+_/insert_
+
  _insert_
 _n*_buttonLink_/n*_
 _n*_Normal_/n*_
 _n*_?page=queryNormalSim_/n*_
-_/insert_  
-  
+_/insert_
+
  _insert_
 _n*_buttonLink_/n*_
 _n*_Uniform_/n*_
 _n*_?page=queryUniformSim_/n*_
-_/insert_  
- 
- 
+_/insert_
+
+
  _insert_
 _n*_buttonLink_/n*_
 _n*_Exp._/n*_
 _n*_?page=queryExponentialSim_/n*_
-_/insert_  
- 
- 
+_/insert_
+
+
  _insert_
 _n*_buttonLink_/n*_
 _n*_Bernoulli_/n*_
 _n*_?page=queryBernoulliSim_/n*_
-_/insert_  
- 
- 
+_/insert_
+
+
  _insert_
 _n*_buttonLink_/n*_
 _n*_Binomial_/n*_
 _n*_?page=queryBinomailSim_/n*_
-_/insert_  
+_/insert_
 
- 
+
  _insert_
 _n*_buttonLink_/n*_
 _n*_Geometric_/n*_
 _n*_?page=queryGeometricSim_/n*_
-_/insert_  
- 
- 
+_/insert_
+
+
  _insert_
 _n*_buttonLink_/n*_
 _n*_Discrete_/n*_
 _n*_?page=queryDiscreteUniformSim_/n*_
-_/insert_  
- 
- 
- 
+_/insert_
+
+
+
  _insert_
 _n*_buttonLink_/n*_
 _n*_Poisson_/n*_
 _n*_?page=queryPoissonSim_/n*_
-_/insert_  
- 
- 
+_/insert_
+
+
  _insert_
 _n*_buttonLink_/n*_
 _n*_Norm. CDF_/n*_
 _n*_?page=queryNormalCDF_/n*_
-_/insert_  
- 
+_/insert_
+
 
 _insert_
 _n*_buttonLink_/n*_
 _n*_Help_/n*_
 _n*_?page=queryHelp_/n*_
-_/insert_  
- 
+_/insert_
+
 </div>
 
 
@@ -10515,12 +10503,12 @@ _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
-
- 
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10548,10 +10536,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -10573,23 +10561,23 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
- 
 
-_nextCommand!*!!_ 
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10617,10 +10605,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -10642,28 +10630,28 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
-
- 
+_/nextCommand!*!!_
 
 
 
 
- 
 
-_nextCommand!*!!_ 
+
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10681,7 +10669,7 @@ _/permissionString!!__documentType!!_regularText_/documentType!!_
 _/systemData!!_
 
 _textData!!_
-  
+
 _variables_queryVar_/variables_
 
 <p>
@@ -10692,10 +10680,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -10717,30 +10705,30 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
-
- 
+_/nextCommand!*!!_
 
 
 
 
- 
 
-_nextCommand!*!!_ 
+
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10768,10 +10756,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -10793,27 +10781,27 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
- 
 
-_nextCommand!*!!_ 
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10841,10 +10829,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -10866,25 +10854,25 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
- 
+
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
- 
 
-_nextCommand!*!!_ 
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10912,10 +10900,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -10937,28 +10925,28 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
 
- 
 
-_nextCommand!*!!_ 
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -10988,10 +10976,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -11013,30 +11001,30 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
- 
+
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
 
- 
 
-_nextCommand!*!!_ 
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11065,10 +11053,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -11090,25 +11078,25 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11137,10 +11125,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -11162,24 +11150,24 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11208,10 +11196,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -11233,25 +11221,25 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11280,10 +11268,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -11305,20 +11293,20 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
@@ -11327,7 +11315,7 @@ _/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11356,10 +11344,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -11381,27 +11369,27 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11429,10 +11417,10 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 
 <p></p>
 \begin{box}
@@ -11454,27 +11442,27 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
- 
+
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
-
- 
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11502,19 +11490,19 @@ _n*_queryInsert_/n*_
 _/insert_
 
 <p>
-</p> 
+</p>
 _insert_
-_n*_answerToTheQuery_/n*_ 
-_/insert_ 
+_n*_answerToTheQuery_/n*_
+_/insert_
 <p></p>
 \begin{box}
 <h2>Math and Probability Calculator</h2>
 <p><b>Pre-filled queries.</b> The input form can accept a wide variety of queries. By clicking on one of the buttons, the input field gets pre-filled with a relevant request. Then you can modify the request to get the desired answer.
 </p>
 <p><b>Calculator.</b> If you write a math formula that a simple calculator can evaluate, then you will see the end result of the calculation.  </p>
-<p><b>Random sampling.</b> You can specify one of the available probability distributions, its parameters, and the number of samples that you want to have generated. 
+<p><b>Random sampling.</b> You can specify one of the available probability distributions, its parameters, and the number of samples that you want to have generated.
 </p>
-<p><b>Random permutations.</b> The program can also generate random permutations. You need to provide the smallest and the largest integer in the permutation. You can also ask for several permutations, and in that case you can ask whether you want them displayed horizontally or vertically. 
+<p><b>Random permutations.</b> The program can also generate random permutations. You need to provide the smallest and the largest integer in the permutation. You can also ask for several permutations, and in that case you can ask whether you want them displayed horizontally or vertically.
 </p>
 \end{box}
 <p></p>
@@ -11537,24 +11525,24 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqBC_/n*_
 _n*_antiSpamCode_/n*_
-_n*__vr_antiSpamTitle_/vr__/n*_ 
+_n*__vr_antiSpamTitle_/vr__/n*_
 _n*_80_/n*_
 _n*__vr_antiSpamSize_/vr__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqBC_/n*_
-_/insert_ 
+_/insert_
 \end{box}
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
-
- 
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+
+
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11572,11 +11560,11 @@ _/systemData!!_
 
 _textData!!_
  <H2>Math formulas</H2>
-<p>Math formulas should be placed between the dollar symbols \(\$\). If you write \(\$\)_cde_x+\frac{7}{x^2+1}_/cde_\(\$\), then your submission will look like \(x+\frac{7}{x^2+1}\). </p> 
+<p>Math formulas should be placed between the dollar symbols \(\$\). If you write \(\$\)_cde_x+\frac{7}{x^2+1}_/cde_\(\$\), then your submission will look like \(x+\frac{7}{x^2+1}\). </p>
 <H2>Computer code</H2>
-<p>This computer code should be placed between the words 
+<p>This computer code should be placed between the words
 </p>
-<center> <img src="img/code_open.png" width="130" height="44"> and 
+<center> <img src="img/code_open.png" width="130" height="44"> and
 <img src="img/code_close.png" width="130" height="44"></center>
 <p>This is how a computer assignment should be answered.
 </p><center>
@@ -11593,9 +11581,9 @@ _textData!!_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11613,26 +11601,26 @@ _/permissionString!!__documentType!!_regularText_/documentType!!_
 _/systemData!!_
 
 _textData!!_
-  
+
 _title*_Autograder_/title*_
 _metaDesc*_The code autograder will test your submission against the public test cases._/metaDesc*_
 <p></p>
- 
 
- 
+
+
 
 
    _insert_
             _n*_buttonLink_/n*_
             _n*_Back to the assignment_/n*_
             _n*_?r=_vr_rrc_/vr__/n*_
-           _/insert_  
+           _/insert_
 
 <p></p>
  <H1>Autograder Testing</H1>
- 
+
 <p>Below you can see the results of the execution of your code on public test cases. The grading will be based on secret test cases. The secret test cases will be of similar format, but they will be different from the public ones that you are seeing here. </p>
-       
+
 _insert_
 _n*_codeTest_/n*_
 _n*__vr_rrc_/vr__/n*_
@@ -11650,17 +11638,17 @@ _*text*_
 _*userAnswer*_
 \end{box}
 
- 
+
 _/n*_
 _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11679,20 +11667,20 @@ _/systemData!!_
 
 _textData!!_
  <H1>Introduction</H1>
-<p>The Solar System consists of several planets. The closest planet to the Sun is Mercury. Other planets are not as close to the Sun as the Mercury.</p> 
+<p>The Solar System consists of several planets. The closest planet to the Sun is Mercury. Other planets are not as close to the Sun as the Mercury.</p>
 <p>This page may need some expansion. There could be website visitors who would not find this article as informative as they hoped.</p>
-       
+
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11720,7 +11708,7 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
-  
+
  <H2>Assign/Edit Timer</H2>
 _insert_
 _n*_formInitialization_/n*_
@@ -11732,10 +11720,10 @@ _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
 _n*_commands_/n*_
 _n*_Editing the timer using the form below._/n*_
-_n*_ 
+_n*_
  _command_
 DO NOT EDIT THIS LINE:_nc***_editTimer_/nc***_
-EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p_/nc***_ 
+EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p_/nc***_
 _nc***_
 
 ***************************************************************
@@ -11756,7 +11744,7 @@ _nc***_
 *** _cTVers*|_0_/cTVers*|_                                                                         ***
 ****************************************************************
 
-_/nc***_  
+_/nc***_
  _/command__/n*_
 
 
@@ -11767,16 +11755,16 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11804,7 +11792,7 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 <p></p>
  <H2>Enroll Guests</H2>
 _insert_
@@ -11817,16 +11805,16 @@ _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
 _n*_commands_/n*_
 _n*_Enroll guests by editing the form below._/n*_
-_n*_ 
+_n*_
  _command_
 DO NOT EDIT THIS LINE:_nc***_addStudentsToExam_/nc***_
-EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_ 
+EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_
 Edit names below. Add more analogolus lines if necessary._nc***_
 _st*|__n*|_Firstname01 Lastname01_/n*|__/st*|_
-_st*|__n*|_Firstname02 Lastname02_/n*|__/st*|_  
+_st*|__n*|_Firstname02 Lastname02_/n*|__/st*|_
 Number of files that students will be allowed to submit:
-_nf*|_0_/nf*|_ 
-_/nc***_  
+_nf*|_0_/nf*|_
+_/nc***_
  _/command__/n*_
 
 
@@ -11837,15 +11825,15 @@ _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11873,7 +11861,7 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 
 <p></p>
 <H1>Create Backup of Exams for Offline Storage</H1>
@@ -11885,35 +11873,35 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with required parameters and it is best if you just keep them at their default values._/n*_
-_n*_ 
+_n*_
  _command_
 DO NOT EDIT THIS LINE:_nc***_examBackupText_/nc***_
-EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_ 
+EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_
 START EDITING AFTER THIS LINE_nc***_
- 
- 
+
+
  _examRRAction*_modifyResponseReceiver_/examRRAction*_
 _gradingRRAction*_modifyResponseReceiver_/gradingRRAction*_
 _masterRRAction*_modifyResponseReceiver_/masterRRAction*_
 
-_/nc***_  
+_/nc***_
  _/command__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -11941,32 +11929,32 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 
 _title*__*AGT*_ _/title*_
 _metaDesc*_Code autograder will test your solution to the following problem. _*AGD*__/metaDesc*_
 <p></p>
- 
+
    _insert_
             _n*_buttonLink_/n*_
             _n*_Back_/n*_
             _n*_?page=_vr_lback_/vr__/n*_
-           _/insert_  
+           _/insert_
 
- 
- 
+
+
   <p></p>
 
- 
-       
+
+
 _insert_
 _n*_codeTestInNotes_/n*_
 _n*__vr_pnm_/vr__/n*_
 _n*__vr_pvr_/vr__/n*_
 _n*_
- 
-_*gradingResult*_ 
- 
+
+_*gradingResult*_
+
 <p></p><h2>Formulation</h2>
 \begin{box}
 _*text*_
@@ -11991,7 +11979,7 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCode_/n*_
-_n*_codeTestUserAnswer_/n*_ 
+_n*_codeTestUserAnswer_/n*_
 _n*_ _/n*_
 _n*__*rawUserAnswer*__/n*_
 _/insert_
@@ -11999,14 +11987,14 @@ _insert_
 _n*_antiSpamChallenge_/n*_
 _n*_reqCode_/n*_
 _n*_antiSpamCode_/n*_
-_n*_Prove that you are not a robot._/n*_ 
+_n*_Prove that you are not a robot._/n*_
 _n*_80_/n*_
 _n*_8_/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCode_/n*_
-_/insert_ 
+_/insert_
 
 
 _/n*_
@@ -12017,12 +12005,12 @@ _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -12050,39 +12038,39 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
+
 
 
  _title*_Solution for _*AGT*__/title*_
 _metaDesc*_The document contains the formulation of the problem and its official solution. _*AGD*__/metaDesc*_
 <p></p>
- 
+
    _insert_
             _n*_buttonLink_/n*_
             _n*_Back_/n*_
             _n*_?page=_vr_lback_/vr__/n*_
-           _/insert_  
+           _/insert_
 
 
  <H1>Problem and Official Solution</H1>
- 
-  
 
- 
-       
+
+
+
+
 _insert_
 _n*_codeTestInNotes_/n*_
 _n*__vr_pnm_/vr__/n*_
 _n*__vr_pvr_/vr__/n*_
 _n*_
- 
+
 \begin{box}
 _*text*_
 \end{box}
 \begin{solution}
 _*officialSolution*_
 \end{solution}
-   
+
 
 _/n*_
 _/insert_
@@ -12091,12 +12079,12 @@ _/insert_
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
+_/nextCommand!*!!_
 
 
 
 
-_nextCommand!*!!_ 
+_nextCommand!*!!_
 
 _n*!!***!_insert_/n*!!***!_
 
@@ -12124,8 +12112,8 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
- 
- 
+
+
 _insert_
 _n*_text_/n*_
 _n*_inclCommands_/n*_
@@ -12143,16 +12131,16 @@ _/insert_
 _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
-_n*_commands_/n*_ 
+_n*_commands_/n*_
 _n*_The command is pre-filled with some parameters. You should list the range of the id numbers of texts that you want to backup.   _/n*_
 _n*_DO NOT EDIT THIS LINE     -----> _command_
 DO NOT EDIT THIS LINE     -----> _nc***_backup_/nc***_
 DO NOT EDIT THIS LINE     -----> _nc***_Texts_/nc***_
-EDIT AFTER THE SYMBOL -----> _nc***_  
+EDIT AFTER THE SYMBOL -----> _nc***_
 _n*!_toLatex_/n*!_
 _n*!_
-_lStart*!_ 
- 
+_lStart*!_
+
 \documentclass[twoside]{book}
 \newcommand\DS{\displaystyle}
 \newcommand\TS{\textstyle}
@@ -12167,7 +12155,7 @@ _lStart*!_
 \newcommand{\vect}[1]{\mathbf{#1}}
 %%%%%%%%%%%%
 \topmargin -1in \oddsidemargin -15.5mm \evensidemargin -15.5mm
-\textwidth 19.2cm \textheight 23.5cm 
+\textwidth 19.2cm \textheight 23.5cm
 
 
 
@@ -12182,18 +12170,17 @@ _/lStart*!_
 _n*!_text01_/n*!_
 _n*!_text02_/n*!_
 _n*!_text03_/n*!_
-_/n*!_ 
+_/n*!_
 _/nc***_ <-----  STOP EDITING AFTER THIS SYMBOL
 DO NOT EDIT THIS LINE     -----> _/command__/n*_
 _/insert_
 _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
-_/insert_ 
+_/insert_
 
 
 _/textData!!_
 
 _/n*!!***!_
-_/nextCommand!*!!_  
-
+_/nextCommand!*!!_
