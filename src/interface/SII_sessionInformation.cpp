@@ -15,2128 +15,3071 @@
 //    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
 //    along with this program.  If not, see https://www.gnu.org/licenses/.
 
-#ifndef _INCL_WI_AbstractText_CPP
-#define _INCL_WI_AbstractText_CPP
 
+#ifndef _INCL_WI_SessionInformation_CPP
+#define _INCL_WI_SessionInformation_CPP
 
-namespace APTI{
-  AbstractText::AbstractText(const std::string & _nameInDB, const std::string & _sysR, const std::string & _u){
+namespace SII{
+  MPTI::MainText SessionInformation::getHeader() const{return header;}
+  MPTI::MainText SessionInformation::getFooter() const{return footer;}
+  MPTI::MainText SessionInformation::getMainText() const{return mainText;}
+  std::string SessionInformation::getResponse(const std::string & _q) const{
+    return SF::getElFromMapOrNotFoundMessage(psd.respMap,_q,s_notFound);
   }
-  void AbstractText::addToText(const std::string &_a){
-    rawText+=_a;
+  std::vector<std::vector<std::string> > SessionInformation::getRespInOrder() const{return respInOrder;}
+  SPREPF::StatData SessionInformation::prepareStatData() const{
+    SPREPF::StatData forSt;
+    forSt.userName=psd.my_un;
+    TMF::Timer tm;
+    forSt.timeString=tm.timeString();
+    forSt.ipAddr=envVariables[11];
+    forSt.att_page=psd.pageRequested;
+    if(loginActionIndicator==1){
+      forSt.att_page="!*LOGIN*ATTEMPT*!";
+      forSt.userName=getResponse("username");
+    }
+    forSt.att_rr=respRecRequested;
+    forSt.pass1=getResponse("pass1");
+    STI::addDataToStat(forSt);
+    return forSt;
   }
-  std::stack<std::pair<std::string,std::string> > AbstractText::secondMenuStack(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN) const{
-    std::stack<std::pair<std::string,std::string> > fR;
-    std::pair<std::string,std::string> tmp;
-    tmp=createModifyLinkPair(_psd,_pR,_rRR, _uN,"y",MWII::GL_WI.getDefaultWebText("edit"));
-    if(tmp.first!="notFound"){
-      fR.push(tmp);
+  void SessionInformation::addToMainText(const std::string &_a){mainText.addToText(_a);}
+  std::string SessionInformation::preparePage(const std::string & queryAnswer){
+    SPREPF::StatData st_D=prepareStatData();
+    std::string preqN=STI::hidePageFromThoseWhoAreTryingToGuessPasswords(psd.pageRequested,st_D);
+    STI::updateStatDB(st_D);
+    if(fastUpdatingStat=="yes"){
+      long timeSinceLastVisit=STI::secondsSinceLastVisit(st_D,psd.pageRequested);
+      if(timeSinceLastVisit>3){
+        STI::updateFastUpdatingStatDB(psd.pageRequested);
+      }
+    }
+    if(preqN!=psd.pageRequested){
+      psd.pageRequested=preqN;
+      changeMainText(psd.pageRequested);
+    }
+    if((psd.my_un!="visitor")&&(psd.pageRequested=="login")){
+      psd.pageRequested="loginSuccessful";
+      changeMainText(psd.pageRequested);
+    }
+    if(psd.createStandardCourseSuccess=="yes"){
+      changeMainText(psd.createStandardCourseMainDocName);
+      psd.pageRequested=psd.createStandardCourseMainDocName;
+    }
+    header.updateLogInBar(psd.my_un);
+    header.updateSecondMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
+    header.updateThirdMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
+    header.updateMainMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
+    footer.updateFooterBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
+    std::string savedPER=psd.pEditReq;
+    psd.pEditReq="no";
+    std::string fR=header.displayText(psd,"header");
+    fR+="\n<div  class=\"container\">\n";
+    std::string footerFR=footer.displayText(psd,"footer");
+    footerFR= SF::findAndReplace(footerFR,"_THIS*WEBSITE*URL*_",MWII::GL_WI.getWSURL());
+    psd.pEditReq=savedPER;
+    if((respRecRequested!="")&&(indicatorRespRecInitialized==0)){
+      mainRespRec.initialize(respRecRequested,sysDataRequested,psd.my_un);
+    }
+    if(respRecRequested==""){
+      if((psd.pEditReq=="no")&&(psd.pageRequested=="listFiles")){
+        mainText.selectVersionForListOfFiles(addModFileCodeReq,startOfList);
+      }
+      if(psd.createStandardCourseSuccess=="yes"){
+        fR+=SF::findAndReplace(MWII::GL_WI.getDefaultWebText("standardCourseCreated"),"_*PAGE*NAME*_",psd.createStandardCourseMainDocName);
+      }
+      long pos; std::pair<std::string,int> allD;
+      std::string openT,closeT;
+      std::string mTextInMainPosition=mainText.displayText(psd,"mainTextPosition");
+      std::string titleInterior=SF::getTagInteriorAndRemoveTag(mTextInMainPosition,"_title*_","_/title*_");
+      std::string descInterior=SF::getTagInteriorAndRemoveTag(mTextInMainPosition,"_metaDesc*_","_/metaDesc*_");
+      if((titleInterior=="")||(descInterior=="")){
+        HTII::GL_title.pels=HTII::generatePageElements(mTextInMainPosition);
+      }
+      if(titleInterior==""){
+        titleInterior=HTII::generateTitle(HTII::GL_title.pels);
+      }
+      else{
+        if(HTII::GL_title.tSuggestion!=""){
+          titleInterior=SF::findAndReplace(titleInterior,HTII::GL_title.codewordThatTitleGenerationIsNeeded,HTII::GL_title.tSuggestion);
+        }
+      }
+      openT="<title>"; closeT="</title>";
+      pos=0; allD=SF::extractAndReplace(fR,pos,openT,closeT,0,openT+titleInterior+closeT);
+      if(allD.second==1){
+        fR=allD.first;
+      }
+      if(descInterior==""){
+        descInterior=HTII::generateDescription(HTII::GL_title.pels);
+      }
+      else{
+        if(HTII::GL_title.dSuggestion!=""){
+          descInterior=SF::findAndReplace(descInterior,HTII::GL_title.codewordThatDescGenerationIsNeeded,HTII::GL_title.dSuggestion);
+        }
+      }
+      openT="<meta name=\"description\" content=\""; closeT="\">";
+      pos=0; allD=SF::extractAndReplace(fR,pos,openT,closeT,0,openT+descInterior+closeT);
+      if(allD.second==1){
+        fR=allD.first;
+      }
+      fR+=mTextInMainPosition;
+      if(str_backups_IfCalledFor!=""){
+        fR+=BI::textAreaField("probText",str_backups_IfCalledFor,15,100);
+      }
+      fR+=DEBUGGING_ADDITIONS;
+      fR+=HDDBRF::GL_DBREC_DEB;
     }
     else{
-      if(_uN!="visitor"){
-        MPTI::MainText tToCheck(_psd.pageRequested,"no1117",_psd.my_un);
-        if (tToCheck.allowedToModifyText(_psd,"","",_psd.my_un)==1){
-          tmp=createModifyLinkPairUnsafe(_psd,_pR,_rRR, _uN,"w",MWII::GL_WI.getDefaultWebText("edit"));
-          fR.push(tmp);
+      fR+=mainRespRec.displayRespRec(psd);
+      if(psd.respRecBackupText!=""){
+        fR+=BI::textAreaField("probText",psd.respRecBackupText,15,100);
+      }
+      fR+=DEBUGGING_ADDITIONS;
+    }
+    if(str_pdfSummary_IfCalledFor!=""){
+      fR+=BI::textAreaField("probText",str_pdfSummary_IfCalledFor,15,100);
+      if(psd.pdfNameForInclassExam!=""){
+        fR+="<p></p><p>\n";
+        fR+=HSF::createButtonLink(psd.pdfNameForInclassExam,"Download PDF");
+        fR+="</p>\n";
+      }
+    }
+    if(debuggingEnvVarRequest==s_deb_correctDebuggingEnvVarReq){
+      fR+= BI::envToHTML(envVariables);
+    }
+    std::string beforeFormRepl= DISPPF::finalizeForDisplay(MWII::GL_WI.getDefaultFindReplaceMap(), fR+psd.passwordChangeStatus+"</div>"+footerFR);
+    std::string afterFormRepl=beforeFormRepl;
+    if((psd.inFormSearch!="")&&(psd.inFormReplace!="")){
+      afterFormRepl=SF::findAndReplace(afterFormRepl,psd.inFormSearch,psd.inFormReplace);
+    }
+    if( (psd.isRoot=="no") && ((psd.pageRequested=="createWebsite")||(psd.pageRequested=="changePassword")) ){
+      afterFormRepl=SF::findAndReplace(afterFormRepl,"_THIS*WEBSITE*URL*_",MWII::GL_WI.getWSURL());
+      afterFormRepl=SF::findAndReplace(afterFormRepl,"_GUEST*SITES*_",DD::GL_DBS.getGuestClonesRelLoc());
+      afterFormRepl=SF::findAndReplace(afterFormRepl,"_MY*USERNAME*_",psd.my_un);
+    }
+    timeToGenerateWebsite.end();
+    if(psd.queryAnswRequired){
+      afterFormRepl=SF::findAndReplace(afterFormRepl,"!verbSave!","");
+      afterFormRepl=SF::findAndReplace(afterFormRepl,"*fjkl3"+GL_MAIN_SETUP_FILE_NAME+"2!3211","!verbSave!");
+      afterFormRepl=SF::findAndReplace(afterFormRepl, psd.queryAnswPlaceHolder,queryAnswer);
+    }
+    if(fastUpdatingStat=="yes"){
+      std::map<std::string,std::string>::const_iterator it=psd.respMap.find("delFStat");
+      if(it!=psd.respMap.end()){
+        if(it->second=="yes"){
+          STI::delFromFastUpdatingStatDB(psd.pageRequested);
         }
       }
     }
-    tmp=createModifyLinkPair(_psd,_pR,_rRR,_uN,"r",MWII::GL_WI.getDefaultWebText("advanced"));
-    if(tmp.first!="notFound"){fR.push(tmp);}
-    tmp=createCommandLinkPair(_psd,_pR,_rRR,_uN,MWII::GL_WI.getDefaultWebText("commands"));
-    if(tmp.first!="notFound"){fR.push(tmp);}
-    if(_psd.isRoot=="yes"){fR.push(createLinkPair("page","database",MWII::GL_WI.getDefaultWebText("DB")));}
-    SF::flipTheStack(fR);
-    return fR;
+    afterFormRepl=LANGF::changeAlphabet(afterFormRepl,MWII::GL_WI.getAlphabet());
+    afterFormRepl=INCII::treatInCommandInsert(afterFormRepl);
+    GF::GL_DEB_MESSAGES.addMessage("Time to generate page is "+ BF::doubleToString(timeToGenerateWebsite.getTime()));
+    afterFormRepl+=GF::GL_DEB_MESSAGES.prepareAllMessages(MWII::GL_WI.getDebuggingOptions());
+    return afterFormRepl;
   }
-  void AbstractText::updateSecondMenuBar(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN){
-    rawText= SF::findAndReplace(rawText,"_**LINKS*LINE2*_", HSF::buttonsBar(secondMenuStack(_psd,  _pR, _rRR, _uN) ));
-  }
-  std::stack<std::pair<std::string,std::string> > AbstractText::thirdMenuStack(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN) const{
-    std::pair<std::string,std::string> tP=createModifyLinkPair(_psd,_pR,_rRR,_uN,"n","");
-    std::stack<std::pair<std::string,std::string> > mS;
-    if(tP.first!="notFound"){
-      mS.push(tP);
+  void SessionInformation::addDebuggingMessagesIfInDebuggingMode(){
+    if(debuggingModeRequest==s_deb_correctDebuggingModeReq){
+      addToMainText(GF::GL_DEB_MESSAGES.prepareAllMessages(MWII::GL_WI.getDebuggingOptions()));
     }
-    return mS;
-  }
-  void AbstractText::updateThirdMenuBar(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN){
-    rawText= SF::findAndReplace(rawText,"_**LINKS*LINE3*_",HSF::buttonsBar(thirdMenuStack( _psd,  _pR, _rRR,_uN)));
-  }
-  void AbstractText::updateMainMenuBar(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN){
-    std::string tBar="";
-    rawText= SF::findAndReplace(rawText,"_LIST*OF*MENU*ITEMS_",tBar);
-  }
-  void AbstractText::updateFooterBar(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN){
-    std::string tBar="";
-    rawText= SF::findAndReplace(rawText,"_FOOTER*BAR*_ ",tBar);
-  }
-  std::stack<std::pair<std::string,std::string> > AbstractText::logInBarRaw(const std::string & _uN) const{
-    std::stack<std::pair<std::string,std::string> > lbr;
-    lbr.push( createLinkPair("page","changePassword",_uN) );
-    lbr.push(createLogOutPair(MWII::GL_WI.getDefaultWebText("Log Out")));
-    if(_uN=="visitor"){
-      SF::clearStack(lbr);
-      lbr.push(createLogInLinkPair(MWII::GL_WI.getDefaultWebText("Sign in")));
+    if(MWII::GL_WI.getVersionStopOptions()!="stop"){
+      std::map<std::string,std::string>::const_iterator itM;
+      itM=(psd.respMap).find("version");
+      if(itM!=(psd.respMap).end()){
+        addToMainText(GL_VERSION);
+      }
     }
-    SF::flipTheStack(lbr);
-    return lbr;
   }
-  void AbstractText::updateLogInBar(const std::string & _uN){
-    rawText= SF::findAndReplace(rawText,"_THIS*WEBSITE*URL*_",MWII::GL_WI.getWSURL());
-    rawText= SF::findAndReplace(rawText,"_LOGIN*OUT*REGISTER*_",HSF::buttonsBar(logInBarRaw(_uN)));
-    rawText= SF::findAndReplace(rawText,"_LOGIN*OUT*REGISTER*NAVBAR*_",HSF::buttonsBar(logInBarRaw(_uN),"navBar"));
+  std::vector<std::string> SessionInformation::envVars() const{return envVariables;}
+  SessionInformation::SessionInformation(){
+    timeToGenerateWebsite.start();
+    psd.my_un="visitor";
+    psd.isRoot="no";
+    psd.allowedToExecuteAll="no";
+    psd.pEditReq="no";
+    psd.respRecMode="df";
+    psd.respRecFlag="notReceived";
+    psd.versionToLatex="0";
+    psd.messEditReq="no";
+    psd.sortCriterion="0";
+    psd.couasEditReq="no";
+    psd.rrgrader="no";
+    psd.indChangeRespRecToPrintVersionOfCommonInClassExam=0;
+    psd.probVersionsOfChangedRespRec="";
+    psd.pdfNameForInclassExam="";
+    psd.masterKey="";
+    psd.queryAnswRequired=0;
+    psd.queryAnswPlaceHolder="_*"+RNDF::genRandCode(15)+"_*qAsnw_";
+    psd.displayDaysInWeek.resize(0);
+    psd.displayMonthsInYear.resize(0);
+    indicatorInitialized=0;
+    indicatorFormResponded=-1;
+    indicatorFormResponseCanBeAccepted=-1;
+    loginActionIndicator=0;
+    loginStatusIndicator=0;
+    indicatorFileReceived=-1;
+    indicatorFileCanBeAccepted=-1;
+    loginFailedIndicator=0;
+    str_backups_IfCalledFor="";
+    psd.inFormSearch="";
+    psd.inFormReplace="";
+    psd.messEditCode="";
+    idOfMessageWhoseEditWasSubmitted="";
+    newTextOfMessage="";
   }
-  int AbstractText::rawSysDataAllowed(const PSDI::SessionData & _psd) const{
-    // WARNING this has to be modified
-    return 1;
-  }
-  int AbstractText::sysDataAllowed(const PSDI::SessionData & _psd) const{
-    // WARNING this has to be modified
-    return 1;
-  }
-  std::string AbstractText::groupsInPermission(const std::set<std::string> & _s) const{
-    std::set<std::string>::const_iterator it,itE,itB;
+  std::string SessionInformation::cookieText(const std::string &cookieName , const std::string &cookieValue ) const{
     std::string fR="";
-    it=_s.begin();itE=_s.end();
-    itB=_s.begin();
-    while(it!=itE){
-      if(it!=itB){
-        fR+="; ";
-      }
-      fR+=*it;
-      ++it;
+    std::string domainName=MWII::GL_WI.getWSURL();
+    fR+="Set-Cookie:";
+    fR+=cookieName;fR+="=";
+    if(cookieValue!="deleted"){
+      fR+=cookieValue;
     }
+    else{
+      fR+="deleted";
+    }
+    fR+=";";
+    fR+="Expires=";
+    TMF::Timer tmC;
+    if(cookieValue!="deleted"){
+      fR+=tmC.cookieExpiration(0,3,0,0);//3 hours cookie
+    }
+    else{
+      std::vector<long> timeInPast;
+      timeInPast.resize(7);timeInPast[0]=1900;timeInPast[1]=0;timeInPast[2]=1;timeInPast[3]=10;
+      timeInPast[4]=10;timeInPast[5]=10;timeInPast[6]=1;
+      fR+=tmC.timeString(timeInPast);
+    }
+    fR+="; Path="+MWII::GL_WI.getCookiePath();
+    fR+="; Secure; HttpOnly";
     return fR;
   }
-  std::string AbstractText::nicelyFormattedSystemData(const PSDI::SessionData & _psd) const{
-    std::string fR="<TABLE BORDER=0>\n";
-    fR+="<TR><TD> Username: </TD><TD>"+myUserName+"</TD></TR>";
-    fR+="<TR><TD> Read permissions: </TD><TD>" +groupsInPermission(permitRead)+"</TD></TR>";
-    fR+="<TR><TD> Write permissions: </TD><TD>" +groupsInPermission(permitWrite)+"</TD></TR>";
-    fR+="<TR><TD> Created: </TD><TD>" +tCreated+"</TD></TR>";
-    fR+="<TR><TD> Created by: </TD><TD>" +createdBy+"</TD></TR>";
-    fR+="<TR><TD> Modified: </TD><TD>" +tCreated+"</TD></TR>";
-    fR+="<TR><TD> Modified by: </TD><TD>"+modifiedBy+"</TD></TR>";
-    fR+="<TR><TD> Document type: </TD><TD>" +documentType+"</TD></TR>";
-    fR+="</TABLE>\n";
-    return fR;
+  long SessionInformation::countSubmittedFiles(const cgicc::Cgicc & ch) const{
+    return ch.getFiles().size();
   }
-  std::string AbstractText::sysDataIfNeededAndAllowed(const PSDI::SessionData  & _psd) const{
-    std::string fR="";
-    if(sysDataRequested==val_sysDataReq_RAW){
-      if(rawSysDataAllowed(_psd)!=1){
-        return fR;
-      }
-      fR = "<P>" + sysDataRaw+"</P>";
-    }
-    if(sysDataRequested==val_sysDataReq_YES){
-      if(sysDataAllowed(_psd)!=1){
-        return fR;
-      }
-      return nicelyFormattedSystemData(_psd);
-    }
-    return fR;
+  int SessionInformation::uploadToServer(const cgicc::Cgicc & ch, const std::string & labelName, const std::string &fileName ){
+    cgicc::const_file_iterator file = ch.getFile(labelName);
+     if(file != ch.getFiles().end()) {
+        std::ofstream mfileos;
+        mfileos.open(fileName);
+        file->writeToStream(mfileos);
+        mfileos.close();
+     }
+     return 1;
   }
-  long AbstractText::allowedToInputCommands(const PSDI::SessionData  & _psd) const{
-    //WARNING - function not created yet
-    return 1;
+  void SessionInformation::analyzeEnvVarsAndForms(const cgicc::Cgicc & ch){
+    indicatorFormResponded=0;
+    indicatorFileReceived=0;
+    psd.pEditReq="no";
+    startOfList="";
+    addModFileReq="nothing";
+    addModFileCodeReq="";
+    psd.pageRequested="";
+    psd.comfUserEdit="n";
+    respRecRequested="";
+    respSubmitted="no";
+    sysDataRequested="no17";
+    debuggingEnvVarRequest="no";
+    debuggingModeRequest="no";
+    addModFileModifyInfo="no";
+    psd.usrAgent=envVariables[8];//HTTP_USER_AGENT
+    psd.remAddr=envVariables[11];//REMOTE_ADDR
+    psd.reqMethod=envVariables[13];//REQUEST_METHOD
+    if((envVariables[13]=="GET")||(envVariables[13]=="POST")){
+      if(envVariables[13]=="POST"){indicatorFormResponded=1;}
+      long i=0;
+      MWII::GL_WI.setRedirectOverwrite(s_notFound);
+      MWII::GL_WI.setRedirectForward(s_notFound);
+      cgicc::const_form_iterator it, itE;
+      itE = ch.getElements().end();
+      it=ch.getElements().begin();
+      long sz=ch.getElements().size();
+      respInOrder.resize(sz);
+      long skipOtherIfs;
+      while(it!=itE){
+        respInOrder[i].resize(2);
+        respInOrder[i][0]=it->getName();
+        respInOrder[i][1]=it->getValue();
+        (psd.respMap)[respInOrder[i][0]]=respInOrder[i][1];
+        skipOtherIfs=0;
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_pageName)) {
+          skipOtherIfs=1;psd.pageRequested=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_respRecName)){
+          skipOtherIfs=1;respRecRequested=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_respSubmit)){
+          skipOtherIfs=1;
+          if(respInOrder[i][1]==m_respSubmit){
+            respSubmitted="yes";
+          }
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_searchFor)){
+          skipOtherIfs=1;
+          psd.inFormSearch=SACF::sanitizeInFormSearchFor(respInOrder[i][1]);
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_replaceWith)){
+          skipOtherIfs=1;
+          DISPPF::RequestsForSanitizer reqS;
+          psd.inFormReplace=DISPPF::sanitizeForDisplay(respInOrder[i][1],reqS);
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_messToEdit)){
+          skipOtherIfs=1;
+          psd.messEditCode=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_messEditSubmission)){
+          skipOtherIfs=1;
+          idOfMessageWhoseEditWasSubmitted=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_newTextWithMessage)){
+          skipOtherIfs=1;
+          newTextOfMessage=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_responseReceiverDisplayRequest)){
+          skipOtherIfs=1;
+          psd.respRecMode=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_verReq)){
+          skipOtherIfs=1;
+          psd.versionToLatex=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_startOfList)){
+          skipOtherIfs=1;
+          startOfList=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_sortCriterion)){
+          skipOtherIfs=1;
+          psd.sortCriterion=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_addModFileReq)){
+          skipOtherIfs=1;
+          addModFileReq=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_addModFileCodeReq)){
+          skipOtherIfs=1;
+          addModFileCodeReq=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_addModFileModifyInfo)){
+          skipOtherIfs=1;
+          addModFileModifyInfo=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_systemDataDisplayRequest)){
+          skipOtherIfs=1;
+          sysDataRequested=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_debEnvVarRequest)){
+          skipOtherIfs=1;
+          debuggingEnvVarRequest=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_debModeRequest)){
+          skipOtherIfs=1;
+          debuggingModeRequest=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_redirectOverwrite)){
+          skipOtherIfs=1;
+          MWII::GL_WI.setRedirectOverwrite(respInOrder[i][1]);
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_redirectToForward)){
+          skipOtherIfs=1;
+          MWII::GL_WI.setRedirectForward(respInOrder[i][1]);
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_editReq)){
+          skipOtherIfs=1;
+          if((respInOrder[i][1]==m_editReqY)||(respInOrder[i][1]==m_editReqR)||(respInOrder[i][1]==m_editReqW)){
+            psd.pEditReq=respInOrder[i][1];}
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_editMessReq)){
+          skipOtherIfs=1;
+          if((respInOrder[i][1]==m_editReqY)||(respInOrder[i][1]==m_editReqR)){
+            psd.messEditReq=respInOrder[i][1];
+          }
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_editCouasReq)){
+          skipOtherIfs=1;
+          psd.couasEditReq=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_confirmationOfComfortableUserEdit)){
+          skipOtherIfs=1;
+          psd.comfUserEdit=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_passwCh)){
+          skipOtherIfs=1;
+          psd.passwordChangeRequested=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_respRecThatWillGradeCouas)){
+          skipOtherIfs=1;
+          psd.rrgrader=respInOrder[i][1];
+        }
+        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_userLogin)){
+          skipOtherIfs=1;
+          if(respInOrder[i][1]==m_logIn){
+            loginActionIndicator=1;
+          }
+          else{
+            loginActionIndicator=-1;
+          }
+        }
+        MWII::GL_WI.setStartOfList(startOfList);
+        MWII::GL_WI.setSortCriterion(psd.sortCriterion);
+        ++it;++i;
+      }
+      GF::GL_DEB_MESSAGES.addMessage("The number of files received is "+std::to_string(countSubmittedFiles(ch)));
+    }
   }
-  std::string AbstractText::createTextAreaField(const PSDI::SessionData & _psd, const std::string & formName, const std::string & fieldName, const std::string & _textBefore, const std::string & _textInTheField, const std::string & _nRow, const std::string & _nColl){
-    std::string fR="";
-    if(fieldName==s_commands){
-      if(allowedToInputCommands(_psd)!=1){
-        return "";
-      }
+  std::string SessionInformation::placeNewFileToServer(const cgicc::Cgicc & ch, const std::string & username, const std::string & extension, const std::string & formFieldName,const std::string &additionalData){
+    if(allowedToUploadNewFile(username)==0){
+      return "failed";
     }
-    std::map<std::string,FHI::InputForm>::const_iterator it,itE;
-    itE=allForms.end();
-    it=allForms.find(formName);
-    if(it!=itE){
-      FHI::FormField fFF;
-      std::string textBefore="";
-      std::string textInTheField="";
-      if(_textInTheField!=s_notFound){
-        textInTheField=_textInTheField;
-      }
-      if(_textBefore!=s_notFound){
-        textBefore=_textBefore;
-      }
-      if((_nColl=="notFound")||(_nRow=="notFound")){
-        fFF.convertToTextArea(fieldName,textBefore,textInTheField);
-      }
-      else{
-        long nc=BF::stringToInteger(_nColl);
-        long nr=BF::stringToInteger(_nRow);
-        if(nr<5){nr=5;}
-        if(nc<80){nc=80;}
-        fFF.convertToTextArea(fieldName,textBefore,textInTheField,nr,nc);
-      }
-      (allForms[formName]).addChangeField(fFF);
+    PublicFile pf;
+    int ind=pf.init("!*new!*",extension,username,additionalData);
+    if(ind==0){
+      return "failed";
     }
-    return fR;
+    uploadToServer(ch,formFieldName,pf.getFilePath()+"/"+pf.getFileName());
+    return pf.getFilePath()+"/"+pf.getFileName();
   }
-  std::string AbstractText::createRadioButtonsField(const std::string & formName, const std::string & fieldName, const std::string & _textBefore, const std::string & _textAfter, const std::string & _allChoices, const std::string & _preSelection){
-    std::string fR="";
-    std::map<std::string,FHI::InputForm>::const_iterator it,itE;
-    itE=allForms.end();
-    it=allForms.find(formName);
-    if(it!=itE){
-      FHI::FormField fFF;
-      std::string textBefore="";
-      if(_textBefore!=s_notFound){
-        textBefore=_textBefore;
-      }
-      fFF.convertToRadioButtons(fieldName,textBefore,_textAfter, _allChoices,_preSelection);
-      (allForms[formName]).addChangeField(fFF);
-    }
-    return fR;
-  }
-  std::string AbstractText::createTextInputField(const std::string & formName, const std::string & fieldName, const std::string & _textBefore, const std::string & _textInTheField, const std::string & _dim){
-    std::string fR="";
-    std::map<std::string,FHI::InputForm>::const_iterator it,itE;
-    itE=allForms.end();
-    it=allForms.find(formName);
-    if(it!=itE){
-      FHI::FormField fFF;
-      std::string textBefore="";
-      std::string textInTheField="";
-      std::string dim="15";
-      if(_textInTheField!=s_notFound){
-        textInTheField=_textInTheField;
-      }
-      if(_textBefore!=s_notFound){
-        textBefore=_textBefore;
-      }
-      if(_dim!=s_notFound){
-        dim=_dim;
-      }
-      long d=BF::stringToInteger(dim);
-      if(d<3){d=3;}
-      fFF.convertToTextInput(fieldName,textBefore,textInTheField,d);
-      (allForms[formName]).addChangeField(fFF);
-    }
-    return fR;
-  }
-  std::string AbstractText::createAntiSpamField(const std::string & formName, const std::string & fieldName, const std::string & _textBefore, const std::string & _dim, const std::string & _len){
-    std::string fR="";
-    std::map<std::string,FHI::InputForm>::const_iterator it,itE;
-    itE=allForms.end();
-    it=allForms.find(formName);
-    if(it!=itE){
-      FHI::FormField fFF;
-      std::string textBefore="";
-      std::string textInTheField="";
-      std::string dim="10";
-      if(_textBefore!=s_notFound){
-        textBefore=_textBefore;
-      }
-      if(_dim!=s_notFound){
-        dim=_dim;
-      }
-      long d=BF::stringToInteger(dim);
-      if(d<3){d=3;}
-      long len=BF::stringToInteger(_len);
-      if((len<1)||(len>20)){len=8;}
-      fFF.convertToAntiSpamChallenge(fieldName,textBefore,d,len);
-      (allForms[formName]).addChangeField(fFF);
-    }
-    return fR;
-  }
-  std::string AbstractText::createFileRequestField(const std::string & formName, const std::string & fieldName, const std::string & _textBefore){
-    std::string fR="";
-    std::map<std::string,FHI::InputForm>::const_iterator it,itE;
-    itE=allForms.end();
-    it=allForms.find(formName);
-    if(it!=itE){
-      FHI::FormField fFF;
-      std::string textBefore="";
-      if(_textBefore!=s_notFound){
-        textBefore=_textBefore;
-      }
-      fFF.convertToFileInput(fieldName,textBefore);
-      (allForms[formName]).addChangeField(fFF);
-    }
-    return fR;
-  }
-  std::string AbstractText::initializeForm(const std::string & formName, const std::string & _link){
-    std::string fR="";
-    std::map<std::string,FHI::InputForm>::const_iterator it,itE;
-    itE=allForms.end();
-    it=allForms.find(formName);
-    if(it==itE){
-      std::string link="index.cgi?fSubmit=su";
-      if(_link!=s_notFound){
-        link=_link;
-      }
-      FHI::InputForm inpF(link);
-      allForms[formName]=inpF;
-    }
-    return fR;
-  }
-  std::string AbstractText::setRedirectInfo(const std::string & formName){
-    std::string fR="";
-    std::map<std::string,FHI::InputForm>::const_iterator it,itE;
-    itE=allForms.end();
-    it=allForms.find(formName);
-    if(it!=itE){
-      (allForms[formName]).setRedirectInfo(MWII::GL_WI.getRedirectForward());
-    }
-    return fR;
-  }
-  std::string AbstractText::placeFormInText(const std::string & formName, const std::string & _bLoc, const std::string & _bLabel){
-    std::string fR="";
-    std::map<std::string,FHI::InputForm>::const_iterator it,itE;
-    itE=allForms.end();
-    it=allForms.find(formName);
-    if(it!=itE){
-      fR+=(allForms[formName]).displayForm(_bLoc,_bLabel);
-    }
-    return fR;
-  }
-  int AbstractText::allowedToDisplayText(const PSDI::SessionData & _psd,
-                                             const std::string & _uN,
-                                             const std::string & _position) const{
-    //WARNING: needs to be improved - If text is not "regularText",
-    //                                   then very limited permits are given at the moment.
-    //                                   In general, only root can see these texts.
-    //                                       - exception: If it is a coding problem
-    //                                          then even though the documentType is "problem"
-    //                                          the display will be allowed if the correct permits are given
-    //                                          and the _position = "codeTestInNotes"
-    if(_psd.isRoot=="yes"){
-      return 1;
-    }
-    if(PBD::permitExists_N("read"+tName,permitRead,_uN)==0){
-      return 0;
-    }
-    if(_position=="codeTestInNotes"){
-      if(documentType=="problem"){
-        return 1;
-      }
-    }
-    if(documentType!=v_regularText){
-      if(_position=="mainTextPosition"){
-        return 0;
-      }
-      if(documentType=="problem"){
-        return 0;
-      }
-    }
-    return 1;
-  }
-  int AbstractText::allowedToModifyText(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN) const{
-    if(_psd.isRoot=="yes"){
-      return 1;
-    }
-    if(PBD::permitExists_N("write"+tName,permitWrite,_uN)==0){
-      return 0;
-    }
-    return 1;
-  }
-  std::pair<std::string,std::string> AbstractText::createModifyLinkPairUnsafe(const PSDI::SessionData & _psd, const std::string & _pR,const std::string & _rRR, const std::string & _uN, const std::string & _editType, const std::string & _linkText) const{
-    std::pair<std::string,std::string> fR;
-    std::string pageOrRRC=MWII::GL_WI.get_e_parPage();
-    std::string addArg=_pR;
-    if(_rRR!=""){
-      pageOrRRC= MWII::GL_WI.get_e_respRecReqRT();
-      addArg=_rRR;
-    }
-    pageOrRRC+="=";
-    std::string url=MWII::GL_WI.getWSURL()+"/index.cgi?"+pageOrRRC+addArg;
-    if(_editType!="n"){
-      url+="&er="+_editType;
-    }
-    fR.first=url;
-    if((_editType=="n")&&(_linkText=="")){
-      fR.second=addArg;
-    }
-    fR.second+=_linkText;
-    if( (_editType=="n") && (_linkText=="") ){
-      fR.second = SF::wrapTextToPreventAlphabetChange(fR.second); 
-    }
-    return fR;
-  }
-  std::pair<std::string,std::string> AbstractText::createModifyLinkPair(const PSDI::SessionData & _psd, const std::string & _pR,const std::string & _rRR, const std::string & _uN, const std::string & _editType, const std::string & _linkText) const{
-    if(allowedToModifyText(_psd,_pR,_rRR,_uN)==0){
-      return std::pair<std::string,std::string>("notFound","notFound");
-    }
-    return createModifyLinkPairUnsafe(_psd,_pR, _rRR, _uN,  _editType, _linkText);
-  }
-  std::string AbstractText::createModifyLink(const PSDI::SessionData & _psd, const std::string & _pR,const std::string & _rRR, const std::string & _uN, const std::string & _editType, const std::string & _linkText) const{
-    std::pair<std::string,std::string> p=createModifyLinkPair(_psd,_pR, _rRR, _uN,  _editType, _linkText);
-    if(p.first=="notFound"){
-      return "";
-    }
-    return HSF::linkFromPair(p);
-  }
-  std::pair<std::string,std::string> AbstractText::createCommandLinkPair(const PSDI::SessionData & _psd, const std::string & _pR,  const std::string & _rRR, const std::string & _uN, const std::string & _linkText) const{
-    if(allowedToModifyText(_psd,_pR,_rRR,_uN)==0){
-      return std::pair<std::string,std::string> ("notFound","notFound");
-    }
-    return createLinkPair("page","commandForm",_linkText);
-  }
-  std::string AbstractText::createCommandLink(const PSDI::SessionData & _psd, const std::string & _pR,  const std::string & _rRR, const std::string & _uN, const std::string & _linkText) const{
-    if(allowedToModifyText(_psd,_pR,_rRR,_uN)==0){
-      return "";
-    }
-    return HSF::linkFromPair(createLinkPair("page","commandForm",_linkText));
-  }
-  std::string AbstractText::createLinkForEditUser(const std::string &uN) const{
-    if(uN=="!*!"){return "";}
-    return "<A href=\""+MWII::GL_WI.getWSURL()+"/index.cgi?page=commandToEditUser&s1=u11&r1="+uN+"&ev0=uName&el0="+uN+"\">"+uN+"</A>";
-  }
-  std::string AbstractText::createLinkForEditUserAdvanced(const std::string &uN,const std::string &displ) const{
-    return "<A href=\""+MWII::GL_WI.getWSURL()+"/index.cgi?page=commandToEditUserA&s1=u11&r1="+uN+"&ev0=uName&el0="+uN+"\">"+displ+"</A>";
-  }
-  std::string AbstractText::createLinkForEditUserExtraAdvanced(const std::string &uN,const std::string &displ) const{
-    return "<A href=\""+MWII::GL_WI.getWSURL()+"/index.cgi?page=commandToEditUserEA&s1=u11&r1="+uN+"&ev0=uName&el0="+uN+"\">"+displ+"</A>";
-  }
-  std::string AbstractText::createLinkToSwitchSortCriterion(const std::string &displ, const std::string & pg, const std::string & nsc, const std::string &st) const{
-    return "<A href=\""+MWII::GL_WI.getWSURL()+"/index.cgi?page="+pg+"&st="+st+"&sc="+nsc+"\">"+displ+"</A>";
-  }
-  std::string AbstractText::createListOfUsers(const PSDI::SessionData & _psd,const std::string & _numInList, const std::string & _numOnEachSide) const{
-    std::string sc=MWII::GL_WI.getSortCriterion();
-    long numUsr=DD::GL_MAIN_DB.numUsers();
-    long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
-    if((start<0)||(start>numUsr-1)){start=0;}
-    if((sc!="0")&&(sc!="1")){sc="0";}
-    long numb=BF::stringToInteger(_numInList);
-    if(numb<0){numb=0;}
-    WUD::User w;
-    int res;
-    long lsz=6+DD::GL_IND_ALLOW_WEBSITE_CLONES;
-    std::vector<std::string> topLine,mLine;
-    topLine.resize(lsz);mLine.resize(lsz);
-    std::stack<std::vector<std::string> > allLines;
-    MTF::Table& uTable=DD::GL_MAIN_DB.dbsM["usernames"];
-    TOSF::TSets indexUn=uTable.getIndTable("_i_1_ei_");
-    long indSz=indexUn.size();
-    std::string searchBeginString=SF::getElFromMapOrNotFoundMessage(_psd.respMap,"sBg","!!notFound");
-    if(searchBeginString!="!!notFound"){
-      std::vector<std::string> sbstV;
-      sbstV.resize(1); sbstV[0]=searchBeginString;
-      long indLow=indexUn.lowerBoundRowIndex(sbstV);
-      if(indLow<0){indLow=0;}
-      if(indLow<indSz){
-        start=indLow;sc="1";
-      }
-    }
-    long end=start+numb;
-    if((end<0)||(end>numUsr)){
-      end=numUsr;
-    }
-    if(sc=="1"){if(indSz<end){end=indSz;}}
-    std::string scSw="0";
-    if(sc=="0"){scSw="1";}
-    topLine[0]=createLinkToSwitchSortCriterion(MWII::GL_WI.getDefaultWebText("Username"),"listUsers",scSw,MWII::GL_WI.getStartOfList());
-    topLine[1]=MWII::GL_WI.getDefaultWebText("Ext ID");
-    topLine[2]=MWII::GL_WI.getDefaultWebText("Name");
-    topLine[3]=MWII::GL_WI.getDefaultWebText("Email");
-    topLine[4]=MWII::GL_WI.getDefaultWebText("Root");
-    if(DD::GL_IND_ALLOW_WEBSITE_CLONES==1){
-      topLine[5]=MWII::GL_WI.getDefaultWebText("Clone");
-    }
-    topLine[5+DD::GL_IND_ALLOW_WEBSITE_CLONES]=MWII::GL_WI.getDefaultWebText("Last Log In");
-    for(long i=start;i<end;++i){
-      if(sc=="1"){
-        w.setFromUsername((indexUn.getKeysFromRow(i))[0]);
-      }
-      else{
-        w.setFromIndexFromInternalIdDB(i);
-      }
-      if(w.isRoot()=="yes"){
-        mLine[0]=w.getUsername();
-      }
-      else{
-        mLine[0]=createLinkForEditUser(w.getUsername());
-      }
-      mLine[1]=w.getExternalId();
-      mLine[2]=w.getFirstName()+" "+w.getLastName();
-      mLine[3]=w.getEmail();
-      mLine[4]=createLinkForEditUserAdvanced(w.getUsername(),w.isRoot());
-      if(DD::GL_IND_ALLOW_WEBSITE_CLONES==1){
-        mLine[5]=createLinkForEditUserExtraAdvanced(w.getUsername(), w.isAllowedToCloneWebsite());
-      }
-      mLine[5+DD::GL_IND_ALLOW_WEBSITE_CLONES]=w.getLastLogInTime();
-      allLines.push(mLine);
-    }
-    SF::flipTheStack(allLines);
-    allLines.push(topLine);
-    return BI::createScroller(start,end,numUsr,numb,"!*!",_numOnEachSide,sc)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
-  }
-  std::string AbstractText::createLinkToText(const std::string &tN,const std::string &parameter, const std::string & _label) const{
-    std::string label=_label;
-    if(label==""){
-      label=tN;
-    }
-    return HSF::linkFromPair(createLinkPair(parameter,tN,label));
-  }
-  std::string AbstractText::createLinkToMessage(const std::string &mId,const std::string & _messNameOrId,const std::string &_page) const{
-    std::string messNameOrId=_messNameOrId;
-    if(messNameOrId==""){
-      messNameOrId=mId;
-    }
-    return "<A href=\""+MWII::GL_WI.getWSURL()+"/index.cgi?page="+_page+"&s1=u11&r1="+mId+"\">"+messNameOrId+"</A>";
-  }
-  std::string AbstractText::createLinkToCouas(const std::string &cId,const std::string & _couasNameOrId,const std::string & _page) const{
-    std::string cNameOrId=_couasNameOrId;
-    if(cNameOrId==""){
-      cNameOrId=cId;
-    }
-    return "<A href=\""+MWII::GL_WI.getWSURL()+"/index.cgi?page="+_page+"&s1=u11&r1="+cId+"\">"+cNameOrId+"</A>";
-  }
-  std::string AbstractText::createLinkToExecuteBackup(const std::string & backupName, const std::string & backupType) const{
-    std::string textNameForLink="restoreText";
-    if(backupType=="courseCreation"){textNameForLink="undoCourseCreation";}
-    if(backupType=="enrollment"){textNameForLink="undoStudentEnrollment";}
-    if(backupType=="assignmentCreation"){textNameForLink="undoAssignmentCreation";}
-    return "<A href=\""+MWII::GL_WI.getWSURL()+"/index.cgi?page="+textNameForLink+"&ev0=docName&el0="+backupName+"\">"+backupName+"</A>";
-  }
-  std::string AbstractText::createLinkToExpandStat(const std::string & sName,const long &startingNum) const{
-    std::string sT="";
-    for(long i=startingNum;i<sName.length();++i){
-      sT+=sName[i];
-    }
-    std::string textNameForLink="statExpand";
-    return "<A href=\""+MWII::GL_WI.getWSURL()+"/index.cgi?page="+textNameForLink+"&ev0=docName&el0="+sName+"&ev1=pageName&el1="+sT+"\">"+sT+"</A>";
-  }
-  std::string AbstractText::createLinkToFile(const std::string &fN,const std::string &fC,const std::string & fP,const std::string &ext) const{
-    return "<A target=\"new\" href=\""+fP+"/"+MWII::FILE_PREFIX+fN+"."+ext+"\">"+fC+"</A>";
-  }
-  std::string AbstractText::createLinkToResponseReceiver(const std::string &tN,const std::string &_dR) const{
-    std::string lrr= "<A href=\""+MWII::GL_WI.getWSURL()+"/index.cgi?"+MWII::GL_WI.get_e_respRecReqRT()+"=";
-    lrr+=tN;
-    std::string nm=tN;
-    if(_dR!=""){
-      lrr+="&rdd="+_dR;
-      nm=_dR;
-    }
-    lrr+="\">"+nm+"</A>";
-    return lrr;
-  }
-  std::string AbstractText::createListOfTexts(const PSDI::SessionData & _psd,const std::string & _numInList, const std::string & _numOnEachSide) const{
-    std::string sc=MWII::GL_WI.getSortCriterion();
-    long nT=DD::GL_MAIN_DB.numTexts();
-    long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
-    if((start<0)||(start>nT-1)){start=0;}
-    if((sc!="0")&&(sc!="1")){sc="0";}
-    long numb=BF::stringToInteger(_numInList);
-    if(numb<0){numb=0;}
-    TMD::MText sf;
-    std::pair<std::string,int> allD;
-    std::string dType,createdBy,createdOn,modifiedOn,othD;
-    int res;
-    long lsz=5;
-    std::vector<std::string> topLine,mLine;
-    topLine.resize(lsz);mLine.resize(lsz);
-    std::stack<std::vector<std::string> > allLines;
-    long pos;
-    std::pair<std::vector<std::string>, std::string> sR;
-    MTF::Table& textTable=DD::GL_MAIN_DB.dbsM["mainText"];
-    TOSF::TSets indexTx=textTable.getIndTable("_i_1_ei_");
-    long indSz=indexTx.size();
-    std::string searchBeginString=SF::getElFromMapOrNotFoundMessage(_psd.respMap,"sBg","!!notFound");
-    if(searchBeginString!="!!notFound"){
-      std::vector<std::string> sbstV;
-      sbstV.resize(1); sbstV[0]=searchBeginString;
-      long indLow=indexTx.lowerBoundRowIndex(sbstV);
-      if(indLow<0){indLow=0;}
-      if(indLow<indSz){
-        start=indLow;sc="1";
-      }
-    }
-    long end=start+numb;
-    if((end<0)||(end>nT)){
-      end=nT;
-    }
-    if(sc=="1"){if(indSz<end){end=indSz;}}
-    if(sc=="0"){
-      std::map<std::string,std::string>::const_iterator it=_psd.respMap.find("save");
-      if(it!=_psd.respMap.end()){
-        DD::GL_MAIN_DB.saveForRecovery("mainText",start,end,it->second);
-      }
-    }
-    std::string scSw="0";
-    if(sc=="0"){scSw="1";}
-    topLine[0]=createLinkToSwitchSortCriterion(MWII::GL_WI.getDefaultWebText("Name"),"listTexts",scSw,MWII::GL_WI.getStartOfList());
-    topLine[1]=MWII::GL_WI.getDefaultWebText("Type");
-    topLine[2]=MWII::GL_WI.getDefaultWebText("Created by");
-    topLine[3]=MWII::GL_WI.getDefaultWebText("Created on");
-    topLine[4]=MWII::GL_WI.getDefaultWebText("Modified on");
-    for(long i=start;i<end;++i){
-      if(sc=="1"){
-        sf.setFromTextName(((indexTx.getKeysFromRow(i))[0]));
-      }
-      else{
-        sR=(DD::GL_MAIN_DB.dbsM["mainText"])[i];
-        sf.setFromInternalId(sR.first[0]);
-      }
-      mLine[0]=createLinkToText(sf.getTextName());
-      pos=0;
-      othD=sf.getTextData();
-      allD=SF::extract(othD,pos,"_documentType!!_","_/documentType!!_");
-      dType="";
-      if(allD.second==1){
-        dType=allD.first;
-      }
-      pos=0;
-      allD=SF::extract(othD,pos,"_createdBy!!_","_/createdBy!!_");
-      createdBy="";
-      if(allD.second==1){
-        createdBy=allD.first;
-      }
-      pos=0;
-      allD=SF::extract(othD,pos,"_created!!_","_/created!!_");
-      createdOn="";
-      if(allD.second==1){
-        createdOn=allD.first;
-      }
-      modifiedOn=createdOn;
-      pos=0;allD=SF::extract(othD,pos,"_modified!!_","_/modified!!_");
-      if(allD.second==1){
-        modifiedOn=allD.first;
-      }
-      mLine[1]=dType;mLine[2]=createdBy;mLine[3]=createdOn;mLine[4]=modifiedOn;
-      allLines.push(mLine);
-    }
-    SF::flipTheStack(allLines);
-    allLines.push(topLine);
-    return BI::createScroller(start,end,nT,numb,"!*!",_numOnEachSide,sc)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
-  }
-  std::string AbstractText::createListOfFiles(const std::string & _numInList, const std::string & _numOnEachSide) const{
-    long nT=DD::GL_MAIN_DB.numFiles();
-    long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
-    if((start<0)||(start>nT-1)){start=0;}
-    long numb=BF::stringToInteger(_numInList);
-    if(numb<0){numb=0;}
-    long end=start+numb;
-    if((end<0)||(end>nT)){
-      end=nT;
+  std::string SessionInformation::updateExistingFile(const cgicc::Cgicc & ch, const std::string & username, const std::string & extCode, const std::string & formFieldName,const std::string &additionalData){
+    if(allowedToModifyFile(username,extCode)==0){
+      return "Not permitted";
     }
     FMD::FileManager sf;
-    std::pair<std::string,int> allD;
-    std::string code ,path,extension,userN, createdOn,othD,createdBy,respRecName,fdataType,fName;;
-    int res;
-    long lsz=9;
-    std::vector<std::string> topLine,mLine;
-    topLine.resize(lsz);mLine.resize(lsz);
-    std::stack<std::vector<std::string> > allLines;
-    topLine[0]=MWII::GL_WI.getDefaultWebText("ID");
-    topLine[1]=MWII::GL_WI.getDefaultWebText("Edit");
-    topLine[2]=MWII::GL_WI.getDefaultWebText("Delete");
-    topLine[3]=MWII::GL_WI.getDefaultWebText("Added by");
-    topLine[4]=MWII::GL_WI.getDefaultWebText("ext");
-    topLine[5]=MWII::GL_WI.getDefaultWebText("Type");topLine[6]="Date";topLine[7]="Resp.";topLine[8]="Desc. / name";
-    long pos;
-    for(long i=start;i<end;++i){
-      std::pair<std::vector<std::string>, std::string> sR=(DD::GL_MAIN_DB.dbsM["fileMan"])[i];
-      sf.setFromInternalId(sR.first[0]);
-      othD=sf.getTextData();
-      code=sf.getExternalCodeFromInternalId();
-      pos=0;
-      allD=SF::extract(othD,pos,"_filePath_","_/filePath_");
-      path="";
-      if(allD.second==1){path=allD.first;}
-      pos=0;
-      fdataType=MWII::GL_WI.getDefaultWebText("unknown");
-      allD=SF::extract(othD,pos,"_fileDataType_","_/fileDataType_");
+    int succ=sf.setFromExternalCode(extCode);
+    if(succ==0){
+      return "File does not exist";
+    }
+    std::string fileInfoData=sf.getTextData();
+    long pos=0;
+    std::pair<std::string,int> allD=SF::extract(fileInfoData,pos,"_fInfo*|_","_/fInfo*|_");
+    std::string toSearch, toReplace;
+    if(allD.second==1){
+      toSearch="_fInfo*|_"+allD.first+"_/fInfo*|_";
+      pos=0;allD=SF::extract(additionalData,pos,"_fInfo*|_","_/fInfo*|_");
       if(allD.second==1){
-        fdataType=allD.first;
+        toReplace="_fInfo*|_"+allD.first+"_/fInfo*|_";
+        fileInfoData=SF::findAndReplace(fileInfoData,toSearch,toReplace);
       }
-      fName=code;
-      pos=0; allD=SF::extract(othD,pos,"_fileName_","_/fileName_");
+    }
+    pos=0;allD=SF::extract(additionalData,pos,"_fSize*|_","_/fSize*|_");
+    // if allD.second==0, the new file is not submitted with the form
+    if(allD.second==1){
+      std::string newFSize="_fSize*|_"+allD.first+"_/fSize*|_";
+      std::string fName=extCode;
+      pos=0;allD=SF::extract(fileInfoData,pos,"_fileName_","_/fileName_");
       if(allD.second==1){
         fName=allD.first;
       }
-      pos=0;
-      allD=SF::extract(othD,pos,"_fileExtension_","_/fileExtension_");
-      extension="";
-      if(allD.second==1){extension=allD.first;}
-      pos=0;
-      allD=SF::extract(othD,pos,"_user_","_/user_");
-      userN="";
-      if(allD.second==1){userN=allD.first;}
-      pos=0;
-      allD=SF::extract(othD,pos,"_created_","_/created_");
-      createdOn="";
-      if(allD.second==1){createdOn=allD.first;}
-      pos=0;
-      allD=SF::extract(othD,pos,"_fInfo*|_","_/fInfo*|_");
-      createdBy="";
-      if(allD.second==1){createdBy=allD.first;}
-      pos=0;
-      allD=SF::extract(othD,pos,"_nRespRec*|_","_/nRespRec*|_");
-      respRecName="";
-      if(allD.second==1){respRecName=allD.first;}
-      mLine[0]=createLinkToFile(fName,code,path,extension);
-      mLine[1]=createLinkToText("edit",MWII::GL_WI.get_e_parPage()+"=listFiles&st="+std::to_string(start)+"&fReq="+code+"&amF",MWII::GL_WI.getDefaultWebText("edit"));
-      mLine[2]="_hideReveal__revealTitle_"+MWII::GL_WI.getDefaultWebText("delete")+"_/revealTitle__hideTitle_"+MWII::GL_WI.getDefaultWebText("cancel")+"_/hideTitle_";
-      mLine[2]+=createLinkToText("delete",MWII::GL_WI.get_e_parPage()+"=listFiles&st="+std::to_string(start)+"&fReq="+code+"&amF",MWII::GL_WI.getDefaultWebText("delete"));
-      mLine[2]+="_/hideReveal_";
-      mLine[3]=userN;
-      mLine[4]=extension;
-      mLine[5]=fdataType;
-      mLine[6]=createdOn;
-      mLine[7]=createLinkToText(respRecName, MWII::GL_WI.get_e_respRecReqRT());
-      mLine[8]=createdBy;
-      allLines.push(mLine);
-    }
-    SF::flipTheStack(allLines);
-    allLines.push(topLine);
-    return BI::createScroller(start,end,nT,numb,"!*!",_numOnEachSide)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
-  }
-  std::string AbstractText::createListOfMessages(const std::string & _numInList, const std::string & _numOnEachSide) const{
-    long nT=DD::GL_MAIN_DB.numMessages();
-    long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
-    if((start<0)||(start>nT-1)){start=0;}
-    long numb=BF::stringToInteger(_numInList);
-    if(numb<0){numb=0;}
-    long end=start+numb;
-    if((end<0)||(end>nT)){
-      end=nT;
-    }
-    MD::Message bm;
-    std::pair<std::string,int> allD;
-    std::string code , userN, createdOn, intUID;
-    std::string othD;
-    int res;
-    long lsz=5;
-    std::vector<std::string> topLine,mLine;
-    topLine.resize(lsz);mLine.resize(lsz);
-    std::stack<std::vector<std::string> > allLines;
-    topLine[0]=MWII::GL_WI.getDefaultWebText("ID");
-    topLine[1]=MWII::GL_WI.getDefaultWebText("Edit");
-    topLine[2]=MWII::GL_WI.getDefaultWebText("Advanced");
-    topLine[3]=MWII::GL_WI.getDefaultWebText("Added by");
-    topLine[4]=MWII::GL_WI.getDefaultWebText("Date");
-    long pos;
-    for(long i=start;i<end;++i){
-      std::pair<std::vector<std::string>, std::string> sR=(DD::GL_MAIN_DB.dbsM["messMan"])[i];
-      bm.setFromInternalId(sR.first[0]);
-      othD=bm.getTextData();
-      code=bm.getExternalCodeFromInternalId();
-      pos=0;
-      allD=SF::extract(othD,pos,"_user_","_/user_");
-      userN="";
-      if(allD.second==1){userN=allD.first;}
-      pos=0;
-      allD=SF::extract(othD,pos,"_created_","_/created_");
-      createdOn="";
-      if(allD.second==1){createdOn=allD.first;}
-      MEI::MElement mEl;
-      if(MEI::initMElementFromRawText(mEl,othD,code)=="success"){
-        mLine[0]=createLinkToMessage(code,mEl.title(),MWII::GL_WI.getDefaultWebText("forum"));
-        std::string cdB=code;
-        if(mEl.numNavEls()>0){
-          cdB=mEl.navEl(mEl.numNavEls()-1);
-          long pos;
-          std::pair<std::string, int> allD;
-          pos=0;allD=SF::extract(cdB,pos,"_!code_","_/!code_");
-          if(allD.second==1){
-            cdB=allD.first;
+      pos=0;allD=SF::extract(fileInfoData,pos,"_fileExtension_","_/fileExtension_");
+      std::string extOld="na";
+      if(allD.second==1){
+        extOld=allD.first;
+        pos=0;allD=SF::extract(additionalData,pos,"_fileDataType_","_/fileDataType_");
+        if(allD.second==1){
+          std::string correctExtension=extOld+"bad";
+          if(allD.first=="application/pdf"){
+            correctExtension="pdf";
+          }
+          if(allD.first=="image/jpeg"){
+            correctExtension="jpg";
+          }
+          if(extOld==correctExtension){
+            std::string filePath;
+            pos=0;allD=SF::extract(fileInfoData,pos,"_filePath_","_/filePath_");
+            if(allD.second==1){
+                uploadToServer(ch, formFieldName, allD.first+"/"+MWII::FILE_PREFIX+ fName+"."+extOld );
+            }
+            pos=0;allD=SF::extractAndReplace(fileInfoData,pos,"_fSize*|_","_/fSize*|_",0,newFSize);
+            if(allD.second==1){
+              fileInfoData=allD.first;
+            }
           }
         }
-        mLine[1]=mEl.createMTEditLink(cdB,code,"edit","",MWII::GL_WI.getDefaultWebText("forum"));
-        mLine[2]=mEl.createMTEditLink("adv",code,"adv.","",MWII::GL_WI.getDefaultWebText("forum"));
-        mLine[3]=userN;
-        mLine[4]=createdOn;
-        allLines.push(mLine);
+      }
+      pos=0;allD=SF::extract(additionalData,pos,"_fInfo*|_","_/fInfo*|_");;
+      if(allD.second==1){
+        toReplace="_fInfo*|_"+allD.first+"_/fInfo*|_";
+        fileInfoData=SF::findAndReplace(fileInfoData,toSearch,toReplace);
       }
     }
-    SF::flipTheStack(allLines);
-    allLines.push(topLine);
-    return BI::createScroller(start,end,nT,numb,"!*!",_numOnEachSide)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
+    sf.setTextData(fileInfoData);
+    sf.putInDB();
+    return "";
   }
-  std::string AbstractText::createListOfCoursesAssignments(const PSDI::SessionData & _psd,const std::string & _numInList, const std::string & _numOnEachSide) const{
-    long nT=DD::GL_MAIN_DB.numCoursesAssignments();
-    long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
-    if((start<0)||(start>nT-1)){start=0;}
-    long numb=BF::stringToInteger(_numInList);
-    if(numb<0){numb=0;}
-    long end=start+numb;
-    if((end<0)||(end>nT)){
-      end=nT;
-    }
-    CAD::CouAs myC;
-    std::pair<std::string,int> allD;
-    std::string code , userN, createdOn, intUID;
-    std::string othD;
-    int res;
-    long lsz=5;
-    std::vector<std::string> topLine,mLine;
-    topLine.resize(lsz);mLine.resize(lsz);
-    std::stack<std::vector<std::string> > allLines;
-    topLine[0]=MWII::GL_WI.getDefaultWebText("Title");
-    topLine[1]=MWII::GL_WI.getDefaultWebText("Code / Label");
-    topLine[2]=MWII::GL_WI.getDefaultWebText("Advanced");
-    topLine[3]=MWII::GL_WI.getDefaultWebText("Added by");
-    topLine[4]=MWII::GL_WI.getDefaultWebText("Date");
-    long pos;
-    for(long i=start;i<end;++i){
-      std::pair<std::vector<std::string>, std::string> sR=(DD::GL_MAIN_DB.dbsM["couasMan"])[i];
-      myC.setFromInternalId(sR.first[0]);
-      othD=myC.getTextData();
-      code=myC.getExternalCodeFromInternalId();
-      pos=0;
-      allD=SF::extract(othD,pos,"_user_","_/user_");
-      userN="";
-      if(allD.second==1){userN=allD.first;}
-      pos=0;
-      allD=SF::extract(othD,pos,"_created_","_/created_");
-      createdOn="";
-      if(allD.second==1){createdOn=allD.first;}
-      CEI::CouasElement cEl(_psd);
-      if(ICEI::initFromRawText(_psd,cEl,othD,code)=="success"){
-        mLine[0]=createLinkToCouas(code,cEl.title(),MWII::GL_WI.getDefaultWebText("assignments"));
-        mLine[1]=code;
-        mLine[2]=cEl.createMTEditLink("adv",code,"adv.",MWII::GL_WI.getDefaultWebText("assignments"));
-        mLine[3]=userN;
-        mLine[4]=createdOn;
-        allLines.push(mLine);
-      }
-    }
-    SF::flipTheStack(allLines);
-    allLines.push(topLine);
-    return BI::createScroller(start,end,nT,numb,"!*!",_numOnEachSide)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
+  long SessionInformation::loggedIn(){
+    return loginStatusIndicator;
   }
-    std::string AbstractText::createListOfBackups(const std::string & _numInList, const std::string & _numOnEachSide) const{
-      long nT=DD::GL_MAIN_DB.numBackups();
-      long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
-      if((start<0)||(start>nT-1)){start=0;}
-      long numb=BF::stringToInteger(_numInList);
-      if(numb<0){numb=0;}
-      long end=start+numb;
-      if((end<0)||(end>nT)){
-        end=nT;
-      }
-      std::pair<std::string,int> allD;
-      std::string name, type, user;
-      int res;
-      long lsz=3;
-      std::vector<std::string> topLine,mLine;
-      topLine.resize(lsz);mLine.resize(lsz);
-      std::stack<std::vector<std::string> > allLines;
-      topLine[0]=MWII::GL_WI.getDefaultWebText("Name");
-      topLine[1]=MWII::GL_WI.getDefaultWebText("Type");
-      topLine[2]=MWII::GL_WI.getDefaultWebText("User");
-      long pos;
-      for(long i=start;i<end;++i){
-        std::pair<std::vector<std::string>, std::string> sR=(DD::GL_MAIN_DB.dbsM["backupDatabase"])[i];
-        name=sR.first[0];
-        user="";
-        pos=0;allD=SF::extract(sR.second,pos,"_user_","_/user_");
-        if(allD.second==1){user=allD.first;}
-        type="";
-        pos=0;allD=SF::extract(sR.second,pos,"_type_","_/type_");
-        if(allD.second==1){type=allD.first;}
-        mLine[0]=createLinkToExecuteBackup(name,type);
-        mLine[1]=type;
-        mLine[2]=user;
-        allLines.push(mLine);
-      }
-      SF::flipTheStack(allLines);
-      allLines.push(topLine);
-      return BI::createScroller(start,end,nT,numb,"!*!",_numOnEachSide)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
+  int SessionInformation::passedAntiSpam() const{
+    return psd.passedAntiSpam;
+  }
+  long checkAntiSpam(const std::string & code, const std::string & solution){
+    std::string fileWithCode=DD::GL_DBS.getChallengeAnswStorage()+"/a"+solution+".dat";
+    std::string sol=IOF::fileToString(fileWithCode);
+    if(sol=="fileNotFound"){return 0;}
+    IOF::sys_deleteFile(fileWithCode);
+    if(sol==code){
+      return 1;
     }
-    std::string AbstractText::createListOfFStatItems(const std::string & _numInList, const std::string & _numOnEachSide) const{
-      long nT=DD::GL_MAIN_DB.numStats();
-      long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
-      if((start<0)||(start>nT-1)){start=0;}
-      long numb=BF::stringToInteger(_numInList);
-      if(numb<0){numb=0;}
-      long end=start+numb;
-      if((end<0)||(end>nT)){
-        end=nT;
-      }
-      std::pair<std::string,int> allD;
-      std::string name;
-      long vVL,vML;
-      int res;
-      long lsz=4;
-      std::vector<std::string> topLine,mLine;
-      topLine.resize(lsz);mLine.resize(lsz);
-      std::stack<std::vector<std::string> > allLines;
-      topLine[0]=MWII::GL_WI.getDefaultWebText("Name");
-      topLine[1]=MWII::GL_WI.getDefaultWebText("M");
-      topLine[2]=MWII::GL_WI.getDefaultWebText("V");
-      topLine[3]=MWII::GL_WI.getDefaultWebText("T");
-      for(long i=start;i<end;++i){
-        std::pair<std::vector<std::string>, std::string> sR=(DD::GL_MAIN_DB.dbsM["stat"])[i];
-        name=sR.first[0];
-        vML=STI::getTotalVisits(sR.second,"aM");
-        vVL=STI::getTotalVisits(sR.second,"aV");
-        mLine[0]=createLinkToExpandStat(name);
-        mLine[1]=std::to_string(vML);
-        mLine[2]=std::to_string(vVL);
-        mLine[3]=std::to_string(vML+vVL);
-        allLines.push(mLine);
-      }
-      SF::flipTheStack(allLines);
-      allLines.push(topLine);
-      return BI::createScroller(start,end,nT,numb,"!*!",_numOnEachSide)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
-    }
-    std::string AbstractText::createListOfStatItems(const PSDI::SessionData & _psd, const std::string & _numInList, const std::string & _numOnEachSide) const{
-      std::string sc=MWII::GL_WI.getSortCriterion();
-      long nT=DD::GL_MAIN_DB.numStatsAdv();
-      long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
-      if((start<0)||(start>nT-1)){start=0;}
-      long numb=BF::stringToInteger(_numInList);
-      if(numb<0){numb=0;}
-      std::pair<std::string,int> allD;
-      std::string name;
-      long vVL,vML;
-      int res;
-      long lsz=2;
-      std::vector<std::string> topLine,mLine;
-      topLine.resize(lsz);mLine.resize(lsz);
-      std::stack<std::vector<std::string> > allLines;
-      std::string searchBeginString=SF::getElFromMapOrNotFoundMessage(_psd.respMap,"sBg","!!notFound");
-      if(searchBeginString!="!!notFound"){
-        long indLow=(DD::GL_MAIN_DB.fu_dbsM["fStat"]).lowerBoundX(searchBeginString);
-        if(indLow<0){indLow=0;}
-        if(indLow<nT){
-          start=indLow;sc="0";
-        }
-      }
-      long end=start+numb;
-      if((end<0)||(end>nT)){
-        end=nT;
-      }
-      std::string scSw="0";
-      if(sc=="0"){scSw="1";}
-      topLine[0]=createLinkToSwitchSortCriterion(MWII::GL_WI.getDefaultWebText("Name"),"listStat","0",MWII::GL_WI.getStartOfList());
-      topLine[1]=createLinkToSwitchSortCriterion(MWII::GL_WI.getDefaultWebText("Visits"),"listStat","1",MWII::GL_WI.getStartOfList());
-      for(long i=start;i<end;++i){
-        if(sc=="0"){
-          std::pair<FUDSF::X,long> sR=(DD::GL_MAIN_DB.fu_dbsM["fStat"]).searchXByIndex(i);
-          mLine[0]=sR.first.x;
-          std::pair<FUDSF::Sigma,long> rs=(DD::GL_MAIN_DB.fu_dbsM["fStat"]).searchX(mLine[0]);
-          mLine[1]=std::to_string(rs.first.sigma);
+    return 0;
+  }
+  void SessionInformation::initSession(const cgicc::Cgicc & ch){
+    if(indicatorInitialized==0){
+      indicatorRespRecInitialized=0;
+      psd.my_un="visitor";
+      psd.myFirstName="";
+      psd.myLastName="";
+      showLogInLink="yes";
+      fastUpdatingStat="yes";
+      psd.passwordChangeRequested="no";
+      psd.passwordChangeStatus="";
+      psd.allowRespRecDisplayToOthers="no";
+      CAGI::GL_Obf.uniqueRandomCode=RNDF::genRandCode(5);
+      CAGI::GL_Obf.secretOpenTag="Bb"+CAGI::GL_Obf.uniqueRandomCode+"e";
+      CAGI::GL_Obf.secretCloseTag="Eb"+CAGI::GL_Obf.uniqueRandomCode+"e";
+      CAGI::GL_Obf.sequencesNotAllowedExplanation="Arrays, sequences, vectors, and maps were not allowed, but your code tried to use them.";
+      CAGI::GL_Obf.wordNotAllowed="Your code tried to use an illegal word: ";
+      HTII::GL_title.nTGenerations=0;
+      HTII::GL_title.nDGenerations=0;
+      HTII::GL_title.maxTitleLength=60;
+      HTII::GL_title.maxDescLength=300;
+      HTII::GL_title.codewordThatTitleGenerationIsNeeded="_*autoTitle*_";
+      HTII::GL_title.codewordThatDescGenerationIsNeeded="_*autoDesc*_";
+      envVariables=BI::getEnvVars();
+      analyzeEnvVarsAndForms(ch);
+      currentCookie=envVariables[24];
+      if(currentCookie!=s_notFound){
+        currentCookie+=";"+MWII::GL_WI.getCookieName()+"="+s_notFound;
+        currentCookie+=";"+MWII::GL_WI.getCookieName()+"="+s_notFound;
+        long pos=0;
+        std::pair<std::string,int> allD =SF::extract(currentCookie,pos,MWII::GL_WI.getCookieName()+"=",";");
+        if(allD.second==1){
+          currentCookie=allD.first;
         }
         else{
-          std::pair<FUDSF::Sigma,long> sR=(DD::GL_MAIN_DB.fu_dbsM["fStat"]).searchSigmaByIndex(nT-i-1);
-          mLine[1]=std::to_string(sR.first.sigma);
-          std::pair<FUDSF::X,long> rs=(DD::GL_MAIN_DB.fu_dbsM["fStat"]).searchSigma(sR.first.putSigmaTToString());
-          mLine[0]=rs.first.x;
+          currentCookie=s_notFound;
         }
-        mLine[0]=createLinkToExpandStat("p"+mLine[0]);
-        allLines.push(mLine);
       }
-      SF::flipTheStack(allLines);
-      allLines.push(topLine);
-      return BI::createScroller(start,end,nT,numb,"!*!",_numOnEachSide,sc)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
-    }
-  std::string AbstractText::createListOfResponses(const PSDI::SessionData & _psd, const std::string & _numInList, const std::string & _numOnEachSide) const{
-    std::string sc=MWII::GL_WI.getSortCriterion();
-    long nT=DD::GL_MAIN_DB.numResponses();
-    long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
-    if((start<0)||(start>nT-1)){start=0;}
-    if((sc!="0")&&(sc!="1")){sc="0";}
-    long numb=BF::stringToInteger(_numInList);
-    if(numb<0){numb=0;}
-    RMD::Response sf;
-    std::pair<std::string,int> allD;
-    std::string modifiedD,createdBy,lAnswered,othD;
-    int res;
-    long lsz=9;
-    std::vector<std::string> topLine,mLine;
-    topLine.resize(lsz);mLine.resize(lsz);
-    std::stack<std::vector<std::string> > allLines;
-    long pos;
-    std::pair<std::vector<std::string>, std::string> sR;
-    MTF::Table& textTable=DD::GL_MAIN_DB.dbsM["response"];
-    TOSF::TSets indexRes=textTable.getIndTable("_i_1_ei_");
-    long indSz=indexRes.size();
-    std::string tempTName;
-    std::string searchBeginString=SF::getElFromMapOrNotFoundMessage(_psd.respMap,"sBg","!!notFound");
-    if(searchBeginString!="!!notFound"){
-      std::vector<std::string> sbstV;
-      sbstV.resize(1); sbstV[0]=searchBeginString;
-      long indLow=indexRes.lowerBoundRowIndex(sbstV);
-      if(indLow<0){indLow=0;}
-      if(indLow<indSz){
-        start=indLow;sc="1";
+      if(currentCookie!=s_notFound){
+        std::pair<std::string,std::string> uNRN=SF::oneWordToTwoWords(currentCookie);
+        int succ=(psd.myWU).setFromExternalId(uNRN.first);
+        if(succ==1){
+          if((psd.myWU).checkCookieCorrectness(currentCookie)){
+            loginStatusIndicator=1;
+            (psd.myWU).updateEncryptionDataAfterCookieReading(currentCookie);
+          }
+        }
+      }
+      if((loginActionIndicator==-1)&&(loginStatusIndicator==1)){
+        (psd.myWU).logOut();
+        std::cout<<cookieText(MWII::GL_WI.getCookieName(),"deleted")<<"\n";
+        loginStatusIndicator=0;
+      }
+      if((loginActionIndicator==1)&&(loginStatusIndicator==0)){
+        SPREPF::StatData st_DLogin=prepareStatData();
+        if(STI::checkIfSpammerIsTryingToGuessPasswords(st_DLogin)=="spammer"){
+          loginActionIndicator=0;
+          psd.pageRequested="tooManyAttemptsInShortTime";
+          changeMainText(psd.pageRequested);
+        }
+        else{
+          int succ=(psd.myWU).setFromUsername(getResponse("username"));
+          loginFailedIndicator=1;
+          if(succ==1){
+            succ=(psd.myWU).checkPasswordAndSetLevel1(getResponse("pass1"));
+            if(succ==1){
+              loginStatusIndicator=1;
+              std::string newCookie=(psd.myWU).logIn();
+              std::cout<<cookieText(MWII::GL_WI.getCookieName(),newCookie);
+              loginFailedIndicator=0;
+            }
+            else{
+              //failed log in - we should propagate the desired redirect page
+              MWII::GL_WI.setFailedLogIn();
+            }
+          }
+          else{
+            MWII::GL_WI.setFailedLogIn();
+          }
+        }
+      }
+      if(loginStatusIndicator==1){
+        if(loginActionIndicator==0){//renew cookie
+          std::cout<<cookieText(MWII::GL_WI.getCookieName(),currentCookie);
+        }
+        psd.my_un=(psd.myWU).getUsername();
+        psd.myFirstName=(psd.myWU).getFirstName();
+        psd.myLastName=(psd.myWU).getLastName();
+        psd.isRoot=(psd.myWU).isRoot();
+        psd.allowedToExecuteAll=(psd.myWU).isAllowedToExecuteCommands();
+        psd.masterKey=(psd.myWU).getMasterKeyFromRAM("sigmaM");
+      }
+      GF::GL_DEB_MESSAGES.addMessage("The current cookie is |"+currentCookie+"|\n");
+      TMD::MText m;
+      int s=m.setFromTextName("mainTextInitializer");
+      if(s==1){
+        std::string initText=m.getTextData();
+        std::map<std::string,std::string> mParameters;
+        std::map<std::string,std::string>::const_iterator itMP;
+        SF::varValPairs(initText,"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_",mParameters);
+        itMP=mParameters.find("defaultHeaderName");
+        if(itMP!=mParameters.end()){
+          dHN=itMP->second;
+          header.initialize(dHN);
+        }
+        itMP=mParameters.find("defaultFooterName");
+        if(itMP!=mParameters.end()){
+          dFN=itMP->second;
+          footer.initialize(dFN);
+        }
+        SF::assignValueFromMap(mParameters,"defaultFirstPage",dfPage);
+        itMP=mParameters.find("defaultAlphabet");
+        if(itMP!=mParameters.end()){
+          MWII::GL_WI.changeAlphabet(itMP->second);
+          SF::assignValueFromMap(mParameters,"daysOfTheWeek",psd.displayDaysInWeek);
+          SF::assignValueFromMap(mParameters,"namesOfTheMonths",psd.displayMonthsInYear);
+        }
+        AGRDI::GL_AGParameters.colSize=10;
+        SF::assignValueFromMap(mParameters,"agColSize",AGRDI::GL_AGParameters.colSize);
+        if((AGRDI::GL_AGParameters.colSize<1)||(AGRDI::GL_AGParameters.colSize>30)){
+          AGRDI::GL_AGParameters.colSize=10;
+        }
+        AGRDI::GL_AGParameters.compilerErrors="yes";
+        SF::assignValueFromMap(mParameters,"agCErrors",AGRDI::GL_AGParameters.compilerErrors);
+        SF::assignValueFromMap(mParameters,"maxTitleLength",HTII::GL_title.maxTitleLength);
+        if((HTII::GL_title.maxTitleLength<1)||(HTII::GL_title.maxTitleLength>1000)){
+          HTII::GL_title.maxTitleLength=10;
+        }
+        SF::assignValueFromMap(mParameters,"maxDescLength",HTII::GL_title.maxDescLength);
+        if((HTII::GL_title.maxDescLength<1)||(HTII::GL_title.maxDescLength>3000)){
+          HTII::GL_title.maxDescLength=300;
+        }
+        SF::assignValueFromMap(mParameters,"codeWordForAutoGenTitle",HTII::GL_title.codewordThatTitleGenerationIsNeeded);
+        SF::assignValueFromMap(mParameters,"codeWordForAutoGenDesc",HTII::GL_title.codewordThatDescGenerationIsNeeded);
+        SF::assignValueFromMap(mParameters,"allowRespRecToOthers",psd.allowRespRecDisplayToOthers);
+        SF::assignValueFromMap(mParameters,"sNotAllowed",CAGI::GL_Obf.sequencesNotAllowedExplanation);
+        SF::assignValueFromMap(mParameters,"wNotAllowed",CAGI::GL_Obf.wordNotAllowed);
+        SF::assignValueFromMap(mParameters,"executePublicTestCases",APTI::GL_studentsAllowedToExecuteCodeOnPublicTestCases);
+        SF::assignValueFromMap(mParameters,"maxNumForSimpson",FF::MAXIMAL_NUMBER_OF_INTERVALS_FOR_SIMPSON);
+        itMP=mParameters.find("defaultTexts");
+        if(itMP!=mParameters.end()){
+          MWII::GL_WI.updateDefaultWebTexts(itMP->second);
+        }
+        itMP=mParameters.find("showLogInLink");
+        if(itMP!=mParameters.end()){
+          showLogInLink=itMP->second;
+          MWII::GL_WI.setLoginLink(showLogInLink);
+        }
+        itMP=mParameters.find("fastUpdatingStat");
+        if(itMP!=mParameters.end()){
+          fastUpdatingStat=itMP->second;
+          MWII::GL_WI.setFastUpdatingStat(fastUpdatingStat);
+        }
+
+        if(MWII::GL_WI.getRedirectOverwrite()!="notFound"){
+          std::pair<std::string,std::string> twoCodes=SF::oneWordToTwoWords(MWII::GL_WI.getRedirectOverwrite());
+          TMD::MText sf;
+          int sc=sf.setFromExternalCode(twoCodes.first);
+          if(sc==1){
+            psd.pageRequested=sf.getTextName();
+          }
+        }
+        if(loginFailedIndicator==1){
+          psd.pageRequested="wrongUserNameOrPassword";
+        }
+        if(psd.pageRequested!=""){
+          if((psd.pageRequested=="createWebsite")||(psd.pageRequested=="deleteWebsite")){
+            createOrDeleteWebsiteOrChangeRequestedPage();
+          }
+          int initSucc=mainText.initialize(psd.pageRequested,sysDataRequested,psd.my_un);
+          if(initSucc==0){
+            psd.pageRequested="pageDoesNotExist";
+            mainText.initialize(psd.pageRequested,sysDataRequested,psd.my_un);
+          }
+          MWII::GL_WI.setMainPageName(psd.pageRequested);
+        }
+        else{
+          mainText.initialize(dfPage,"no",psd.my_un);
+          MWII::GL_WI.setMainPageName(dfPage);
+          psd.pageRequested=dfPage;
+        }
+        if(addModFileReq==m_addModFileDelete){
+          if(allowedToCreateText()==1){//WARNING - allowedToDeleteFile is giving "yes" too easy to accommodate the following code
+            //Step 1: Determine if the file is submitted by a form.
+            //        and if it is, then tell the form that the file is deleted
+            FMD::FileManager sf;
+            int scc=sf.setFromExternalCode(addModFileCodeReq);
+            if(scc==1){
+              std::string td=sf.getTextData();
+              long pos; std::pair<std::string, int> allD;
+              pos=0; allD=SF::extract(td,pos,"_nRespRec*|_","_/nRespRec*|_");
+              if(allD.second==1){
+                RMD::Response rm;
+                scc=rm.setFromTextName(allD.first);
+                if(scc==1){
+                  td=rm.getTextData();
+                  pos=0;allD=SF::extract(td,pos,"_nf*|_","_/nf*|_");
+                  long numFAllowed=0;
+                  if(allD.second==1){
+                    numFAllowed=BF::stringToInteger(allD.first);
+                  }
+                  long found=0;long i=0;
+                  std::string sep_B,sep_E,insideText;
+                  while((found==0)&&(i<numFAllowed)){
+                    sep_B="f"+BF::padded(i,100,"0")+"*|_";
+                    sep_E="_/"+sep_B;
+                    sep_B="_"+sep_B;
+                    pos=0;allD=SF::extract(td,pos,sep_B,sep_E);
+                    if(allD.second==1){
+                      if(allD.first!=SF::findAndReplace(allD.first,MWII::FILE_PREFIX+addModFileCodeReq+".","")){
+                        found=1;
+                        pos=0;allD=SF::extractAndReplace(td,pos,sep_B,sep_E);
+                        if(allD.second==1){
+                          td=allD.first;
+                          rm.setTextData(td);
+                          rm.putInDB();
+                        }
+
+                      }
+                    }
+                    ++i;
+                  }
+                }
+
+              }
+            }
+            deleteFile(addModFileCodeReq);
+          }
+        }
+        if(envVariables[13]=="POST"){
+          if(countSubmittedFiles(ch)>0){
+            indicatorFileReceived=1;
+            if(addModFileReq==m_addModFileNew){
+              //add new file and update the info with addModFileModifyInfo
+              cgicc::const_file_iterator fileIt, fileItE;
+              fileItE=ch.getFiles().end();
+              fileIt=ch.getFile(e_addModFileFilePar);
+              if(fileIt!=fileItE){
+                std::string additionalData="_fInfo*|_"+addModFileModifyInfo+"_/fInfo*|_";
+                additionalData+="_fileDataType_"+fileIt->getDataType()+"_/fileDataType_";
+                additionalData+="_fSize*|_"+std::to_string(fileIt->getDataLength())+"_/fSize*|_";
+                placeNewFileToServer(ch,psd.my_un,"findOutFromDataType",e_addModFileFilePar,additionalData);
+              }
+            }
+          }
+          if(addModFileReq==m_addModFileEdit){
+            // update file info with addModFileModifyInfo.
+            // If a new file is received, then replace the old file.
+            cgicc::const_file_iterator fileIt, fileItE;
+            fileItE=ch.getFiles().end();
+            fileIt=ch.getFile(e_addModFileFilePar);
+            std::string additionalData="_fInfo*|_"+addModFileModifyInfo+"_/fInfo*|_";;
+            if(fileIt!=fileItE){
+              additionalData+="_fileDataType_"+fileIt->getDataType()+"_/fileDataType_";
+              additionalData+="_fSize*|_"+std::to_string(fileIt->getDataLength())+"_/fSize*|_";
+            }
+            updateExistingFile(ch,psd.my_un,addModFileCodeReq,e_addModFileFilePar,additionalData);
+          }
+          if(psd.couasEditReq=="y"){
+            updateGradesFromResponse();
+          }
+        }
+        if(respRecRequested!=""){
+          if(respSubmitted=="yes"){
+            RTI::Response tmpRT(respRecRequested,"no",psd.my_un);
+            if(tmpRT.isInitialized()==1){
+              RTI::ResponderInfo res=tmpRT.infoFromResponseText(psd,"df");
+              if(res.documentType=="gradeOfResponse"){
+                updateRespMapToProperlyAccountForBothGraderCommentsAndPoints();
+              }
+              if(res.exitStatus=="badForm"){
+                res.acceptResp=0;
+              }
+              if(
+                ((res.acceptResp==1)&&(res.documentType=="responseToTest"))
+                ||
+                ((res.acceptGrade==1)&&(res.documentType=="gradeOfResponse"))
+                ){
+                long pos;
+                std::pair<std::string,int> allD;
+                std::string dataToModify=tmpRT.getRawText();
+                if(dataToModify!=""){
+                  std::string dataToModifyOld=dataToModify;
+                  std::set<std::string> qLabels;
+                  qLabels=res.questionLabels;
+                  std::vector<std::string> oldAnswers=SF::stringToVector(dataToModify,"_in*|_","_/in*|_");
+                  std::vector<std::string> qLbs;
+                  long sz=oldAnswers.size();
+                  qLbs.resize(sz);
+                  std::map<std::string,long> invFunc;
+                  std::string s_inRespLabelB="_aw*|_";
+                  std::string s_inRespLabelE="_/aw*|_";
+                  if(res.documentType=="gradeOfResponse"){
+                    s_inRespLabelB="_gc*|_";
+                    s_inRespLabelE="_/gc*|_";
+                  }
+                  for(long i=0;i<sz;++i){
+                    pos=0;
+                    allD=SF::extract( oldAnswers[i],pos,"_lb*|_", "_/lb*|_");
+                    qLbs[i]="";
+                    if(allD.second==1){
+                      qLbs[i]=allD.first;
+                      invFunc[qLbs[i]]=i;
+                    }
+                  }
+                  std::string answToReplace;
+                  std::set<std::string>::const_iterator it,itE;
+                  std::map<std::string,std::string>::const_iterator itM,itME;
+                  std::map<std::string,long>::const_iterator itInvF, itInvFE;
+                  itE=qLabels.end();it=qLabels.begin();
+                  itInvFE=invFunc.end();
+                  itME=(psd.respMap).end();
+                  int dangerousInputDetected=0;
+                  while((it!=itE)&&(dangerousInputDetected==0)){
+                    itM=(psd.respMap).find(*it);
+                    if(itM!=itME){
+                      DISPPF::RequestsForSanitizer reqS;
+                      dangerousInputDetected=(DISPPF::sanitizeForDisplay(itM->second,reqS)=="unsafeInput");
+                      if(dangerousInputDetected==0){
+                        answToReplace="_in*|_ "+s_inRespLabelB+itM->second+s_inRespLabelE+" _lb*|_";
+                        answToReplace+=itM->first+"_/lb*|_ _/in*|_";
+                        itInvF=invFunc.find(itM->first);
+                        if(itInvF==itInvFE){
+                          dataToModify+=answToReplace;
+                        }
+                        else{
+                          dataToModify=SF::findAndReplace(dataToModify,"_in*|_"+oldAnswers[itInvF->second]+"_/in*|_",answToReplace,0);
+                        }
+                      }
+                    }
+                    ++it;
+                  }
+                  if(dangerousInputDetected==0){
+                    psd.respRecFlag="accepted";
+                    dataToModify=uploadFilesFromResponseReceiver(ch,respRecRequested,dataToModify,res.fileInfoV,tmpRT,res.idInfoData);
+                    modifyRespRec(respRecRequested, dataToModify,"yes");
+                  }
+                  else{
+                    psd.respRecFlag="rejected";
+                  }
+                }
+              }
+            }
+          }
+          indicatorRespRecInitialized=mainRespRec.initialize(respRecRequested,sysDataRequested,psd.my_un);
+          if(indicatorRespRecInitialized==0){
+            respRecRequested="";
+          }
+        }
       }
     }
-    long end=start+numb;
-    if((end<0)||(end>nT)){
-      end=nT;
-    }
-    if(sc=="1"){if(indSz<end){end=indSz;}}
-    std::string scSw="0";
-    if(sc=="0"){scSw="1";}
-    topLine[0]=createLinkToSwitchSortCriterion(MWII::GL_WI.getDefaultWebText("Code / Label"),"listResponses",scSw,MWII::GL_WI.getStartOfList());
-    topLine[1]=MWII::GL_WI.getDefaultWebText("DF");
-    topLine[2]=MWII::GL_WI.getDefaultWebText("AW");
-    topLine[3]=MWII::GL_WI.getDefaultWebText("SL");
-    topLine[4]=MWII::GL_WI.getDefaultWebText("ST");
-    topLine[5]=MWII::GL_WI.getDefaultWebText("GR");
-    topLine[6]=MWII::GL_WI.getDefaultWebText("Modified");
-    topLine[7]=MWII::GL_WI.getDefaultWebText("Name");topLine[8]=MWII::GL_WI.getDefaultWebText("ND");
-    for(long i=start;i<end;++i){
-      if(sc=="1"){
-        sf.setFromTextName(((indexRes.getKeysFromRow(i))[0]));
+    if(idOfMessageWhoseEditWasSubmitted!=""){
+      if(idOfMessageWhoseEditWasSubmitted=="nm"){
+        createMessage("_!myself!_",newTextOfMessage,psd.inFormReplace);
       }
       else{
-        sR=(DD::GL_MAIN_DB.dbsM["response"])[i];
-        sf.setFromInternalId(sR.first[0]);
+        modifyMessage(idOfMessageWhoseEditWasSubmitted,newTextOfMessage);
       }
-      tempTName=sf.getTextName();
-      mLine[0]=createLinkToResponseReceiver(tempTName,"");
-      mLine[1]=createLinkToResponseReceiver(tempTName,"df");
-      mLine[2]=createLinkToResponseReceiver(tempTName,"aw");
-      mLine[3]=createLinkToResponseReceiver(tempTName,"sl");
-      mLine[4]=createLinkToResponseReceiver(tempTName,"st");
-      mLine[5]=createLinkToResponseReceiver(tempTName,"gr");
-      pos=0;
-      othD=sf.getTextData();
-      allD=SF::extract(othD,pos,"_modified!!_","_/modified!!_");
-      modifiedD="";
-      if(allD.second==1){
-        modifiedD=allD.first;
-      }
-      pos=0;
-      allD=SF::extract(othD,pos,"_iI*|_","_/iI*|_");
-      createdBy="";
-      if(allD.second==1){
-        createdBy=allD.first;
-        mLine[5]="";
-      }
-      mLine[6]=modifiedD;
-      mLine[7]=createdBy;
-      pos=0;allD=SF::extract(othD,pos,"_alND*|_","_/alND*|_");
-      mLine[8]="";
-      if(allD.second==1){
-        mLine[8]=allD.first;
-      }
-      allLines.push(mLine);
     }
-    SF::flipTheStack(allLines);
-    allLines.push(topLine);
-    return BI::createScroller(start,end,nT,numb,"!*!",_numOnEachSide,sc)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
+    if((psd.passwordChangeRequested=="yes")&&(loginStatusIndicator==1)) {
+      psd.passwordChangeStatus="<P>"+analyzeRequestToChangePassword()+"</P>";
+    }
+    psd.passedAntiSpam=0;
+    std::string antiSpamFileName=getResponse("asc");
+    if(antiSpamFileName!=s_notFound){
+      psd.passedAntiSpam=checkAntiSpam(getResponse("antiSpamCode"),antiSpamFileName);
+    }
+    indicatorInitialized=1;
   }
-  std::string AbstractText::createListFromDB(const PSDI::SessionData & _psd, const std::string & _db, const std::string & _numInList, const std::string & _numOnEachSide) const{
-    // WARNING: Works only for root
-    if(_psd.isRoot!="yes"){
-      return "";
+  std::string SessionInformation::analyzeRequestToChangePassword(){
+    std::string oldPass,p1,p2;
+    std::map<std::string,std::string>::const_iterator it,itE;
+    itE=(psd.respMap).end();
+    it=(psd.respMap).find("oldP");
+    if(it==itE){
+      return MWII::GL_WI.getDefaultWebText("Password change failed. Old password not provided.");
     }
-    if(_db=="users"){
-      return createListOfUsers(_psd,_numInList, _numOnEachSide);
+    oldPass=it->second;
+    it=(psd.respMap).find("pass1");
+    if(it==itE){
+      return MWII::GL_WI.getDefaultWebText("Password change failed. New password not provided.");
     }
-    if(_db=="texts"){
-      return createListOfTexts(_psd,_numInList, _numOnEachSide);
+    p1=it->second;
+    it=(psd.respMap).find("pass2");
+    if(it==itE){
+      return MWII::GL_WI.getDefaultWebText("Password change failed. New password not provided.");
     }
-    if(_db=="files"){
-      return createListOfFiles(_numInList, _numOnEachSide);
+    p2=it->second;
+    if(p1!=p2){
+      return MWII::GL_WI.getDefaultWebText("Password change failed. Two new passwords do not match.");
     }
-    if(_db=="messages"){
-      return createListOfMessages(_numInList, _numOnEachSide);
+    if((psd.myWU).checkPasswordAndSetLevel1(oldPass)==0){
+      return MWII::GL_WI.getDefaultWebText("Password change failed. Old password incorrect.");
     }
-    if(_db=="coursesAssignments"){
-      return createListOfCoursesAssignments(_psd,_numInList, _numOnEachSide);
+    if(p1.length()<5){
+      return MWII::GL_WI.getDefaultWebText("Password change failed. New password is too weak.");
     }
-    if(_db=="backups"){
-      return createListOfBackups(_numInList, _numOnEachSide);
+    (psd.myWU).addUserData(p1);
+    return MWII::GL_WI.getDefaultWebText("Password changed.");
+  }
+  long SessionInformation::isInitialized() const{return indicatorInitialized;}
+  long SessionInformation::isFormResponded() const{return indicatorFormResponded;}
+  long SessionInformation::canFormResponseBeAccepted() const{return indicatorFormResponseCanBeAccepted;}
+  long SessionInformation::isFileReceived() const{return indicatorFileReceived;}
+  long SessionInformation::canFileBeAccepted() const{return indicatorFileCanBeAccepted;}
+  std::string SessionInformation::enhanceTheCommandDueToComfUserEdit(const std::string & s) const{
+    if(psd.comfUserEdit!="y"){
+      return s;
     }
-    if(_db=="responses"){
-      return createListOfResponses(_psd,_numInList, _numOnEachSide);
+    return CCFI::enhanceTheCommandDueToComfUserEdit(psd,s);
+  }
+  void SessionInformation::changeMainText(const std::string &_t){
+    if((_t=="")&&(psd.pageRequested!="")){
+      mainText.initialize(psd.pageRequested,sysDataRequested,psd.my_un);
     }
-    if(_db=="statDB"){
-      return createListOfStatItems(_psd,_numInList, _numOnEachSide);
+    else{
+      mainText.initialize(_t,sysDataRequested,psd.my_un);
     }
-    if(_db=="fStatDB"){
-      return createListOfFStatItems(_numInList, _numOnEachSide);
+  }
+  PublicFile::PublicFile(){
+    initialized=0;
+  }
+  int PublicFile::initializeNewFile(const std::string & _extFileCode, const std::string & _fE, const std::string & iUID, const std::string &additionalData){
+    fileExtension=_fE;
+    long pos=0;
+    std::pair<std::string,int> allD=SF::extract(additionalData,pos,fDatTB,fDatTE);
+    fileDataType="unknown";
+    if(allD.second==1){
+      fileDataType=allD.first;
+    }
+    if(fileExtension=="findOutFromDataType"){
+      if(fileDataType=="image/jpeg"){
+        fileExtension="jpg";
+      }
+      else{
+        if(fileDataType=="application/pdf"){
+          fileExtension="pdf";
+        }
+        else{
+          if(fileDataType=="image/gif"){
+            fileExtension="gif";
+          }
+          else{
+            if(fileDataType=="image/png"){
+              fileExtension="png";
+            }
+            else{
+              return 0;
+            }
+          }
+        }
+      }
+    }
+    m.createFile(iUID);
+    ivn=m.getInternalNumberFromInternalId();
+    long sz=ivn.size();
+    if(sz==1){
+      long num=ivn[0];
+      WUD::User wu;
+      std::string u_Name="root";
+      if(wu.setFromInternalId(iUID)==1){
+        u_Name=wu.getUsername();
+      }
+      externalFileCode=m.getExternalCodeFromInternalNumber();
+      filePath=m.clearThePublicPathAndDetermineTheFolder(MWII::GL_WI.getWSURL(),"",DD::GL_DBS.getPublicStorage(),DD::GL_DBS.getPublicStorage(),num,DD::GL_DBS.getNumSubFolders(),DD::GL_DBS.getNumFilesInFolder());
+      fileName=SF::combineTwoWords(externalFileCode,RNDF::genRandCode(6));
+      fileInfoData=fcB+externalFileCode+fcE;
+      fileInfoData+=fnmB+fileName+fnmE;
+      fileInfoData+=fPB+filePath+fPE;
+      fileInfoData+=fnB+std::to_string(num)+fnE;
+      fileInfoData+=fEB+fileExtension+fEE;
+      fileInfoData+=fUCB+u_Name+fUCE;
+      TMF::Timer tm;
+      std::string tNow=tm.timeString();
+      fileInfoData+= fTB+tNow+fTE;
+      fileInfoData+=additionalData;
+      m.setTextData(fileInfoData);
+      m.putInDB();
+      initialized=1;
+      return 1;
+    }
+    return 0;
+  }
+  int PublicFile::initializeExistingFile(const std::string & _extFileCode){
+    int scc=m.setFromExternalCode(_extFileCode);
+    if(scc==1){
+      ivn=m.getInternalNumberFromInternalId();
+      long sz=ivn.size();
+      if(sz==1){
+        long num=ivn[0];
+        externalFileCode=_extFileCode;
+        filePath=m.clearThePublicPathAndDetermineTheFolder(MWII::GL_WI.getWSURL(),"",DD::GL_DBS.getPublicStorage(),DD::GL_DBS.getPublicStorage(),num,DD::GL_DBS.getNumSubFolders(),DD::GL_DBS.getNumFilesInFolder());
+        fileInfoData=m.getTextData();
+        long pos=0;
+        std::pair<std::string,int> allD=SF::extract(fileInfoData,pos,fEB,fEE);
+        fileExtension="na";
+        if(allD.second==1){
+          fileExtension=allD.first;
+        }
+        pos=0;
+        allD=SF::extract(fileInfoData,pos,fDatTB,fDatTE);
+        fileDataType="unknown";
+        if(allD.second==1){
+          fileDataType=allD.first;
+        }
+        pos=0;
+        allD=SF::extract(fileInfoData,pos,fnmB,fnmE);
+        fileName=externalFileCode;
+        if(allD.second==1){
+          fileName=allD.first;
+        }
+        initialized=1;
+        return 1;
+      }
+    }
+    return 0;
+  }
+  int PublicFile::init(const std::string & _extFileCode, const std::string & _fE,  const std::string & userName, const std::string &additionalData){
+    WUD::User u;
+    if(userName!="!noUser!"){
+      int uSet=u.setFromUsername(userName);
+      if(uSet==1){
+        std::string iUID=u.getInternalId();
+        if(_extFileCode=="!*new!*"){
+          return initializeNewFile(_extFileCode,_fE,iUID,additionalData);
+        }
+        else{
+          return initializeExistingFile(_extFileCode);
+        }
+      }
+      return 0;
+    }
+    // The user is "!noUser!" . We need to set existing file
+    return initializeExistingFile(_extFileCode);
+  }
+  std::string PublicFile::getFileInfoData() const{   return fileInfoData; }
+  std::string PublicFile::getFilePath() const{ return filePath; }
+  std::string PublicFile::getFileName() const{
+    return MWII::FILE_PREFIX+fileName+"."+fileExtension;
+  }
+  long PublicFile::isInitialized() const{ return initialized; }
+   int SessionInformation::allowedToDeleteFile(const PublicFile & _p) const{
+    //WARNING:
+    // returns 1 only for root or if the method is called while processing the ResponseReceiver
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")||(psd.respRecFlag=="accepted")){
+      return 1;
+    }
+    return 0;
+  }
+  std::string PublicFile::deleteFile(){
+    if(initialized!=1){
+      return "!failed!: File not initialized";
+    }
+    std::string completeFilePath=getFilePath()+"/"+getFileName();
+    m.deleteRecord();
+    IOF::sys_deleteFile(completeFilePath);
+    initialized=0;
+    return "!success!";
+  }
+  std::string SessionInformation::deleteFile(PublicFile & _p){
+    if(allowedToDeleteFile(_p)!=1){
+      return "!failed!: Not allowed to delete";
+    }
+    return _p.deleteFile();
+  }
+  std::string SessionInformation::deleteSingleFile(const std::string &_extFileCode){
+    PublicFile pf;
+    pf.init(_extFileCode);
+    return deleteFile(pf);
+  }
+  std::string SessionInformation::deleteFile(const std::string &_extFileCode){
+    // Step 1: Check whether _extFileCode is a scraped website data with a lot of files to delete
+    std::vector<std::string> manyFiles=PASF::getItemsFromScrapedPage(_extFileCode,"\n","\t");
+    long sz=manyFiles.size();
+    if(sz>0){
+      // Step 2.1: There are multiple requests
+      //           We delete each file
+      for(long i=0;i<sz;++i){
+        deleteSingleFile(manyFiles[i]);
+      }
+      return "!success!";
+    }
+    // Step 2.2: There is a single request
+    //           We delete the single file
+    return deleteSingleFile(_extFileCode);
+  }
+  std::string SessionInformation::prepareTextForTextTable(const std::string & _nd, const std::string & _od) const{
+    return TDI::prepareTextForTextTableRaw(psd,_nd,_od);
+  }
+  int SessionInformation::allowedToModifyFile(const std::string &_userName, const std::string & _extCode) const{
+    if(_userName=="root"){
+      return 1;
+    }
+    return allowedToCreateText();
+  }
+  int SessionInformation::allowedToUploadNewFile(const std::string &_userName) const{
+    if(_userName=="root"){
+      return 1;
+    }
+    return allowedToCreateText();
+  }
+  int SessionInformation::allowedToDeleteCloneForGuest(const std::string &guestUname) const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes") || (guestUname==psd.my_un)){
+      return 1;
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToCreateCloneForGuest(const std::string &guestUname) const{
+    if(DD::GL_IND_ALLOW_WEBSITE_CLONES!=1){
+      return 0;
+    }
+    if(allowedToDeleteCloneForGuest(guestUname)==0){
+      return 0;
+    }
+    WUD::User w;
+    int userExists=w.setFromUsername(guestUname);
+    if(userExists==0){
+      return 0;
+    }
+    if(w.isAllowedToCloneWebsite()=="yes"){
+      return 1;
+    }
+    return 0;
+  }
+  std::string SessionInformation::deleteCloneForGuest(const std::string & guestUName){
+    if(allowedToDeleteCloneForGuest(guestUName)==0){
+      return "notAllowed";
+    }
+    GCSI::deleteClonedWebsite(guestUName);
+    return "deleted";
+  }
+  std::string SessionInformation::createCloneForGuest(const std::string & guestUName){
+    if(allowedToCreateCloneForGuest(guestUName)==0){
+      return "notAllowed";
+    }
+    WUD::User w;
+    int userExists=w.setFromUsername(guestUName);
+    if(userExists==0){
+      return "notAllowed";
+    }
+    GCSI::createClonedWebsite(guestUName,w.getEncPassword());
+    return "created";
+  }
+  int SessionInformation::createOrDeleteWebsiteOrChangeRequestedPage(){
+    if(psd.isRoot=="no"){
+      if(psd.my_un=="visitor"){
+        psd.pageRequested="pageDoesNotExist";
+        return 0;
+      }
+      if(psd.pageRequested=="deleteWebsite"){
+        deleteCloneForGuest(psd.my_un);
+        return 1;
+      }
+      if(psd.pageRequested=="createWebsite"){
+        std::string res=createCloneForGuest(psd.my_un);
+        if(res=="notAllowed"){
+          psd.pageRequested="createWebsiteFailed";
+        }
+      }
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToCreateText() const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToCreateRespRec() const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToDeleteText(const std::string & _tN) const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToModifyText(const std::string & _tN) const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    MPTI::MainText tToCheck(psd.pageRequested,"no1117",psd.my_un);
+    return tToCheck.allowedToModifyText(psd,"","",psd.my_un);
+  }
+  int SessionInformation::allowedToModifyRespRec(const std::string & _tN,const std::string & _fSubmission) const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    if(_fSubmission=="yes"){
+      return 1;
+    }
+    return 0;
+  }
+  std::string SessionInformation::createText(const std::string & _tName, const std::string & _tData, const std::string & _readPermitOverwrite, const std::string & _typeOverwrite){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToCreateText()==0){
+      return "!failed!: Not allowed";
+    }
+    TMD::MText sf;
+    int textExists=sf.setFromTextName(_tName);
+    if(textExists==1){
+      return "!failed!: Text name already exists";
+    }
+    int succ=sf.createText(_tName);
+    if(succ==0){
+      return "!failed!: Something may be bad with the database. The text name did not exist when checked but could not create text.";
+    }
+    psd.pageRequested=sf.getTextName();
+    std::string textData=prepareTextForTextTable(_tData,"!noOldData!");
+    if(_readPermitOverwrite!="!*!"){
+      textData=SF::findAndReplace(textData,"_permission__name_read_/name__userOrGroup_everyone_/userOrGroup__/permission_","_permission__name_read_/name__userOrGroup_"+_readPermitOverwrite+"_/userOrGroup__/permission_");
+    }
+    if(_typeOverwrite!="!*!"){
+      textData=SF::findAndReplace(textData,"_documentType!!_regularText_/documentType!!_","_documentType!!_"+_typeOverwrite+"_/documentType!!_");
+    }
+    sf.setTextData(textData);
+    sf.putInDB();
+    return "!success!: "+sf.getTextName();
+  }
+  std::string SessionInformation::modifyText(const std::string & _tName, const std::string & _tData){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToModifyText(_tName)==0){
+      return "!failed!: Not allowed";
+    }
+    TMD::MText sf;
+    int textExists=sf.setFromTextName(_tName);
+    if(textExists==0){
+      return "!failed!: Text name does not exist";
+    }
+    std::string oldData=sf.getTextData();
+    psd.recoveryOperationNames.push("mainText");
+    psd.recoveryOperationCommands.push(BMD::recoveryTextWithCustomData(_tName,oldData,"modifyText"));
+    sf.setTextData(prepareTextForTextTable(_tData,oldData));
+    sf.putInDB();
+    return "!success!";
+  }
+  std::string SessionInformation::deleteText(const std::string & _tName){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToDeleteText(_tName)==0){
+      return "!failed!: Not allowed";
+    }
+    TMD::MText sf;
+    int textExists=sf.setFromTextName(_tName);
+    if(textExists==0){
+      return "!failed!: Text name does not exist";
+    }
+    int succ=sf.deleteRecord();
+    if(succ==0){
+      return "!failed!: Something may be bad with the database. The text name did exist when checked but could not delete.";
+    }
+    return "!success!";
+  }
+  int SessionInformation::allowedToCreateMessage(const std::string & idOfCollector) const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    MEI::MElement mEl;
+    if(MEI::initMElementFromCode(mEl,idOfCollector)=="success"){
+      return mEl.allowedToCreateMessage(psd.my_un);
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToModifyMessage(const std::string & mId, const std::string & idOfCollector) const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    MEI::MElement mEl;
+    if(MEI::initMElementFromCode(mEl,mId)=="success"){
+      return mEl.allowedToModifyMessage(psd.my_un);
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToCreateCouas(const std::string & idOfCollector) const{
+      //WARNING: not implemented properly yet: permission checking is too restrictive
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToModifyCouas(const std::string & couasId, const std::string & idOfCollector) const{
+      //WARNING: not implemented properly yet: permission checking is too restrictive
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
+  std::string SessionInformation::createMessage(const std::string & _uName, const std::string & _mData, const std::string & _collectorId){
+    if(allowedToCreateMessage(_collectorId)==0){
+      return "!failed!: Not allowed";
+    }
+    if(psd.my_un=="visitor"){
+      return "!failed!: Visitors cannot create messages";
+    }
+    MD::Message bm;
+    std::string uNM=psd.my_un;
+    std::string uFN=psd.myFirstName;
+    std::string uLN=psd.myLastName;
+    std::string nSt="";
+    std::string intUserId=(psd.myWU).getInternalId();;
+    if((_uName!="")&&(_uName!="_!myself!_")){
+      WUD::User w;
+      int userExists=w.setFromUsername(_uName);
+      if(userExists==0){
+        return "!failed!: Username does not exist";
+      }
+      uNM=_uName;
+      uFN=w.getFirstName();
+      uLN=w.getLastName();
+      intUserId=w.getInternalId();
+    }
+    int succ=bm.createMessage(intUserId);
+    if(succ==0){
+      return "!failed!: Something may be bad with the database. The userId did exist when checked but could not create message.";
+    }
+    std::string navSt,collT;
+    bm.addToCollection(_collectorId,navSt,collT);
+    std::string mDataProcessed="";
+    mDataProcessed+="_created_";
+    TMF::Timer tm;
+    mDataProcessed+= tm.timeString();
+    mDataProcessed+="_/created_";
+    mDataProcessed+="_user_"+uNM+"_/user_";
+    mDataProcessed+="_firstName_"+uFN+"_/firstName_";
+    mDataProcessed+="_lastName_"+uLN+"_/lastName_";
+    std::vector<std::string> navSeq=SF::stringToVector(navSt,"_n_","_/n_");
+    std::vector<std::string> navSeqNew;
+    long szns=navSeq.size();
+    navSeqNew.resize(szns+1);
+    for(long i=0;i<szns;++i){
+      navSeqNew[i]=navSeq[i];
+    }
+    navSeqNew[szns]="_!code_"+_collectorId+"_/!code_ _!title_"+collT+"_/!title_";
+    ++szns;
+    std::string navStNew="";
+    for(long i=0;i<szns;++i){
+      navStNew+="_n_"+navSeqNew[i]+"_/n_";
+    }
+    mDataProcessed+="_navigation_"+navStNew+"_/navigation_";
+    mDataProcessed+="_messText!*_";
+    mDataProcessed+=_mData;
+    mDataProcessed+="_/messText!*_";
+    bm.setTextData(prepareTextForTextTable(mDataProcessed,"!noOldData!"));
+    bm.putInDB();
+    return bm.getExternalCodeFromInternalId();
+  }
+  std::string SessionInformation::createForum(const std::string & _uName, const std::string & _fOptionsData,const std::string & _collectorId, const std::string &backupRecovery){
+    if(psd.isRoot!="yes"){
+      return "!failed!: Not allowed";
+    }
+    std::vector<std::string> subForums=SF::stringToVector(_fOptionsData,LI::GL_LN.st_subForumB,LI::GL_LN.st_subForumE);
+    long numSF=subForums.size();
+    long pos;std::pair<std::string,int> allD;
+    std::string m_permits="";
+    std::string m_title="";
+    pos=0;allD=SF::extract(_fOptionsData,pos,LI::GL_LN.st_createMPermitsB,LI::GL_LN.st_createMPermitsE);
+    if(allD.second==1){
+      m_permits=LI::GL_LN.st_createMPermitsB+allD.first+LI::GL_LN.st_createMPermitsE;
+    }
+    pos=0;allD=SF::extract(_fOptionsData,pos,LI::GL_LN.st_sepTitleB,LI::GL_LN.st_sepTitleE);
+    if(allD.second==1){
+      m_title=allD.first;
+    }
+    std::string mainTopicText="";
+    mainTopicText+= LI::GL_LN.st_sepTitleB+m_title+LI::GL_LN.st_sepTitleE;
+    mainTopicText+="\n_mType!*_tColl_/mType!*_\n";
+    std::string mainCode=createMessage(_uName,mainTopicText,_collectorId);
+    if((mainCode.size()>1) &&(mainCode[0]=='!')&&(mainCode[1]=='f')){
+      return "!failed!";
+    }
+    if(backupRecovery!=""){
+      psd.recoveryOperationNames.push("courseCreation");
+      psd.recoveryOperationCommands.push(BMD::deleteCouasOrMessage("deleteMessage",mainCode,"notFound"));
+    }
+    std::string messCode;
+    for(long i=0;i<numSF;++i){
+      mainTopicText=LI::GL_LN.st_sepTitleB+subForums[i]+LI::GL_LN.st_sepTitleE;
+      mainTopicText+="\n_mType!*_mColl_/mType!*_\n";
+      mainTopicText+=m_permits;
+      messCode=createMessage(_uName,mainTopicText,mainCode);
+      if(backupRecovery!=""){
+        psd.recoveryOperationNames.push("courseCreation");
+        psd.recoveryOperationCommands.push(BMD::deleteCouasOrMessage("deleteMessage",messCode,mainCode));
+      }
+    }
+    return "!success!: _mainTopicCode_"+mainCode+"_/mainTopicCode_";
+  }
+  std::string SessionInformation::createSupportingPages(const std::map<std::string,std::string> & templM, const std::map<std::string,std::string> & varM, const std::map<std::string,std::string> & specialInstructions){
+    std::map<std::string,std::string>::const_iterator it, itE,itV,itVE,itS,itSE;
+    itE=templM.end();
+    itVE=varM.end();
+    itSE=specialInstructions.end();
+    std::string varCode="varNotFound";
+    std::string docName="docNotFound";
+    itV=varM.find("docName");
+    if(itV!=itVE){
+      docName=itV->second;
+    }
+    itV=varM.find("variablesExtension");
+    if(itV!=itVE){
+      varCode=itV->second;
+    }
+    std::string supportingPageLabel,supportingPageContent,supportingPageName,supportingPageExtension;
+    int skipInd;int rootInd;
+    it=templM.begin();
+    while(it!=itE){
+      supportingPageLabel=it->first;supportingPageContent=it->second;
+      supportingPageContent=SF::findAndReplace(supportingPageContent,"*variables*",docName+varCode);
+      itV=varM.find(supportingPageLabel+"Extension");
+      if(itV!=itVE){
+        supportingPageExtension=itV->second;
+        supportingPageName=docName+supportingPageExtension;
+        itS=specialInstructions.find(supportingPageLabel);
+        skipInd=0;rootInd=0;
+        if(itS!=itSE){
+          if(itS->second=="skip"){
+            skipInd=1;
+          }
+          if(itS->second=="root"){
+            rootInd=1;
+          }
+        }
+        if(skipInd==0){
+          std::string crSucc;
+          if(rootInd==0){
+            crSucc=createText(supportingPageName,supportingPageContent);
+          }
+          else{
+            crSucc=createText(supportingPageName,supportingPageContent,"root");
+          }
+          if((crSucc.length()>3) && (crSucc[0]=='!')&&(crSucc[1]=='s')&&(crSucc[2]=='u')){
+            psd.recoveryOperationNames.push("courseCreation");
+            psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteText",supportingPageName));
+          }
+        }
+      }
+      ++it;
     }
     return "";
   }
-  std::pair<std::string,std::string> AbstractText::createLinkPair(const std::vector<std::string> & parameters, const std::vector<std::string> &values,const std::string &label) const{
-    std::pair<std::string,std::string> fR;
-    fR.first=MWII::GL_WI.getWSURL()+"/index.cgi";
-    long ms=parameters.size();
-    long ms2=values.size();
-    if(ms2<ms){ms=ms2;}
-    std::string separator="?";
-    for(long i=0;i<ms;++i){
-      fR.first+=separator+parameters[i]+"="+values[i];
-      separator="&";
+  std::string SessionInformation::createInitialExams(const std::map<std::string,std::string> & eM, const std::string &docName){
+    std::map<std::string,std::string>::const_iterator it, itE;
+    itE=eM.end();
+    it=eM.begin();
+    std::string extension,exName,dataToGenerateExam;
+    while(it!=itE){
+      extension=it->first;
+      exName=docName+extension;
+      dataToGenerateExam=it->second;
+      generateExam(exName,dataToGenerateExam);
+      ++it;
     }
-    fR.second=label;
-    return fR;
+    return "";
   }
-  std::pair<std::string,std::string> AbstractText::createLinkPair(const std::string & parameter, const std::string &value,const std::string &label) const{
-    return createLinkPair(SF::oneElementVector(parameter),SF::oneElementVector(value),label);
-  }
-  std::pair<std::string,std::string> AbstractText::createLogInLinkPair(const std::string &label) const{
-    std::pair<std::string,std::string> fR;
-    fR.first=MWII::GL_WI.getWSURL()+"/index.cgi?page=login";
-    if((MWII::GL_WI.getFailedLogIn()=="no")&&(MWII::GL_WI.getMainPageExternalCode()!="notFound")){
-      std::string randCd=RNDF::genRandCode(7);
-      std::string redirectCode=SF::combineTwoWords(MWII::GL_WI.getMainPageExternalCode(),randCd);
-      fR.first+="&"+e_redirectToForward+"="+redirectCode;
+  std::string SessionInformation::createStandardCourse(const std::string & _fOptionsData, const std::string & _forFutureUse){
+    if(psd.isRoot!="yes"){
+      return "!failed!: Not allowed";
     }
-    if((MWII::GL_WI.getFailedLogIn()=="yes")&&(MWII::GL_WI.getRedirectOverwrite()!="notFound")){
-      fR.first+="&"+e_redirectToForward+"="+MWII::GL_WI.getRedirectOverwrite();
+    long pos; std::pair<std::string,int> allD;
+    pos=0;allD=SF::extract(_fOptionsData,pos,"_variablesMain_","_/variablesMain_");
+    if(allD.second==0){
+      return "!failed!: no variables";
     }
-    fR.second=label;
-    return fR;
-  }
-  std::string AbstractText::createLogInLink() const{
-    return HSF::linkFromPair(createLogInLinkPair(MWII::GL_WI.getDefaultWebText("Sign in")));
-  }
-  std::string AbstractText::createStatAnalysisPage(const PSDI::SessionData & _psd, const std::string & _stA) const{
-    if( _psd.isRoot!="yes"){
-      return "";
+    std::string vMain=allD.first;
+    pos=0;allD=SF::extract(_fOptionsData,pos,"_templatesMain_","_/templatesMain_");
+    if(allD.second==0){
+      return "!failed!: no templates";
     }
-    return STI::statAnalysis(_stA);
-  }
-  std::string AbstractText::createCloneInvitation(const PSDI::SessionData & _psd){
-    if(DD::GL_IND_ALLOW_WEBSITE_CLONES==0){
-      return "";
+    std::string templMain=allD.first;
+    std::map<std::string,std::string> specInstr;
+    pos=0;allD=SF::extract(_fOptionsData,pos,"_specialInstructions_","_/specialInstructions_");
+    if(allD.second==1){
+      specInstr=SF::stringToMap(allD.first,LI::GL_LN.st_sep_kB,LI::GL_LN.st_sep_kE,LI::GL_LN.st_sep_vB,LI::GL_LN.st_sep_vE);
     }
-    if((_psd.myWU).isAllowedToCloneWebsite()!="yes"){
-      return "";
+    std::map<std::string,std::string> examsMap;
+    pos=0;allD=SF::extract(_fOptionsData,pos,"_genExams_","_/genExams_");
+    if(allD.second==1){
+      examsMap=SF::stringToMap(allD.first,LI::GL_LN.st_sep_keB,LI::GL_LN.st_sep_keE,LI::GL_LN.st_sep_veB,LI::GL_LN.st_sep_veE);
     }
-    std::string fR="_insert__n*_text_/n*__n*_invitationToCreateClone_/n*__/insert_";
-    return treatInserts(_psd,fR,s_insertB,s_insertE);
-  }
-  std::string AbstractText::createRestoreCommand(const PSDI::SessionData & _psd, const std::string & _backupName){
-    MTF::Table& backupT=DD::GL_MAIN_DB.dbsM["backupDatabase"];
-    std::vector<std::string> name;
-    name.resize(1);
-    name[0]=_backupName;
-    std::vector< std::pair<std::vector<std::string>, std::string> > sRes=backupT.search(name);
-    if(sRes.size()<1){return "";}
-    long pos;std::pair<std::string,int> allD;
-    pos=0;allD=SF::extract(sRes[0].second,pos,"_rec!!***!_","_/rec!!***!_");
-    if(allD.second==0){return "";}
-    std::string fR="_insert_ _n*_formInitialization_/n*_ _n*_reqCommand_/n*_ _n*_index.cgi?comEx=yes_/n*_ _/insert_ ";
-    fR+="_insert_ _n*_textAreaField_/n*_ _n*_reqCommand_/n*_ _n*_commands_/n*_ ";
-    fR+="_n*_ _/n*_\n";
-    fR+="_n*_"+allD.first+"_/n*_ _/insert_ _insert_ _n*_formPlacement_/n*_ _n*_reqCommand_/n*_ _/insert_ ";
-    return treatInserts(_psd,fR,s_insertB,s_insertE);
-  }
-  std::pair<std::string,std::string> AbstractText::createLogOutPair(const std::string &label) const{
-    std::string fR=MWII::GL_WI.getWSURL()+"/index.cgi?userLogIn=no";
-    if(MWII::GL_WI.getMainPageExternalCode()!="notFound"){
-      std::string randCd=RNDF::genRandCode(7);
-      std::string redirectCode=SF::combineTwoWords(MWII::GL_WI.getMainPageExternalCode(),randCd);
-      fR+="&"+e_redirectToForward+"="+redirectCode;
+    std::map<std::string,std::string> templatesMap=SF::stringToMap(templMain,LI::GL_LN.st_sep_tnB,LI::GL_LN.st_sep_tnE,LI::GL_LN.st_sep_tcB,LI::GL_LN.st_sep_tcE);
+    std::map<std::string,std::string>::const_iterator it,itE,itV,itVE;
+    itE=templatesMap.end();
+    it=templatesMap.find("gradingForCourse");
+    if(it==itE){
+      return "!failed!: no grading creation template";
     }
-
-    return std::pair<std::string,std::string>(fR,label);
-  }
-  std::string AbstractText::createSubText(const PSDI::SessionData & _psd, const std::string & textName) const{
-    if(subTextRecursionDepth>maxRecursionDepth){
-      return "";
+    std::string gCreationTemplate=it->second;
+    std::map<std::string,std::string> varMap;
+    varMap=SF::stringToMap(vMain,LI::GL_LN.st_sep_vrB,LI::GL_LN.st_sep_vrE,LI::GL_LN.st_sep_vlB,LI::GL_LN.st_sep_vlE);
+    itVE=varMap.end();
+    itV=varMap.find("courseNumber");
+    std::string courseNumber="No Course Number:";
+    if(itV!=itVE){
+      courseNumber=itV->second;
     }
-    MPTI::MainText subt;
-    int initSucc=subt.initialize(textName,"no",myUserName);
-    if(initSucc==0){
-      return "";
+    itV=varMap.find("semester");
+    std::string semester="";
+    if(itV!=itVE){
+      semester="("+itV->second+")";
     }
-    subt.setSubTextRecursionDepth(subTextRecursionDepth+1);
-    return subt.displayText(_psd,"subText");
-  }
-  std::string executeAGCodeTest(const PSDI::SessionData & _psd,
-                                const std::string& formulation,
-                                const std::string& officialSolution,
-                                const std::string& agrParameters,
-                                const std::string& userAnswer,
-                                const std::string& oldDisplayString,
-                                const std::string& solutionAllowedToDisplay,
-                                const std::string& _messageInsteadOfGrading){
-    std::string displStr=oldDisplayString;
-    if((solutionAllowedToDisplay=="yes")||(solutionAllowedToDisplay=="Yes")){
-      displStr=SF::findAndReplace(displStr,"_*officialSolution*_",officialSolution);
+    gCreationTemplate=SF::replaceVariablesWithValues(gCreationTemplate,LI::GL_LN.st_sep_vrB,LI::GL_LN.st_sep_vrE,varMap);
+    std::string crScc=createGradingForCourse(gCreationTemplate,"na");
+    pos=0;allD=SF::extract(crScc,pos,"_mainCouas_","_/mainCouas_");
+    if(allD.second==0){
+      return "!failed!: gradging documents were not created properly";
     }
-    else{
-      displStr=SF::findAndReplace(displStr,"_*officialSolution*_","");
-    }
-    displStr=SF::findAndReplace(displStr,"_*text*_",formulation);
-    displStr=SF::findAndReplace(displStr,"_*userAnswer*_",HSF::codeDisplayForNonAdvanceUsers(userAnswer));
-    displStr=SF::findAndReplace(displStr,"_*rawUserAnswer*_",userAnswer);
-    std::string grResult;
-    std::string messageInsteadOfGrading=_messageInsteadOfGrading;
-    if(displStr!=SF::findAndReplace(displStr,"_*gradingResult*_","")){
-      if(messageInsteadOfGrading==""){
-        if(BF::cleanSpaces(userAnswer)==""){
-          messageInsteadOfGrading="No code submitted!";
-        }
+    std::string couasCode=allD.first;
+    it=templatesMap.find("forumForCourse");
+    std::string forumCode="noForum";
+    if(it!=itE){
+      std::string fText=it->second;
+      fText=SF::findAndReplace(fText,"*messpermits*","p_"+couasCode);
+      fText=SF::findAndReplace(fText,"*courseTitle*",courseNumber+" "+semester);
+      pos=0;allD=SF::extract(createForum("_!myself!_",fText,"bossMessage","backupRecovery"),pos,"_mainTopicCode_","_/mainTopicCode_");
+      if(allD.second==0){
+        return "!failed!: a problem occured when creating the forum";
       }
-      if(messageInsteadOfGrading==""){
-        std::map<std::string,CAGI::GradingResult> autoGradingMap;
-        std::map<std::string,RTI::CodeAutoGraderInfo> autoGradingCodes;
-        RTI::CodeAutoGraderInfo agData=CAGI::getAutoGraderCodeData(agrParameters,officialSolution,userAnswer,"100");
-        if(agData.publicTestCases.size()<1){return "***!ERROR!***";}
-        autoGradingCodes["Q00"]=agData;
-        CAGI::codeAutoGradeAndUpdateMap(_psd,autoGradingMap,autoGradingCodes,"publicTestCases");
-        std::map<std::string,CAGI::GradingResult>::const_iterator itGR;
-        itGR=autoGradingMap.begin();
-        if(itGR!=autoGradingMap.end()){
-          grResult=AGRDI::prepareGrResult(itGR->second);
-        }
-      }
-      else{
-        grResult="<div class=\"card bg-light text-danger\">\n";
-        grResult+="<div class=\"card-body\">\n<h2>";
-        grResult+=messageInsteadOfGrading;
-        grResult+="</h2>\n</div>\n</div>\n";
-      }
+      forumCode=allD.first;
     }
-    displStr=SF::findAndReplace(displStr,"_*gradingResult*_",grResult);
-    return displStr;
+    it=templatesMap.find("documentMain");
+    if(it==itE){
+      return "!failed!: no main document";
+    }
+    std::string mtContent=it->second;
+    itV=varMap.find("docName");
+    if(itV==itVE){
+      return "!failed!: no name for the main document";
+    }
+    std::string mainDocName=itV->second;
+    std::string variablesExt="Var";
+    itV=varMap.find("variablesExtension");
+    if(itV!=itVE){
+      variablesExt=itV->second;
+    }
+    mtContent=SF::findAndReplace(mtContent,"*variables*",mainDocName+variablesExt);
+    std::string mainTextCrRes=createText(mainDocName, mtContent);
+    if( (mainTextCrRes.length()>3) && (mainTextCrRes[0]=='!')&&(mainTextCrRes[1]=='s')&&(mainTextCrRes[2]=='u') ){
+      psd.recoveryOperationNames.push("courseCreation");
+      psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteText",mainDocName));
+    }
+    specInstr["variables"]="skip";
+    createSupportingPages(templatesMap,varMap,specInstr);
+    createInitialExams(examsMap,mainDocName);
+    vMain=SF::findAndReplace(vMain,"***REPLACE***WITH***MAIN_GRADING_DOC***",couasCode);
+    vMain=SF::findAndReplace(vMain,"***REPLACE***WITH***MAIN_FORUM_PAGE***",forumCode);
+    mainTextCrRes=createText(mainDocName+variablesExt,vMain,"!*!","systemText");
+    if( (mainTextCrRes.length()>3) && (mainTextCrRes[0]=='!')&&(mainTextCrRes[1]=='s')&&(mainTextCrRes[2]=='u') ){
+      psd.recoveryOperationNames.push("courseCreation");
+      psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteText",mainDocName+variablesExt));
+    }
+    psd.createStandardCourseMainDocName=mainDocName;
+    psd.createStandardCourseSuccess="yes";
+    return "!success!";
   }
-  std::string AbstractText::createCodeTest(const PSDI::SessionData & _psd, const std::string & respRecCode, const std::string & qLabel, const std::string & baseText) const{
-    if(GL_studentsAllowedToExecuteCodeOnPublicTestCases!="yes"){
-      return "";
+  std::string SessionInformation::modifyMessage(const std::string & _messId, const std::string & _mData){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToModifyMessage(_messId,"!*!")==0){
+      return "!failed!: Not allowed";
     }
-    RTI::Response respT(respRecCode,"no",_psd.my_un);
-    if(respT.isInitialized()==0){
-      return "";
+    MD::Message bm;
+    int messageExists=bm.setFromExternalCode(_messId);
+    if(messageExists==0){
+      return "!failed!: The message does not exist";
     }
-    RTI::ResponderInfo rinf=respT.infoFromResponseText(_psd,"df",0);
-    if(rinf.displayQs==0){
-      return "";
-    };
-    long submissionInd=0;
-    if((rinf.acceptResp==1)&&(rinf.documentType=="responseToTest")){
-      submissionInd=1;
-    }
-    std::string displStr= baseText;
-    std::set<std::string>::const_iterator it,itE=rinf.questionLabels.end();
-    std::map<std::string,std::string>::const_iterator itM,itME;
-    itM=rinf.completeProblemDocs.find(qLabel);
-    if(itM==rinf.completeProblemDocs.end()){
-      return "";
-    }
-    std::string probData=itM->second;
-    std::string formulation;
     std::pair<std::string,int> allD;
     long pos;
-    pos=0; allD=SF::extract(probData,pos,"_tx*|_","_/tx*|_");
+    int indicatorAdvancedUser=0;
+    pos=0;allD=SF::extract(_mData,pos,s_tDataB,s_tDataE);
     if(allD.second==1){
-      formulation=allD.first;
-    }
-    pos=0; allD=SF::extract(probData,pos,"_agr*|_","_/agr*|_");
-    std::string agrParameters="";
-    if(allD.second==1){
-      agrParameters=allD.first;
-    }
-    std::string officialSolution="";
-    pos=0; allD=SF::extract(probData,pos,"_sl*|_","_/sl*|_");
-    if(allD.second==1){
-      officialSolution=allD.first;
-    }
-    std::string userAnswer="";
-    itM=rinf.submittedAnswers.find(qLabel);
-    if(itM!=rinf.submittedAnswers.end()){
-      userAnswer=itM->second;
-    }
-    displStr=executeAGCodeTest(_psd,formulation,officialSolution,agrParameters,userAnswer,displStr,"no","");
-    if(displStr=="***!ERROR!***"){
-      return "<div>Error: No public test cases available</div>";
-    }
-    return displStr;
-  }
-  std::string AbstractText::createCodeTestInNotes(const PSDI::SessionData & _psd,
-                                                  const std::string & problemName,
-                                                  const std::string & problemVersion,
-                                                  const std::string & baseText){
-    if(GL_studentsAllowedToExecuteCodeOnPublicTestCases!="yes"){
-      GF::GL_DEB_MESSAGES.addMessage("not allowed");
-      return "";
-    }
-    MPTI::MainText problemText;
-    int initSucc=problemText.initialize(problemName,"no",_psd.my_un);
-    if(initSucc==0){return "";}
-    int allowedToDisplay=problemText.allowedToDisplayText(_psd,_psd.my_un,"codeTestInNotes");
-    if(allowedToDisplay==0){
-      return "";
-    }
-    std::string rawT=problemText.getRawText();
-    std::pair<std::string,int> allD;long pos;
-    pos=0;allD=SF::extract(rawT,pos,"_apd*|_","_/apd*|_");
-    if((allD.second==0)||((allD.first!="yes")&&(allD.first!="Yes"))) {
-      return "<div>The problem is not allowed to be displayed to users for testing.</div>";
-    }
-    std::string allowedSolution="no";
-    pos=0;allD=SF::extract(rawT,pos,"_sall*|_","_/sall*|_");
-    if(allD.second==1){
-      allowedSolution=allD.first;
-    }
-    std::string correctVersion=TWDVF::singleVersion(rawT,BF::stringToInteger(problemVersion));
-    std::string formulation;
-    pos=0; allD=SF::extract(correctVersion,pos,"_tx*|_","_/tx*|_");
-    if(allD.second==1){
-      formulation=allD.first;
-    }
-    if(HTII::GL_title.nTGenerations==0){
-      HTII::GL_title.tSuggestion=HTII::extractTextForTD(formulation,HTII::GL_title.maxTitleLength);
-      HTII::GL_title.dSuggestion=HTII::extractTextForTD(formulation,HTII::GL_title.maxDescLength);
-      HTII::GL_title.nTGenerations=1;
-      HTII::GL_title.nDGenerations=1;
-    }
-    pos=0; allD=SF::extract(correctVersion,pos,"_agr*|_","_/agr*|_");
-    std::string agrParameters="";
-    if(allD.second==1){
-      agrParameters=allD.first;
-    }
-    std::string officialSolution="";
-    pos=0; allD=SF::extract(correctVersion,pos,"_sl*|_","_/sl*|_");
-    if(allD.second==1){
-      officialSolution=allD.first;
-    }
-    std::string userAnswer="";
-    std::map<std::string,std::string>::const_iterator itM;
-    itM=(_psd.respMap).find("codeTestUserAnswer");
-    if(itM!=(_psd.respMap).end()){
-      userAnswer=itM->second;
-    }
-    std::string displStr=baseText;
-    std::string message;
-    if((_psd.my_un=="visitor")&&(_psd.passedAntiSpam==0)){
-      message="Wrong anti-spam code";
-    }
-    displStr=executeAGCodeTest(_psd,formulation,officialSolution,agrParameters,userAnswer,displStr,allowedSolution,message);
-    displStr=treatInserts(_psd,displStr,s_insertB,s_insertE);
-    if(displStr=="***!ERROR!***"){
-      displStr="<div>Error: No public test cases available</div>";
-    }
-    return displStr;
-  }
-  std::string AbstractText::createUserPermitInfo(const PSDI::SessionData & _psd, const std::string & userName){
-    if( (_psd.isRoot!="yes") && (_psd.myWU.existsPath(userName,"meHigh", "uName",1)==0) ){
-      return "";
-    }
-    WUD::User userToAnalyse,u2;
-    userToAnalyse.setFromUsername(userName);
-    if(userToAnalyse.encryptedMasterKeyExists()==0){
-      WUD::sendMessageUsingPublicKey(userName, _psd.myWU.getMasterKeyFromRAM("sigmaM"), "encMasterKey");
-    }
-    std::vector<std::string> dNeighbors=userToAnalyse.hNeighborsInternalIds();
-    std::string res="<p>";
-    for(long i=0;i<dNeighbors.size();++i){
-      u2.setFromInternalId(dNeighbors[i]);
-      res += createLinkForEditUser( u2.getUsername() )+" ";
-    }
-    res+="</p>";
-    return res;
-  }
-  std::string AbstractText::createSolvingInvitation(const PSDI::SessionData & _psd, const std::string & respRecN,const std::string & label,   const std::string &inv) const{
-    RTI::Response respT(respRecN,"no",_psd.my_un);
-    if(respT.isInitialized()==0){
-      return "";
-    }
-    std::map<std::string,std::pair<std::vector<std::string>,std::string> > rgm;
-    std::map<std::string,std::pair<std::vector<std::string>,std::string> >::const_iterator itRGM,itRGME;
-    CEI::CouasAttributes cIrrelevant;
-    std::string csvInd="no";
-    if((_psd.isRoot=="yes")&&(inv=="summary")) {
-      rgm=CEI::rawGradesAndStatusFromRespReceiver(cIrrelevant,  _psd,respRecN, 0, 1);
-      itRGME=rgm.end();
-      std::map<std::string,std::string>::const_iterator itCSVRM,itCSVRME;
-      itCSVRME=(_psd.respMap).end();
-      itCSVRM=(_psd.respMap).find("csvD");
-      if(itCSVRM!=itCSVRME){
-        csvInd= itCSVRM->second;
+      pos=0;allD=SF::extract(_mData,pos,s_sysDataB,s_sysDataE);
+      if(allD.second==1){
+        indicatorAdvancedUser=1;
       }
     }
-    std::vector<RTI::LocationOfDocuments> locV=respT.getLocations(_psd);
-    long i=0;
-    long sz=locV.size();
-    long stillWorking=1;
-    std::string fR="", fRCSV="";
-    std::string urlTest,urlGrader,linkDispTest,linkDispGr1,linkDispGr2;
-    std::stack<std::vector<std::string> > allLines, allLinesCSV;
-    std::vector<std::string> topL,midL;
-    long lsz=6;
-    topL.resize(lsz);midL.resize(lsz);long num_gr_jobs=0; long expansionPosition;
-    long expansionStatus=0;// 0 - unverified yet;
-    //1 - no expansion needed;
-    //2 - expansion needed. Update complete for lsz, topL, and midL
-    topL[0]="Name";topL[1]=MWII::GL_WI.getDefaultWebText("T Link");
-    expansionPosition=2;
-    topL[expansionPosition]=MWII::GL_WI.getDefaultWebText("G Link");
-    topL[expansionPosition+1]=MWII::GL_WI.getDefaultWebText("T S");
-    long termsAfterExpansion=2;long expansionSize=-100;
-    topL[lsz-termsAfterExpansion]=MWII::GL_WI.getDefaultWebText("G S");
-    topL[lsz-termsAfterExpansion+1]=MWII::GL_WI.getDefaultWebText("Gr");
-    std::string forwardingVV="";
-    if(_psd.isRoot=="yes"){
-      forwardingVV+=SF::forwardValVarPairs(_psd.respMap,LI::GL_LN.st_envVName_Variable,LI::GL_LN.st_envVName_Value,10);
-    }
-    while ((i<sz)&&(stillWorking=1)){
-      urlTest="index.cgi?r="+locV[i].testLocation;
-      urlGrader="index.cgi?r="+locV[i].gradeLocation;
-      linkDispTest="<a href=\""+urlTest+forwardingVV+"\">"+label+"</a>";
-      linkDispGr1="<a href=\""+urlGrader+forwardingVV+"\">"+MWII::GL_WI.getDefaultWebText("grading")+"</a>";
-      linkDispGr2="<a href=\""+urlGrader+forwardingVV+"\">"+label+"</a>";
-      if((_psd.isRoot=="yes")&&(inv=="summary")){
-        midL[0]=locV[i].studentName;midL[1]=linkDispTest;midL[2]=linkDispGr1;midL[3]="";midL[lsz-termsAfterExpansion]="";
-        midL[lsz-termsAfterExpansion+1]=locV[i].graderUName;
-        itRGM=rgm.find(locV[i].userName);
-        if(itRGM!=itRGME){
-          midL[lsz-termsAfterExpansion]=(itRGM->second).second;
-          std::vector<std::string> scores=((itRGM->second).first);
-          long scores_sz=scores.size();
-          if(scores_sz>3){
-            if(expansionStatus==0){
-              expansionStatus=2;
-              expansionSize=scores_sz-3;
-              std::vector<std::string> oldMidL= midL;
-              std::vector<std::string> oldTopL= topL;
-              long oldLSZ=lsz;
-              lsz+=expansionSize;
-              topL.resize(lsz);midL.resize(lsz);
-              for(long jj=0;jj<lsz;++jj){topL[jj]="";midL[jj]="";}
-              for(long jj=0;jj<expansionPosition;++jj){
-                topL[jj]=oldTopL[jj];
-                midL[jj]=oldMidL[jj];
-              }
-              for(long jj=0;jj<termsAfterExpansion;++jj){
-                topL[lsz-jj-1]=oldTopL[oldLSZ-jj-1];
-                midL[lsz-jj-1]=oldMidL[oldLSZ-jj-1];
-              }
-              for(long ii=0;ii<expansionSize;++ii){
-                topL[expansionPosition+ii]=std::to_string(1+ii);
-              }
-              topL[expansionPosition+expansionSize]="$\\Sigma$";
-              topL[expansionPosition+expansionSize+1]="G Link";
-            }
-            for(long ii=0;ii<expansionSize;++ii){
-              midL[expansionPosition+ii]=scores[2+ii];
-            }
-            midL[expansionPosition+expansionSize]=scores[scores_sz-1];
-            midL[expansionPosition+expansionSize+1]="<a href=\""+urlGrader+forwardingVV+"\">"+MWII::GL_WI.getDefaultWebText("grading")+"</a>";
-          }
-          else{
-            midL[3]=scores[scores_sz-1];
-            if(expansionStatus==0){expansionStatus=1;}
-          }
+    std::string oldData=bm.getTextData();
+    std::string mDataProcessed=_mData,uNM=psd.my_un,uFN=psd.myFirstName,uLN=psd.myLastName,nSt="";
+    if(indicatorAdvancedUser==0){
+      mDataProcessed="";
+      std::string oldDT="";
+      std::string createdTM;
+      TMF::Timer tm;
+      createdTM=tm.timeString();
+      pos=0;allD=SF::extract(oldData,pos,s_tDataB,s_tDataE);
+      if(allD.second==1){
+        oldDT=allD.first;
+        pos=0;allD=SF::extract(oldDT,pos,"_created_","_/created_");
+        if(allD.second==1){
+          createdTM=allD.first;
         }
-        allLines.push(midL);
-        if(csvInd=="yes"){allLinesCSV.push(HSF::trimVectorForAssignmentGradesSummaryCSV(midL));}
+        pos=0;allD=SF::extract(oldDT,pos,"_user_","_/user_");
+        if(allD.second==1){
+          uNM=allD.first;
+        }
+        pos=0;allD=SF::extract(oldDT,pos,"_firstName_","_/firstName_");
+        if(allD.second==1){
+          uFN=allD.first;
+        }
+        pos=0;allD=SF::extract(oldDT,pos,"_lastName_","_/lastName_");
+        if(allD.second==1){
+          uLN=allD.first;
+        }
+        pos=0;allD=SF::extract(oldDT,pos,"_navigation_","_/navigation_");
+        if(allD.second==1){
+          nSt=allD.first;
+        }
       }
-      else{
-        if((inv=="students")&&(locV[i].userName==_psd.my_un)){
-          fR+=linkDispTest;
+      mDataProcessed+="_created_";
+      mDataProcessed+= createdTM;
+      mDataProcessed+="_/created_";
+      mDataProcessed+="_user_"+uNM+"_/user_";
+      mDataProcessed+="_firstName_"+uFN+"_/firstName_";
+      mDataProcessed+="_lastName_"+uLN+"_/lastName_";
+      mDataProcessed+="_navigation_"+nSt+"_/navigation_";
+      mDataProcessed+="_messText!*_";
+      mDataProcessed+=_mData;
+      mDataProcessed+="_/messText!*_";
+    }
+    else{
+      mDataProcessed=_mData;
+    }
+    bm.setTextData(prepareTextForTextTable(mDataProcessed,oldData));
+    bm.putInDB();
+    return "!success!";
+  }
+  std::string SessionInformation::createCouas(const std::string & _uName, const std::string & _couasData, const std::string & _collectorId){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToCreateCouas(_collectorId)==0){
+      return "!failed!: Not allowed";
+    }
+    if(psd.my_un=="visitor"){
+      return "!failed!: Visitors cannot create courses or assignments";
+    }
+    CAD::CouAs myCouas;
+    std::string uNM=psd.my_un;
+    std::string uFN=psd.myFirstName;
+    std::string uLN=psd.myLastName;
+    std::string nSt="";
+    std::string intUserId=(psd.myWU).getInternalId();;
+    if((_uName!="")&&(_uName!="_!myself!_")){
+      WUD::User w;
+      int userExists=w.setFromUsername(_uName);
+      if(userExists==0){
+        return "!failed!: Username does not exist";
+      }
+      uNM=_uName;
+      uFN=w.getFirstName();
+      uLN=w.getLastName();
+      intUserId=w.getInternalId();
+    }
+    int succ=myCouas.createCouAs(intUserId);
+    if(succ==0){
+      return "!failed!: Something may be bad with the database. The userId did exist when checked but could not create course / assignment.";
+    }
+    TMF::Timer tm;
+    std::string mDataProcessed=TDI::couasTextString(tm.timeString(),uNM, uFN,uLN,_couasData);
+    myCouas.setTextData(prepareTextForTextTable(mDataProcessed,"!noOldData!"));
+    myCouas.putInDB();
+    return "!success!: "+myCouas.getExternalCodeFromInternalId();
+  }
+  std::string SessionInformation::modifyCouas(const std::string & _couasId, const std::string & _couasData){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToModifyCouas(_couasId,"!*!")==0){
+      return "!failed!: Not allowed";
+    }
+    return MCWCPI::modifyCouasWithoutCheckingPermissions(psd,_couasId,_couasData);
+  }
+  std::string SessionInformation::deleteMessage(const std::string & _messId,const std::string & _collectorId){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToModifyMessage(_messId,_collectorId)==0){
+      return "!failed!: Not allowed";
+    }
+    MD::Message bm;
+    int messageExists=bm.setFromExternalCode(_messId);
+    if(messageExists==0){
+      return "!failed!: Message with this ID does not exist";
+    }
+    std::string notImp1,notImp2;
+    bm.removeFromCollection(_collectorId,notImp1,notImp2);
+    int succ=bm.deleteRecord();
+    if(succ==0){
+      return "!failed!: Something may be bad with the database. The ID of the message was found but could not delete.";
+    }
+    return "!success!";
+  }
+  std::string SessionInformation::deleteCouas(const std::string & _couasId,const std::string & _collectorId){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToModifyCouas(_couasId,_collectorId)==0){
+      return "!failed!: Not allowed";
+    }
+    CAD::CouAs myCouas;
+    int couasExists=myCouas.setFromExternalCode(_couasId);
+    if(couasExists==0){
+      return "!failed!: Course or assignment with this ID does not exist";
+    }
+    std::string notImp1,notImp2;
+    int succ=myCouas.deleteRecord();
+    if(succ==0){
+      return "!failed!: Something may be bad with the database. The ID of the course or assignment was found but could not delete.";
+    }
+    return "!success!";
+  }
+  std::string SessionInformation::createGradingForCourse(const std::string & _couasData, const std::string & _collectorId){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToCreateCouas(_collectorId)==0){
+      return "!failed!: Not allowed";
+    }
+    if(psd.my_un=="visitor"){
+      return "!failed!: Visitors cannot create courses or assignments";
+    }
+    std::string uNM=psd.my_un;
+    std::string uFN=psd.myFirstName;
+    std::string uLN=psd.myLastName;
+    std::string nSt="";
+    std::string intUserId=(psd.myWU).getInternalId();;
+    std::vector<std::string> cToCreate=SF::stringToVector(_couasData,"_couas!*_","_/couas!*_");
+    std::vector<std::string> undeclaredVarsV; long uvsz;
+    long sz=cToCreate.size();
+    if(sz<1){
+      return "!failed! No individual couas items.";
+    }
+    std::map<std::string,std::string> variableToContent,variableToCode;
+    std::set<std::string> undeclaredVariables;
+    std::string currentVar,currentContent;
+    long pos;std::pair<std::string,int> allD;
+    for(long i=0;i<sz;++i){
+      pos=0;allD=SF::extract(cToCreate[i],pos,LI::GL_LN.st_sepCNmTextB,LI::GL_LN.st_sepCNmTextE);
+      if(allD.second==1){
+        currentVar=allD.first;
+        pos=0;allD=SF::extract(cToCreate[i],pos,LI::GL_LN.st_sepCTextB,LI::GL_LN.st_sepCTextE);
+        if(allD.second==1){
+          currentContent=allD.first;
+          variableToContent[currentVar]=currentContent;
+          undeclaredVarsV=SF::stringToVector(currentContent,LI::GL_LN.st_sepGetFromB,LI::GL_LN.st_sepGetFromE);
+          uvsz=undeclaredVarsV.size();
+          for(long j=0;j<uvsz;++j){
+            undeclaredVariables.insert(undeclaredVarsV[j]);
+          }
         }
-        if((inv=="graders")&&(locV[i].graderUName==_psd.my_un)){
-          ++num_gr_jobs;
-          fR+="<div>"+linkDispGr2+"</div>";
+      }
+    }
+    std::map<std::string,std::string>::const_iterator it,itE;
+    it=variableToContent.begin();itE=variableToContent.end();
+    while(it!=itE){
+      undeclaredVariables.erase(it->first);
+      ++it;
+    }
+    if(undeclaredVariables.size()>0){
+      return "!failed! There are variables that are not declared.";
+    }
+    int succ;
+    it=variableToContent.begin();
+    std::map<std::string,CAD::CouAs> mCM;
+    while(it!=itE){
+      CAD::CouAs myCouas;
+      succ=myCouas.createCouAs(intUserId);
+      if(succ==0){
+        return "!failed!: Something may be bad with the database. The userId did exist when checked but could not create course / assignment.";
+      }
+      mCM[it->first]=myCouas;
+      variableToCode[it->first]=myCouas.getExternalCodeFromInternalId();
+      ++it;
+    }
+    it=variableToContent.begin();
+    while(it!=itE){
+      variableToContent[it->first]=SF::updateVarsWithVals(it->second,variableToCode,"","");
+      ++it;
+    }
+    TMF::Timer tm;
+    std::string mDataProcessed;
+    it=variableToContent.begin();
+    std::string succList="";
+    std::string mainCourseCode="";
+    std::string cCode,bossCode;
+    while(it!=itE){
+      mDataProcessed=TDI::couasTextString(tm.timeString(),uNM, uFN,uLN,it->second);
+      (mCM[it->first]).setTextData(prepareTextForTextTable(mDataProcessed,"!noOldData!"));
+      (mCM[it->first]).putInDB();
+      cCode=(mCM[it->first]).getExternalCodeFromInternalId();
+      succList+=" "+cCode;
+      if(it->first=="{mainCouas}"){
+        mainCourseCode="_mainCouas_"+cCode+"_/mainCouas_ ";
+      }
+      bossCode="notFound";
+      pos=0;allD=SF::extract(mDataProcessed,pos,"_bossC!*_","_/bossC!*_");
+      if(allD.second==1){
+        bossCode=allD.first;
+      }
+      psd.recoveryOperationNames.push("courseCreation");
+      psd.recoveryOperationCommands.push(BMD::deleteCouasOrMessage("deleteCourseAssignment",cCode,bossCode));
+      ++it;
+    }
+    return "!success!:"+succList+mainCourseCode;
+  }
+  std::string SessionInformation::createRespRec(const std::string & _tName, const std::string & _tData){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToCreateRespRec()==0){
+      return "!failed!: Not allowed";
+    }
+    RMD::Response sf;
+    int textExists=sf.setFromTextName(_tName);
+    if(textExists==1){
+      return "!failed!: Text name already exists";
+    }
+    int succ=sf.createText(_tName);
+    if(succ==0){
+      return "!failed!: Something may be bad with the database. The text name did not exist when checked but could not create text.";
+    }
+    respRecRequested=sf.getTextName();
+    sf.setTextData(prepareTextForTextTable(_tData,"!noOldData!"));
+    sf.putInDB();
+    return "!success!: "+sf.getTextName();
+  }
+  std::string SessionInformation::modifyRespRec(const std::string & _tName, const std::string & _tData, const std::string & _fSubmission){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToModifyRespRec(_tName,_fSubmission)==0){
+      return "!failed!: Not allowed";
+    }
+    RMD::Response sf;
+    int textExists=sf.setFromTextName(_tName);
+    if(textExists==0){
+      return "!failed!: Text name does not exist";
+    }
+    std::string oldData=sf.getTextData();
+    sf.setTextData(prepareTextForTextTable(_tData,oldData));
+    sf.putInDB();
+    respRecRequested=_tName;
+    return "!success!";
+  }
+  ExamAttributes SessionInformation::attributesFromRespRec(const std::string &d,const std::string &docName) const{
+    ExamAttributes fR;
+    fR.textForRespReceiver=d;
+    std::vector<std::string> vectProblems=SF::stringToVector(d,"_in*|_","_/in*|_");
+    long numProblems=vectProblems.size();
+    (fR.possibleVersions).resize(numProblems);
+    (fR.problemLabels).resize(numProblems);
+    long p;std::pair<std::string,int> allD; long pos;
+    fR.numFilesAllowed=0;
+    pos=0;allD=SF::extract(d,pos,"_nf*|_","_/nf*|_");
+    if(allD.second==1){
+      fR.numFilesAllowed=BF::stringToInteger(allD.first);
+      if((fR.numFilesAllowed<0)||(fR.numFilesAllowed>100)){
+        fR.numFilesAllowed=0;
+      }
+    }
+    fR.deadlineText="notYet";
+    pos=0;allD=SF::extract(d,pos,"_dl*|_","_/dl*|_");
+    if(allD.second==1){
+      fR.deadlineText=allD.first;
+    }
+    fR.deadlineText="_dl*|_"+fR.deadlineText+"_/dl*|_";
+    fR.msDoc=docName;
+    pos=0;allD=SF::extract(d,pos,"_ms*|_","_/ms*|_");
+    if(allD.second==1){
+      fR.msDoc=allD.first;
+    }
+    for(long i=0;i<numProblems;++i){
+      (fR.problemLabels)[i]="notFound";
+      (fR.possibleVersions)[i].resize(0);
+      (fR.possibleVersions)[i]=TWDVF::identifyVersions(vectProblems[i]);
+      pos=0;allD=SF::extract(vectProblems[i],pos,"_lb*|_","_/lb*|_");
+      if(allD.second==1){
+        (fR.problemLabels)[i]=allD.first;
+      }
+    }
+    return fR;
+  }
+  long SessionInformation::checkWhetherAllProblemsExist(const std::string &d) const{
+    // returns 1 if all problems exist
+    // returns 0 if problem 0 does not exist
+    // returns -1 if problem 1 does not exist but problem 0 does exist
+    // returns -i if problem i does not exist but problems 0, 1, 2, ..., (i-1), do exist
+    std::vector<std::string> vectProblems=SF::stringToVector(d,"_in*|_","_/in*|_");
+    long i=0; TMD::MText tmp; int exists;
+    long pos,pos2; std::pair<std::string, int> allD,allD2;
+    while(i<vectProblems.size()){
+      pos=0;allD=SF::extract(vectProblems[i],pos,"_p*|_","_/p*|_");
+      if(allD.second==1){
+        pos2=0;allD2=SF::extract(allD.first,pos2,"_tx*|_","_/tx*|_");
+        if(allD2.second==0){
+          exists=tmp.setFromTextName(allD.first);
+          if(exists==0){
+            return -i;
+          }
         }
       }
       ++i;
     }
-    if(_psd.isRoot=="yes") {
-      SF::flipTheStack(allLines);
-      if(csvInd=="yes"){
-        SF::flipTheStack(allLinesCSV);
-        fRCSV=HSF::tableOrCSVFromStack(allLinesCSV,",",MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
-      }
-      allLines.push(topL);
-      fR=HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
-      if(csvInd=="yes"){
-        fR+=fRCSV;
-      }
-      if(inv!="summary"){
-        fR=MWII::GL_WI.getDefaultWebText("solveInvitation");
-      }
+    return 1;
+  }
+  ExamAttributes SessionInformation::newExamFromTemplate(const std::string &d,const std::string &docName){
+    ExamAttributes fR;
+    fR.textForRespReceiver="";
+    std::vector<std::string> vectProblems=SF::stringToVector(d,"_in*|_","_/in*|_");
+    long numProblems=vectProblems.size();
+    (fR.possibleVersions).resize(numProblems);
+    (fR.problemLabels).resize(numProblems);
+    long p;std::pair<std::string,int> allD; long pos; long pos2;std::pair<std::string,int> allD2;
+    pos=0;allD=SF::extract(d,pos,"_examOptions*|_","_/examOptions*|_");
+    if(allD.second==1){
+      fR.textForRespReceiver+=allD.first;
     }
     else{
-      if((inv!="students")&&(inv!="graders")){
-        fR="";
+      fR.textForRespReceiver+=MWII::GL_WI.getDefaultWebText("defaultExamOptions");
+    }
+    fR.numFilesAllowed=0;
+    pos=0;allD=SF::extract(d,pos,"_nf*|_","_/nf*|_");
+    if(allD.second==1){
+      fR.numFilesAllowed=BF::stringToInteger(allD.first);
+      if((fR.numFilesAllowed<0)||(fR.numFilesAllowed>100)){
+        fR.numFilesAllowed=0;
       }
     }
-    return fR;
-  }
-  std::string AbstractText::createInternalLink(const PSDI::SessionData & _psd, const std::string & lN, const std::string & pageName) const{
-    std::string link="<A href=\"";
-    std::string url=MWII::GL_WI.getWSURL()+"/index.cgi?page="+pageName;
-    link+=url+"\">";
-    return link+lN+"</A>";
-  }
-  std::string AbstractText::createRespRecStatusDisplay(const PSDI::SessionData &_psd, const std::string & respRecN) const{
-    RTI::Response respT(respRecN,"no",_psd.my_un);
-    std::stack<std::vector<std::string> > stS;
-    std::vector<std::string> temp,mainL;
-    std::vector<std::string> statusExam,statusGrading;
-    long examL=5;
-    long gradingL=2;
-    long totalL=examL+gradingL;
-    statusExam.resize(examL);
-    statusGrading.resize(gradingL);
-    temp.resize(totalL);mainL.resize(totalL);
-    mainL[0]=MWII::GL_WI.getDefaultWebText("E");
-    mainL[1]=MWII::GL_WI.getDefaultWebText("Q");
-    mainL[2]=MWII::GL_WI.getDefaultWebText("S");
-    mainL[3]=MWII::GL_WI.getDefaultWebText("P");
-    mainL[4]=MWII::GL_WI.getDefaultWebText("C");
-    mainL[5]=MWII::GL_WI.getDefaultWebText("G");
-    mainL[6]=MWII::GL_WI.getDefaultWebText("S");
-    std::string pillOn,pillOff;
-    pillOn="<span class=\"badge badge-pill bg-success\">+</span>";
-    pillOff="<span class=\"badge badge-pill bg-danger\">-</span>";
-    if(respT.isInitialized()==0){
-      temp[0]="<span class=\"badge badge-pill bg-warning\">"+MWII::GL_WI.getDefaultWebText("Exam does not exist")+"</span>";
-      stS.push(temp);
-      stS.push(mainL);
-      return HSF::tableFromStack(stS,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
+    fR.deadlineText="notYet";
+    pos=0;allD=SF::extract(d,pos,"_dl*|_","_/dl*|_");
+    if(allD.second==1){
+      fR.deadlineText=allD.first;
     }
-    std::pair<std::string,std::string> rst=respT.getRespRecStatus(_psd);
-    for(long i=0;i<totalL;++i){
-      temp[i]=pillOff;
-    }
-    if(rst.first=="a"){
-      temp[0]=pillOn;
-      temp[1]=pillOn;
-    }
-    if(rst.first=="q"){
-      temp[1]=pillOn;
-    }
-    if(rst.second=="a"){
-      temp[5]=pillOn;
-      temp[6]=pillOn;
-    }
-    if(rst.first=="s"){
-      temp[1]=pillOn;
-      temp[2]=pillOn;
-    }
-    if(rst.first=="sp"){
-      temp[1]=pillOn;temp[2]=pillOn;temp[3]=pillOn;
-    }
-    if(rst.first=="sc"){
-      temp[1]=pillOn;temp[2]=pillOn;temp[3]=pillOn;temp[4]=pillOn;
-    }
-    stS.push(temp);
-    stS.push(mainL);
-    return HSF::tableFromStack(stS,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
-  }
-  std::string AbstractText::evaluateInsert(const PSDI::SessionData & _psd, const std::string & _insText, const std::string & _iB, const std::string & _iE){
-    std::string fR="";
-    if(_iB==s_insertB){
-      std::vector<std::string> allArgs=SF::stringToVector(_insText,s_insSepInB,s_insSepInE);
-      long sz=allArgs.size();
-      if(sz>0){
-        if((allArgs[0]==s_subText)&&(sz==2)){
-          return createSubText(_psd,allArgs[1]);
-        }
-        if((allArgs[0]==s_codeTest) && (sz==4)){
-          return createCodeTest(_psd,allArgs[1],allArgs[2], allArgs[3]);
-        }
-        if((allArgs[0]==s_codeTestInNotes) && (sz==4)){
-          return createCodeTestInNotes(_psd,allArgs[1],allArgs[2],allArgs[3]);
-        }
-        if((allArgs[0]==s_message)&&(sz==2)){
-          return createMessageDisplay(_psd,allArgs[1]);
-        }
-        if((allArgs[0]==s_invitationToSolve)&&(sz==4)){
-          return createSolvingInvitation(_psd,allArgs[1],allArgs[2],allArgs[3]);
-        }
-        if((allArgs[0]==s_couas)&&(sz==2)){
-          return createCouasDisplay(_psd,allArgs[1]);
-        }
-        if((allArgs[0]==s_respRecStatus)&&(sz==2)){
-          return createRespRecStatusDisplay(_psd,allArgs[1]);
-        }
-        if((allArgs[0]==s_internalLink)&&(sz==3)){
-          return createInternalLink(_psd,allArgs[1],allArgs[2]);
-        }
-        if((allArgs[0]==s_buttonLink)&&(sz==3)){
-          return HSF::createButtonLink(allArgs[2],allArgs[1]);
-        }
-        if((allArgs[0]==s_svgAdd)&&(sz==4)){
-          return SVGF::addAllSVGs(allArgs[3],BF::stringToDouble(allArgs[1]),BF::stringToDouble(allArgs[2]));
-        }
-        if((allArgs[0]==s_itemTable)&&(sz==2)){
-          return createItemTable(_psd,allArgs[1]);
-        }
-        if((allArgs[0]==s_textAreaReqField)&&(sz==5)){
-          return createTextAreaField(_psd,allArgs[1],allArgs[2],allArgs[3],allArgs[4]);
-        }
-        if((allArgs[0]==s_textAreaReqField)&&(sz==7)){
-          return createTextAreaField(_psd,allArgs[1],allArgs[2],allArgs[3],allArgs[4],allArgs[5],allArgs[6]);
-        }
-        if((allArgs[0]==s_textInputReqField)&&(sz==6)){
-          if( (allArgs[1]=="reqBC") && (allArgs[2]=="question") ){
-            std::string possibleReplacement=SF::getElFromMapOrNotFoundMessage(_psd.respMap,"question","notFound");
-            if(possibleReplacement!="notFound"){
-              allArgs[4]=possibleReplacement;
-            }
-          }
-          return createTextInputField(allArgs[1],allArgs[2],allArgs[3],allArgs[4],allArgs[5]);
-        }
-        if((allArgs[0]==s_radioButtonsField)&&(sz==7)){
-          return createRadioButtonsField(allArgs[1],allArgs[2],allArgs[3],allArgs[4],allArgs[5],allArgs[6]);
-        }
-        if((allArgs[0]==s_antiSpamChallengeField)&&((sz==5)||(sz==6))){
-          if(_psd.my_un!="visitor"){return "";}
-          std::string _ln="8";
-          if(sz==6){
-            _ln=allArgs[5];
-          }
-          return createAntiSpamField(allArgs[1],allArgs[2],allArgs[3],allArgs[4],_ln);
-        }
-        if((allArgs[0]==s_fileReqField)&&(sz==4)){
-          return createFileRequestField(allArgs[1],allArgs[2],allArgs[3]);
-        }
-        if((allArgs[0]==s_formInitialization)&&(sz==3)){
-          return initializeForm(allArgs[1],allArgs[2]);
-        }
-        if((allArgs[0]==s_formPlacement)&&(sz==2)){
-          return placeFormInText(allArgs[1]);
-        }
-        if((allArgs[0]==s_formPlacement)&&(sz==4)){
-          return placeFormInText(allArgs[1],allArgs[2],allArgs[3]);
-        }
-        if((allArgs[0]==s_userPermits)&&(sz==2)){
-          return createUserPermitInfo(_psd,allArgs[1]);
-        }
-        if((allArgs[0]==s_formInsertRedirect)&&(sz==2)){
-          return setRedirectInfo(allArgs[1]);
-        }
-        if((allArgs[0]==s_statAnalysis)&&(sz==2)){
-          return createStatAnalysisPage(_psd,allArgs[1]);
-        }
-        if((allArgs[0]==s_logInLink)&&(sz==1)){
-          return createLogInLink();
-        }
-        if((allArgs[0]==s_cloneInvitation)&&(sz==1)){
-          return createCloneInvitation(_psd);
-        }
-        if((allArgs[0]==s_cRestore) && (sz==2)){
-          return createRestoreCommand(_psd,allArgs[1]);
-        }
-        if((allArgs[0]==s_listFromDB)&&(sz==4)){
-          return createListFromDB(_psd,allArgs[1],allArgs[2],allArgs[3]);
-        }
-        if((allArgs[0]==s_answerToQuery)&&(sz==1)){
-          SF::assignToConst(_psd.queryAnswRequired,1);
-          return _psd.queryAnswPlaceHolder;
-        }
-      }
-    }
-    return fR;
-  }
-  std::string AbstractText::treatInserts(const PSDI::SessionData &_psd, const std::string & _raw,const std::string & _iB, const std::string & _iE){
-    return AICD::treatGeneralInsert(*this,_psd,_raw,_iB,_iE);
-  }
-  std::string AbstractText::prepareProblem(const PSDI::SessionData & _psd, const std::string & _raw) const{
-    std::string fR="";
-    std::vector<long>aV=TWDVF::identifyVersions(_raw);
-    long sz=aV.size();
-    std::string par=MWII::GL_WI.get_e_parPage()+"="+tName+"&ver";
-    fR+="<TABLE BORDER=0><TR>";
-    fR+="<TD>";
-    if(_psd.versionToLatex=="all"){
-      fR+=MWII::GL_WI.getDefaultWebText("all");
+    fR.deadlineText="_dl*|_"+fR.deadlineText+"_/dl*|_";
+    fR.msDoc=docName;
+    pos=0;allD=SF::extract(d,pos,"_ms*|_","_/ms*|_");
+    if(allD.second==1){
+      fR.msDoc=allD.first;
     }
     else{
-      fR+=createLinkToText("all",par, MWII::GL_WI.getDefaultWebText("all"));
-    }
-    fR+="</TD>";
-    std::string sti;
-    for(long i=0;i<sz;++i){
-      sti=std::to_string(i);
-      fR+="<TD>";
-      if(_psd.versionToLatex==sti){
-        fR+=sti;
-      }
-      else{
-        fR+=createLinkToText(sti,par);
-      }
-      fR+="</TD>";
-    }
-    fR+="</TR></TABLE>";
-    std::string probData;long pos;std::pair<std::string,int> allD;
-    for(long i=0;i<sz;++i){
-      if((_psd.versionToLatex=="all")||(BF::stringToInteger(_psd.versionToLatex)==i)) {
-        probData=TWDVF::prepareProblemForTest(_raw,i);
-        pos=0;
-        allD=SF::extract(probData,pos,"_tx*|_","_/tx*|_");
+      TMD::MText tmDefaultPermission;
+      int tm_e;
+      tm_e=tmDefaultPermission.setFromTextName("defaultTemplateForTestPermissions");
+      if(tm_e==1){
+        std::string pText=tmDefaultPermission.getTextData();
+        pos=0;allD=SF::extract(pText,pos,s_tDataB,s_tDataE);
         if(allD.second==1){
-          fR+="<H2>"+MWII::GL_WI.getDefaultWebText("Formulation")+"</H2> <P></P>"+allD.first;
-        }
-        pos=0;
-        allD=SF::extract(probData,pos,"_rbAll*|_","_/rbAll*|_");
-        if(allD.second==1){
-          fR+="<H2>"+MWII::GL_WI.getDefaultWebText("Choices")+"</H2><P></P>";
-          std::vector<std::string> chSt=SF::stringToVector(allD.first,"_rb*_","_/rb*_"),chStSm;
-
-          long sz1=chSt.size();
-          std::string ul="<ul>";
-          for(long j=0;j<sz1;++j){
-            chStSm=SF::stringToVector(chSt[j],"_vl*_","_/vl*_");
-            if(chStSm.size()>1){
-              fR+=ul+"<li> "+chStSm[1]+"</li>";
-              ul="";
-            }
+          std::string permitsText=allD.first;
+          std::string msDAttempt=docName+"p";
+          long modifierToAdd=0;
+          RMD::Response rmPermits;
+          int rmpNameExists=rmPermits.setFromTextName(msDAttempt);
+          while(rmpNameExists==1){
+            ++modifierToAdd;
+            msDAttempt=docName+"p"+std::to_string(modifierToAdd);
+            rmpNameExists= rmPermits.setFromTextName(msDAttempt);
           }
-          if(ul==""){
-            fR+="</ul>";
-          }
-        }
-        std::string officialSolutionText="";
-        pos=0; allD=SF::extract(probData,pos,"_sl*|_","_/sl*|_");
-        if(allD.second==1){
-          fR+="<H2>"+MWII::GL_WI.getDefaultWebText("Solution")+"</H2> <P></P>"+allD.first;
-          officialSolutionText=allD.first;
-        }
-        pos=0;allD=SF::extract(probData,pos,"_aw*|_","_/aw*|_");
-        if(allD.second==1){
-          fR+="<H2>"+MWII::GL_WI.getDefaultWebText("Answer")+"</H2> <P></P>"+allD.first;
-
-          fR+="<H2>"+MWII::GL_WI.getDefaultWebText("Latex source")+"</H2><P></P> <textarea name=\"probText\" rows=\"15\"";
-          fR+=" cols=\"100\">";
-          fR+=PTKF::GL_PLAINTEXT_KEEPER.depositTxt(probData)+"</textarea>\n";
-        }
-        pos=0;allD=SF::extract(probData,pos,"_agr*|_","_/agr*|_");
-        if(allD.second==1){
-          std::string rawCodeAutoGraderData=allD.first;
-          std::map<std::string,std::string>::const_iterator it;
-          it=_psd.respMap.find("agr");
-          int executed=0;
-          if(it!=_psd.respMap.end()){
-            if(((it->second=="yes")||(it->second=="y"))&&(_psd.versionToLatex!="all")){
-              executed=1;
-              fR+=CAGI::executionResult(_psd,rawCodeAutoGraderData,officialSolutionText);
-            }
-          }
-          if(executed==0){
-            std::string linkURL="index.cgi?" +MWII::GL_WI.get_e_parPage()+"="+tName+"&ver"+"=";
-            linkURL+=_psd.versionToLatex+"&agr=y";
-            fR+="<p></p><p>"+HSF::createButtonLink(linkURL,"Execute code")+"</p>";
+          if( rmPermits.createText(msDAttempt)==1){
+            fR.msDoc=msDAttempt;
+            rmPermits.setTextData(prepareTextForTextTable(permitsText,"!noOldData!"));
+            rmPermits.putInDB();
+            psd.recoveryOperationNames.push("assignmentCreation");
+            psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",msDAttempt));
           }
         }
       }
     }
-    return fR;
-  }
-  std::map<std::string,std::string> AbstractText::getTranslationMap(const std::string & _input) const{
-      std::map<std::string,std::string> fR;
-      std::string input=_input;
-      long pos;std::pair<std::string,int> allD;
-      pos=0;allD=SF::extract(input,pos,"_variables_","_/variables_");
-      if(allD.second==0){
-        return fR;
-      }
-      std::string nameOfTextWithTranslation=allD.first;
-      pos=0;allD=SF::eraseStuffBetween(input,"_variables_","_/variables_",pos);
-      if(allD.second==0){
-        return fR;
-      }
-      TMD::MText mtm;
-      mtm.setFromTextName(nameOfTextWithTranslation);
-      std::string rawTextDataTransl=mtm.getTextData();
-      SF::varValPairs(rawTextDataTransl,"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_",fR);
-      return fR;
-  }
-  std::string AbstractText::convertVariablesToValues(const PSDI::SessionData  & _psd, const std::string & _input) const{
-    long maxNumOfVarValTranslationsThatCanBeAddedThroughTheURLString=10;
-    std::string input=_input;
-    long pos;std::pair<std::string,int> allD;
-    pos=0;allD=SF::eraseStuffBetween(input,"_variables_","_/variables_",pos);
-    std::string fR=input;
-    if(allD.second!=0){
-      fR=allD.first;
-    }
-    std::map<std::string,std::string> extendedTranslationMap=translationVarToVal;
-    SF::extendMapWithSubMapOfAnotherMap(extendedTranslationMap,_psd.respMap,LI::GL_LN.st_envVName_Variable,LI::GL_LN.st_envVName_Value,maxNumOfVarValTranslationsThatCanBeAddedThroughTheURLString);
-    fR= SF::replaceVariablesWithValues(fR,"_vr_","_/vr_",extendedTranslationMap);
-    return fR;
-  }
-  std::string AbstractText::prepare(const PSDI::SessionData  & _psd, const std::string & _raw,const std::string & _position){
-    if(allowedToDisplayText(_psd,myUserName,_position)!=1){
-      return "";
-    }
-    if((_psd.pEditReq=="y")||(_psd.pEditReq=="r")||(_psd.pEditReq=="w")){
-      if((_psd.pEditReq=="y")||(_psd.pEditReq=="r")){
-        if(_psd.isRoot=="no"){
-          return "";
-        }
-      }
-      if(allowedToModifyText(_psd,"","",_psd.my_un)==0){
-        return "";
-      }
-      std::string argument=_raw;
-      if(_psd.pEditReq=="r"){
-        argument=initText;
-      }
-      std::string forKeeper="";
-      CCFI::ArgsPowerModifyForm apmf;
-      apmf.textToModify=argument;
-      apmf.modifyMe=modifyMe();
-      apmf.dbName=tName;
-      apmf.linkForm="index.cgi?comEx=yes&";
-      apmf.linkForm+=MWII::GL_WI.get_e_parPage();
-      apmf.linkForm+="=";
-      apmf.linkForm+=tName;
-      if(_psd.pEditReq=="w"){
-        return treatInserts(_psd,CCFI::createSimpleFormForTextEdit(apmf),s_insertB,s_insertE);
-      }
-      return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),s_insertB,s_insertE);
-    }
-    std::string raw=convertVariablesToValues(_psd,_raw);
-    if(documentType=="problem"){
-      return treatInserts(_psd, prepareProblem(_psd,raw),s_insertB,s_insertE);
-    }
-    return treatInserts(_psd, raw,s_insertB,s_insertE);
-  }
-  std::string AbstractText::getRawText() const{ return rawText; }
-  std::string AbstractText::displayText(const PSDI::SessionData  & _psd, const std::string & _position ){
-    return prepare(_psd,rawText,_position)+ sysDataIfNeededAndAllowed(_psd);
-  }
-  std::string AbstractText::getTextName() const{return tName;}
-  std::string AbstractText::getTextExternalID() const{return tExternalId;}
-  std::set<std::string> AbstractText::readPermissions() const{return permitRead;}
-  std::set<std::string> AbstractText::writePermissions() const{return permitWrite;}
-  long AbstractText::getSubTextRecursionDepth() const{return subTextRecursionDepth;}
-  void AbstractText::setSubTextRecursionDepth(const long & _d){subTextRecursionDepth=_d;}
-  std::string AbstractText::pageAttributesForForumScroller(const PSDI::SessionData & _psd) const{
-    std::string fR="page="+_psd.pageRequested+"&";
-    fR+="s1=u11&r1="+_psd.inFormReplace;
-    return fR;
-  }
-  std::string AbstractText::forumScroller(const PSDI::SessionData & _psd,
-                                              long & start, long & end, const long & numM,
-                                              const long & _numDispl,
-                                              const std::string & _numOnEachSide) const{
-    std::string pa=pageAttributesForForumScroller(_psd);
-    std::string stL=MWII::GL_WI.getStartOfList();
-    long numDispl=_numDispl;
-    if(numDispl<1){
-      numDispl=3;
-    }
-    if(stL==""){
-      end=numM;
-      start=end-numDispl;
-      if(start<0){start=0;}
-    }
-    else{
-      start=BF::stringToInteger(stL);
-      if(start<0){
-        end=numM;start=end-numDispl;if(start<0){start=0;}
-      }
-      else{
-        end=start+numDispl;
-        if(end>numM){
-          end=numM;
-        }
-      }
-    }
-    return BI::createScroller(start,end,numM, numDispl,pa,_numOnEachSide);
-  }
-  std::string AbstractText::createPowerMessageEdit(const PSDI::SessionData & _psd, const std::string & _mC){
-    MEI::MElement mEl;
-    if(MEI::initMElementFromCode(mEl,_mC)=="failed"){
-      return "";
-    }
-    CCFI::ArgsPowerModifyForm apmf;
-    apmf.textToModify=mEl.getRawText();
-    apmf.linkForm="index.cgi?comEx=yes&";
-    apmf.linkForm+=MWII::GL_WI.get_e_parPage();
-    apmf.linkForm+="="+tName+"&s1=u11&r1=";
-    apmf.linkForm+=_mC;
-    apmf.modifyMe="modifyMessage";
-    apmf.dbName=_mC;
-    apmf.textNameLabel=MWII::GL_WI.getDefaultWebText("Message code:")+" ";
-    return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),s_insertB,s_insertE);
-  }
-  std::string AbstractText::createPowerCouasEdit(const PSDI::SessionData & _psd, const std::string & _cC){
-    CEI::CouasElement cEl(_psd);
-    if(ICEI::initFromCode(_psd,cEl,_cC)=="failed"){
-      return "";
-    }
-    CCFI::ArgsPowerModifyForm apmf;
-    apmf.textToModify=CCFI::hideEncryptedTextInCouas(cEl.getRawText());
-    apmf.linkForm="index.cgi?comEx=yes&";
-    apmf.linkForm+=MWII::GL_WI.get_e_parPage();
-    apmf.linkForm+="="+tName+"&s1=u11&r1=";
-    apmf.linkForm+=_cC;
-    apmf.modifyMe="modifyCourseAssignment";
-    apmf.dbName=_cC;
-    apmf.textNameLabel=MWII::GL_WI.getDefaultWebText("Course/assignment code:");
-    return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),s_insertB,s_insertE);
-  }
-  std::string AbstractText::createMessageDisplay(const PSDI::SessionData & _psd, const std::string & _mC){
-    long numMessScroller=10;
-    std::string numMessEachSideScroller="3";
-    std::string startMessage=MWII::GL_WI.getStartOfList();
-    std::string messCode=_mC;
-    if(_psd.inFormReplace!=""){messCode=_psd.inFormReplace;}
-    if(_psd.messEditReq=="r"){
-      if(_psd.isRoot=="yes"){
-        return createPowerMessageEdit( _psd,  messCode);
-      }
-      return "";
-    }
-    std::pair<std::string,int> allD;
-    long pos;
-    MEI::MElement mEl;
-    if(MEI::initMElementFromCode(mEl,messCode)=="failed"){
-      return "";
-    }
-    if((_psd.isRoot=="no")&&(mEl.allowedToRead(myUserName)==0)){
-      return "";
-    }
-    long start=0,end=-1;
-    std::string displElements="";
-    std::string scroller="";
-    if((mEl.type()=="tColl")||(mEl.type()=="mColl")){
-      long sz=mEl.numCodes();
-      scroller=forumScroller(_psd,start,end,sz,numMessScroller, numMessEachSideScroller);
-      if((end<start)||(end>sz)){
-        end=sz;
-      }
-      for(long i=start;i<end;++i){
-        std::string mTextI="";
-        MEI::MElement mEI;
-        if(MEI::initMElementFromCode(mEI,mEl.code(i))=="success"){
-          if((_psd.isRoot=="yes")||(mEI.allowedToRead(myUserName)==1)){
-            int allowedToEdit=mEI.allowedToModifyMessage(myUserName);
-            if(_psd.isRoot=="yes"){
-              allowedToEdit=1;
-            }
-            if(mEl.type()=="tColl"){
-              mTextI=mEI.prepareIndividualTopic(_psd,messCode,_psd.messEditCode,startMessage, allowedToEdit,_psd.pageRequested);
-            }
-            else{
-              mTextI=mEI.prepareIndividualMessage(_psd,messCode,_psd.messEditCode,startMessage, allowedToEdit,_psd.pageRequested);
+    fR.textForRespReceiver+="_ms*|_"+fR.msDoc+"_/ms*|_";
+    TMD::MText tmp; int exists;
+    std::string tmpTextName;
+    std::string td;std::string nextProblem;
+    for(long i=0;i<numProblems;++i){
+      nextProblem=vectProblems[i];
+      pos=0;allD=SF::extract(nextProblem,pos,"_p*|_","_/p*|_");
+      (fR.problemLabels)[i]="notFound";
+      (fR.possibleVersions)[i].resize(0);
+      if(allD.second==1){
+        pos2=0;allD2=SF::extract(allD.first,pos2,"_tx*|_","_/tx*|_");
+        if(allD2.second==0){
+          tmpTextName=allD.first;
+          exists=tmp.setFromTextName(tmpTextName);
+          if(exists==1){
+            td=tmp.getTextData();
+            pos=0;allD=SF::extract(td,pos,s_tDataB,s_tDataE);
+            if(allD.second==1){
+              nextProblem=SF::findAndReplace(nextProblem,"_p*|_"+tmpTextName+"_/p*|_",allD.first);
             }
           }
-        }
-        displElements+=mTextI;
-      }
-    }
-    std::string fR="";
-    fR+=mEl.navigationBar(_psd.pageRequested);
-    fR+="<h2>"+mEl.title()+"</h2>";
-    fR+=scroller;
-    if((mEl.type()!="mColl")&&(mEl.type()!="tColl")){fR+=mEl.text();}
-    fR+=displElements;
-    if((_psd.isRoot=="yes")||(mEl.allowedToCreateMessage(myUserName))){
-      fR+="<div><p>$\\;$</p></div>";
-      fR+="<div class=\"card\"><div class=\"card-body\">";
-      if(_psd.messEditCode=="nm"){
-        fR+="<h3>"+MWII::GL_WI.getDefaultWebText("New Message")+"</h3>";
-        fR+=mEl.newMessageBoxOrLink(messCode,1,_psd.pageRequested);
-      }
-      if(_psd.messEditCode==""){
-        fR+=mEl.newMessageBoxOrLink(messCode,0,_psd.pageRequested);
-      }
-      fR+="</div></div>\n";
-    }
-    return treatInserts(_psd,fR,s_insertB,s_insertE);
-  }
-  std::string AbstractText::createCouasDisplay(const PSDI::SessionData & _psd, const std::string & _cC){
-    std::string numMessScroller="10";
-    std::string numMessEachSideScroller="3";
-    std::string startMessage=MWII::GL_WI.getStartOfList();
-    std::string couasCode=_cC;
-    int allowedToGrade=0;
-    if(_psd.inFormReplace!=""){couasCode=_psd.inFormReplace;}
-    if(_psd.messEditReq=="r"){
-      if(_psd.isRoot=="yes"){
-        return createPowerCouasEdit(_psd,couasCode);
-      }
-      return "";
-    }
-    CEI::CouasElement cEl(_psd);
-    if(ICEI::initFromCode(_psd,cEl,couasCode)=="failed"){
-      return "";
-    }
-    cEl.sortGradeData(_psd.sortCriterion);
-    allowedToGrade=cEl.allowedToExecuteAutomaticGrading(_psd);
-    std::string actionLink="",actLinkHelp="";
-    std::vector<std::string> navLinks,navLabels;
-    if((allowedToGrade==1)&&(_psd.couasEditReq!="g")&&(cEl.gradeFromFormula()==0)){
-      CCLI::ConveniencePackageForCouas cpfc;
-      if(translationVarToVal.size()>0){
-        std::string mainDocNameForCourse="";
-        std::map<std::string,std::string>::const_iterator itVV,itVVE,itRM,itRME;
-        itVVE=translationVarToVal.end();
-        itVV=translationVarToVal.find("docName");
-        if(itVV!=itVVE){
-          mainDocNameForCourse=itVV->second;
-        }
-        std::string mainRespRecName="";
-        itRME=_psd.respMap.end();
-        itRM=_psd.respMap.find("r1");
-        if(itRM!=itRME){
-          mainRespRecName=itRM->second;
-        }
-        cpfc=CCLI::convenience_get(mainDocNameForCourse,mainRespRecName,cEl.title());
-      }
-      FHI::FormField fld;fld.convertToTextInput("rrg",MWII::GL_WI.getDefaultWebText("Response receiver code:")+" ",cpfc.preFill,50);
-      actionLink=BI::updatedLinkNewEnvVars(_psd.respMap,"ecr","r0");
-      FHI::InputForm iF(actionLink,"runH","runL",MWII::GL_WI.getDefaultWebText("Grade"));
-      iF.addChangeField(fld);
-      actionLink="";
-      actionLink+=iF.displayForm("0",MWII::GL_WI.getDefaultWebText("Upload grades"),"inline");
-      if(cpfc.linkForSummary!="notFound"){
-        actionLink+=HSF::createButtonLink(cpfc.linkForSummary,MWII::GL_WI.getDefaultWebText("Grading Room"));
-      }
-    }
-    int submRespRecGr=0;
-    if(_psd.couasEditReq=="r0"){
-      submRespRecGr=1;
-      navLinks.resize(2);navLabels.resize(2);
-      navLinks[0]=BI::updatedLinkNewEnvVars(_psd.respMap,"ecr","r1");
-      navLabels[0]=MWII::GL_WI.getDefaultWebText("Submit grade(s)");
-      navLinks[1]=BI::updatedLinkNewEnvVars(_psd.respMap,"ecr","!remove!");
-      navLabels[1]=MWII::GL_WI.getDefaultWebText("Cancel submission");
-      actionLink=BI::createNavigationBar(navLinks,navLabels);
-    }
-    if(_psd.couasEditReq=="r1"){
-      navLinks.resize(1);navLabels.resize(1);
-      navLinks[0]=BI::updatedLinkNewEnvVars(_psd.respMap,"ecr","r8");
-      navLabels[0]=MWII::GL_WI.getDefaultWebText("Back to grades");
-      actionLink=BI::createNavigationBar(navLinks,navLabels);
-      submRespRecGr=2;
-    }
-    if(submRespRecGr>0){
-      if(allowedToGrade==1){
-        return actionLink+cEl.gradeFromRespReceiver(_psd,submRespRecGr-1)+actionLink;
-      }
-    }
-    return actionLink+cEl.displayCouas(_psd,numMessScroller,numMessEachSideScroller);
-  }
-  std::string lastTwoDigitsOfTheYear(const std::string & year){
-    std::string res;
-    long yyyy=BF::stringToInteger(year);
-    long yy=yyyy%100;
-    std::string prefix="";
-    if(yy<10){
-      prefix= "0";
-    }
-    return prefix+ std::to_string(yy);
-  }
-  std::string extractURLFromLink(const std::string & x){
-    std::string res="!*!notLink";
-    long pos;std::pair<std::string,int> allD;
-    pos=0;allD=SF::extract(x,pos,"_insert_","_/insert_");
-    if(allD.second==0){
-      return res;
-    }
-    std::vector<std::string> linkComponents=SF::stringToVector(allD.first,"_n*_","_/n*_");
-    if(linkComponents.size()>2){
-      return linkComponents[2];
-    }
-    return res;
-  }
-  std::vector<std::string> prepareSingleRow(const std::vector<std::string> & components, const std::vector<std::string> &_nm,const std::string &code, const std::string &folder){
-    std::vector<std::string> res;
-    long sz=_nm.size();
-    res.resize(sz);
-    if(components.size()!=2*sz-1){
-      return res;
-    }
-    res[0]=components[0];
-    std::string linkURL;
-    for(long i=1;i<sz;++i){
-      linkURL=extractURLFromLink(components[2*i]);
-      if(linkURL!="!*!notLink"){
-        res[i]="<a href=\"?page="+linkURL+"\">";
-        res[i]+=_nm[i];
-        res[i]+="</a>";
-      }
-      else{
-        if(components[2*i]!="l"){
-          res[i]=_nm[i];
         }
         else{
-          res[i]="<a target=\"_new\" href=\""+folder+"/"+code+"/"+code;
-          res[i]+=components[2*i-1];
-          res[i]+=lastTwoDigitsOfTheYear(components[0])+".pdf\">";
-          res[i]+=_nm[i];
-          res[i]+="</a>";
+          nextProblem=SF::findAndReplace(nextProblem,"_p*|_"+allD.first+"_/p*|_",allD.first);
+        }
+        (fR.possibleVersions)[i]=TWDVF::identifyVersions(nextProblem);
+        pos=0;allD=SF::extract(nextProblem,pos,"_lb*|_","_/lb*|_");
+        if(allD.second==1){
+          (fR.problemLabels)[i]=allD.first;
+        }
+        else{
+          (fR.problemLabels)[i]="Q"+BF::padded(i+1,10,"0");
+          nextProblem += "_lb*|_"+(fR.problemLabels)[i]+"_/lb*|_";
+        }
+        fR.textForRespReceiver+="_in*|_"+nextProblem+"_/in*|_\n";
+      }
+    }
+    return fR;
+  }
+  std::string SessionInformation::enrollExistingStudentsToExam(const ExamAttributes & ea, const std::string & d,const std::string &docName){
+    std::string cntrName="examCounter";
+    long studentRandomizer=RNDF::randNum(10000);
+    long pos;std::pair<std::string,int> allD;
+    long filesToAllowFromStudentEnrollmentDoc=0;
+    pos=0;allD=SF::extract(d,pos,"_nf*|_","_/nf*|_");
+    if(allD.second==1){
+      filesToAllowFromStudentEnrollmentDoc=BF::stringToInteger(allD.first);
+    }
+    long numFA=ea.numFilesAllowed;
+    if(filesToAllowFromStudentEnrollmentDoc>numFA){
+      numFA=filesToAllowFromStudentEnrollmentDoc;
+    }
+    if(numFA>100){
+      numFA=10;
+    }
+    std::string numFASt=std::to_string(numFA);
+    std::string fR;
+    fR=ea.textForRespReceiver;
+    std::vector<std::string> vectStudents;
+    std::pair<std::string,int> allDStudents;
+    long posStudents;
+    posStudents=0;allDStudents=SF::extract(d,posStudents,"_stLocation*|_","_/stLocation*|_");
+    if(allDStudents.second==0){
+      vectStudents=SF::stringToVector(d,"_st*|_","_/st*|_");
+    }
+    else{
+      TMD::MText tmWithStudents;
+      int tm_e;
+      tm_e=tmWithStudents.setFromTextName(allDStudents.first);
+      if(tm_e==1){
+        std::string stDText=tmWithStudents.getTextData();
+        long posStData;std::pair<std::string,int> allDStData;
+        posStData=0;allDStData=SF::extract(stDText,posStData,s_tDataB,s_tDataE);
+        if(allDStData.second==1){
+          vectStudents=SF::stringToVector(allDStData.first,"_st*|_","_/st*|_");
         }
       }
     }
+    std::vector<std::string> vectStData;
+    long numStudents=vectStudents.size();
+    int rrNameIsFree;
+    std::string attempt;
+    std::string gradeText,respText; long szSD;
+    std::vector<std::string> tempStV;
+    std::string sep_B,sep_E;
+    for(long i=0;i<numStudents;++i){
+      ++studentRandomizer;
+      vectStData=SF::stringToVector(vectStudents[i],"_n*|_","_/n*|_");
+      szSD=vectStData.size();
+      if(szSD<5){
+        tempStV.resize(5);for(long i=0;i<tempStV.size();++i){tempStV[i]="";}
+        for(long k=0;k<vectStData.size();++k){
+          tempStV[k]=vectStData[k];
+        }
+        if(tempStV[2].length()<3){
+          tempStV[2]=tempStV[0];
+        }
+        vectStData=tempStV;
+      }
+      RMD::Response exResp,exGrade;
+      szSD=vectStData.size();
+      rrNameIsFree=0;
+      while(rrNameIsFree==0){
+        CD::Counter cId(cntrName,cntrEIdI0,cntrEIdI1,cntrEIdIZ);
+        cId.increase();
+        attempt=SF::combineTwoWords(cId.getCodeWord(),RNDF::genRandCode(6));
+        if( exResp.setFromTextName(attempt) == 0){
+          rrNameIsFree=exResp.createText(attempt);
+        }
+      }
+      rrNameIsFree=0;std::string numFilesText;
+      while(rrNameIsFree==0){
+        CD::Counter cId(cntrName,cntrEIdI0,cntrEIdI1,cntrEIdIZ);
+        cId.increase();
+        attempt=SF::combineTwoWords(cId.getCodeWord(),RNDF::genRandCode(6));
+        if( exGrade.setFromTextName(attempt) == 0){
+          //Step 1: Create the grading document
+          rrNameIsFree=exGrade.createText(attempt);
+          gradeText="This is a grading document. \n";
+          gradeText+="The grader will edit the document after the response to test is received.\n";
+          gradeText+="_rsp*|_"+exResp.getTextName()+"_/rsp*|_ \n";
+          gradeText+="Formulations and solutions: _f*|_"+docName+ "_/f*|_\n";
+          gradeText+="Master status: _ms*|_"+ea.msDoc+"_/ms*|_\n";
+          exGrade.setTextData(prepareTextForTextTable(gradeText,"!noOldData!"));
+          exGrade.putInDB();
+          //Step 2: Create the testing document
+          respText="This is a response to test.\nThe solver will solve the test and answers will be listed below.\n";
+          respText+="_grd*|_"+exGrade.getTextName()+"_/grd*|_\n";
+          respText+=ea.deadlineText+"\n";
+          respText+="\nFormulations and solutions: _f*|_"+docName+"_/f*|_\n";
+          respText+="Master status: _ms*|_"+ea.msDoc+"_/ms*|_\n";
+          respText+="_iI*|_"+vectStData[0]+"_/iI*|_\n";
+          respText+="_email*|_"+vectStData[1]+"_/email*|_\n";
+          respText+="_userName*|_"+vectStData[2]+"_/userName*|_\n";
+          respText+="_otherIdData*|_"+vectStData[3]+"_/otherIdData*|_\n";
+          numFilesText="_nf*|_"+numFASt+"_/nf*|_";
+          respText+=numFilesText+"\n";
+          long numProblems=(ea.problemLabels).size();
+          for(long j=0;j<numProblems;++j){
+            sep_B="v"+(ea.problemLabels)[j]+"*|_";
+            sep_E="_/"+sep_B;
+            sep_B="_"+sep_B;
+            respText+=sep_B+std::to_string((ea.possibleVersions)[j][studentRandomizer % (ea.possibleVersions)[j].size() ])+sep_E+ "\n";
+          }
+          exResp.setTextData(prepareTextForTextTable(respText,"!noOldData!"));
+          exResp.putInDB();
+          // Step 3: Create the reference to Student in the main document
+          fR+="_st*|_\n_n*|_"+exResp.getTextName()+"_/n*|_\n_n*|_";
+          fR+=exGrade.getTextName()+"_/n*|_\n";
+          for(long k=0;k<szSD;++k){
+            fR+="_n*|_"+vectStData[k]+"_/n*|_\n";
+          }
+          fR+="_/st*|_";
+          // Step 4: Create deleting commands for the backup database. If the administrator realizes that the exam
+          // is incorrectly created, then the administrator can simply reverse the creation by going to backup database
+          psd.recoveryOperationNames.push("assignmentCreation");psd.recoveryOperationNames.push("assignmentCreation");
+          psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",exResp.getTextName()));
+          psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",exGrade.getTextName()));
+        }
+      }
+    }
+    return fR;
+  }
+  std::string SessionInformation::genExamTemplate(const std::string &d,const std::string &docName){
+    ExamAttributes ea=newExamFromTemplate(d,docName);
+    return enrollExistingStudentsToExam(ea,d,docName);
+  }
+  std::string SessionInformation::updateExamDocument(const std::string & oldT, const std::string &d,const std::string &docName){
+    ExamAttributes ea=attributesFromRespRec(oldT,docName);
+    return enrollExistingStudentsToExam(ea,d,docName);
+  }
+  std::string SessionInformation::addStudentsToExam(const std::string & _eName, const std::string & _dToAddFrom){
+    if(allowedToCreateRespRec()==0){
+      return "!failed!: Not allowed";
+    }
+    RMD::Response sf;
+    int textExists=sf.setFromTextName(_eName);
+    if(textExists==0){
+      return "!failed!: Text name does not exist";
+    }
+    respRecRequested=sf.getTextName();
+    std::string oldTD=sf.getTextData();
+    long pos;std::pair<std::string,int> allD;
+    pos=0;allD=SF::extract(oldTD,pos,s_tDataB,s_tDataE);
+    if(allD.second==0){
+      return "!failed!: Broken response receiver";
+    }
+    sf.setTextData(prepareTextForTextTable(updateExamDocument(allD.first,_dToAddFrom,_eName),"!noOldData!"));
+    sf.putInDB();
+    return "!success!: "+sf.getTextName();
+  }
+  std::string SessionInformation::generateExam(const std::string & _eName, const std::string & _dToGenerateFrom){
+    if(allowedToCreateRespRec()==0){
+      return "!failed!: Not allowed";
+    }
+    long problemsOK=checkWhetherAllProblemsExist(_dToGenerateFrom);
+    if(problemsOK!=1){
+      return "!failed!: Problem "+std::to_string(-problemsOK)+" does not exist";
+    }
+    RMD::Response sf;
+    int textExists=sf.setFromTextName(_eName);
+    if(textExists==1){
+      return "!failed!: Text name already exists";
+    }
+    int succ=sf.createText(_eName);
+    if(succ==0){
+      return "!failed!: Something may be bad with the database. The text name did not exist when checked but could not create text.";
+    }
+    respRecRequested=sf.getTextName();
+    sf.setTextData(prepareTextForTextTable(genExamTemplate(_dToGenerateFrom,_eName),"!noOldData!"));
+    sf.putInDB();
+    psd.recoveryOperationNames.push("assignmentCreation");
+    psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",respRecRequested));
+    return "!success!: "+sf.getTextName();
+  }
+  std::string SessionInformation::generatePdfsForExam(const std::string & _eName, const std::string & _dForReporting){
+    if(allowedToCreateRespRec()==0){
+      return "!failed!: Not allowed";
+    }
+    RMD::Response sf;
+    int textExists=sf.setFromTextName(_eName);
+    long pos; std::pair<std::string,int> allD;
+    pos=0;allD=SF::extract(_dForReporting,pos,"_clearFolder*|_","_/clearFolder*|_");
+    if((allD.second==1)&& ( (allD.first=="yes")||(allD.first=="y") ) ){
+      IOF::sys_clearFolder(MWII::GL_WI.getPublicSystemFileLoc(),"pdf");
+    }
+    std::vector<std::string> rawTextInClassExamVersions;
+    pos=0;allD=SF::extract(_dForReporting,pos,"_inClassExams*|_","_/inClassExams*|_");
+    psd.pdfBeforeProblems="";
+    psd.pdfAfterProblems="";
+    std::string preGeneratedCodes="";
+    long numberOfExamsToGenerate=-1;
+    long versionIndex=0;
+    long versionShift=0;
+    if((allD.second==1) && (allD.first!="no") && (allD.first!="n")) {
+      psd.indChangeRespRecToPrintVersionOfCommonInClassExam=1;
+      rawTextInClassExamVersions=SF::stringToVector(allD.first,"_n*_","_/n*_");
+      pos=0;allD=SF::extract(_dForReporting,pos,"_before*|_","_/before*|_");
+      if(allD.second==1){psd.pdfBeforeProblems=allD.first;}
+      pos=0;allD=SF::extract(_dForReporting,pos,"_after*|_","_/after*|_");
+      if(allD.second==1){psd.pdfAfterProblems=allD.first;}
+      pos=0;allD=SF::extract(_dForReporting,pos,"_preGeneratedCodes*|_","_/preGeneratedCodes*|_");
+      if(allD.second==1){preGeneratedCodes=allD.first;}
+      pos=0;allD=SF::extract(_dForReporting,pos,"_numExams*|_","_/numExams*|_");
+      if(allD.second==1){
+        numberOfExamsToGenerate=BF::stringToInteger(allD.first);
+      }
+      pos=0;allD=SF::extract(_dForReporting,pos,"_versionIndex*|_","_/versionIndex*|_");
+      if(allD.second==1){
+        versionIndex=BF::stringToInteger(allD.first);
+      }
+      pos=0;allD=SF::extract(_dForReporting,pos,"_versionShift*|_","_/versionShift*|_");
+      if(allD.second==1){
+        versionShift=BF::stringToInteger(allD.first);
+      }
+    }
+    if(textExists==0){
+      return "!failed!: Exam does not exist";
+    }
+    respRecRequested=sf.getTextName();
+    std::string rawTextRespRec=sf.getTextData();
+    pos=0;allD=SF::extract(rawTextRespRec,pos,s_tDataB,s_tDataE);
+    if(allD.second==1){
+      std::vector<std::string> allRawStudentsData=SF::stringToVector(allD.first,"_st*|_","_/st*|_");
+      long sz=allRawStudentsData.size();
+      str_pdfSummary_IfCalledFor="";
+      if(psd.indChangeRespRecToPrintVersionOfCommonInClassExam==1){
+        if(sz>0){
+          std::vector<std::string> stAllData0=SF::stringToVector(allRawStudentsData[0],"_n*|_","_/n*|_");
+          if(stAllData0.size()>5){
+            RTI::Response rtTemp(stAllData0[0],"no",psd.my_un);
+            long numVersions=rawTextInClassExamVersions.size();
+            std::vector<std::string> texSourceFiles;
+            texSourceFiles.resize(numVersions);
+            for(long j=0;j<numVersions;++j){
+              psd.probVersionsOfChangedRespRec=rawTextInClassExamVersions[j];
+              texSourceFiles[j]=rtTemp.prepareDefaultRequest(psd,"pm");
+            }
+            std::vector<std::string> allCodes=SF::stringToVector(preGeneratedCodes,"_n*_","_/n*_");
+            long numExams=numVersions;
+            if(allCodes.size()>1){
+              numExams=allCodes.size();
+            }
+            else{
+              if((numberOfExamsToGenerate>1)&&(numVersions>0)){
+                numExams=numberOfExamsToGenerate;
+                allCodes=LMF::genCodes(numExams,7,numVersions,versionShift,versionIndex);
+              }
+              else{
+                allCodes.resize(numVersions);
+              }
+            }
+            if(numVersions>0){
+              for(long j=0;j<numExams;++j){
+                str_pdfSummary_IfCalledFor+=LMF::addCodeToSource(texSourceFiles[j%numVersions],allCodes[j]);
+              }
+            }
+            psd.pdfNameForInclassExam=MWII::GL_WI.getPublicSystemFileLoc()+"/exIC"+RNDF::genRandCode(10);
+            str_pdfSummary_IfCalledFor=LMF::finalizeLatexForInClassExam(str_pdfSummary_IfCalledFor,MWII::GL_WI.getDefaultWebText("examPreambleLatexTemplate"),psd.pdfNameForInclassExam, MWII::GL_WI.getPublicSystemFileLoc());
+            if(allCodes.size()>1){
+              std::string codesCommentedInLatexSource;
+              for(long i=0;i<allCodes.size();++i){
+                codesCommentedInLatexSource+="%%% _n*_"+allCodes[i]+"_/n*_\n";
+              }
+              str_pdfSummary_IfCalledFor=codesCommentedInLatexSource+str_pdfSummary_IfCalledFor;
+            }
+            psd.pdfNameForInclassExam+=".pdf";
+          }
+        }
+      }
+      else{
+        std::vector<std::vector<std::string> > stAllData;
+        stAllData.resize(sz);
+        for(long i=0;i<sz;++i){
+          stAllData[i]=SF::stringToVector(allRawStudentsData[i],"_n*|_","_/n*|_");
+          if(stAllData[i].size()>5){
+            RTI::Response rtTemp(stAllData[i][0],"no",psd.my_un);
+            stAllData[i][1]=rtTemp.prepareDefaultRequest(psd,"pm");
+            str_pdfSummary_IfCalledFor+="\n";
+            str_pdfSummary_IfCalledFor+=stAllData[i][0]+",";
+            str_pdfSummary_IfCalledFor+= MWII::GL_WI.getWSURL()+"/"+stAllData[i][1]+",";
+            str_pdfSummary_IfCalledFor+=BF::removeASCII10AND13(SF::findAndReplace(stAllData[i][2],"\n"," ")," ")+",";
+            str_pdfSummary_IfCalledFor+=stAllData[i][3]+",";
+            str_pdfSummary_IfCalledFor+=stAllData[i][4]+",";
+            str_pdfSummary_IfCalledFor+=stAllData[i][5]+",endLine";
+          }
+        }
+      }
+    }
+    psd.indChangeRespRecToPrintVersionOfCommonInClassExam=0;
+    psd.probVersionsOfChangedRespRec="";
+    return "!success!: "+respRecRequested;
+  }
+  std::string SessionInformation::updateIndividualVersionsOfExam(const std::string & _eName, const std::string & _textWithUpdate){
+    if(allowedToCreateRespRec()==0){
+      return "!failed!: Not allowed";
+    }
+    RMD::Response sf;
+    int textExists=sf.setFromTextName(_eName);
+    if(textExists==0){
+      return "!failed!: Exam does not exist";
+    }
+    std::map<std::string,std::string> stUNamesToVersions=CEVI::createFromString(_textWithUpdate);
+    std::map<std::string,std::string>::const_iterator it,itE;
+    itE=stUNamesToVersions.end();
+    respRecRequested=sf.getTextName();
+    std::string rawTextRespRec=sf.getTextData();
+    long pos; std::pair<std::string, int> allD;
+    pos=0;allD=SF::extract(rawTextRespRec,pos,s_tDataB,s_tDataE);
+    if(allD.second==1){
+      std::vector<std::string> problemLabels=SF::stringToVector(allD.first,"_lb*|_","_/lb*|_");
+      std::vector<std::string> allRawStudentsData=SF::stringToVector(allD.first,"_st*|_","_/st*|_");
+      std::vector<std::vector<std::string> > stAllData;
+      long sz=allRawStudentsData.size();
+      stAllData.resize(sz);
+      str_pdfSummary_IfCalledFor="";
+      for(long i=0;i<sz;++i){
+        stAllData[i]=SF::stringToVector(allRawStudentsData[i],"_n*|_","_/n*|_");
+        if(stAllData[i].size()>5){
+          it=stUNamesToVersions.find(stAllData[i][4]);
+          if(it!=itE){
+            RMD::Response ssf;
+            if(ssf.setFromTextName(stAllData[i][0])){
+              std::string td=ssf.getTextData();
+              td=CEVI::updateVersionsForStudent(td,it->second,problemLabels);
+              ssf.setTextData(td);
+              ssf.putInDB();
+            }
+          }
+        }
+      }
+    }
+    return "!success!: "+respRecRequested;
+  }
+  std::string SessionInformation::createRRBackup(const std::string& rrName, const std::string & action) const{
+    RMD::Response ssf;
+    if(ssf.setFromTextName(rrName)){
+      std::string td=ssf.getTextData();
+      long pos;std::pair<std::string,int> allD;
+      pos=0;allD=SF::extract(td,pos,s_tDataB,s_tDataE);
+      if(allD.second==1){
+        td=allD.first;
+      }
+      return CCFI::createRRBackupActivationText(rrName,action,td);
+    }
+    return "notFound";
+  }
+  std::map<std::string,std::string> SessionInformation::mapNamesRawTexts(const std::set<std::string>& s){
+    std::map<std::string,std::string> m;
+    std::set<std::string>::const_iterator it,itE;
+    itE=s.end();
+    it=s.begin();
+    while(it!=itE){
+      TMD::MText dbText;
+      int exists=dbText.setFromTextName(*it);
+      if(exists){
+        long pos; std::pair<std::string,int> allD;
+        pos=0;allD=SF::extract(dbText.getTextData(),pos,s_tDataB,s_tDataE);
+        if(allD.second){
+          m[*it]=allD.first;
+        }
+      }
+      ++it;
+    }
+    return m;
+  }
+  std::string SessionInformation::getOfflineAutograderData(const std::string& raw){
+    std::string rawAGData=SF::vectorToString(SF::stringToVector(raw,"_agr*|_","_/agr*|_") ,"","");
+    std::string rawDBIncl=SF::vectorToString(SF::stringToVector(rawAGData,"_dbIncludes_","_/dbIncludes_"),"","");
+    std::set<std::string> dbIncludes=SF::vectorToSet(SF::stringToVector(rawDBIncl,"_n*_","_/n*_"));
+    std::set<std::string> asmRules=SF::vectorToSet(SF::stringToVector(rawAGData,"_asmRules_","_/asmRules_"));
+    std::map<std::string,std::string> m_dbIncl=mapNamesRawTexts(dbIncludes);
+    std::map<std::string,std::string> m_asmRl=mapNamesRawTexts(asmRules);
+    std::string textResult="_offlineData*|_\n_offDBIncludes*|_\n";
+    textResult+=SF::mapToString(m_dbIncl,"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_");
+    textResult+="\n_/offDBIncludes*|_\n\n_offASMRules*|_";
+    textResult+=SF::mapToString(m_asmRl,"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_");
+    textResult+="\n_/offASMRules*|_\n\n_/offlineData*|_\n\n";
+    return textResult;
+  }
+  std::string SessionInformation::createExamBackupText(const std::string & _eName, const std::string & _commandsAndOptions){
+    if(allowedToCreateRespRec()==0){
+      return "!failed!: Not allowed";
+    }
+    RMD::Response sf;
+    int textExists=sf.setFromTextName(_eName);
+    if(textExists==0){
+      return "!failed!: Exam does not exist";
+    }
+    respRecRequested=sf.getTextName();
+    std::string rawTextRespRec=sf.getTextData();
+    std::string examRRAction="modifyResponseReceiver";
+    std::string gradingRRAction="modifyResponseReceiver";
+    std::string masterRRAction="modifyResponseReceiver";
+    long pos; std::pair<std::string, int> allD;
+    pos=0;allD=SF::extract(_commandsAndOptions,pos,"_examRRAction*_","_/examRRAction*_");
+    if(allD.second==1){
+      examRRAction=allD.first;
+    }
+    pos=0;allD=SF::extract(_commandsAndOptions,pos,"_gradingRRAction*_","_/gradingRRAction*_");
+    if(allD.second==1){
+      gradingRRAction=allD.first;
+    }
+    pos=0;allD=SF::extract(_commandsAndOptions,pos,"_masterRRAction*_","_/masterRRAction*_");
+    if(allD.second==1){
+      masterRRAction=allD.first;
+    }
+    std::string offlineAGData=getOfflineAutograderData(rawTextRespRec);
+    pos=0;allD=SF::extract(rawTextRespRec,pos,s_tDataB,s_tDataE);
+    if(allD.second==1){
+      std::vector<std::vector<std::string> > allStudentFileNames=SF::stringToMatrix(allD.first,"_st*|_","_/st*|_","_n*|_","_/n*|_");
+      long sz=allStudentFileNames.size();
+      for(long i=0;i<sz;++i){
+        if(allStudentFileNames[i].size()>5){
+          psd.respRecBackupText +=createRRBackup( allStudentFileNames[i][0],examRRAction);
+          psd.respRecBackupText +=createRRBackup( allStudentFileNames[i][1],gradingRRAction);
+        }
+      }
+    }
+    psd.respRecBackupText =offlineAGData+ createRRBackup(_eName,masterRRAction)+psd.respRecBackupText;
+    return "!success!: "+respRecRequested;
+  }
+  std::string SessionInformation::distributeExamToStudents(const std::string & _examTemplateName, const std::string & _distributionText){
+    return "";
+  }
+  std::string SessionInformation::deleteSingleRespRec(const std::string & _tName){
+    if(allowedToModifyRespRec(_tName,"no")==0){
+      return "!failed!: Not allowed";
+    }
+    RMD::Response sf;
+    int textExists=sf.setFromTextName(_tName);
+    if(textExists==0){
+      return "!failed!: Text name does not exist";
+    }
+    // We need to delete all files that this response receiver has uploaded.
+    std::string rawText=sf.getTextData();
+    long pos;std::pair<std::string,int> allD;
+    std::string sep_B,sep_E, externalFileCode,fileTextToSearch;
+    pos=0;allD=SF::extract(rawText,pos,"_nf*|_","_/nf*|_");
+    if(allD.second==1){
+      long numF=BF::stringToInteger(allD.first);
+      for(long i=0;i<numF;++i){
+        sep_B="f"+BF::padded(i,100,"0")+"*|_";
+        sep_E="_/"+sep_B;
+        sep_B="_"+sep_B;
+        pos=0;allD=SF::extract(rawText,pos,sep_B,sep_E);
+        if(allD.second==1){
+          fileTextToSearch=allD.first;
+          pos=0;allD=SF::extract(fileTextToSearch,pos,"_n*|_","_/n*|_");
+          if(allD.second==1){
+            externalFileCode=IOF::justFileNameNoExtensionNoFolder(allD.first,MWII::FILE_PREFIX);
+            deleteFile(externalFileCode);
+          }
+        }
+      }
+    }
+    // We need to delete its grader also
+    pos=0;allD=SF::extract(rawText,pos,"_grd*|_","_/grd*|_ ");
+    if(allD.second==1){
+      deleteRespRec(allD.first);
+    }
+    int succ=sf.deleteRecord();
+    if(succ==0){
+      return "!failed!: Something may be bad with the database. The text name did exist when checked but could not delete.";
+    }
+    return "!success!";
+  }
+  std::string SessionInformation::deleteRespRec(const std::string & _tName){
+    // Step 1: Check whether _tName is a scraped website data with a lot of response receivers
+    std::vector<std::string> manyRespRec=PASF::getItemsFromScrapedPage(_tName,"\n","\t");
+    long sz=manyRespRec.size();
+    if(sz>0){
+      // Step 2.1: There are multiple requests
+      //           We delete each response receiver
+      for(long i=0;i<sz;++i){
+        deleteSingleRespRec(manyRespRec[i]);
+      }
+      return "!success!";
+    }
+    // Step 2.2: There is a single request
+    //           We delete the single response receiver
+    return deleteSingleRespRec(_tName);
+  }
+  int SessionInformation::allowedToDeleteUser(const std::string & ) const{
+    if(psd.isRoot=="yes"){return 1;}//WARNING: permission checking is too restrictive
+    return 0;
+  }
+  std::string SessionInformation::deleteSingleUser(const std::string & _uName){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToDeleteUser(_uName)==0){
+      return "!failed!: Not allowed to delete user";
+    }
+    deleteCloneForGuest(_uName);
+    WUD::User w;
+    int userExists=w.setFromUsername(_uName);
+    if(userExists==0){
+      return "!failed!: Username does not exist";
+    }
+    int succ=w.deleteUser();
+    if(succ==0){
+      return "!failed!: Something may be bad with the database. The username did exist when checked but could not delete.";
+    }
+    return "!success!";
+  }
+  std::string SessionInformation::deleteUser(const std::string & _uName){
+    // Step 1: Check whether _uName is a scraped website data with a lot of users
+    std::vector<std::string> manyUsers=PASF::getItemsFromScrapedPage(_uName,"\n","\t");
+    long sz=manyUsers.size();
+    if(sz>0){
+      // Step 2.1: There are multiple requests
+      //           We delete each user
+      for(long i=0;i<sz;++i){
+        deleteSingleUser(manyUsers[i]);
+      }
+      return "!success!";
+    }
+    // Step 2.2: There is a single request
+    //           We delete the single user
+    return deleteSingleUser(_uName);
+  }
+  int SessionInformation::allowedToAddToHierarchy(const std::string & h, const std::string & l) const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToRemoveFromHierarchy(const std::string & h, const std::string & l) const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToAssignGraders(const std::string & p, const std::string & q) const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToEnrollStudents(const std::string & p, const std::string & q) const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToEditTimer(const std::string & p, const std::string & q) const{
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToBackup(const std::string & db, const std::string & txt) const{
+    if((psd.isRoot=="yes") ){
+      return 1;
+    }
+    return 0;
+  }
+  std::string SessionInformation::addToHierarchy(const std::string & _uH, const std::string & _uL){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToAddToHierarchy(_uH,_uL)==0){
+      return "!failed!: Operation not allowed";
+    }
+    WUD::User uH,uL;
+    int userHExists=uH.setFromUsername(_uH);
+    int userLExists=uL.setFromUsername(_uL);
+    if((userHExists!=1)||(userLExists!=1)){
+      return "!failed!: One of the users does not exist";
+    }
+    uH.addToHierarchy(uL,"meHigh");
+    return "!success!";
+  }
+  std::string SessionInformation::removeFromHierarchy(const std::string & _uH, const std::string & _uL){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToRemoveFromHierarchy(_uH,_uL)==0){
+      return "!failed!: Operation not allowed";
+    }
+    WUD::User uH,uL;
+    int userHExists=uH.setFromUsername(_uH);
+    int userLExists=uL.setFromUsername(_uL);
+    if((userHExists!=1)||(userLExists!=1)){
+      return "!failed!: One of the users does not exist";
+    }
+    uH.removeFromHierarchy(uL,"meHigh");
+    return "!success!";
+  }
+  std::string SessionInformation::assignGraders(const std::string & _rR, const std::string & _options){
+    //WARNING: not implemented properly yet: too resrtictive
+    if(allowedToAssignGraders(_rR,_options)==0){
+      return "!failed!: Operation not allowed";
+    }
+    RTI::Response tmpRT(_rR,"no",psd.my_un);
+    if(tmpRT.isInitialized()==1){
+      return tmpRT.assignGraders(psd,_options);
+    }
+    return "!failed! Could not find the document.";
+  }
+  std::string SessionInformation::editTimer(const std::string & _rR, const std::string & _options){
+    //WARNING: not implemented properly yet: too resrtictive
+    if(allowedToEditTimer(_rR,_options)==0){
+      return "!failed!: Operation not allowed";
+    }
+    RTI::Response tmpRT(_rR,"no",psd.my_un);
+    if(tmpRT.isInitialized()==1){
+      return tmpRT.editTimer(psd,_options);
+    }
+    return "!failed! Could not find the document.";
+  }
+  std::string SessionInformation::submitEnrollmentReport(const std::string &_rName,const std::string &_couas, const std::vector<PASF::StudentData> & students){
+    TMD::MText m;
+    int exists=m.setFromTextName(_rName);
+    if(exists!=1){
+      createText(_rName,TDI::prepareEmptyTextWithAdvancedPermissions("administrator","administrator"));
+    }
+    exists=m.setFromTextName(_rName);
+    if(exists==1){
+      std::string oldTD=m.getTextData();
+      long pos;std::pair<std::string,int> allD;
+      pos=0;allD=SF::extract(oldTD,pos,s_tDataB,s_tDataE);
+      if(allD.second==1){
+        std::string mT=allD.first;
+        mT+="<h2>Couas: "+_couas+"</h2>";
+        long numSt=students.size();
+        mT+="<h3>For emails to students</h3>";
+        for(long i=0;i<numSt;++i){
+          mT+="<BR>"+students[i].putIntoStringForEmail();
+        }
+        mT+="<h3>For mass enrollment in exams</h3>";
+        for(long i=0;i<numSt;++i){
+          mT+="<BR>"+students[i].putIntoString(0);
+        }
+        modifyText(_rName,mT);
+        return "!success!";
+      }
+    }
+    return "!failed!";
+  }
+  std::string SessionInformation::createAccountsForStudents(std::vector<PASF::StudentData> & students,const std::string & _couas){
+    long intToAdd;
+    long numSt=students.size();
+    WUD::User wC;
+    int couasUserExists=wC.setFromUsername("p_"+_couas);
+    if(couasUserExists==0){
+      wC.createUser("p_"+_couas);
+      wC.addUserData(PASF::generatePassword(15));
+      psd.recoveryOperationNames.push("enrollment");
+      psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteUser","p_"+_couas));
+    }
+    for(long i=0;i<numSt;++i){
+      WUD::User wu;
+      int userExists=wu.setFromExternalId(students[i].externalId);
+      int creationSucc=-7;
+      if(userExists==1){
+        students[i].userName=wu.getUsername();
+        students[i].password="na";
+        WUD::OthUsData tmpOUD;
+        tmpOUD.firstName=students[i].firstName;
+        tmpOUD.lastName=students[i].lastName;
+        tmpOUD.email=students[i].email;
+        wu.addUserData(tmpOUD);
+        wu.addToHierarchy(wC,"meHigh");
+      }
+      else{
+        intToAdd=0;
+        WUD::User wuN;
+        std::string unToAttempt=students[i].userName;
+        creationSucc=wuN.createUser(unToAttempt,"",students[i].externalId);
+        while((intToAdd<10000)&&(creationSucc==0)){
+          ++intToAdd;
+          unToAttempt=students[i].userName+std::to_string(intToAdd);
+          creationSucc=wuN.createUser(unToAttempt,"",students[i].externalId);
+        }
+        if(creationSucc==1){
+          students[i].password=PASF::generatePassword(8);
+          students[i].userName=unToAttempt;
+          WUD::OthUsData tmpOUD;
+          tmpOUD.password=students[i].password;
+          tmpOUD.firstName=students[i].firstName;
+          tmpOUD.lastName=students[i].lastName;
+          tmpOUD.email=students[i].email;
+          tmpOUD.masterKey=psd.masterKey;
+          wuN.addUserData(tmpOUD);
+          wuN.addToHierarchy(wC,"meHigh");
+          psd.recoveryOperationNames.push("enrollment");
+          psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteUser",unToAttempt));
+        }
+      }
+    }
+    return "!success!";
+  }
+  std::string SessionInformation::enrollStudentsInCouas(const std::string & _couas, const std::vector<PASF::StudentData> & students, const long & recursionDepth){
+    if(recursionDepth<1){
+      return "";
+    }
+    CEI::CouasElement cEl(psd);
+    if(ICEI::initFromCode(psd,cEl,_couas)=="failed"){
+      return "";
+    }
+    std::string modifiedText=cEl.addStudents(psd,students);
+    if(modifiedText!=""){
+      MCWCPI::modifyCouasWithoutCheckingPermissionsAndCreateRecoveryCommand(psd,_couas,modifiedText);
+    }
+    long pos;std::pair<std::string,int> allD;
+    pos=0;allD=SF::extract(cEl.getRawText(),pos, LI::GL_LN.st_sepGradeFormulaB,LI::GL_LN.st_sepGradeFormulaE);
+    std::string fR="success in "+_couas+"<BR>\n";
+    if(allD.second==1){
+      std::vector<std::string> vForRec=SF::stringToVector(allD.first,LI::GL_LN.st_sepGetFromB, LI::GL_LN.st_sepGetFromE);
+      long sz=vForRec.size();
+      for(long i=0;i<sz;++i){
+        fR+=enrollStudentsInCouas(vForRec[i],students,recursionDepth-1);
+      }
+    }
+    return fR;
+  }
+  std::string SessionInformation::enrollStudents(const std::string & _couas, const std::string & _reportName, const std::string & _prefixForExtId, const std::string & _options){
+    //WARNING: not implemented properly yet: too resrtictive
+    if(allowedToEnrollStudents(_couas,_options)==0){
+      return "!failed!: Operation not allowed";
+    }
+    std::vector<PASF::StudentData> students=PASF::identifyStudents(_options,_prefixForExtId);
+    std::string accCrRes=createAccountsForStudents(students,_couas);
+    std::string couasModSuccess=enrollStudentsInCouas(_couas,students);
+    std::string er= submitEnrollmentReport(_reportName,_couas,students);
+    return er;
+    return "!failed! Could not find the document.";
+  }
+  AICD::LatexReplacements createLatexReplacementStrings(){
+    AICD::LatexReplacements res;
+    res.websiteURL=MWII::GL_WI.getWSURL();
+    long sz=8;
+    res.htmlTs.resize(sz);
+    res.latexTs.resize(sz);
+    res.htmlTs[0]="\\begin{problem}";
+    res.latexTs[0]=MWII::GL_WI.getDefaultWebText("\\noindent{\\bf Problem} ");
+    res.htmlTs[1]="\\end{problem}";
+    res.latexTs[1]=MWII::GL_WI.getDefaultWebText("%%endProblem");
+    res.htmlTs[2]="\\begin{solution}";
+    res.latexTs[2]=MWII::GL_WI.getDefaultWebText("\\noindent{\\bf Solution.} ");
+    res.htmlTs[3]="\\end{solution}";
+    res.latexTs[3]=MWII::GL_WI.getDefaultWebText("%%endSolution");
+    res.htmlTs[4]="\\begin{box}";
+    res.latexTs[4]=MWII::GL_WI.getDefaultWebText("\\begin{box}");
+    res.htmlTs[5]="\\end{box}";
+    res.latexTs[5]=MWII::GL_WI.getDefaultWebText("\\end{box}");
+    res.htmlTs[6]="\\begin{proof}";
+    res.latexTs[6]=MWII::GL_WI.getDefaultWebText("\\noindent{\\bf Proof.} ");
+    res.htmlTs[7]="\\end{proof}";
+    res.latexTs[7]=MWII::GL_WI.getDefaultWebText("%%endProof");
     return res;
   }
-  std::string AbstractText::createItemTable(const PSDI::SessionData & _psd, const std::string & _td) const{
-     std::string iTable;
-     std::string categoryName="notFound",categoryCode="notFound",folder="notFound";
-     long numItems=0;
-     long pos;
-     std::pair<std::string, int> allD;
-     pos=0;allD=SF::extract(_td,pos,"_cName_","_/cName_");
-     if(allD.second==1){
-       categoryName=allD.first;
-     }
-     pos=0;allD=SF::extract(_td,pos,"_cCode_","_/cCode_");
-     if(allD.second==1){
-       categoryCode=allD.first;
-     }
-     pos=0;allD=SF::extract(_td,pos,"_folder_","_/folder_");
-     if(allD.second==1){
-       folder=allD.first;
-     }
-     pos=0;allD=SF::extract(_td,pos,"_num*_","_/num*_");
-     if(allD.second==1){
-       numItems=BF::stringToInteger(allD.first);
-     }
-     std::vector<std::string> colNames;
-     pos=0;allD=SF::extract(_td,pos,"_colNames*_","_/colNames*_");
-     if(allD.second==1){
-       colNames=SF::stringToVector(allD.first,"_nm_","_/nm_");
-     }
-     std::vector<std::string> rows=SF::stringToVector(_td,"_row*_","_/row*_");
-     std::stack<std::vector<std::string> > tbSt;
-     long numRows=rows.size();
-     std::vector<std::string> firstRow;
-     if(numRows>0){
-       firstRow=SF::stringToVector(rows[0],"_col*_","_/col*_");
-       if(firstRow.size()>0){
-         firstRow[0]=colNames[0];
-         for(long i=0;i<firstRow.size();++i){
-           if(firstRow[i]=="l"){
-             firstRow[i]="g";
-           }
-         }
-       }
-       std::set<long> columnBreakers;
-       columnBreakers.insert(0);
-       long multipleColumns=0;
-       if(numRows>8){
-         columnBreakers.insert(numRows/3);
-         columnBreakers.insert((2*numRows)/3);
-         multipleColumns=1;
-       }
-       std::set<long>::const_iterator it,itE=columnBreakers.end();
-       std::string tableText;
-       for(long i=0;i<numRows;++i){
-         it=columnBreakers.find(i);
-         if(it!=itE){
-           if(!tbSt.empty()){
-             tbSt.push(prepareSingleRow(firstRow,colNames,categoryCode,folder));
-             if(multipleColumns==0){
-               tableText=HSF::tableFromStack(tbSt,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag())+tableText;
-             }
-             else{
-               tableText="<div class=\"col-sm-4\">"+HSF::tableFromStack(tbSt,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag())+"</div>"+tableText;
-             }
-           }
-         }
-         tbSt.push(prepareSingleRow(SF::stringToVector(rows[numRows-i-1],"_col*_","_/col*_"),colNames,categoryCode,folder));
-       }
-       if(!tbSt.empty()){
-         tbSt.push(prepareSingleRow(firstRow,colNames,categoryCode,folder));
-         if(multipleColumns==0){
-           tableText=HSF::tableFromStack(tbSt,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag())+tableText;
-         }
-         else{
-           tableText="<div class=\"col-sm-4\">"+HSF::tableFromStack(tbSt,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag())+"</div>"+tableText;
-         }
-       }
-       if(multipleColumns==1){
-         tableText="<div class=\"row\">"+tableText+"</div>";
-       }
-       iTable+= tableText;
-     }
-     return iTable;
+  std::string SessionInformation::backupDBs(const std::string & _db, const std::string & _txts){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToRemoveFromHierarchy(_db,_txts)==0){
+      return "!failed!: Operation not allowed";
+    }
+    std::vector<std::string> backupTexts=SF::stringToVector(_txts,"_n*!_","_/n*!_");
+    long sz=backupTexts.size();
+    str_backups_IfCalledFor="";
+    if((sz==2)&&(backupTexts[0]=="toLatex")){
+      if(AICD::GL_ReplStrings.htmlTs.size()<1){
+        AICD::GL_ReplStrings = createLatexReplacementStrings();
+      }
+      std::vector<std::string> docNames=SF::stringToVector(backupTexts[1],"_n*!_","_/n*!_");
+      std::string lStart;
+      lStart=MWII::GL_WI.getDefaultWebText("notesPreambleLatexTemplate");
+      if(lStart=="notesPreambleLatexTemplate"){
+        lStart=MWII::GL_WI.getDefaultWebText("examPreambleLatexTemplate");
+      }
+      long pos; std::pair<std::string,int> allD;
+      pos=0; allD=SF::extract(backupTexts[1],pos,"_lStart*!_","_/lStart*!_");
+      if(allD.second==1){
+        lStart=allD.first;
+      }
+      str_backups_IfCalledFor+=lStart+"\n\n \\begin{document}\n";
+      long szd=docNames.size();
+      for(long i=0;i<szd;++i){
+        str_backups_IfCalledFor+=BMD::recovery(_db,docNames[i],"latex");
+      }
+      str_backups_IfCalledFor+="\n\n\\end{document} \n";
+      return "!success!";
+    }
+    if((sz==3) && (backupTexts[0]=="range") && (BF::isNumeric(backupTexts[1],0)) && (BF::isNumeric(backupTexts[2],0)) ){
+      long start=BF::stringToInteger(backupTexts[1]);
+      long end=BF::stringToInteger(backupTexts[2]);
+      sz=end-start;
+      if(sz>0){
+        backupTexts.resize(sz);
+        for(long j=start;j<end;++j){
+          backupTexts[j-start]=BMD::convertNumberToDBRowName(_db,j);
+        }
+      }
+    }
+    for(long i=0;i<sz;++i){
+      str_backups_IfCalledFor+=SF::findAndReplace(BMD::recovery(_db,backupTexts[i],"basic"),"!verbSave!","*fjkl3"+GL_MAIN_SETUP_FILE_NAME+"2!3211");
+    }
+    return "!success!";
+  }
+  int SessionInformation::allowedToAssignPermit(const std::string &_iR, const std::string &_iAEC) const{
+    if((psd.isRoot=="no")&&(_iR=="yes")){
+      return 0;
+    }
+    if((psd.allowedToExecuteAll=="no")&&(_iAEC=="yes")){
+      return 0;
+    }
+    return 1;
+  }
+  int SessionInformation::allowedToModifyUser(const std::string & _uName) const{
+    if(_uName==psd.my_un){
+      return 1;
+    }
+    if(psd.isRoot=="yes"){return 1;}//WARNING: permission checking is too restrictive
+    return 0;
+  }
+  std::string SessionInformation::createUser(const std::string & _uName, const std::string &_extId, const std::string &_fN, const std::string &_lN, const std::string &_p, const std::string &_e, const std::string &_iR, const std::string &_iAEC, const std::string & _iAClone){
+    //WARNING: not implemented properly yet: too restrictive when checking permissions
+    if(allowedToAssignPermit(_iR,_iAEC)==0){
+      return "!failed!: illegal permits.";
+    }
+    if(allowedToModifyUser(_uName)==0){
+      return "!failed!: cannot modify user.";
+    }
+    WUD::User w;
+    WUD::OthUsData tmpOUD;
+    tmpOUD.password=_p;
+    tmpOUD.firstName=_fN;
+    tmpOUD.lastName=_lN;
+    tmpOUD.email=_e;
+    tmpOUD.isRoot=_iR;
+    tmpOUD.allowedToExecuteCommands=_iAEC;
+    tmpOUD.allowedToCloneTheWebsite=_iAClone;
+    w.addUserData(tmpOUD);
+    int userCreationSucc=w.createUser(_uName,psd.masterKey,_extId);
+    if(userCreationSucc!=1){
+      return "!failed!: createUser returned the error code "+std::to_string(userCreationSucc);
+    }
+    return "!success!";
+  }
+  std::string SessionInformation::modifyUser(const std::string & _uName, const std::string &_fN, const std::string &_lN, const std::string &_p, const std::string &_e, const std::string &_iR, const std::string &_iAEC, const std::string & _iAClone){
+    //WARNING: not implemented properly yet: too restrictive in checking permissions
+    if(allowedToAssignPermit(_iR,_iAEC)==0){
+      return "!failed!: illegal permits.";
+    }
+    if(allowedToModifyUser(_uName)==0){
+      return "!failed!: cannot modify user.";
+    }
+    WUD::User w;
+    int userIdentificationSucc=w.setFromUsername(_uName);
+    if(userIdentificationSucc!=1){
+      return "!failed!: user not found";
+    }
+    WUD::OthUsData tmpOUD;
+    tmpOUD.password=_p;
+    tmpOUD.firstName=_fN;
+    tmpOUD.lastName=_lN;
+    tmpOUD.email=_e;
+    tmpOUD.isRoot=_iR;
+    tmpOUD.allowedToExecuteCommands=_iAEC;
+    tmpOUD.allowedToCloneTheWebsite=_iAClone;
+    if( (_uName!=psd.my_un) && (_p!="!*!") ){
+        tmpOUD.masterKey=psd.masterKey;
+    }
+    w.addUserData(tmpOUD);
+    return "!success!";
+  }
+  std::string SessionInformation::uploadFilesFromResponseReceiver(
+    const cgicc::Cgicc & ch,const std::string & respRecRequested,
+    const std::string & dataToModify,
+    const std::vector<std::string> &fInfoV,
+    const RTI::Response & _t, const std::string & _nameOfPersonWhoIsFillingTheForm){
+    std::string nDataText=dataToModify;
+    long numFilesAllowed=fInfoV.size();
+    cgicc::const_file_iterator fileIt, fileItE;
+    fileItE=ch.getFiles().end();
+    std::string sepSmB="_n*|_",sepSmE="_/n*|_";
+    std::string sepB,sepE,labelHTML;
+    long pos;
+    std::pair<std::string,int> allD;
+    std::vector<std::string> fiV;std::string fname_i;
+    std::string itemToReplace;long fileNotFound,fileErased;
+    if(numFilesAllowed>0){
+      for(long i=0;i<numFilesAllowed;++i){
+        sepB=_t.indFileSepB(i);
+        sepE=_t.indFileSepE(i);
+        labelHTML=_t.fileLabelForHTML(i);
+        fname_i="notFound";
+        fileNotFound=0;
+        fileErased=0;
+        if(fInfoV[i]!="notFound"){
+          // we have the information about file - a version is already there
+          // now we will check whether it is properly stored and
+          // see if the user is re-submitting the file
+          fiV=SF::stringToVector(fInfoV[i],sepSmB,sepSmE);
+          if(fiV.size()>0){
+            fname_i=fiV[0];
+            if(fname_i!="notFound"){
+              fileIt=ch.getFile(labelHTML);
+              if(fileIt!=fileItE){
+                //file exists
+                if(fileIt->getDataLength() < MWII::GL_MAX_FILE_RESP_REC){
+                  // delete the old file
+                  // Step 1: find out the file code
+                  std::string fSaltedCode=IOF::justFileNameNoExtensionNoFolder(fname_i,MWII::FILE_PREFIX);
+                  std::pair<std::string,std::string> codeAndSalt=SF::oneWordToTwoWords(fSaltedCode);
+                  // Step 2: delete file
+                  deleteFile(codeAndSalt.first);
+                  // Step 3: Tell that we need to upload new file
+                  fileErased=1;
+                }
+                else{
+                  psd.respRecFlag="fileTooLarge";
+                }
+              }
+            }
+          }
+        }
+        else{
+          fileNotFound=1;
+        }
+        if((fileNotFound==1)||(fileErased==1)){
+          // we don't have a previous records of this file
+          // we will now check whether a user is submitting the file
+          fileIt=ch.getFile(labelHTML);
+          if(fileIt!=fileItE){
+            if(fileIt->getDataLength() < MWII::GL_MAX_FILE_RESP_REC){
+              std::string additionalData="_fInfo*|_"+_nameOfPersonWhoIsFillingTheForm+"("+labelHTML+")"+"_/fInfo*|_";
+              additionalData+="_nRespRec*|_"+_t.getTextName()+"_/nRespRec*|_";
+              additionalData+="_fileDataType_"+fileIt->getDataType()+"_/fileDataType_";
+              additionalData+="_fSize*|_"+std::to_string(fileIt->getDataLength())+"_/fSize*|_";
+              fname_i=placeNewFileToServer( ch, "root", "findOutFromDataType", labelHTML,additionalData);
+              if(fname_i=="failed"){
+                psd.respRecFlag="badExtension";
+              }
+              else{
+                itemToReplace=sepB+sepSmB+fname_i+sepSmE;
+                itemToReplace+=sepSmB+fileIt->getDataType();
+                itemToReplace+=sepSmE;
+                itemToReplace+=sepSmB+std::to_string(fileIt->getDataLength());
+                itemToReplace+=sepSmE;
+                itemToReplace+=sepE;
+                allD=SF::eraseStuffBetween(nDataText,sepB,sepE);
+                if(allD.second==1){
+                  nDataText=allD.first;
+                }
+                nDataText+=itemToReplace;
+              }
+
+
+            }
+            else{
+              psd.respRecFlag="fileTooLarge";
+            }
+          }
+        }
+      }
+    }
+    return nDataText;
+  }
+  void SessionInformation::updateRespMapToProperlyAccountForBothGraderCommentsAndPoints(){
+    std::map<std::string,std::string> tempRespToKeepPointsOnly;
+    std::map<std::string,std::string>::iterator it,it2,itE,it2E;
+    it=(psd.respMap).begin();
+    itE=(psd.respMap).end();
+    std::string qAnswerKey;
+    long sz;
+    while(it!=itE){
+      it2E=tempRespToKeepPointsOnly.end();
+      if((it->first)[0]=='Q'){
+        //we found a comment to question
+        it2=tempRespToKeepPointsOnly.find(it->first);
+        if(it2==it2E){
+          tempRespToKeepPointsOnly[it->first]="_comment_"+ it->second+"_/comment_";
+        }
+        else{
+          it2->second += "_comment_"+it->second+"_/comment_";
+        }
+      }
+      sz=(it->first).size();
+      if(
+        (sz>1)&&
+        ((it->first)[0]=='P')&&
+        ((it->first)[1]=='Q')
+        ){
+        // We found points for a question
+        qAnswerKey="";
+        for(long i=1;i<sz;++i){
+          qAnswerKey+=(it->first)[i];
+        }
+        it2=tempRespToKeepPointsOnly.find(qAnswerKey);
+        if(it2==it2E){
+          tempRespToKeepPointsOnly[qAnswerKey]="_score_"+BF::makeItZeroIfNotNumeric(it->second)+"_/score_";
+        }
+        else{
+          it2->second += "_score_"+BF::makeItZeroIfNotNumeric(it->second)+"_/score_";
+        }
+      }
+      ++it;
+    }
+    it=tempRespToKeepPointsOnly.begin();
+    itE=tempRespToKeepPointsOnly.end();
+    while(it!=itE){
+      (psd.respMap)[it->first]=it->second;
+      ++it;
+    }
+  }
+  int SessionInformation::updateGradesFromResponse(){
+    std::string couasCode=psd.inFormReplace;
+    CEI::CouasElement cEl(psd);
+    if(ICEI::initFromCode(psd,cEl,couasCode)=="failed"){
+      return 0;
+    }
+    cEl.sortGradeData(psd.sortCriterion);
+    if(cEl.allowedToGrade(psd)){
+      std::string newGradeData=cEl.updateGrades(psd,psd.respMap);
+      if(newGradeData=="failed"){
+        return 0;
+      }
+      std::string scc=MCWCPI::modifyCouasWithoutCheckingPermissions(psd,couasCode,newGradeData);
+      if(scc=="!success!"){
+        return 1;
+      }
+    }
+    return 0;
+  }
+  std::string changeTypeIfOfHigherPriority(const std::string &type, const std::string &newType){
+    if(type=="mainText"){
+      return newType;
+    }
+    if(type=="assignmentCreation"){
+      if((newType=="courseCreation")||(newType=="enrollment")) {
+        return newType;
+      }
+      return type;
+    }
+    if(type=="enrollment"){
+      if(newType=="courseCreation") {
+        return newType;
+      }
+    }
+    return type;
+  }
+  std::string SessionInformation::createRecoveryCommands(){
+    if(psd.recoveryOperationCommands.size()<1){return "nothingToDo";}
+    std::string operationCommands="";
+    std::string type="mainText";
+    SF::flipTheStack(psd.recoveryOperationCommands);
+    while(!psd.recoveryOperationCommands.empty()){
+      operationCommands += psd.recoveryOperationCommands.top();
+      psd.recoveryOperationCommands.pop();
+      type=changeTypeIfOfHigherPriority(type,psd.recoveryOperationNames.top());
+      if(!psd.recoveryOperationNames.empty()){psd.recoveryOperationNames.pop();}
+    }
+    std::string finalResult="_user_"+psd.my_un+"_/user_";
+    finalResult+="\n_type_"+type+"_/type_\n";
+    finalResult+="_rec!!***!_"+operationCommands+"_/rec!!***!_";
+    TMF::Timer tm;
+    std::vector<long> tnVector=tm.timeNowVector();
+    std::vector<std::string> name;
+    name.resize(1);name[0]="";
+    name[0]+="d"+BF::padded(tnVector[0],1000,"0");
+    for(long j=1;j<6;++j){
+      name[0]+=BF::padded(tnVector[j],10,"0");
+    }
+    name[0]+="e";
+    MTF::Table& backupT=DD::GL_MAIN_DB.dbsM["backupDatabase"];
+    long maxBackupSize=DD::GL_DBS.getBackupMaxSZ();
+    if(backupT.size() >= maxBackupSize){
+      std::pair<std::vector<std::string>, std::string> firstEl=backupT[0];
+      backupT.delRow(firstEl.first);
+    }
+    backupT.insert(name,finalResult);
+    return "done";
   }
 }
 #endif
