@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -38,6 +38,7 @@ namespace GF{
   std::string GL_HIDING_STRING_TWDVF="!e*n&d=*7e&n&d";
   std::string GL_errorDidNotCompile="Error:DidNotCompile";
   std::string GL_errorOutputTooBig="Error:OutputTooBig";
+  std::string GL_Alphabet;//This will be set to "english" in WSI_wiSetup.cpp
   std::map<std::string,std::map<std::string,double> > initializeLetterGradesConversionMap(){
     std::map<std::string,std::map<std::string,double> > fR;
     std::map<std::string,double> aConv;
