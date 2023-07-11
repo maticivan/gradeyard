@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -21,58 +21,6 @@
 namespace DSD{
   class Setup{
   private:
-      std::string mfB="_mainFolderDB*!_";
-      std::string mfE="_/mainFolderDB*!_";
-      std::string eIdB="_externalIDDB*!_";
-      std::string eIdE="_/externalIDDB*!_";
-      std::string uNDBB="_usernameDB*!_";
-      std::string uNDBE="_/usernameDB*!_";
-      std::string hDBB="_hierarchy*!_";
-      std::string hDBE="_/hierarchy*!_";
-      std::string hCDBB="_hierarchyCache*!_";
-      std::string hCDBE="_/hierarchyCache*!_";
-      std::string cDBB="_countersDB*!_";
-      std::string cDBE="_/countersDB*!_";
-      std::string fDBB="_fileManagement*!_";
-      std::string fDBE="_/fileManagement*!_";
-      std::string messDBB="_messageManagement*!_";
-      std::string messDBE="_/messageManagement*!_";
-      std::string couasDBB="_couasManagement*!_";
-      std::string couasDBE="_/couasManagement*!_";
-      std::string backupDBB="_backupDB*!_";
-      std::string backupDBE="_/backupDB*!_";
-      std::string backupMaxSZB="_backupMaxSZ*!_";
-      std::string backupMaxSZE="_/backupMaxSZ*!_";
-      std::string mTBB="_mainText*!_";
-      std::string mTBE="_/mainText*!_";
-      std::string rPBB="_responseDB*!_";
-      std::string rPBE="_/responseDB*!_";
-      std::string staPBB="_statDB*!_";
-      std::string staPBE="_/statDB*!_";
-      std::string fustaPBB="_fstDB*!_";
-      std::string fustaPBE="_/fstDB*!_";
-      std::string initTB="_initializerExtension*!_";
-      std::string initTE="_/initializerExtension*!_";
-      std::string sFSFB="_publicSubFolderToStoreFiles*!_";
-      std::string sFSFE="_/publicSubFolderToStoreFiles*!_";
-      std::string sFSFSysB="_publicSubFolderForSystemFiles*!_";
-      std::string sFSFSysE="_/publicSubFolderForSystemFiles*!_";
-      std::string sFSFGClB="_subFolderForGuestClones*!_";
-      std::string sFSFGClE="_/subFolderForGuestClones*!_";
-      std::string st_chImB="_publicSubFolderToStoreChallengeImages*!_";
-      std::string st_chImE="_/publicSubFolderToStoreChallengeImages*!_";
-      std::string st_chAnB="_privateSubFolderToStoreChallengeAnswers*!_";
-      std::string st_chAnE="_/privateSubFolderToStoreChallengeAnswers*!_";
-      std::string nSSFIFB="_numStorageSubFoldersInFolder*!_";
-      std::string nSSFIFE="_/numStorageSubFoldersInFolder*!_";
-      std::string nFIFB="_numFilesInFolder*!_";
-      std::string nFIFE="_/numFilesInFolder*!_";
-      std::string dcMountFolderB="_dcMountingFolder*!_";
-      std::string dcMountFolderE="_/dcMountingFolder*!_";
-      std::string dImageNameB="_dImageName*!_";
-      std::string dImageNameE="_/dImageName*!_";
-      std::string dMaxCodesToRunB="_codesToAutoGrade*!_";
-      std::string dMaxCodesToRunE="_/codesToAutoGrade*!_";
       std::string default_extIdDB="mainFolderDB/externalIDDB";
       std::string default_mainFolder="mainFolderDB";
       std::string default_userNameDB="mainFolderDB/userNameDB";
@@ -144,7 +92,7 @@ namespace DSD{
       std::string chAnsw_jN;
       std::string dcMountFolder_jN;
   public:
-      void getSetupFromString(const std::string &);
+      void getSetupFromMap(const std::map<std::string,std::string> &);
       std::string getMainFolder() const;
       std::string getExternalIDDB() const;
       std::string getUserNameDB() const;
@@ -203,109 +151,56 @@ namespace DSD{
   long Setup::getMaxCodesToRun() const{return maxCodesToRun;}
   long Setup::getNumSubFolders() const{return numSubFolders;}
   long Setup::getNumFilesInFolder() const{return numFilesInFolder;}
-  void Setup::getSetupFromString(const std::string & fN){
-      std::string sSt= fN ;
-      sSt += mfB+default_mainFolder+mfE;
-      sSt += eIdB+default_extIdDB+eIdE;
-      sSt += uNDBB+default_userNameDB+uNDBE;
-      sSt += hDBB+default_hierarchy+hDBE;
-      sSt += hCDBB+default_hCache+hCDBE;
-      sSt += cDBB+default_counters+cDBE;
-      sSt += fDBB+default_fManage+fDBE;
-      sSt += messDBB+default_messManage+messDBE;
-      sSt += couasDBB+default_couasManage+couasDBE;
-      sSt += backupDBB+default_backupDB+backupDBE;
-      sSt += backupMaxSZB+std::to_string(default_backupMaxSZ)+backupMaxSZE;
-      sSt += mTBB+default_mText+mTBE;
-      sSt += rPBB+default_responseTable+rPBE;
-      sSt += staPBB+default_statTable+staPBE;
-      sSt += fustaPBB+default_fastUpdatingStatTable+fustaPBE;
-      sSt += initTB+ default_initExtension+initTE;
-      sSt += sFSFB +default_publicStorage+sFSFE;
-      sSt += sFSFSysB + default_publicSystemStorage+sFSFSysE;
-      sSt += sFSFGClB + default_guestClonesRelLoc+ sFSFGClE;
-      sSt += nSSFIFB+std::to_string(default_numSubFolders)+nSSFIFE;
-      sSt += nFIFB+std::to_string(default_numFilesInFolder)+ nFIFE;
-      sSt += st_chImB+default_challengeImages+st_chImE;
-      sSt += st_chAnB+default_challengeAnswers+st_chAnE;
-      sSt +=  dcMountFolderB + default_dcMountFolder+ dcMountFolderE;
-      sSt += dImageNameB +default_dImageName+ dImageNameE;
-      sSt += dMaxCodesToRunB+std::to_string(default_maxCodesToRun)+dMaxCodesToRunE;
-      long pos=0;
-      mainFolder=(SF::extract(sSt,pos,mfB,mfE)).first;
-      pos=0;
-      extIdDB_jN=(SF::extract(sSt,pos,eIdB,eIdE)).first;
-      extIdDB=mainFolder+"/"+extIdDB_jN;
-      pos=0;
-      userNameDB_jN=(SF::extract(sSt,pos,uNDBB,uNDBE)).first;
-      userNameDB=mainFolder+"/"+userNameDB_jN;
-      pos=0;
-      hierarchy_jN=(SF::extract(sSt,pos,hDBB,hDBE)).first;
-      hierarchy=mainFolder+"/"+hierarchy_jN;
-      pos=0;
-      hCache_jN=(SF::extract(sSt,pos,hCDBB,hCDBE)).first;
-      hCache=mainFolder+"/"+hCache_jN;
-      pos=0;
-      counters_jN=(SF::extract(sSt,pos,cDBB,cDBE)).first;
-      counters=mainFolder+"/"+counters_jN;
-      pos=0;
-      fManage_jN=(SF::extract(sSt,pos,fDBB,fDBE)).first;
-      fManage=mainFolder+"/"+fManage_jN;
-      pos=0;
-      messManage_jN=(SF::extract(sSt,pos,messDBB,messDBE)).first;
-      messManage=mainFolder+"/"+messManage_jN;
-      pos=0;
-      couasManage_jN=(SF::extract(sSt,pos,couasDBB,couasDBE)).first;
-      couasManage=mainFolder+"/"+couasManage_jN;
-      pos=0;
-      backupDB_jN=(SF::extract(sSt,pos,backupDBB,backupDBE)).first;
-      backupDB=mainFolder+"/"+backupDB_jN;
-      pos=0;
-      backupMaxSZ=BF::stringToInteger(SF::extract(sSt,pos,backupMaxSZB,backupMaxSZE).first);
-      pos=0;
-      mText_jN=(SF::extract(sSt,pos,mTBB,mTBE)).first;
-      mText=mainFolder+"/"+mText_jN;
-      pos=0;
-      responseTable_jN=(SF::extract(sSt,pos,rPBB,rPBE)).first;
-      responseTable=mainFolder+"/"+responseTable_jN;
-      pos=0;
-      statTable_jN=(SF::extract(sSt,pos,staPBB,staPBE)).first;
-      statTable=mainFolder+"/"+statTable_jN;
-      pos=0;
-      fastUpdatingStatTable_jN=(SF::extract(sSt,pos,fustaPBB,fustaPBE)).first;
-      fastUpdatingStatTable=mainFolder+"/"+fastUpdatingStatTable_jN;
-      pos=0;
-      chIm_jN=(SF::extract(sSt,pos,st_chImB,st_chImE)).first;
-      challengeImages=chIm_jN;
-      pos=0;
-      chAnsw_jN=(SF::extract(sSt,pos,st_chAnB,st_chAnE)).first;
-      challengeAnswers=mainFolder+"/"+chAnsw_jN;
-      pos=0;
-      dcMountFolder_jN=(SF::extract(sSt,pos,dcMountFolderB,dcMountFolderE)).first;
-      dcMountFolder=mainFolder+"/"+dcMountFolder_jN;
-      pos=0;
-      dImageName=(SF::extract(sSt,pos,dImageNameB,dImageNameE)).first;
-      pos=0;
-      maxCodesToRun=BF::stringToInteger((SF::extract(sSt,pos,dMaxCodesToRunB,dMaxCodesToRunE)).first);
-      pos=0;
-      initExtension=SF::extract(sSt,pos,initTB,initTE).first;
-      pos=0;
-      publicStorage=SF::extract(sSt,pos,sFSFB,sFSFE).first;
-      pos=0;
-      publicSystemStorage=SF::extract(sSt,pos,sFSFSysB,sFSFSysE).first;
-      pos=0;
-      guestClonesRelLoc=SF::extract(sSt,pos,sFSFGClB,sFSFGClE).first;
-      folderMainDBGuestClone=mainFolder+"/"+guestClonesRelLoc;
-      systemFolderClones=mainFolder+"/"+"sys_"+guestClonesRelLoc;
-      if(guestClonesRelLoc.length()>0){
-        if(guestClonesRelLoc[guestClonesRelLoc.length()-1]!='/'){
-          guestClonesRelLoc+="/";
-        }
+  void Setup::getSetupFromMap(const std::map<std::string,std::string> & stMap){
+    SF::assignValueFromMap(stMap,"mainFolderDB*!",mainFolder);
+    SF::assignValueFromMap(stMap,"externalIDDB*!",extIdDB_jN);
+    extIdDB=mainFolder+"/"+extIdDB_jN;
+    SF::assignValueFromMap(stMap,"usernameDB*!",userNameDB_jN);
+    userNameDB=mainFolder+"/"+userNameDB_jN;
+    SF::assignValueFromMap(stMap,"hierarchy",hierarchy_jN);
+    hierarchy=mainFolder+"/"+hierarchy_jN;
+    SF::assignValueFromMap(stMap,"hierarchyCache*!",hCache_jN);
+    hCache=mainFolder+"/"+hCache_jN;
+    SF::assignValueFromMap(stMap,"countersDB*!",counters_jN);
+    counters=mainFolder+"/"+counters_jN;
+    SF::assignValueFromMap(stMap,"fileManagement*!",fManage_jN);
+    fManage=mainFolder+"/"+fManage_jN;
+    SF::assignValueFromMap(stMap,"messageManagement*!",messManage_jN);
+    messManage=mainFolder+"/"+messManage_jN;
+    SF::assignValueFromMap(stMap,"couasManagement*!",couasManage_jN);
+    couasManage=mainFolder+"/"+couasManage_jN;
+    SF::assignValueFromMap(stMap,"backupDB*!",backupDB_jN);
+    backupDB=mainFolder+"/"+backupDB_jN;
+    SF::assignValueFromMap(stMap,"backupMaxSZ*!",backupMaxSZ);
+    SF::assignValueFromMap(stMap,"mainText*!",mText_jN);
+    mText=mainFolder+"/"+mText_jN;
+    SF::assignValueFromMap(stMap,"responseDB*!",responseTable_jN);
+    responseTable=mainFolder+"/"+responseTable_jN;
+    SF::assignValueFromMap(stMap,"statDB*!",statTable_jN);
+    statTable=mainFolder+"/"+statTable_jN;
+    SF::assignValueFromMap(stMap,"fstDB*!",fastUpdatingStatTable_jN);
+    fastUpdatingStatTable=mainFolder+"/"+fastUpdatingStatTable_jN;
+    SF::assignValueFromMap(stMap,"publicImages*!",chIm_jN);
+    challengeImages=chIm_jN;
+    SF::assignValueFromMap(stMap,"privateAnswers*!",chAnsw_jN);
+    challengeAnswers=mainFolder+"/"+chAnsw_jN;
+    SF::assignValueFromMap(stMap,"dcMountingFolder*!",dcMountFolder_jN);
+    dcMountFolder=mainFolder+"/"+dcMountFolder_jN;
+    SF::assignValueFromMap(stMap,"dImageName*!",dImageName);
+    SF::assignValueFromMap(stMap,"codesToAutoGrade*!",maxCodesToRun);
+    SF::assignValueFromMap(stMap,"initializerExtension*!",initExtension);
+    SF::assignValueFromMap(stMap,"publicSubFolderToStoreFiles*!",publicStorage);
+    SF::assignValueFromMap(stMap,"publicSubFolderForSystemFiles*!",publicSystemStorage);
+    SF::assignValueFromMap(stMap,"subFolderForGuestClones*!",guestClonesRelLoc);
+    folderMainDBGuestClone=mainFolder+"/"+guestClonesRelLoc;
+    systemFolderClones=mainFolder+"/"+"sys_"+guestClonesRelLoc;
+    if(guestClonesRelLoc.length()>0){
+      if(guestClonesRelLoc[guestClonesRelLoc.length()-1]!='/'){
+        guestClonesRelLoc+="/";
       }
-      pos=0;
-      numSubFolders=BF::stringToInteger(SF::extract(sSt,pos,nSSFIFB,nSSFIFE).first);
-      pos=0;
-      numFilesInFolder=BF::stringToInteger(SF::extract(sSt,pos,nFIFB,nFIFE).first);
+    }
+    SF::assignValueFromMap(stMap,"numStorageSubFoldersInFolder*!",numSubFolders);
+    SF::assignValueFromMap(stMap,"numFilesInFolder*!",numFilesInFolder);
   }
   std::string Setup::printSetup() const{
       std::string fR=mainFolder+"\n";
