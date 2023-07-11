@@ -1,105 +1,86 @@
 
+_vVPair__vr_mainFolderDB*!_/vr__vl_/webFiles/mainTeaching_/vl__/vVPair_
+_vVPair__vr_externalIDDB*!_/vr__vl_eIDDB_/vl__/vVPair_
+_vVPair__vr_usernameDB*!_/vr__vl_unamesDB_/vl__/vVPair_
+_vVPair__vr_hierarchy*!_/vr__vl_hBosses_/vl__/vVPair_
+_vVPair__vr_countersDB*!_/vr__vl_cntrs_/vl__/vVPair_
+_vVPair__vr_fileManagement*!_/vr__vl_fMan_/vl__/vVPair_
+_vVPair__vr_messageManagement*!_/vr__vl_messMan_/vl__/vVPair_
+_vVPair__vr_couasManagement*!_/vr__vl_couasMa_/vl__/vVPair_
+_vVPair__vr_backupDB*!_/vr__vl_backup_/vl__/vVPair_
+_vVPair__vr_backupMaxSZ*!_/vr__vl_1000_/vl__/vVPair_
+_vVPair__vr_mainText*!_/vr__vl_mTxt_/vl__/vVPair_
+_vVPair__vr_responseDB*!_/vr__vl_rspT_/vl__/vVPair_
+_vVPair__vr_statDB*!_/vr__vl_statT_/vl__/vVPair_
+_vVPair__vr_fstDB*!_/vr__vl_fstT_/vl__/vVPair_
+_vVPair__vr_hierarchyCache*!_/vr__vl_hBossCache_/vl__/vVPair_
 
- 
- _mainFolderDB*!_/webFiles/mainTeaching_/mainFolderDB*!_
- _externalIDDB*!_eIDDB_/externalIDDB*!_
+_vVPair__vr_dcMountingFolder*!_/vr__vl_dmountF_/vl__/vVPair_
+_vVPair__vr_dImageName*!_/vr__vl_ub_cpp_py_/vl__/vVPair_
+_vVPair__vr_codesToAutoGrade*!_/vr__vl_5_/vl__/vVPair_
 
-_usernameDB*!_unamesDB_/usernameDB*!_
+_vVPair__vr_initializerExtension*!_/vr__vl__start_/vl__/vVPair_
 
-_hierarchy*!_hBosses_/hierarchy*!_
+_vVPair__vr_publicSubFolderToStoreFiles*!_/vr__vl_qq_/vl__/vVPair_
+_vVPair__vr_publicSubFolderForSystemFiles*!_/vr__vl_qs_/vl__/vVPair_
+_vVPair__vr_subFolderForGuestClones*!_/vr__vl_sites_/vl__/vVPair_
 
-   _countersDB*!_cntrs_/countersDB*!_
- 
-_fileManagement*!_fMan_/fileManagement*!_
-
-_messageManagement*!_messMan_/messageManagement*!_
-
-
-_couasManagement*!_couasMa_/couasManagement*!_
-
-_backupDB*!_backup_/backupDB*!_
-_backupMaxSZ*!_1000_/backupMaxSZ*!_
-
-_mainText*!_mTxt_/mainText*!_
-_responseDB*!_rspT_/responseDB*!_
-_statDB*!_statT_/statDB*!_
-_fstDB*!_fstT_/fstDB*!_
-_hierarchyCache*!_hBossCache_/hierarchyCache*!_
- 
- _dcMountingFolder*!_dmountF_/dcMountingFolder*!_
- _dImageName*!_ub_cpp_py_/dImageName*!_
- _codesToAutoGrade*!_5_/codesToAutoGrade*!_
- 
-_initializerExtension*!__start_/initializerExtension*!_
-
-_publicSubFolderToStoreFiles*!_qq_/publicSubFolderToStoreFiles*!_
-_publicSubFolderForSystemFiles*!_qs_/publicSubFolderForSystemFiles*!_
-_subFolderForGuestClones*!_sites_/subFolderForGuestClones*!_
-
-_numStorageSubFoldersInFolder*!_1000_/numStorageSubFoldersInFolder*!_
-_numFilesInFolder*!_1000_/numFilesInFolder*!_
-_publicSubFolderToStoreChallengeImages*!_ch0_/publicSubFolderToStoreChallengeImages*!_ 
-_privateSubFolderToStoreChallengeAnswers*!_answ0_/privateSubFolderToStoreChallengeAnswers*!_
+_vVPair__vr_numStorageSubFoldersInFolder*!_/vr__vl_1000_/vl__/vVPair_
+_vVPair__vr_numFilesInFolder*!_/vr__vl_1000_/vl__/vVPair_
+_vVPair__vr_publicImages*!_/vr__vl_ch0_/vl__/vVPair_
+_vVPair__vr_privateAnswers*!_/vr__vl_answ0_/vl__/vVPair_
 
 
-
- Debugging mode: yes/no/timeOnly
- _debugging*!_no_/debugging*!_
- _websiteName*!_GradeYard_/websiteName*!_
-
- _websiteURL*!_https://gradeyard.com/teaching_/websiteURL*!_
- 
-   
-  _cookieName*!_teach0_/cookieName*!_ 
- _fileUploads*!_pc0_/fileUploads*!_ 
+Debugging mode: yes/no/timeOnly
+_vVPair__vr_debugging*!_/vr__vl_no_/vl__/vVPair_
 
 
+_vVPair__vr_websiteName*!_/vr__vl_GradeYard_/vl__/vVPair_
+_vVPair__vr_websiteURL*!_/vr__vl_https://gradeyard.com/teaching_/vl__/vVPair_
+_vVPair__vr_cookieName*!_/vr__vl_teach0_/vl__/vVPair_
 
- _tableOpenTag*!_<table class="table table-striped table-responsive table-hover">_/tableOpenTag*!_ 
- _theadOpenTag*!_<thead class="table-secondary">_/theadOpenTag*!_
+_vVPair__vr_pVar*!_/vr__vl_page_/vl__/vVPair_
+_vVPair__vr_rrc*!_/vr__vl_r_/vl__/vVPair_
+_vVPair__vr_formName*!_/vr__vl_rec_/vl__/vVPair_
+_vVPair__vr_rSubmitR*!_/vr__vl_rsu_/vl__/vVPair_
+_vVPair__vr_respSbmYES!*_/vr__vl_y_/vl__/vVPair_
 
+_vVPair__vr_tableOpenTag*!_/vr__vl_<table class="table table-striped table-responsive table-hover">_/vl__/vVPair_
+_vVPair__vr_theadOpenTag*!_/vr__vl_<thead class="table-secondary">_/vl__/vVPair_
 
-_pVar*!_page_/pVar*!_ 
- _rrc*!_r_/rrc*!_ 
- _fromName*!_rec_/fromName*!_ 
- _rSubmitR*!_rsu_/rSubmitR*!_ 
- _respSbmYES!*_y_/respSbmYES!*_ 
+_vVPair__vr_folderName*!_/vr__vl_dbSystem_/vl__/vVPair_
 
+_vVPair__vr_prefixSubdicrectories*!_/vr__vl_Dir__/vl__/vVPair_
+_vVPair__vr_prefixFilesPt*!_/vr__vl_f__/vl__/vVPair_
+_vVPair__vr_prefixFilesDt*!_/vr__vl_fd__/vl__/vVPair_
+_vVPair__vr_maxStringBeforeNextFolder*!_/vr__vl_zz_/vl__/vVPair_
 
- _folderName*!_dbSystem_/folderName*!_
+Degree of B-tree (This parameter must not be changed after the databases are created)
+_vVPair__vr_sysBTT*!_/vr__vl_5_/vl__/vVPair_
 
-_prefixSubdicrectories*!_Dir__/prefixSubdicrectories*!_ 
-_prefixFilesPt*!_f__/prefixFilesPt*!_
-_prefixFilesDt*!_fd__/prefixFilesDt*!_
-_maxStringBeforeNextFolder*!_zz_/maxStringBeforeNextFolder*!_ 
+_vVPair__vr_fileWithDynamicData*!_/vr__vl_xdynData.txt_/vl__/vVPair_
+_vVPair__vr_availableFileNames*!_/vr__vl_xaFN.txt_/vl__/vVPair_
+_vVPair__vr_fileExtension*!_/vr__vl_txt_/vl__/vVPair_
+_vVPair__vr_nextNameBB*!_/vr__vl__lNF*!__/vl__/vVPair_
+_vVPair__vr_nextNameEB*!_/vr__vl__/lNF*!__/vl__/vVPair_
+_vVPair__vr_nextEmptyBB*!_/vr__vl_?_/vl__/vVPair_
+_vVPair__vr_nextEmptyEB*!_/vr__vl_!_/vl__/vVPair_
 
-Degree of B-tree (This parameter must not be changed after the databases are created) 
-_sysBTT*!_5_/sysBTT*!_    
-    
- _fileWithDynamicData*!_xdynData.txt_/fileWithDynamicData*!_ 
-_availableFileNames*!_xaFN.txt_/availableFileNames*!_
-_fileExtension*!_txt_/fileExtension*!_ 
-_nextNameBB*!__lNF*!__nextNameBE*!_
-_nextNameEB*!__/lNF*!__nextNameEE*!_
-_nextEmptyBB*!_?_nextEmptyBE*!_
-_nextEmptyEB*!_!_nextEmptyEE*!_
+_vVPair__vr_questionsOnPage!*_/vr__vl_10_/vl__/vVPair_
+_vVPair__vr_convenience!*_/vr__vl_
+  _vVPair__vr_Hw_/vr__vl_EH_/vl__/vVPair_
+  _vVPair__vr_Homework_/vr__vl_EH_/vl__/vVPair_
+  _vVPair__vr_Midterm_/vr__vl_EM_/vl__/vVPair_
+  _vVPair__vr_Final_/vr__vl_EF_/vl__/vVPair_
+  _vVPair__vr_F_/vr__vl_EF_/vl__/vVPair_
+  _vVPair__vr_HW_/vr__vl_EH_/vl__/vVPair_
+  _vVPair__vr_homework_/vr__vl_EH_/vl__/vVPair_
+  _vVPair__vr_gradingSummaryExtension_/vr__vl_GrMain_/vl__/vVPair_
+_/vl__/vVPair_
 
-_questionsOnPage!*_10_/questionsOnPage!*_
-_convenience!*_
-_vVPair__vr_Hw_/vr__vl_EH_/vl__/vVPair_
-_vVPair__vr_Homework_/vr__vl_EH_/vl__/vVPair_
-_vVPair__vr_Midterm_/vr__vl_EM_/vl__/vVPair_
-_vVPair__vr_Final_/vr__vl_EF_/vl__/vVPair_
-_vVPair__vr_F_/vr__vl_EF_/vl__/vVPair_
-_vVPair__vr_HW_/vr__vl_EH_/vl__/vVPair_
-_vVPair__vr_homework_/vr__vl_EH_/vl__/vVPair_
-_vVPair__vr_gradingSummaryExtension_/vr__vl_GrMain_/vl__/vVPair_
+_vVPair__vr_defaultAlphabet!*_/vr__vl_english_/vl__/vVPair_
 
-_/convenience!*_
-
-_defaultAlphabet!*_english_/defaultAlphabet!*_
-
-_defaultTexts!*_
+_vVPair__vr_defaultTexts!*_/vr__vl_
 _vVPair__vr_gradingRoomActionTaken_/vr__vl_
 <h3> Success </h3>
 <div>
@@ -107,7 +88,7 @@ _insert_
 _n*_buttonLink_/n*_
 _n*_Back to grading room_/n*_
 _n*_*BLREPL*_/n*_
-_/insert_ 
+_/insert_
 </div>
 _/vl__/vVPair_
 _vVPair__vr_gradingRoomNothingToChange_/vr__vl_
@@ -117,7 +98,7 @@ _insert_
 _n*_buttonLink_/n*_
 _n*_Back to grading room_/n*_
 _n*_*BLREPL*_/n*_
-_/insert_ 
+_/insert_
 </div>
 _/vl__/vVPair_
 
@@ -125,11 +106,11 @@ _/vl__/vVPair_
 _vVPair__vr_standardCourseCreated_/vr__vl_
 <p></p>
 <div class="card bg-success text-white">
- <div class="card-body"> _doNotChangeAlphabet*_ <p><center>
+ <div class="card-body">  <p><center>
  <b>Welcome to the main page of your new course!</b>
- </center></p><p> The name of the main document is <b>_*PAGE*NAME*_</b>. Please remember and write down this name and the URL</p><center> <a href="index.cgi?page=_*PAGE*NAME*_">index.cgi?page=_*PAGE*NAME*_</a></center> 
+ </center></p><p> The name of the main document is <b>_*PAGE*NAME*_</b>. Please remember and write down this name and the URL</p><center> <a href="index.cgi?page=_*PAGE*NAME*_">index.cgi?page=_*PAGE*NAME*_</a></center>
  <p>Follow the link with the name "Instructor Page" to enroll the students. That link and the page are only visible to the administrators.   </p>
-  _/doNotChangeAlphabet*_
+
  </div></div>
 _/vl__/vVPair_
 
@@ -140,13 +121,13 @@ _insert_
 _n*_buttonLink_/n*_
 _n*_Back to grading room_/n*_
 _n*_*BLREPL*_/n*_
-_/insert_ 
+_/insert_
 </div>
 _/vl__/vVPair_
 
 
 _vVPair__vr_defaultExamOptions_/vr__vl_
- 
+
 ***************************************************
 ***                MAIN SETUP OF THE EXAM             ***
 ***************************************************
@@ -159,22 +140,22 @@ _vVPair__vr_defaultExamOptions_/vr__vl_
 ****************       _sf*|_n_/sf*|_      **************
 ***************************************************
 
-Status is one of the following: n/a/q/s/c/sc/p/sp 
+Status is one of the following: n/a/q/s/c/sc/p/sp
  n - not available. Exam is closed and questions are not shown
  a - active. Exam is open and students can submit responses to questions
- q - exam is closed for answering. 
+ q - exam is closed for answering.
          The questions and responses are displayed
- s - exam is closed for answering. 
+ s - exam is closed for answering.
          The questions, responses, and official answers are displayed
 
- p - exam is closed for answering. 
+ p - exam is closed for answering.
          The questions, responses, and points from the grader are displayed.
- sp - exam is closed for answering. 
+ sp - exam is closed for answering.
          The questions, responses, points, and official solutions are displayed.
 
- c - exam is closed for answering. 
+ c - exam is closed for answering.
          The questions, responses, points, and the comments by the grader are displayed.
- sc - exam is closed for answering. 
+ sc - exam is closed for answering.
          The questions, responses, points, grader's comments, and official solutions are displayed.
 
 
@@ -188,7 +169,7 @@ Status is one of the following: n/a/
  n - not available. Grading is closed and nothing is shown to the grader
  a - active. Grades can be submitted by the grader.
 
-                                
+
 
 ***************************************************
 *** SECTION 3: LABEL ON THE SUBMIT BUTTON ***
@@ -200,12 +181,13 @@ Status is one of the following: n/a/
 ***************************************************
 ***     SECTION 4: OPTIONS FOR PDF FILES        ***
 ***************************************************
-_pdfOptions*_  
- _pref*_f__/pref*_ 
+_pdfOptions*_
+ _pref*_f__/pref*_
  _addName*_yes_/addName*_
 _/pdfOptions*_
 
-Add the following tags inside pdfOptions for 
+
+Add the following tags inside pdfOptions for
 additional customizations.
 
 _pageTop*|_
@@ -213,14 +195,14 @@ _pageTop*|_
 \begin{center}{Semester}\end{center}
 _/pageTop*|_
 
-The program will try to insert page breaks by 
+The program will try to insert page breaks by
 analyzing the characters. If you want to stop
-the program from guessing where to put page 
-breaks, you can list the problem numbers. The 
+the program from guessing where to put page
+breaks, you can list the problem numbers. The
 page breaks will be placed after the problems
 that are listed here.
-_newPageSeparators*|_ 
-_n*_3_/n*_ _n*_8_/n*_
+_newPageSeparators*|_
+_n*_5_/n*_
 _/newPageSeparators*|_
 
 
@@ -240,7 +222,7 @@ _/vl__/vVPair_
 
 
 _vVPair__vr_examPreambleLatexTemplate_/vr__vl_
-  
+
 
 
 \documentclass[twoside]{article}
@@ -256,33 +238,56 @@ _vVPair__vr_examPreambleLatexTemplate_/vr__vl_
 \newcommand{\vect}[1]{\mathbf{#1}}
 
 \topmargin -1in \oddsidemargin -15.5mm \evensidemargin -15.5mm
-\textwidth 19.2cm \textheight 23.5cm 
+\textwidth 19.2cm \textheight 23.5cm
 
-\pagestyle{empty} 
+\pagestyle{empty}
 
- 
+
 
 _/vl__/vVPair_
 
 
+_vVPair__vr_notesPreambleLatexTemplate_/vr__vl_
+
+
+
+\documentclass[twoside]{article}
+\newcommand\DS{\displaystyle}
+\newcommand\TS{\textstyle}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{times}
+\usepackage{mathptmx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\newcommand{\vect}[1]{\mathbf{#1}}
+
+\topmargin -1in \oddsidemargin -15.5mm \evensidemargin -15.5mm
+\textwidth 19.2cm \textheight 23.5cm
+
+
+_/vl__/vVPair_
+
 
 _vVPair__vr_answerBoxLatexTemplate_/vr__vl_
-  
+
 
 \vspace{0.3cm}
 \noindent $\begin{array}{cc|ccccc|}\cline{3-7} &&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ } \\
 \mbox{Answer:} &&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ } \\
 \cline{3-7}\end{array}$
-\vfill 
+\vfill
 
 _/vl__/vVPair_
 
 
 
-_/defaultTexts!*_
+_/vl__/vVPair_
 
 
-_defaultFindReplace!*_
+
+_vVPair__vr_defaultFindReplace!*_/vr__vl_
 _vVPair__vr_\begin{theorem}_/vr__vl_
 <div class="card bg-light text-dark">
  <div class="card-body"><b>Theorem</b> _/vl__/vVPair_
@@ -321,7 +326,7 @@ _vVPair__vr_\end{theorem}_/vr__vl_</div></div><p></p>_/vl__/vVPair_
 
 
 _vVPair__vr_\end{definition}_/vr__vl_</div></div><p></p>_/vl__/vVPair_
- 
+
 _vVPair__vr_\end{problem}_/vr__vl_</div></div><p></p>_/vl__/vVPair_
 
 _vVPair__vr_\end{exercise}_/vr__vl_</div></div><p></p>_/vl__/vVPair_
@@ -346,8 +351,4 @@ _hideReveal__revealTitle_Show solution_/revealTitle__hideTitle_Hide solution_/hi
 _vVPair__vr_\end{proof}_/vr__vl__/hideReveal_</div><p></p>_/vl__/vVPair_
 
 _vVPair__vr_\end{solution}_/vr__vl__/hideReveal_</div><p></p>_/vl__/vVPair_
-
-_/defaultFindReplace!*_
-
-_skipInitFolders*!_no_/skipInitFolders*!_
-
+_/vl__/vVPair_
