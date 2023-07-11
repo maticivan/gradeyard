@@ -353,7 +353,7 @@ namespace APTI{
     }
     fR.second+=_linkText;
     if( (_editType=="n") && (_linkText=="") ){
-      fR.second = SF::wrapTextToPreventAlphabetChange(fR.second); 
+      fR.second = SF::wrapTextToPreventAlphabetChange(fR.second);
     }
     return fR;
   }
@@ -1243,8 +1243,7 @@ namespace APTI{
                                                   const std::string & problemName,
                                                   const std::string & problemVersion,
                                                   const std::string & baseText){
-    if(GL_studentsAllowedToExecuteCodeOnPublicTestCases!="yes"){
-      GF::GL_DEB_MESSAGES.addMessage("not allowed");
+    if(GL_studentsAllowedToExecuteCodeOnPublicTestCases!="yes"){ 
       return "";
     }
     MPTI::MainText problemText;
