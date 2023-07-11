@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -103,10 +103,8 @@ namespace LANGF{
         if((ind==0)&&(i<sz-2)&&(input[i]=='d')&&(input[i+1]==';')&&(input[i+2]=='j')){ind=1;output+="&#1076;";++i;}
         if((ind==0)&&(i<sz-2)&&(input[i]=='d')&&(input[i+1]=='z')&&(input[i+2]=='h')){ind=1;output+="&#1119;";i+=2;}
         if((ind==0)&&(i<sz-2)&&(input[i]=='d')&&(input[i+1]==';')&&(input[i+2]=='z')){ind=1;output+="&#1076;";++i;}
-
         if((ind==0)&&(i<sz-1)&&(input[i]=='z')&&(input[i+1]=='h')){ind=1;output+="&#1078;";++i;}
         if((ind==0)&&(i<sz-2)&&(input[i]=='z')&&(input[i+1]==';')&&(input[i+2]=='h')){ind=1;output+="&#1079;";++i;}
-
         if((ind==0)&&(i<sz-1)&&(input[i]=='l')&&(input[i+1]=='j')){ind=1;output+="&#1113;";++i;}
         if((ind==0)&&(i<sz-2)&&(input[i]=='l')&&(input[i+1]==';')&&(input[i+2]=='j')){ind=1;output+="&#1083;";++i;}
         if((ind==0)&&(i<sz-1)&&(input[i]=='n')&&(input[i+1]=='j')){ind=1;output+="&#1114;";++i;}
@@ -116,7 +114,6 @@ namespace LANGF{
         if((ind==0)&&(i<sz-2)&&(input[i]=='c')&&(input[i+1]==';')&&(input[i+2]=='h')){ind=1;output+="&#1094;";++i;}
         if((ind==0)&&(i<sz-1)&&(input[i]=='s')&&(input[i+1]=='h')){ind=1;output+="&#1096;";++i;}
         if((ind==0)&&(i<sz-2)&&(input[i]=='s')&&(input[i+1]==';')&&(input[i+2]=='h')){ind=1;output+="&#1089;";++i;}
-
         if((ind==0)&&(input[i]=='a')){ind=1;output+="&#1072;";}
         if((ind==0)&&(input[i]=='b')){ind=1;output+="&#1073;";}
         if((ind==0)&&(input[i]=='v')){ind=1;output+="&#1074;";}
@@ -147,15 +144,12 @@ namespace LANGF{
         //ch
         //dzh
         //sh
-
         if((ind==0)&&(i<sz-1)&&(input[i]=='D')&&(input[i+1]=='j')){ind=1;output+="&#1026;";++i;}
         if((ind==0)&&(i<sz-2)&&(input[i]=='D')&&(input[i+1]==';')&&(input[i+2]=='j')){ind=1;output+="&#1044;";++i;}
         if((ind==0)&&(i<sz-2)&&(input[i]=='D')&&(input[i+1]=='z')&&(input[i+2]=='h')){ind=1;output+="&#1039;";i+=2;}
         if((ind==0)&&(i<sz-2)&&(input[i]=='D')&&(input[i+1]==';')&&(input[i+2]=='z')){ind=1;output+="&#1044;";++i;}
-
         if((ind==0)&&(i<sz-1)&&(input[i]=='Z')&&(input[i+1]=='h')){ind=1;output+="&#1046;";++i;}
         if((ind==0)&&(i<sz-2)&&(input[i]=='Z')&&(input[i+1]==';')&&(input[i+2]=='h')){ind=1;output+="&#1047;";++i;}
-
         if((ind==0)&&(i<sz-1)&&(input[i]=='L')&&(input[i+1]=='j')){ind=1;output+="&#1033;";++i;}
         if((ind==0)&&(i<sz-2)&&(input[i]=='L')&&(input[i+1]==';')&&(input[i+2]=='j')){ind=1;output+="&#1051;";++i;}
         if((ind==0)&&(i<sz-1)&&(input[i]=='N')&&(input[i+1]=='j')){ind=1;output+="&#1034;";++i;}
@@ -165,7 +159,6 @@ namespace LANGF{
         if((ind==0)&&(i<sz-2)&&(input[i]=='C')&&(input[i+1]==';')&&(input[i+2]=='h')){ind=1;output+="&#1062;";++i;}
         if((ind==0)&&(i<sz-1)&&(input[i]=='S')&&(input[i+1]=='h')){ind=1;output+="&#1064;";++i;}
         if((ind==0)&&(i<sz-2)&&(input[i]=='S')&&(input[i+1]==';')&&(input[i+2]=='h')){ind=1;output+="&#1057;";++i;}
-
         if((ind==0)&&(input[i]=='A')){ind=1;output+="&#1040;";}
         if((ind==0)&&(input[i]=='B')){ind=1;output+="&#1041;";}
         if((ind==0)&&(input[i]=='V')){ind=1;output+="&#1042;";}
@@ -196,8 +189,6 @@ namespace LANGF{
         //Ch
         //Dzh
         //Sh
-
-
         if(ind==0){ind=1;output+=input[i];}
         ++i;
       }
@@ -265,11 +256,7 @@ namespace LANGF{
       GF::GL_DEB_MESSAGES.addMessage("Timer 1: "+ BF::doubleToString(t1.getTime()));
       GF::GL_DEB_MESSAGES.addMessage("Timer 2: "+ BF::doubleToString(t2.getTime()));
       GF::GL_DEB_MESSAGES.addMessage("Timer 3: "+ BF::doubleToString(t3.getTime()));
-    }
-    else{
-      result=SF::findAndReplace(result,"_doNotChangeAlphabet*_","");
-      result=SF::findAndReplace(result,"_/doNotChangeAlphabet*_","");
-    }
+    } 
     return result;
   }
 }
