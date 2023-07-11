@@ -48,7 +48,7 @@ namespace PSDI{
     std::string createStandardCourseMainDocName;
     std::string createStandardCourseSuccess;
     std::string queryAnswPlaceHolder;
-    int queryAnswRequired;  
+    int queryAnswRequired;
     std::string allowRespRecDisplayToOthers;
     std::map<std::string,std::string> respMap;
     std::map<std::string,std::string> encryptionMap;
@@ -63,8 +63,7 @@ namespace PSDI{
     std::string respRecBackupText;
     int passedAntiSpam;
     std::vector<std::string> displayDaysInWeek;
-    std::vector<std::string> displayMonthsInYear;
-    //SessionData();~SessionData();
+    std::vector<std::string> displayMonthsInYear; 
   };
 }
 #endif
