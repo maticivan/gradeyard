@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -112,7 +112,12 @@ namespace PTKF{
     }
   }
   void PlainTextKeeper::treatCDE(const std::string & cdeOpen, const std::string & cdeClose){
-    treatPre(cdeOpen,cdeClose,"_doNotChangeAlphabet*_<code>","</code>_/doNotChangeAlphabet*_"); 
+    std::string dnchaB="_doNotChangeAlphabet*_";
+    std::string dnchaE="_/doNotChangeAlphabet*_";
+    if(GF::GL_Alphabet=="english"){
+      dnchaB=""; dnchaE="";
+    }
+    treatPre(cdeOpen,cdeClose,dnchaB+"<code>","</code>"+dnchaE);
   }
   void PlainTextKeeper::treatBoxCode(){
     long sz=plainTextBank.size();
@@ -148,7 +153,12 @@ namespace PTKF{
     }
   }
   void PlainTextKeeper::treatCODE(const std::string & codeOpen, const std::string & codeClose){
-    treatPre(codeOpen,codeClose,"_doNotChangeAlphabet*_<pre>","</pre>_/doNotChangeAlphabet*_");
+    std::string dnchaB="_doNotChangeAlphabet*_";
+    std::string dnchaE="_/doNotChangeAlphabet*_";
+    if(GF::GL_Alphabet=="english"){
+      dnchaB=""; dnchaE="";
+    }
+    treatPre(codeOpen,codeClose,dnchaB+"<pre>","</pre>"+dnchaE);
   }
     int removeToSafety(PTKF::PlainTextKeeper &kc, std::string &t,const std::string & s_B,const std::string & s_E,const long & keepCodes=1){
       //returns 1 if everything is removed properly
