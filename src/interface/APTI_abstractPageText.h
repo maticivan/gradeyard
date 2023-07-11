@@ -123,8 +123,7 @@ namespace APTI{
     std::pair<std::string,std::string> createLinkPair(const std::vector<std::string> &, const std::vector<std::string> &,const std::string & ) const;
     std::pair<std::string,std::string> createLinkPair(const std::string & , const std::string & ,const std::string & ) const;
     std::stack<std::pair<std::string,std::string> > logInBarRaw(const std::string & ) const;
-    std::string createLogInLink() const;
-    std::string createAnswerToTheQuery(const PSDI::SessionData &) const;
+    std::string createLogInLink() const; 
     std::string createCloneInvitation(const PSDI::SessionData &);
     std::string createRestoreCommand(const PSDI::SessionData &, const std::string &);
     std::string createStatAnalysisPage(const PSDI::SessionData &, const std::string &) const;
