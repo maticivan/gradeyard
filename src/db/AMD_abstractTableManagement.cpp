@@ -55,6 +55,11 @@ namespace AMD{
     std::string getExternalCodeFromInternalId(const std::string &) const;// input: string with internal id
     std::string getExternalCodeFromInternalId( ) const;
     long checkExistenceInDatabase() const;
+    // checks whether (internalUserId,InternalNumber) exists in a database
+    // returns:
+    // 0 - good combination. This is not in database and can be entered as a new entry
+    // 1 - good combination. This is in the database and corresponds to a correct entry.
+    //                       Can be updated
     int setFromInternalId(const std::string &);
     int setFromExternalCode(const std::string &);
     int deleteRecord(const long & = 1);
