@@ -15,97 +15,91 @@
 //    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
 //    along with this program.  If not, see https://www.gnu.org/licenses/.
 
-#include "src/fundamental/SHF_standardHeaders.cpp"
-#include "src/fundamental/SAIOF_setupAndIO.cpp"
-std::string GL_MAIN_SETUP_FILE_NAME=SAIOF::get_GL_MAIN_SETUP_FILE_NAME();
-std::string GL_VERSION="1.17.2 (2023/07/31)";
-#include "src/fundamental/MTF_mainTable.cpp"
-#include "src/db/DD_databases.cpp"
-#include "src/graphs/MGG_mainGraphs.cpp"
-#include "src/interface/MWII_mainWI.cpp"
 
-int main() {
-  TMF::Timer timeToGeneratePage;
-  timeToGeneratePage.start();
-  cgicc::Cgicc ch;
-  std::string setups=IOF::fileToString(GL_MAIN_SETUP_FILE_NAME);
-  std::map<std::string,std::string> mSetup;
-  SF::varValPairs(setups,"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_",mSetup);
-  HDPF::GLOBAL_PS.getSetupFromMap(mSetup);
-  DD::GL_DBS.getSetupFromMap(mSetup);
-  CAGI::GL_Code_Counter.remainingCodes=DD::GL_DBS.getMaxCodesToRun();
-  DD::GL_MAIN_DB.initialize();
-  ENCF::GL_SECRET_LOCATION.folder=DD::GL_DBS.getChallengeAnswStorage();
-  MWII::GL_WI.getSetupFromMap(mSetup);
-  SII::SessionInformation mainSession;
-  mainSession.initSession(ch);
-  std::string queryAnswer="";
-  if(mainSession.isFormResponded()==1){
-    std::string commands=mainSession.getResponse("commands");
-    if(commands!="notFound"){
-      commands=mainSession.enhanceTheCommandDueToComfUserEdit(commands);
-      std::vector<CCI::Command> comms= CCI::getAllCommands(commands);
-      long csz=comms.size();
-      for(long j=0;j<csz;++j){
-        std::string exRes=comms[j].executeCommand(mainSession);
-      }
-      mainSession.changeMainText();
-    }
-    std::string userReg=mainSession.getResponse("userReg");
-    if(userReg=="yes"){
-      if(mainSession.passedAntiSpam()){
-        std::string pass1=mainSession.getResponse("pass1");
-        std::string pass2=mainSession.getResponse("pass2");
-        long sz1=pass1.length();
-        long sz2=pass2.length();
-        if((sz1<5)||(pass1!=pass2)){
-          mainSession.changeMainText("problemWithPasswords");
-        }
-        else{
-          std::string userN=mainSession.getResponse("username");
-          std::string firstN=mainSession.getResponse("firstName");
-          std::string lastN=mainSession.getResponse("lastName");
-          std::string email=mainSession.getResponse("email");
-          if(userN.length()<5){
-            mainSession.changeMainText("problemWithUserName");
-          }
-          else{
-            std::string userReg;
-            WUD::User w;
-            int succ=w.createUser(userN);
-            if(succ==0){
-              mainSession.changeMainText("usernameExists");
-            }
-            else{
-              WUD::OthUsData tmpOUD;
-              tmpOUD.password=pass1;
-              tmpOUD.firstName=firstN;
-              tmpOUD.lastName=lastN;
-              tmpOUD.email=email;
-              tmpOUD.rawEncSystemData=w.createKeyPair(RNDF::genRandCode(20));
-              w.addUserData(tmpOUD);
-              mainSession.changeMainText("userRegistered");
-            }
-          }
-        }
-      }
-      else{
-        mainSession.changeMainText("wrongAntiSpamCode");
-      }
-    }
-    std::string query=mainSession.getResponse("query");
-    if(query=="yes"){
-      if((mainSession.loggedIn())||(mainSession.passedAntiSpam())){
-        queryAnswer=QAF::answerTheQuestion(mainSession.getResponse("question"));
-      }
-      else{
-        queryAnswer=QAF::wrongAntiSpamCode();
-      }
-    }
+#ifndef _INCL_COUAS_CPP
+#define _INCL_COUAS_CPP
+
+namespace CAD{
+
+  class CouAs:public AMD::AbstractManager{ // Course or Assignment
+  private:
+    std::string internalUserId;
+    std::string ow_dbs_key0="couasId";
+    std::string ow_dbs_key1="userId";
+    std::string ow_dbsMFInd="couasMan";
+    std::string ow_cntrName="couasCntr";
+    long ow_primeIndex0=22;
+    long ow_primeIndex1=25;
+    long ow_permutInd=7;
+    long ow_shift=76442;
+  public:
+    CouAs(const std::string & ="!*!", const std::string & ="!*!");
+    void setVariables(const std::string & ="!*!", const std::string & ="!*!");
+    std::string getInternalUserId() const;
+    std::string getKey1() const;
+    void setKey1(const std::string &);
+    int createCouAs(const std::string &);
+  };
+  CouAs::CouAs(const std::string & _intUID, const std::string &  _intFId){
+    setVariables(_intUID,_intFId);
   }
-  mainSession.addDebuggingMessagesIfInDebuggingMode();
-  std::cout<<mainSession.preparePage(queryAnswer)<<"\n";
-  mainSession.createRecoveryCommands();
-  timeToGeneratePage.end();
-  return 0;
+  void CouAs::setVariables(const std::string & _intUID, const std::string &  _intFId){
+    dbs_key0= ow_dbs_key0;
+    dbs_key1= ow_dbs_key1;
+    dbsMFInd = ow_dbsMFInd;
+    cntrName= ow_cntrName;
+    primeIndex0= ow_primeIndex0;
+    primeIndex1= ow_primeIndex1;
+    permutInd= ow_permutInd;
+    shift= ow_shift;
+    primeIndex0= setPrimesCorrectly(f0,primeIndex0, BF::GLOBAL_NUM_PRIME_SEQUENCES);
+    primeIndex1= setPrimesCorrectly(f1,primeIndex1, BF::GLOBAL_NUM_PRIME_SEQUENCES);
+    permutInd= setPermsCombsCorrectly(permutInd,BF::GLOBAL_NUM_PERMUTATION_SEQUENCES);
+    internalUserId=_intUID;
+    internalVectorNumber=getInternalNumberFromInternalId(_intFId);
+    existenceEstablishedBefore=0;
+  }
+  std::string CouAs::getInternalUserId() const{
+    return internalUserId;
+  }
+  std::string CouAs::getKey1() const{
+    return internalUserId;
+  }
+  void CouAs::setKey1(const std::string & _k){
+    internalUserId=_k;
+  }
+  int CouAs::createCouAs(const std::string & _iId){
+    WUD::User w;
+    int sc=w.setFromInternalId(_iId);
+    if(sc==0){
+      return 0;
+    }
+    long couasIdIsFree=0;
+    std::string couasId;
+    std::vector<std::string> k,v;
+    k.resize(1);v.resize(1);
+    k[0]=dbs_key0;
+    while(couasIdIsFree==0){
+      CD::Counter mId(cntrName);
+      mId.increase();
+      couasId=mId.getCodeWord(1);
+      v[0]=couasId;
+      std::vector< std::pair<std::vector<std::string>, std::string> > searchRes;
+      searchRes=DD::GL_MAIN_DB.dbsM[dbsMFInd].search(v,k);
+      long sz=searchRes.size();
+      if(sz==0){
+        couasIdIsFree=1;
+      }
+    }
+    internalUserId=_iId;
+    internalVectorNumber=getInternalNumberFromInternalId(couasId);
+    putInDB();
+    existenceEstablishedBefore=1;
+    return 1;
+  }
+  std::vector<CouAs> getCoursesAssignmentsByUser(const std::string & _iId, const long & start =0, const long & end=-1){
+    CouAs f;
+    return FMD::itemsByUser(f,"couasMan",_iId,start,end);
+  }
 }
+#endif
