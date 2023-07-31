@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -20,33 +20,26 @@
 #define _INCL_ABSTRACTTABLEMANAGEMENT_CPP
 
 namespace AMD{
-
   class AbstractManager{
   protected:
-
     std::vector<long> internalVectorNumber;
     std::string textData;
     long existenceEstablishedBefore;
-
     std::string dbs_key0="fileId";
     std::string dbs_key1="userId";
     std::string dbsMFInd="fileMan";
     std::string cntrName="filesCntr";
-
     long primeIndex0=16;
     long primeIndex1=37;
     long permutInd=7;
     long shift=76442;
-
     BF::BijectiveFunction f0;
     BF::BijectiveFunction f1;
     std::vector<std::vector<long> > permuts01;
     std::vector<long> indCombs;
-
     long lenEach;
     long setPrimesCorrectly(BF::BijectiveFunction & , const long &, const long &);
     long setPermsCombsCorrectly(const long &, const long &);
-
   public:
     AbstractManager(const std::string & ="!*!", const std::string & ="!*!");
     void setTextData(const std::string &);
@@ -55,10 +48,8 @@ namespace AMD{
     std::vector<long> getInternalNumberFromExternalCode(const std::string & = "!*!") const;// input: external code
     std::vector<long> getInternalNumberFromInternalId(const std::string & = "!*!") const;// input: internal id
     std::string getTextData() const;
-
     std::string getInternalIdFromInternalNumber(const std::vector<long> &) const;
     std::string getInternalIdFromInternalNumber() const;
-
     std::string getExternalCodeFromInternalNumber(const std::vector<long> &) const;
     std::string getExternalCodeFromInternalNumber() const;
     std::string getExternalCodeFromInternalId(const std::string &) const;// input: string with internal id
@@ -69,24 +60,16 @@ namespace AMD{
     // 0 - good combination. This is not in database and can be entered as a new entry
     // 1 - good combination. This is in the database and corresponds to a correct entry.
     //                       Can be updated
-
-
-
-
-
     int setFromInternalId(const std::string &);
     int setFromExternalCode(const std::string &);
     int deleteRecord(const long & = 1);
     // argument: 0 - put only into queue
     //           1 - delete from database
-
     int putInDB(const long & = 1);
     // argument: 0 - put only into queue
     //           1 - put in database
-
   };
   int AbstractManager::setFromInternalId(const std::string & _iId){
-
     std::vector<std::string> k,v;
     k.resize(1);v.resize(1);
     k[0]=dbs_key0;
@@ -100,14 +83,12 @@ namespace AMD{
     internalVectorNumber=getInternalNumberFromInternalId(_iId);
     setKey1(searchRes[0].first[1]);
     textData=searchRes[0].second;
-
     existenceEstablishedBefore=1;
     return 1;
   }
   int AbstractManager::setFromExternalCode(const std::string & _c){
     std::vector<long> _v=getInternalNumberFromExternalCode(_c);
     std::string _i=getInternalIdFromInternalNumber(_v);
-
     return setFromInternalId(_i);
   }
   long AbstractManager::setPrimesCorrectly(BF::BijectiveFunction & f, const long & x, const long &max){
@@ -128,10 +109,8 @@ namespace AMD{
     lenEach=permuts01[0].size();
     return ind;
   }
-
   AbstractManager::AbstractManager(const std::string & _intUID, const std::string &  _intFId){}
   void AbstractManager::setTextData(const std::string & _o){ textData=_o; }
-
   std::vector<long> AbstractManager::getInternalNumberFromExternalCode(const std::string & _s) const{
     if(_s=="!*!"){
       return internalVectorNumber;
@@ -164,8 +143,6 @@ namespace AMD{
   std::string AbstractManager::getInternalIdFromInternalNumber() const{
     return getInternalIdFromInternalNumber(internalVectorNumber);
   }
-
-
   long AbstractManager::checkExistenceInDatabase() const{
     // checks whether (internalUserId,internalVectorNumber) exists in a database
     // returns:
@@ -175,7 +152,6 @@ namespace AMD{
     if(existenceEstablishedBefore==1){
       return 1;
     }
-
     std::vector<std::string> k,v;
     k.resize(2);v.resize(2);
     k[0]=dbs_key0;
@@ -228,11 +204,8 @@ namespace AMD{
     else{
       DD::GL_MAIN_DB.dbsM[dbsMFInd].insert(kV,textData);
     }
-
-
     existenceEstablishedBefore=1;
     return 1;
   }
 }
-
 #endif

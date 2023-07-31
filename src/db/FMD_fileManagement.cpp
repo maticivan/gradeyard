@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -20,50 +20,29 @@
 #ifndef _INCL_FILEMANAGEMENT_CPP
 #define _INCL_FILEMANAGEMENT_CPP
 namespace FMD{
-
-
   class FileManager:public AMD::AbstractManager{
   private:
-
     std::string internalUserId;
-
     std::string ow_dbs_key0="fileId";
     std::string ow_dbs_key1="userId";
     std::string ow_dbsMFInd="fileMan";
     std::string ow_cntrName="filesCntr";
-
     long ow_primeIndex0=16;
     long ow_primeIndex1=37;
     long ow_permutInd=7;
     long ow_shift=76442;
-
-
   public:
     FileManager(const std::string & ="!*!", const std::string & ="!*!");
-
     void setVariables(const std::string & ="!*!", const std::string & ="!*!");
-
     std::string getInternalUserId() const;
     std::string getKey1() const;
     void setKey1(const std::string &);
-    long checkExistenceInDatabase() const;
-    // checks whether (internalUserId,internalFileNumber) exists in a database
-    // returns:
-    // 0 - good combination. This is not in database and can be entered as a new entry
-    // 1 - good combination. This is in the database and corresponds to a correct entry.
-    //                       Can be updated
-
-
     int createFile(const std::string &);
     // arguments: 1) internalUserId
-
     // returns :
     // 1 - success
     // 0 - internalUserId does not exist
-
-
     std::pair<long,long> filePosition(const long &, const long & = 100, const long & =100) const;
-
     //       We assume that the files 0,                1, ..., l-1 are stored in the folder <rootFiles>/<subFolder>/f0/
     //                          files l,              l+1, ..., 2l-1 are in the folder <rootFiles>/<subFolder>/f1/
     //                                   ...
@@ -78,15 +57,12 @@ namespace FMD{
     // Returns the pair: (numLevels, numFolder)
     // nth file should be stored at <rootFiles>/<subFolder>/<subFolder>/.../<subFolder>/f[numFolder]/
     // where <subFolder> appears numLevels times
-
     std::string clearThePublicPathAndDetermineTheFolder(const std::string &, const std::string & , const std::string & , const std::string & , const long &, const long & = 100, const long & =100);
     // Arguments:
     // 1 - website URL, 2 - public root, 3 - name for each subfolder except for the last, 4 - name for last subfolder
     // 5 - n (fileNumber); 6 - k (foldersAtEachLevel); 7 - l (filesInEachFolder)
     // This function makes sure that the necessary folders exist for n-th file to be placed in public view
-
   };
-
   std::pair<long,long> FileManager::filePosition(const long & n, const long & k, const long & l) const{
     long numLevels=-1,numFolder=-1;
     if((k>0)&&(l>0)&&(n>-1)){
@@ -95,7 +71,6 @@ namespace FMD{
     }
     return std::pair<long,long>(numLevels,numFolder);
   }
-
   std::string FileManager::clearThePublicPathAndDetermineTheFolder(const std::string & wsURL,
                                                                           const std::string & rootFiles,
                                                                           const std::string &subFolder,
@@ -129,28 +104,21 @@ namespace FMD{
     setVariables(_intUID,_intFId);
   }
   void FileManager::setVariables(const std::string & _intUID, const std::string &  _intFId){
-
     dbs_key0= ow_dbs_key0;
     dbs_key1= ow_dbs_key1;
     dbsMFInd = ow_dbsMFInd;
     cntrName= ow_cntrName;
-
     primeIndex0= ow_primeIndex0;
     primeIndex1= ow_primeIndex1;
     permutInd= ow_permutInd;
     shift= ow_shift;
-
-
     primeIndex0= setPrimesCorrectly(f0,primeIndex0, BF::GLOBAL_NUM_PRIME_SEQUENCES);
     primeIndex1= setPrimesCorrectly(f1,primeIndex1, BF::GLOBAL_NUM_PRIME_SEQUENCES);
     permutInd= setPermsCombsCorrectly(permutInd,BF::GLOBAL_NUM_PERMUTATION_SEQUENCES);
-
     internalUserId=_intUID;
-
     internalVectorNumber=getInternalNumberFromInternalId(_intFId);
     existenceEstablishedBefore=0;
   }
-
   std::string FileManager::getInternalUserId() const{
     return internalUserId;
   }
@@ -160,17 +128,12 @@ namespace FMD{
   void FileManager::setKey1(const std::string & _k){
     internalUserId=_k;
   }
-
   int FileManager::createFile(const std::string & _iId){
-
     WUD::User w;
     int sc=w.setFromInternalId(_iId);
     if(sc==0){
       return 0;
     }
-
-
-
     long fileIdIsFree=0;
     std::string fileId;
     std::vector<std::string> k,v;
@@ -194,9 +157,6 @@ namespace FMD{
     existenceEstablishedBefore=1;
     return 1;
   }
-
-
-
   template<typename TTT>
   std::vector<TTT> itemsByUser(const TTT & fV,
                                   const std::string & dbName,
@@ -206,7 +166,6 @@ namespace FMD{
     std::vector<std::string> k,v;
     k.resize(1);v.resize(1);
     k[0]="userId";
-
     v[0]=_iId;
     std::vector< std::pair<std::vector<std::string>, std::string> > searchRes;
     searchRes=DD::GL_MAIN_DB.dbsM[dbName].search(v,k,start,end);
@@ -223,6 +182,5 @@ namespace FMD{
     FileManager f;
     return itemsByUser(f,"fileMan",_iId,start,end);
   }
-
 }
 #endif

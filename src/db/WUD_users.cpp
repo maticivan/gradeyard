@@ -18,7 +18,6 @@
 
 #ifndef _INCL_USERS_CPP
 #define _INCL_USERS_CPP
-
 namespace WUD{
   std::string GL_TheOnlyUserAllowedToGenerateMasterKey="mainAdmin";
   struct Separators{
@@ -164,8 +163,7 @@ namespace WUD{
     // 0 - good combination. This is not in database and can be entered as a new entry
     // 1 - good combination. This is in the database and corresponds to a correct entry.
     //                       Can be updated
-
-    // everything elese is a bad sign; combination cannot be entered in database
+    // everything else is a bad sign; combination cannot be entered in database
     std::pair<std::string,std::string>
     intId_username(const std:: string & , const std::string & ="username") const;
     // given username (internalId) returns internalId (username)
