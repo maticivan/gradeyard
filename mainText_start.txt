@@ -25,6 +25,8 @@ _/permission_
 
 _/permissionString!!_
 _/systemData!!_
+
+
 _textData!!_
 _vVPair__vr_defaultHeaderName_/vr__vl_mainTextHeader_/vl__/vVPair_
 _vVPair__vr_defaultFooterName_/vr__vl_mainTextFooter_/vl__/vVPair_
@@ -50,8 +52,51 @@ _vVPair__vr_maxDescLength_/vr__vl_1000_/vl__/vVPair_
 _vVPair__vr_codeWordForAutoGenDesc_/vr__vl__*AGD*__/vl__/vVPair_
 _vVPair__vr_allowRespRecToOthers_/vr__vl_yes_/vl__/vVPair_
 
+_vVPair__vr_allowPDFForCertificates_/vr__vl_yes_/vl__/vVPair_
+_vVPair__vr_timeInSecondsToKeepCertificatePDF_/vr__vl_120_/vl__/vVPair_
 
 _vVPair__vr_defaultTexts_/vr__vl_
+_vVPair__vr_certificateAnnouncement_/vr__vl_<p>
+_insert_
+_n*_buttonLink_/n*_
+_n*_<svg width="47" height="30" >
+ <g transform="scale(0.125)" >
+    <path
+       style="fill:none;stroke:currentcolor;stroke-width:6;"
+       d="M 27,27 344,27 344,199 27,199 27,27 Z" />
+    <circle
+       style="fill:none;stroke:currentcolor;stroke-width:6;" 
+       cx="271"
+       cy="142"
+       r="30" />
+    <path
+       style="fill:none;stroke:currentcolor;stroke-width:3;"
+       d="m 258,169 -0.25,66" />
+    <path
+       style="fill:none;stroke:currentcolor;stroke-width:3"
+       d="m 287,169 -0.59,66 -15,-10 -13,11" />
+    <path
+       style="fill:none;stroke:currentcolor;stroke-width:3"
+       d="M 83,62 305,63" />
+    <path
+       style="fill:none;stroke:currentcolor;stroke-width:3"
+       d="m 57,103 173,0.26"  />
+    <path
+       style="fill:none;stroke:currentcolor;stroke-width:3"
+       d="M 49,147 223,148" />
+    <path
+       style="fill:none;stroke:currentcolor;stroke-width:3"
+       d="m 49,126 174,1" />
+    <path
+       style="fill:none;stroke:currentcolor;stroke-width:3"
+       d="M 49,169 H 223" />
+</g>
+</svg> <br>Certificate_/n*_
+_n*__***CERTURL***__/n*_
+_/insert_
+
+</p>
+_/vl__/vVPair_
 _vVPair__vr_Click on the button below when you are ready._/vr__vl_
 <p></p><h2>Timed Exam</h2>
 <p>The timer will be activated once the problems are displayed for solving. </p>
@@ -484,7 +529,6 @@ _/permission_
 
 _/permissionString!!_
 _/systemData!!_
-
 _textData!!_
 <p></p>
 <div class="text-justify">
@@ -644,6 +688,24 @@ _/insert_
 
 _insert_
 _n*_buttonLink_/n*_
+_n*_New Certificate_/n*_
+_n*_?page=createCertCommand_/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Edit Certificate_/n*_
+_n*_?page=modifyCertCommand_/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Delete Certificate_/n*_
+_n*_?page=deleteCertCommand_/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
 _n*_Assign Graders_/n*_
 _n*_?page=assignGradersCommand_/n*_
 _/insert_
@@ -668,6 +730,7 @@ _/insert_
 <p></p>
 
 _/textData!!_
+ 
 
 _/n*!!***!_
 _/nextCommand!*!!_
@@ -3589,6 +3652,7 @@ _textData!!_
 <tr><td><A href="index.cgi?page=listResponses">Response Receivers</A></td><td>Automatic 1</td></tr>
 <tr><td> <A href="index.cgi?page=listUsers">Users</A></td><td>Automatic 1</td></tr>
 <tr><td> <A href="index.cgi?page=listCoursesAndAssignments">Courses and Assignments</A></td><td>Automatic 2</td></tr>
+<tr><td> <A href="index.cgi?page=listCertificates">Certificates</A></td><td>Automatic 2</td></tr>
 <tr><td><A href="index.cgi?page=listMessages">Messages</A></td><td>Automatic 3</td></tr>
 <tr><td><A href="index.cgi?page=listFiles">Files</A></td><td>Automatic 3</td></tr>
 <tr><td><A href="index.cgi?page=listStat">Statistics</A></td><td>Automatic 3</td></tr>
@@ -6045,6 +6109,12 @@ _p*|_sampleProblem03_/p*|_
 _pt*|_34_/pt*|_
 _/in*|_
 
+
+_in*|_
+_p*|_templateWithCertificates_/p*|_
+_pt*|_certificate_/pt*|_
+_/in*|_
+
 _/problems*|_
 
 _students*|_
@@ -6052,7 +6122,7 @@ _students*|_
 RECOMMENDED DO NOT EDIT THIS LINE _stLocation*|__vr_docName_/vr_St_/stLocation*|_
 
 Number of files that students will be allowed to submit:
-_nf*|_3_/nf*|_
+_nf*|_0_/nf*|_
 
 
 
@@ -6553,7 +6623,15 @@ _/listVersions*|_
 _stCustomizations*|_
 REPLACE this text with commands corresponding to those
 students whose assignments you want to customize. Replace the
-number 0 with an appropriate version number.
+number 0 with an appropriate version number. 
+
+You can add student's answers as well. After the version parameter,
+you can add 
+
+_ans*_B;E;;A;A_/ans*_ 
+
+This will set the answers to the questions
+1, 2, 4, and 5. The answers will be set to 1:B, 2:E, 4:A, 5:A 
 _/stCustomizations*|_
 
 
@@ -12182,5 +12260,502 @@ _/insert_
 
 _/textData!!_
 
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000120_/n*!!***!_
+_n*!!***!_listCertificates_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_contentAdministrator_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+_textData!!_
+<H2> List of Certificates</H2>
+_insert_
+_n*_listFromDB_/n*_
+_n*_certificates_/n*_
+_n*_25_/n*_
+_n*_3_/n*_
+_/insert_
+_/textData!!_
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000121_/n*!!***!_
+_n*!!***!_certificates_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+_textData!!_
+_insert__n*_certificate_/n*__n*_**sF!!_/n*__/insert_
+_/textData!!_
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000122_/n*!!***!_
+_n*!!***!_createCertCommand_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_contentAdministrator_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+_textData!!_
+
+
+_insert_
+_n*_text_/n*_
+_n*_inclCommands_/n*_
+_/insert_
+
+ <H3>Command: Create Certificate </H3>
+
+_insert_
+_n*_formInitialization_/n*_
+_n*_reqCommand_/n*_
+_n*_index.cgi?comEx=yes_/n*_
+_/insert_
+
+
+_insert_
+_n*_textAreaField_/n*_
+_n*_reqCommand_/n*_
+_n*_commands_/n*_
+_n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
+_n*_DO NOT EDIT THIS LINE     -----> _command_
+DO NOT EDIT THIS LINE     -----> _nc***_createCertificate_/nc***_
+LINE TO EDIT  (!*! for auto-generated code) -----> _nc***_NameOfTheCertificateToCreate_/nc***_
+EDIT AFTER THE SYMBOL -----> _nc***_
+
+                             (your certificate text goes here)
+
+
+_/nc***_ <-----  STOP EDITING AFTER THIS SYMBOL
+DO NOT EDIT THIS LINE     -----> _/command__/n*_
+_/insert_
+_insert_
+_n*_formPlacement_/n*_
+_n*_reqCommand_/n*_
+_/insert_
+
+
+
+_/textData!!_
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000123_/n*!!***!_
+_n*!!***!_modifyCertCommand_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_contentAdministrator_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+_textData!!_
+
+
+
+_insert_
+_n*_text_/n*_
+_n*_inclCommands_/n*_
+_/insert_
+
+ <H3>Command: Modify Certificate </H3>
+
+_insert_
+_n*_formInitialization_/n*_
+_n*_reqCommand_/n*_
+_n*_index.cgi?comEx=yes_/n*_
+_/insert_
+
+
+_insert_
+_n*_textAreaField_/n*_
+_n*_reqCommand_/n*_
+_n*_commands_/n*_
+_n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
+_n*_DO NOT EDIT THIS LINE     -----> _command_
+DO NOT EDIT THIS LINE     -----> _nc***_modifyCertificate_/nc***_
+LINE TO EDIT                       -----> _nc***_NameOfTheCertificate_/nc***_
+EDIT AFTER THE SYMBOL -----> _nc***_
+
+                             (your replacement text goes here)
+
+
+_/nc***_ <-----  STOP EDITING AFTER THIS SYMBOL
+DO NOT EDIT THIS LINE     -----> _/command__/n*_
+_/insert_
+_insert_
+_n*_formPlacement_/n*_
+_n*_reqCommand_/n*_
+_/insert_
+
+
+_/textData!!_
+ 
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000124_/n*!!***!_
+_n*!!***!_deleteCertCommand_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_contentAdministrator_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+ 
+ _textData!!_
+
+_insert_
+_n*_text_/n*_
+_n*_inclCommands_/n*_
+_/insert_
+
+ <H3>Command: Delete Certificate</H3>
+
+_insert_
+_n*_formInitialization_/n*_
+_n*_reqCommand_/n*_
+_n*_index.cgi?comEx=yes_/n*_
+_/insert_
+
+
+_insert_
+_n*_textAreaField_/n*_
+_n*_reqCommand_/n*_
+_n*_commands_/n*_
+_n*_The command is pre-filled with some parameters. Other parameters may need to be edited before submitting._/n*_
+_n*_DO NOT EDIT THIS LINE     -----> _command_
+DO NOT EDIT THIS LINE     -----> _nc***_deleteCertificate_/nc***_
+LINE TO EDIT                       -----> _nc***_NameOfCertificateToDelete_/nc***_
+DO NOT EDIT THIS LINE     -----> _/command__/n*_
+_/insert_
+_insert_
+_n*_formPlacement_/n*_
+_n*_reqCommand_/n*_
+_/insert_
+
+
+
+_/textData!!_
+ 
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000125_/n*!!***!_
+_n*!!***!_cTemplate_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_certificate_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_contentAdministrator_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+ 
+ 
+ _textData!!_
+ 
+
+_tx*|_ The grader can assign a certificate for success in this problem set. 
+_/tx*|_
+_sl*|_
+
+***********************
+*** HTML TEMPLATE *** 
+***********************
+
+ _vVPair__vr_gold_/vr__vl_
+_n*_<h1>Certificate</h1>
+<h2> _vr_award_/vr_</h2>  
+<h3>Name: _vr_name_/vr_</h3>
+<p>Certificate ID: _vr_certId_/vr_</p> _/n*_
+
+************************
+*** LATEX TEMPLATE ***
+************************
+
+_n*_\begin{center}\begin{Large}CERTIFICATE\end{Large}\end{center}
+\begin{center}\begin{large}_vr_award_/vr_\end{large}\end{center}
+\begin{center}\begin{large}Name: _vr_name_/vr_\end{large}\end{center}
+\begin{center}\noindent{Certificate ID:} _vr_certId_/vr_\end{center}
+_/n*_
+
+********************
+*** PARAMETERS ***
+********************
+
+_n*_
+_vVPair__vr_award_/vr__vl_Gold Medal_/vl_ _/vVPair_
+_vVPair__vr_pdfLinkIndicator_/vr__vl_yes_/vl__/vVPair_
+_/n*_ 
+_/vl_ _/vVPair_
+
+ _vVPair__vr_silver_/vr__vl_
+_n*_<h1>Certificate</h1>
+<h2> _vr_award_/vr_</h2>  
+<h3>Name: _vr_name_/vr_</h3>
+<p>Certificate ID: _vr_certId_/vr_</p> _/n*_
+Latex Template
+_n*_\begin{center}\begin{Large}CERTIFICATE\end{Large}\end{center}
+\begin{center}\begin{large}_vr_award_/vr_\end{large}\end{center}
+\begin{center}\begin{large}Name: _vr_name_/vr_\end{large}\end{center}
+\begin{center}\noindent{Certificate ID:} _vr_certId_/vr_\end{center}
+_/n*_
+Parameters
+_n*_
+_vVPair__vr_award_/vr__vl_Silver Medal_/vl_ _/vVPair_
+_vVPair__vr_pdfLinkIndicator_/vr__vl_yes_/vl__/vVPair_
+_/n*_ 
+_/vl_ _/vVPair_
+
+
+ _vVPair__vr_bronze_/vr__vl_
+_n*_<h1>Certificate</h1>
+<h2> _vr_award_/vr_</h2>  
+<h3>Name: _vr_name_/vr_</h3>
+<p>Certificate ID: _vr_certId_/vr_</p> _/n*_
+Latex Template
+_n*_\begin{center}\begin{Large}CERTIFICATE\end{Large}\end{center}
+\begin{center}\begin{large}_vr_award_/vr_\end{large}\end{center}
+\begin{center}\begin{large}Name: _vr_name_/vr_\end{large}\end{center}
+\begin{center}\noindent{Certificate ID:} _vr_certId_/vr_\end{center}
+_/n*_
+Parameters
+_n*_
+_vVPair__vr_award_/vr__vl_Bronze Medal_/vl_ _/vVPair_
+_vVPair__vr_pdfLinkIndicator_/vr__vl_yes_/vl__/vVPair_
+_/n*_ 
+_/vl_ _/vVPair_
+
+
+ _vVPair__vr_honorable_/vr__vl_
+_n*_<h1>Certificate</h1>
+<h2> _vr_award_/vr_</h2>  
+<h3>Name: _vr_name_/vr_</h3>
+<p>Certificate ID: _vr_certId_/vr_</p> _/n*_
+Latex Template
+_n*_\begin{center}\begin{Large}CERTIFICATE\end{Large}\end{center}
+\begin{center}\begin{large}_vr_award_/vr_\end{large}\end{center}
+\begin{center}\begin{large}Name: _vr_name_/vr_\end{large}\end{center}
+\begin{center}\noindent{Certificate ID:} _vr_certId_/vr_\end{center}
+_/n*_
+Parameters
+_n*_
+_vVPair__vr_award_/vr__vl_Honorable Mention_/vl_ _/vVPair_
+_vVPair__vr_pdfLinkIndicator_/vr__vl_yes_/vl__/vVPair_
+_/n*_ 
+_/vl_ _/vVPair_
+_/sl*|_
+_aw*|_na_/aw*|_ 
+_rq*|_certificate_/rq*|_  
+ 
+ 
+_searchReplace_
+
+_v*a_
+{\gamma}={\alpha}+1@@
+_/v*a_
+  
+ 
+_v*0_ 
+{\alpha}=2@@ 
+_/v*0_ 
+  
+ _/searchReplace_     
+
+_/textData!!_
+ 
+ 
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000126_/n*!!***!_
+_n*!!***!_certificatefinder_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+ 
+ 
+ _textData!!_
+<p></p>
+<h1>Search for Certificate</h1>
+
+_insert_
+_n*_formInitialization_/n*_
+_n*_reqCertificate_/n*_
+_n*_index.cgi?page=certificates&s1=u11_/n*_
+_/insert_
+
+_insert_
+_n*_textInputField_/n*_
+_n*_reqCertificate_/n*_
+_n*_r1_/n*_
+_n*_Certificate code:_/n*_ 
+_n*__/n*_
+_n*_30_/n*_
+_/insert_
+
+
+_insert_
+_n*_formPlacement_/n*_
+_n*_reqCertificate_/n*_
+_/insert_
+
+_/textData!!_
+ 
+ 
 _/n*!!***!_
 _/nextCommand!*!!_
