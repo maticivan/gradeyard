@@ -30,6 +30,7 @@ namespace DSD{
       std::string default_fManage="mainFolderDB/fileManDB";
       std::string default_messManage="mainFolderDB/messManDB";
       std::string default_couasManage="mainFolderDB/couasManDB";
+      std::string default_certManage="mainFolderDB/certManDB";
       std::string default_backupDB="mainFolderDB/backupDB";
       long default_backupMaxSZ=500;
       std::string default_mText="mainFolderDB/mainTextDB";
@@ -39,6 +40,7 @@ namespace DSD{
       std::string default_initExtension="_initFile";
       std::string default_publicStorage="q0";
       std::string default_publicSystemStorage="qs0";
+      std::string default_publicPDFCertStorage="pdfcrt0";
       std::string default_guestClonesRelLoc="st";
       std::string default_challengeImages="c0";
       std::string default_challengeAnswers="mainFolderDB/a0";
@@ -55,6 +57,7 @@ namespace DSD{
       std::string fManage=default_fManage;
       std::string messManage=default_messManage;
       std::string couasManage=default_couasManage;
+      std::string certManage=default_certManage;
       std::string backupDB=default_backupDB;
       long backupMaxSZ=default_backupMaxSZ;
       std::string mText=default_mText;
@@ -65,6 +68,7 @@ namespace DSD{
       std::string hCache=default_hCache;
       std::string publicStorage=default_publicStorage;
       std::string publicSystemStorage=default_publicSystemStorage;
+      std::string publicPDFCertStorage=default_publicPDFCertStorage;
       std::string folderMainDBGuestClone;
       std::string systemFolderClones;
       std::string guestClonesRelLoc=default_guestClonesRelLoc;
@@ -82,6 +86,7 @@ namespace DSD{
       std::string fManage_jN;
       std::string messManage_jN;
       std::string couasManage_jN;
+      std::string certManage_jN;
       std::string backupDB_jN;
       std::string mText_jN;
       std::string responseTable_jN;
@@ -102,6 +107,7 @@ namespace DSD{
       std::string getFileManage() const;
       std::string getMessManage() const;
       std::string getCouasManage() const;
+      std::string getCertManage() const;
       std::string getBackupDB() const;
       long getBackupMaxSZ() const;
       std::string getMainText() const;
@@ -112,6 +118,7 @@ namespace DSD{
       std::string printSetup() const;
       std::string getPublicStorage() const;
       std::string getPublicSystemStorage() const;
+      std::string getPublicPDFCertStorage() const;
       std::string getGuestClonesRelLoc() const;
       std::string getChallengeImStorage() const;
       std::string getChallengeAnswStorage() const;
@@ -131,6 +138,7 @@ namespace DSD{
   std::string Setup::getFileManage() const{return fManage;}
   std::string Setup::getMessManage() const{return messManage;}
   std::string Setup::getCouasManage() const{return couasManage;}
+  std::string Setup::getCertManage() const{return certManage;}
   std::string Setup::getBackupDB() const{return backupDB;}
   long Setup::getBackupMaxSZ() const{return backupMaxSZ;}
   std::string Setup::getMainText() const{return mText;}
@@ -141,6 +149,7 @@ namespace DSD{
   std::string Setup::getHCache() const{return hCache;}
   std::string Setup::getPublicStorage() const{return publicStorage;}
   std::string Setup::getPublicSystemStorage() const{return publicSystemStorage;}
+  std::string Setup::getPublicPDFCertStorage() const{return publicPDFCertStorage;}
   std::string Setup::getGuestClonesRelLoc() const{return guestClonesRelLoc;}
   std::string Setup::getChallengeImStorage() const{return challengeImages;}
   std::string Setup::getChallengeAnswStorage() const{return challengeAnswers;}
@@ -169,6 +178,8 @@ namespace DSD{
     messManage=mainFolder+"/"+messManage_jN;
     SF::assignValueFromMap(stMap,"couasManagement*!",couasManage_jN);
     couasManage=mainFolder+"/"+couasManage_jN;
+    SF::assignValueFromMap(stMap,"certManagement*!",certManage_jN);
+    certManage=mainFolder+"/"+certManage_jN;
     SF::assignValueFromMap(stMap,"backupDB*!",backupDB_jN);
     backupDB=mainFolder+"/"+backupDB_jN;
     SF::assignValueFromMap(stMap,"backupMaxSZ*!",backupMaxSZ);
@@ -191,6 +202,7 @@ namespace DSD{
     SF::assignValueFromMap(stMap,"initializerExtension*!",initExtension);
     SF::assignValueFromMap(stMap,"publicSubFolderToStoreFiles*!",publicStorage);
     SF::assignValueFromMap(stMap,"publicSubFolderForSystemFiles*!",publicSystemStorage);
+    SF::assignValueFromMap(stMap,"publicSubFolderForPdfCertificates*!",publicPDFCertStorage);
     SF::assignValueFromMap(stMap,"subFolderForGuestClones*!",guestClonesRelLoc);
     folderMainDBGuestClone=mainFolder+"/"+guestClonesRelLoc;
     systemFolderClones=mainFolder+"/"+"sys_"+guestClonesRelLoc;
@@ -212,6 +224,7 @@ namespace DSD{
       fR+=fManage+"\n";
       fR+=messManage+"\n";
       fR+=couasManage+"\n";
+      fR+=certManage+"\n";
       fR+=backupDB+"\n";
       fR+=std::to_string(backupMaxSZ);
       fR+=mText+"\n";
@@ -221,6 +234,7 @@ namespace DSD{
       fR+=initExtension+"\n";
       fR+=publicStorage+"\n";
       fR+=publicSystemStorage+"\n";
+      fR+=publicPDFCertStorage+"\n";
       fR+=guestClonesRelLoc+"\n";
       fR+=challengeImages+"\n";
       fR+=challengeAnswers+"\n";
