@@ -528,19 +528,27 @@ namespace CEI{
     }
     return fR;
   }
-  std::map<std::string,std::pair<std::vector<std::string>,std::string> > rawGradesAndStatusFromRespReceiver(CouasAttributes & m_coaaI, const PSDI::SessionData & _psd,const std::string &respRecCode, const int & submit, const int & solvingStatus){
-    std::map<std::string,std::pair<std::vector<std::string>, std::string> >fR;
+  int twoGoodStrings(const std::string& s1, const std::string& s2){
+    if (s1=="") return 0;
+    if (s2=="") return 0;
+    if (s1=="notFound") return 0;
+    if (s2=="notFound") return 0;
+    return 1;
+  }
+  RawGrades rawGradesAndStatusFromRespReceiver(CouasAttributes & m_coaaI, const PSDI::SessionData & _psd,const std::string &respRecCode, const int & submit, const int & solvingStatus){
+    RawGrades finalResult;
     std::string myUserName=_psd.my_un;
     RTI::Response rrt(respRecCode,"no",myUserName);
     if(rrt.isInitialized()!=1){
-      return fR;
+      return finalResult;
     }
-    RTI::ResponderInfo res=rrt.infoFromResponseText(_psd,"df");
+    RTI::ResponderInfo res=rrt.infoFromResponseText(_psd,"df",0,0);
     std::vector<RTI::ResponderInfo> rV;
     std::vector<std::string> rsV;
     std::vector<RTI::LocationOfDocuments> ldocs=rrt.getLocations(_psd);
     long sz=ldocs.size();
     long maxgcs=0,currentgcs;
+    finalResult.certificateAddition=0;
     if(sz>0){
       rV.resize(sz);rsV.resize(sz);std::string indPost;
       for(long i=0;i<sz;++i){
@@ -549,10 +557,15 @@ namespace CEI{
           (rV[i]).solverUserName="notFound";
         }
         else{
-          rV[i]=srt_i.infoFromResponseText(_psd,"df",1);
+          rV[i]=srt_i.infoFromResponseText(_psd,"df",1,0);
           currentgcs=((rV[i]).gradersComments).size();
           if(currentgcs>maxgcs){
             maxgcs=currentgcs;
+          }
+          if(finalResult.certificateAddition==0){
+            if(twoGoodStrings(rV[i].certificateDescriptionCode,rV[i].certificateIdCode)){
+              finalResult.certificateAddition=1;
+            }
           }
         }
         rsV[i]="no";
@@ -582,7 +595,9 @@ namespace CEI{
     if(maxgcs>0){
       std::vector<std::string> mLine,emptyLine,alternativeLine;
       std::pair<std::vector<std::string>,std::string> pairML;
-      long lsz=3+maxgcs; emptyLine.resize(lsz);
+      long lsz=3+maxgcs;
+      lsz+=finalResult.certificateAddition;
+       emptyLine.resize(lsz);
       for(long j=0;j<lsz;++j){
         emptyLine[j]="-";
       }
@@ -595,7 +610,7 @@ namespace CEI{
       for(long i=0;i<sz;++i){
         mLine=emptyLine;
         long cs=((rV[i]).gradersComments).size();
-        long j=2;
+        long j=2+finalResult.certificateAddition;
         score=-999.9;
         if(cs>0){
           score=0.0;
@@ -620,6 +635,13 @@ namespace CEI{
         }
         mLine[0]=(rV[i]).idInfoData;
         mLine[1]=(rV[i]).solverUserName;
+        if(finalResult.certificateAddition){
+          mLine[2]="";
+          if(twoGoodStrings((rV[i]).certificateDescriptionCode,(rV[i]).certificateIdCode)){
+            mLine[2]="<a href=\"index.cgi?"+MWII::GL_WI.get_e_parPage()+"=certificates&s1=u11&r1="+(rV[i]).certificateIdCode+"\">";
+            mLine[2]+=(rV[i]).certificateDescriptionCode+"</a>";
+          }
+        }
         mLine[lsz-1]=BF::doubleToString(score);
         if(score>-900.0){
           if(submit==1){
@@ -639,7 +661,7 @@ namespace CEI{
         }
         pairML.first=mLine;
         pairML.second=rsV[i];
-        fR[(rV[i]).solverUserName]=pairML;
+        finalResult.grStatusMap[(rV[i]).solverUserName]=pairML;
       }
       if(workIsDone==1){
         m_coaaI.gradeData=mapToGradeData(mapGr);
@@ -647,16 +669,16 @@ namespace CEI{
         MCWCPI::modifyCouasWithoutCheckingPermissions(_psd,m_coaaI.myCode,newGrData);
       }
     }
-    return fR;
+    return finalResult;
   }
   std::string CouasElement::gradeFromRespReceiver(const PSDI::SessionData & _psd,const int & submit){
-    std::map<std::string,std::pair<std::vector<std::string>,std::string> > resm=rawGradesAndStatusFromRespReceiver(coaa,_psd,_psd.rrgrader,submit,0);
-    long msz=resm.size();
+    CEI::RawGrades grRaw=rawGradesAndStatusFromRespReceiver(coaa,_psd,_psd.rrgrader,submit,0);
+    long msz=grRaw.grStatusMap.size();
     if(msz==0){
       return "";
     }
     std::map<std::string,std::pair<std::vector<std::string>,std::string> >::const_iterator itRM,itRME;
-    itRM=resm.begin();itRME=resm.end();
+    itRM=grRaw.grStatusMap.begin();itRME=grRaw.grStatusMap.end();
     long lsz=((itRM->second).first).size();
     std::vector<std::string> topLine,mLine,emptyLine;
     topLine.resize(lsz);emptyLine.resize(lsz);
@@ -665,8 +687,13 @@ namespace CEI{
     }
     std::stack<std::vector<std::string> > allLines, allLinesCSV;
     topLine[0]=MWII::GL_WI.getDefaultWebText("Name");topLine[1]=MWII::GL_WI.getDefaultWebText("username");
-    for(long j=2;j<lsz-1;++j){
-      topLine[j]=std::to_string(j-1);
+    long gradesStart=2;
+    if(grRaw.certificateAddition){
+      topLine[2]=MWII::GL_WI.getDefaultWebText("Certificate");
+      gradesStart=3;
+    }
+    for(long j=gradesStart;j<lsz-1;++j){
+      topLine[j]=std::to_string(j-gradesStart+1);
     }
     topLine[lsz-1]="$\\Sigma$";
     std::string fR="", fRCSV="";
