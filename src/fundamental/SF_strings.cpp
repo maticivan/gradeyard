@@ -1053,17 +1053,27 @@ namespace SF{
       ++it;
     }
     return fR;
-  }
+  } 
   std::map<std::string,std::string> stringToMap(const std::string & everything, const std::string & sepKeyB,const std::string & sepKeyE,const std::string & sepValB,const std::string & sepValE){
     std::map<std::string,std::string> fR;
-    std::vector<std::string> keys=stringToVector(everything,sepKeyB,sepKeyE);
-    std::vector<std::string> vals=stringToVector(everything,sepValB,sepValE);
-    long szK=keys.size();
-    long szV=vals.size();
-    long sz=szK;
-    if(sz>szV){sz=szV;}
-    for(long i=0;i<sz;++i){
-      fR[keys[i]]=vals[i];
+    int stillWorking=1;
+    std::pair<std::string,int> allD; long pos=0;
+    std::string nextKey;
+    while(stillWorking){
+      allD=extract(everything,pos,sepKeyB,sepKeyE);
+      if(allD.second==1){
+        nextKey=allD.first;
+        allD=extract(everything,pos,sepValB,sepValE);
+        if(allD.second==1){
+          fR[nextKey]=allD.first;
+        }
+        else{
+          stillWorking=0;
+        }
+      }
+      else{
+        stillWorking=0;
+      }
     }
     return fR;
   }
