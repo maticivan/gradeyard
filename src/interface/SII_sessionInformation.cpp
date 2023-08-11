@@ -657,6 +657,8 @@ namespace SII{
         SF::assignValueFromMap(mParameters,"wNotAllowed",CAGI::GL_Obf.wordNotAllowed);
         SF::assignValueFromMap(mParameters,"executePublicTestCases",APTI::GL_studentsAllowedToExecuteCodeOnPublicTestCases);
         SF::assignValueFromMap(mParameters,"maxNumForSimpson",FF::MAXIMAL_NUMBER_OF_INTERVALS_FOR_SIMPSON);
+        SF::assignValueFromMap(mParameters,"allowPDFForCertificates",CERD::GL_CertificatesOptions.pdfsAllowed);
+        SF::assignValueFromMap(mParameters,"timeInSecondsToKeepCertificatePDF",CERD::GL_CertificatesOptions.maxTimeToKeepPDF);
         itMP=mParameters.find("defaultTexts");
         if(itMP!=mParameters.end()){
           MWII::GL_WI.updateDefaultWebTexts(itMP->second);
@@ -823,7 +825,7 @@ namespace SII{
                       invFunc[qLbs[i]]=i;
                     }
                   }
-                  std::string answToReplace;
+                  std::string answUpdated;int isCertificate; std::string certLabel;
                   std::set<std::string>::const_iterator it,itE;
                   std::map<std::string,std::string>::const_iterator itM,itME;
                   std::map<std::string,long>::const_iterator itInvF, itInvFE;
@@ -837,14 +839,30 @@ namespace SII{
                       DISPPF::RequestsForSanitizer reqS;
                       dangerousInputDetected=(DISPPF::sanitizeForDisplay(itM->second,reqS)=="unsafeInput");
                       if(dangerousInputDetected==0){
-                        answToReplace="_in*|_ "+s_inRespLabelB+itM->second+s_inRespLabelE+" _lb*|_";
-                        answToReplace+=itM->first+"_/lb*|_ _/in*|_";
-                        itInvF=invFunc.find(itM->first);
-                        if(itInvF==itInvFE){
-                          dataToModify+=answToReplace;
+                        isCertificate=CERTCLI::doesLabelCorrespondToCertificate(itM->first);
+                        answUpdated="_in*|_ "+s_inRespLabelB;
+                        if(isCertificate==0){
+                          answUpdated+=itM->second;
                         }
                         else{
-                          dataToModify=SF::findAndReplace(dataToModify,"_in*|_"+oldAnswers[itInvF->second]+"_/in*|_",answToReplace,0);
+                          certLabel=CERTCLI::sanitizeCertificateComment(itM->second);
+                          answUpdated+=certLabel;
+                        }
+                        answUpdated+=s_inRespLabelE+" _lb*|_";
+                        answUpdated+=itM->first+"_/lb*|_ _/in*|_";
+                        itInvF=invFunc.find(itM->first);
+                        if(itInvF==itInvFE){
+                          dataToModify+=answUpdated;
+                        }
+                        else{
+                          dataToModify=SF::findAndReplace(dataToModify,"_in*|_"+oldAnswers[itInvF->second]+"_/in*|_",answUpdated,0);
+                        }
+                        if(isCertificate){
+                          std::string oldCertificate;
+                          if(itInvF!=itInvFE){oldCertificate="_in*|_"+oldAnswers[itInvF->second]+"_/in*|_";}
+                          if(oldCertificate!=answUpdated){
+                            dataToModify=CERTCLI::updateCertificate(psd,dataToModify, certLabel,res);
+                          }
                         }
                       }
                     }
@@ -1307,6 +1325,20 @@ namespace SII{
     }
     return 0;
   }
+  int SessionInformation::allowedToCreateCert(const std::string & idOfCollector) const{
+      //WARNING: not implemented properly yet: permission checking is too restrictive
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
+  int SessionInformation::allowedToModifyCert(const std::string & couasId) const{
+      //WARNING: not implemented properly yet: permission checking is too restrictive
+    if((psd.isRoot=="yes")||(psd.allowedToExecuteAll=="yes")){
+      return 1;
+    }
+    return 0;
+  }
   std::string SessionInformation::createMessage(const std::string & _uName, const std::string & _mData, const std::string & _collectorId){
     if(allowedToCreateMessage(_collectorId)==0){
       return "!failed!: Not allowed";
@@ -1714,12 +1746,35 @@ namespace SII{
     if(couasExists==0){
       return "!failed!: Course or assignment with this ID does not exist";
     }
-    std::string notImp1,notImp2;
     int succ=myCouas.deleteRecord();
     if(succ==0){
       return "!failed!: Something may be bad with the database. The ID of the course or assignment was found but could not delete.";
     }
     return "!success!";
+  }
+  std::string SessionInformation::createCert(const std::string & _cName, const std::string & _certData){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToCreateCert(psd.my_un)==0){
+      return "!failed!: Not allowed";
+    }
+    if(psd.my_un=="visitor"){
+      return "!failed!: Visitors cannot create certificates";
+    }
+    return MCEWCPI::createCertNoPermissionCheck(psd,_cName,_certData);
+  }
+  std::string SessionInformation::modifyCert(const std::string & _certName, const std::string & _certData){
+    //WARNING: not implemented properly yet: permission checking is too restrictive
+    if(allowedToModifyCert(_certName)==0){
+      return "!failed!: Not allowed";
+    }
+    return MCEWCPI::modifyCertWithoutCheckingPermissionsAndCreateRecoveryCommand(psd,_certName,_certData);
+  }
+  std::string SessionInformation::deleteCert(const std::string & _cName){
+      //WARNING: not implemented properly yet: permission checking is too restrictive
+      if(allowedToModifyCert(_cName)==0){
+        return "!failed!: Not allowed";
+      }
+      return MCEWCPI::deleteCertNoPermissionCheck(_cName);
   }
   std::string SessionInformation::createGradingForCourse(const std::string & _couasData, const std::string & _collectorId){
     //WARNING: not implemented properly yet: permission checking is too restrictive
@@ -1886,37 +1941,46 @@ namespace SII{
     }
     return fR;
   }
-  long SessionInformation::checkWhetherAllProblemsExist(const std::string &d) const{
+  int SessionInformation::checkWhetherSingleProblemExists(const std::string & pText, TMD::MText& tmp) const{
+    long pos,pos2; std::pair<std::string, int> allD,allD2;
+    pos=0;allD=SF::extract(pText,pos,"_p*|_","_/p*|_");
+    if(allD.second==1){
+      pos2=0;allD2=SF::extract(allD.first,pos2,"_tx*|_","_/tx*|_");
+      if(allD2.second==0){
+        if(tmp.setFromTextName(allD.first)==0){return 0;}
+      }
+    }
+    return 1;
+  }
+  long SessionInformation::checkWhetherAllProblemsExist(const std::vector<std::string> &vectProblems) const{
     // returns 1 if all problems exist
     // returns 0 if problem 0 does not exist
     // returns -1 if problem 1 does not exist but problem 0 does exist
     // returns -i if problem i does not exist but problems 0, 1, 2, ..., (i-1), do exist
-    std::vector<std::string> vectProblems=SF::stringToVector(d,"_in*|_","_/in*|_");
-    long i=0; TMD::MText tmp; int exists;
-    long pos,pos2; std::pair<std::string, int> allD,allD2;
+    long i=0; TMD::MText tmp;
     while(i<vectProblems.size()){
-      pos=0;allD=SF::extract(vectProblems[i],pos,"_p*|_","_/p*|_");
-      if(allD.second==1){
-        pos2=0;allD2=SF::extract(allD.first,pos2,"_tx*|_","_/tx*|_");
-        if(allD2.second==0){
-          exists=tmp.setFromTextName(allD.first);
-          if(exists==0){
-            return -i;
-          }
-        }
+      if(checkWhetherSingleProblemExists(vectProblems[i],tmp)==0){
+        return -i;
       }
       ++i;
     }
     return 1;
   }
-  ExamAttributes SessionInformation::newExamFromTemplate(const std::string &d,const std::string &docName){
+  ExamAttributes SessionInformation::newExamFromTemplate(const std::string &d,const std::pair<std::vector<std::string>,std::string>& pairProblemsCert, const std::string &docName){
     ExamAttributes fR;
     fR.textForRespReceiver="";
-    std::vector<std::string> vectProblems=SF::stringToVector(d,"_in*|_","_/in*|_");
+    std::vector<std::string> vectProblems;
+    std::string certificateDocument;
+    vectProblems=pairProblemsCert.first;
+    certificateDocument=pairProblemsCert.second;
     long numProblems=vectProblems.size();
-    (fR.possibleVersions).resize(numProblems);
-    (fR.problemLabels).resize(numProblems);
-    long p;std::pair<std::string,int> allD; long pos; long pos2;std::pair<std::string,int> allD2;
+    long certDocExists=0;
+    if(certificateDocument!=""){
+      certDocExists=1;
+    }
+    (fR.possibleVersions).resize(numProblems+certDocExists);
+    (fR.problemLabels).resize(numProblems+certDocExists);
+    long p;std::pair<std::string,int> allD; long pos;
     pos=0;allD=SF::extract(d,pos,"_examOptions*|_","_/examOptions*|_");
     if(allD.second==1){
       fR.textForRespReceiver+=allD.first;
@@ -1972,41 +2036,12 @@ namespace SII{
       }
     }
     fR.textForRespReceiver+="_ms*|_"+fR.msDoc+"_/ms*|_";
-    TMD::MText tmp; int exists;
-    std::string tmpTextName;
-    std::string td;std::string nextProblem;
+    TMD::MText tmp;
     for(long i=0;i<numProblems;++i){
-      nextProblem=vectProblems[i];
-      pos=0;allD=SF::extract(nextProblem,pos,"_p*|_","_/p*|_");
-      (fR.problemLabels)[i]="notFound";
-      (fR.possibleVersions)[i].resize(0);
-      if(allD.second==1){
-        pos2=0;allD2=SF::extract(allD.first,pos2,"_tx*|_","_/tx*|_");
-        if(allD2.second==0){
-          tmpTextName=allD.first;
-          exists=tmp.setFromTextName(tmpTextName);
-          if(exists==1){
-            td=tmp.getTextData();
-            pos=0;allD=SF::extract(td,pos,s_tDataB,s_tDataE);
-            if(allD.second==1){
-              nextProblem=SF::findAndReplace(nextProblem,"_p*|_"+tmpTextName+"_/p*|_",allD.first);
-            }
-          }
-        }
-        else{
-          nextProblem=SF::findAndReplace(nextProblem,"_p*|_"+allD.first+"_/p*|_",allD.first);
-        }
-        (fR.possibleVersions)[i]=TWDVF::identifyVersions(nextProblem);
-        pos=0;allD=SF::extract(nextProblem,pos,"_lb*|_","_/lb*|_");
-        if(allD.second==1){
-          (fR.problemLabels)[i]=allD.first;
-        }
-        else{
-          (fR.problemLabels)[i]="Q"+BF::padded(i+1,10,"0");
-          nextProblem += "_lb*|_"+(fR.problemLabels)[i]+"_/lb*|_";
-        }
-        fR.textForRespReceiver+="_in*|_"+nextProblem+"_/in*|_\n";
-      }
+      CERTCLI::updateExamAttributesWithProblemOrCertInformation(fR,tmp,vectProblems[i],i,"");
+    }
+    if(certificateDocument!=""){
+      CERTCLI::updateExamAttributesWithProblemOrCertInformation(fR,tmp,certificateDocument,numProblems,"C");
     }
     return fR;
   }
@@ -2134,8 +2169,8 @@ namespace SII{
     }
     return fR;
   }
-  std::string SessionInformation::genExamTemplate(const std::string &d,const std::string &docName){
-    ExamAttributes ea=newExamFromTemplate(d,docName);
+  std::string SessionInformation::genExamTemplate(const std::string &d, const std::pair<std::vector<std::string>,std::string>& pairProblemsCert, const std::string &docName){
+    ExamAttributes ea=newExamFromTemplate(d,pairProblemsCert,docName);
     return enrollExistingStudentsToExam(ea,d,docName);
   }
   std::string SessionInformation::updateExamDocument(const std::string & oldT, const std::string &d,const std::string &docName){
@@ -2166,9 +2201,17 @@ namespace SII{
     if(allowedToCreateRespRec()==0){
       return "!failed!: Not allowed";
     }
-    long problemsOK=checkWhetherAllProblemsExist(_dToGenerateFrom);
+    std::vector<std::string> vectProblemsRaw=SF::stringToVector(_dToGenerateFrom,"_in*|_","_/in*|_");
+    std::pair<std::vector<std::string>,std::string> pairProblemsCert=CERTCLI::problemsAndCertificate(vectProblemsRaw);
+    long problemsOK=checkWhetherAllProblemsExist(pairProblemsCert.first);
     if(problemsOK!=1){
       return "!failed!: Problem "+std::to_string(-problemsOK)+" does not exist";
+    }
+    if(pairProblemsCert.second!=""){
+      TMD::MText tmpCheckCertExists;
+      if(checkWhetherSingleProblemExists(pairProblemsCert.second,tmpCheckCertExists)==0){
+        pairProblemsCert.second="";
+      }
     }
     RMD::Response sf;
     int textExists=sf.setFromTextName(_eName);
@@ -2180,7 +2223,7 @@ namespace SII{
       return "!failed!: Something may be bad with the database. The text name did not exist when checked but could not create text.";
     }
     respRecRequested=sf.getTextName();
-    sf.setTextData(prepareTextForTextTable(genExamTemplate(_dToGenerateFrom,_eName),"!noOldData!"));
+    sf.setTextData(prepareTextForTextTable(genExamTemplate(_dToGenerateFrom,pairProblemsCert,_eName),"!noOldData!"));
     sf.putInDB();
     psd.recoveryOperationNames.push("assignmentCreation");
     psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",respRecRequested));
@@ -2313,9 +2356,10 @@ namespace SII{
     if(textExists==0){
       return "!failed!: Exam does not exist";
     }
-    std::map<std::string,std::string> stUNamesToVersions=CEVI::createFromString(_textWithUpdate);
-    std::map<std::string,std::string>::const_iterator it,itE;
-    itE=stUNamesToVersions.end();
+    CEVI::StudentAnswRRUpdateData stDataVA=CEVI::createFromString(_textWithUpdate);
+    std::map<std::string,std::string>::const_iterator it,itE,itA,itAE;
+    itE=(stDataVA.uNamesToVersions).end();
+    itAE=(stDataVA.uNamesToAnswers).end();
     respRecRequested=sf.getTextName();
     std::string rawTextRespRec=sf.getTextData();
     long pos; std::pair<std::string, int> allD;
@@ -2330,12 +2374,16 @@ namespace SII{
       for(long i=0;i<sz;++i){
         stAllData[i]=SF::stringToVector(allRawStudentsData[i],"_n*|_","_/n*|_");
         if(stAllData[i].size()>5){
-          it=stUNamesToVersions.find(stAllData[i][4]);
+          it=(stDataVA.uNamesToVersions).find(stAllData[i][4]);
           if(it!=itE){
             RMD::Response ssf;
             if(ssf.setFromTextName(stAllData[i][0])){
               std::string td=ssf.getTextData();
               td=CEVI::updateVersionsForStudent(td,it->second,problemLabels);
+              itA=(stDataVA.uNamesToAnswers).find(stAllData[i][4]);
+              if(itA!=itAE){
+                td=CEVI::updateAnswersForStudent(td,itA->second,problemLabels);
+              }
               ssf.setTextData(td);
               ssf.putInDB();
             }
@@ -2735,30 +2783,6 @@ namespace SII{
     return er;
     return "!failed! Could not find the document.";
   }
-  AICD::LatexReplacements createLatexReplacementStrings(){
-    AICD::LatexReplacements res;
-    res.websiteURL=MWII::GL_WI.getWSURL();
-    long sz=8;
-    res.htmlTs.resize(sz);
-    res.latexTs.resize(sz);
-    res.htmlTs[0]="\\begin{problem}";
-    res.latexTs[0]=MWII::GL_WI.getDefaultWebText("\\noindent{\\bf Problem} ");
-    res.htmlTs[1]="\\end{problem}";
-    res.latexTs[1]=MWII::GL_WI.getDefaultWebText("%%endProblem");
-    res.htmlTs[2]="\\begin{solution}";
-    res.latexTs[2]=MWII::GL_WI.getDefaultWebText("\\noindent{\\bf Solution.} ");
-    res.htmlTs[3]="\\end{solution}";
-    res.latexTs[3]=MWII::GL_WI.getDefaultWebText("%%endSolution");
-    res.htmlTs[4]="\\begin{box}";
-    res.latexTs[4]=MWII::GL_WI.getDefaultWebText("\\begin{box}");
-    res.htmlTs[5]="\\end{box}";
-    res.latexTs[5]=MWII::GL_WI.getDefaultWebText("\\end{box}");
-    res.htmlTs[6]="\\begin{proof}";
-    res.latexTs[6]=MWII::GL_WI.getDefaultWebText("\\noindent{\\bf Proof.} ");
-    res.htmlTs[7]="\\end{proof}";
-    res.latexTs[7]=MWII::GL_WI.getDefaultWebText("%%endProof");
-    return res;
-  }
   std::string SessionInformation::backupDBs(const std::string & _db, const std::string & _txts){
     //WARNING: not implemented properly yet: permission checking is too restrictive
     if(allowedToRemoveFromHierarchy(_db,_txts)==0){
@@ -2769,7 +2793,7 @@ namespace SII{
     str_backups_IfCalledFor="";
     if((sz==2)&&(backupTexts[0]=="toLatex")){
       if(AICD::GL_ReplStrings.htmlTs.size()<1){
-        AICD::GL_ReplStrings = createLatexReplacementStrings();
+        AICD::GL_ReplStrings = APTI::createLatexReplacementStrings();
       }
       std::vector<std::string> docNames=SF::stringToVector(backupTexts[1],"_n*!_","_/n*!_");
       std::string lStart;
