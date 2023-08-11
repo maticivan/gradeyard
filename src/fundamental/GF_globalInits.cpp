@@ -38,6 +38,7 @@ namespace GF{
   std::string GL_HIDING_STRING_TWDVF="!e*n&d=*7e&n&d";
   std::string GL_errorDidNotCompile="Error:DidNotCompile";
   std::string GL_errorOutputTooBig="Error:OutputTooBig";
+  long GL_MAIN_SECRET_NUMBER=17;//This will be set to the secret code in mainFunction.cpp
   std::string GL_Alphabet;//This will be set to "english" in WSI_wiSetup.cpp
   std::map<std::string,std::map<std::string,double> > initializeLetterGradesConversionMap(){
     std::map<std::string,std::map<std::string,double> > fR;
