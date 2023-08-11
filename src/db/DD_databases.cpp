@@ -40,6 +40,7 @@ namespace DD{
 #include "CAD_couas.cpp"
 #include "ATMD_abstractTextManagement.cpp"
 #include "TMD_textManagement.cpp"
+#include "CERD_certificates.cpp"
 #include "RMD_responseManagement.cpp"
 #include "SD_stat.cpp"
 #include "AICD_abstractInsertCenter.cpp"
