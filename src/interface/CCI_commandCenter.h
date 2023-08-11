@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -42,6 +42,10 @@ namespace CCI{
     std::string executeModifyCouas(SII::SessionInformation &);
     std::string executeDeleteCouas(SII::SessionInformation &);
     std::string executeCreateGradingForCourse(SII::SessionInformation &);
+
+    std::string executeCreateCert(SII::SessionInformation &);
+    std::string executeModifyCert(SII::SessionInformation &);
+    std::string executeDeleteCert(SII::SessionInformation &);
 
     std::string executeCreateRespRec(SII::SessionInformation &);
     std::string executeModifyRespRec(SII::SessionInformation &);
