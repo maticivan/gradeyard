@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -31,6 +31,7 @@ namespace MWID{
     long numFiles() const;
     long numMessages() const;
     long numCoursesAssignments() const;
+    long numCertificates() const;
     long numTexts() const;
     long numResponses() const;
     long numStats() const;
@@ -79,6 +80,11 @@ namespace MWID{
   long MainDB::numCoursesAssignments() const{
     std::map<std::string,MTF::Table>::const_iterator it;
     it=dbsM.find("couasMan");
+    return (it->second).size();
+  }
+  long MainDB::numCertificates() const{
+    std::map<std::string,MTF::Table>::const_iterator it;
+    it=dbsM.find("certMan");
     return (it->second).size();
   }
   long MainDB::numBackups() const{
@@ -261,8 +267,10 @@ namespace MWID{
     dbsM["fileMan"]=createTableWithTwoKeys("fileMan", DD::GL_DBS.getFileManage(),"fMan","fileId","userId","fData");
     // message manager initialization
     dbsM["messMan"]=createTableWithTwoKeys("messMan", DD::GL_DBS.getMessManage(),"mMan","messId","userId","messData");
-    // courses and assignments manager manager initialization
+    // courses and assignments manager initialization
     dbsM["couasMan"]=createTableWithTwoKeys("couasMan", DD::GL_DBS.getCouasManage(),"cMan","couasId","userId","couasData");
+    // certificates manager initialization
+    dbsM["certMan"]=createTableWithTwoKeys("certMan", DD::GL_DBS.getCertManage(),"crtMan","intId","mainId","certData");
     // database of backups for undoing the administrator actions
     dbsM["backupDatabase"]=createTableWithOneKey("backupDatabase", DD::GL_DBS.getBackupDB(),"bDb","name","bData");
     // main text initialization
