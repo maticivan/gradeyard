@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -33,6 +33,20 @@ namespace BMD{
     recText+="_/nc***_\n DO NOT EDIT THIS LINE  _/command_";
     return recText;
   }
+  std::string recoveryCertificate(const std::string & certName, const std::string &recoveryCommand, const std::string &rType){
+    std::string recText="";
+    CERD::Certificate sf;
+    int sc=sf.setFromTextName(certName);
+    if(sc==1){
+      if(rType=="latex"){
+        recText=AICD::prepareLatexText(sf.getTextData());
+      }
+      else{
+        recText=recoveryTextWithCustomData(certName,sf.getTextData(),recoveryCommand);
+      }
+    }
+    return recText;
+  }
   std::string recoveryMainText(const std::string & textName, const std::string &recoveryCommand, const std::string &rType){
     std::string recText="";
     TMD::MText sf;
@@ -44,7 +58,7 @@ namespace BMD{
       else{
         recText=recoveryTextWithCustomData(textName,sf.getTextData(),recoveryCommand);
       }
-    } 
+    }
     return recText;
   }
   std::string deleteCommand(const std::string & deleteCommandName, const std::string & documentName){
@@ -77,6 +91,9 @@ namespace BMD{
     return recText;
   }
   std::string recovery(const std::string & dbName, const std::string & textName,const std::string& rType){
+    if(dbName=="Certificates"){
+      return recoveryCertificate(textName,"createCertificate",rType);
+    }
     if(dbName=="Texts"){
       return recoveryMainText(textName,"createText",rType);
     }
