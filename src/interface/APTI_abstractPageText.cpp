@@ -486,6 +486,13 @@ namespace APTI{
     }
     return "<A href=\""+MWII::GL_WI.getWSURL()+"/index.cgi?page="+_page+"&s1=u11&r1="+cId+"\">"+cNameOrId+"</A>";
   }
+  std::string AbstractText::createLinkToCertificate(const std::string &cId, const std::string & _linkName, const std::string & _page, const std::string & _editExtension) const{
+    std::string lName=_linkName;
+    if(lName==""){
+      lName=cId;
+    }
+    return "<A href=\""+MWII::GL_WI.getWSURL()+"/index.cgi?page="+_page+"&s1=u11&r1="+cId+_editExtension+"\">"+lName+"</A>";
+  }
   std::string AbstractText::createLinkToExecuteBackup(const std::string & backupName, const std::string & backupType) const{
     std::string textNameForLink="restoreText";
     if(backupType=="courseCreation"){textNameForLink="undoCourseCreation";}
@@ -698,7 +705,7 @@ namespace APTI{
     }
     MD::Message bm;
     std::pair<std::string,int> allD;
-    std::string code , userN, createdOn, intUID;
+    std::string code , userN, createdOn;
     std::string othD;
     int res;
     long lsz=5;
@@ -760,7 +767,7 @@ namespace APTI{
     }
     CAD::CouAs myC;
     std::pair<std::string,int> allD;
-    std::string code , userN, createdOn, intUID;
+    std::string code , userN, createdOn;
     std::string othD;
     int res;
     long lsz=5;
@@ -795,6 +802,59 @@ namespace APTI{
         mLine[4]=createdOn;
         allLines.push(mLine);
       }
+    }
+    SF::flipTheStack(allLines);
+    allLines.push(topLine);
+    return BI::createScroller(start,end,nT,numb,"!*!",_numOnEachSide)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
+  }
+  std::string AbstractText::createListOfCertificates(const PSDI::SessionData & _psd,const std::string & _numInList, const std::string & _numOnEachSide) const{
+    long nT=DD::GL_MAIN_DB.numCertificates();
+    long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
+    if((start<0)||(start>nT-1)){start=0;}
+    long numb=BF::stringToInteger(_numInList);
+    if(numb<0){numb=0;}
+    long end=start+numb;
+    if((end<0)||(end>nT)){
+      end=nT;
+    }
+    CERD::Certificate myC;
+    std::pair<std::string,int> allD;
+    std::string code, cHelpAdmin, createdOn, modifiedOn, intUID;
+    std::string othD;
+    int res;
+    long lsz=5;
+    std::vector<std::string> topLine,mLine;
+    topLine.resize(lsz);mLine.resize(lsz);
+    std::stack<std::vector<std::string> > allLines;
+    topLine[0]=MWII::GL_WI.getDefaultWebText("Code / Label");
+    topLine[1]=MWII::GL_WI.getDefaultWebText("Name/Description");
+    topLine[2]=MWII::GL_WI.getDefaultWebText("Advanced");
+    topLine[3]=MWII::GL_WI.getDefaultWebText("Created");
+    topLine[4]=MWII::GL_WI.getDefaultWebText("Modified");
+    long pos;
+    for(long i=start;i<end;++i){
+      std::pair<std::vector<std::string>, std::string> sR=(DD::GL_MAIN_DB.dbsM["certMan"])[i];
+      myC.setFromInternalId(sR.first[0]);
+      othD=myC.getTextData();
+      code=myC.getExternalCodeFromInternalId();
+      cHelpAdmin=myC.getKey1();
+      pos=0; allD=SF::extract(othD,pos,"_created!!_","_/created!!_");
+      createdOn="";
+      if(allD.second==1){
+        createdOn=allD.first;
+      }
+      modifiedOn=createdOn;
+      pos=0;allD=SF::extract(othD,pos,"_modified!!_","_/modified!!_");
+      if(allD.second==1){
+        modifiedOn=allD.first;
+      }
+      mLine[0]=createLinkToCertificate(code,code,MWII::GL_WI.getDefaultWebText("certificates"));
+      mLine[1]=cHelpAdmin;
+      mLine[2]=createLinkToCertificate(code,"edit",MWII::GL_WI.getDefaultWebText("certificates"),"&emr=r");
+      mLine[3]=createdOn;
+        mLine[4]=modifiedOn;
+        allLines.push(mLine);
+
     }
     SF::flipTheStack(allLines);
     allLines.push(topLine);
@@ -1036,6 +1096,9 @@ namespace APTI{
     if(_db=="coursesAssignments"){
       return createListOfCoursesAssignments(_psd,_numInList, _numOnEachSide);
     }
+    if(_db=="certificates"){
+      return createListOfCertificates(_psd,_numInList, _numOnEachSide);
+    }
     if(_db=="backups"){
       return createListOfBackups(_numInList, _numOnEachSide);
     }
@@ -1243,7 +1306,7 @@ namespace APTI{
                                                   const std::string & problemName,
                                                   const std::string & problemVersion,
                                                   const std::string & baseText){
-    if(GL_studentsAllowedToExecuteCodeOnPublicTestCases!="yes"){ 
+    if(GL_studentsAllowedToExecuteCodeOnPublicTestCases!="yes"){
       return "";
     }
     MPTI::MainText problemText;
@@ -1324,16 +1387,15 @@ namespace APTI{
   }
   std::string AbstractText::createSolvingInvitation(const PSDI::SessionData & _psd, const std::string & respRecN,const std::string & label,   const std::string &inv) const{
     RTI::Response respT(respRecN,"no",_psd.my_un);
-    if(respT.isInitialized()==0){
-      return "";
-    }
-    std::map<std::string,std::pair<std::vector<std::string>,std::string> > rgm;
+    if(respT.isInitialized()==0){ return ""; }
+    CEI::RawGrades rgrades;
+    rgrades.certificateAddition=0;
     std::map<std::string,std::pair<std::vector<std::string>,std::string> >::const_iterator itRGM,itRGME;
     CEI::CouasAttributes cIrrelevant;
     std::string csvInd="no";
     if((_psd.isRoot=="yes")&&(inv=="summary")) {
-      rgm=CEI::rawGradesAndStatusFromRespReceiver(cIrrelevant,  _psd,respRecN, 0, 1);
-      itRGME=rgm.end();
+      rgrades=CEI::rawGradesAndStatusFromRespReceiver(cIrrelevant, _psd,respRecN, 0, 1);
+      itRGME=rgrades.grStatusMap.end();
       std::map<std::string,std::string>::const_iterator itCSVRM,itCSVRME;
       itCSVRME=(_psd.respMap).end();
       itCSVRM=(_psd.respMap).find("csvD");
@@ -1349,15 +1411,18 @@ namespace APTI{
     std::string urlTest,urlGrader,linkDispTest,linkDispGr1,linkDispGr2;
     std::stack<std::vector<std::string> > allLines, allLinesCSV;
     std::vector<std::string> topL,midL;
-    long lsz=6;
+    long lsz=6+rgrades.certificateAddition;
     topL.resize(lsz);midL.resize(lsz);long num_gr_jobs=0; long expansionPosition;
     long expansionStatus=0;// 0 - unverified yet;
     //1 - no expansion needed;
     //2 - expansion needed. Update complete for lsz, topL, and midL
     topL[0]="Name";topL[1]=MWII::GL_WI.getDefaultWebText("T Link");
     expansionPosition=2;
-    topL[expansionPosition]=MWII::GL_WI.getDefaultWebText("G Link");
-    topL[expansionPosition+1]=MWII::GL_WI.getDefaultWebText("T S");
+    if(rgrades.certificateAddition){
+      topL[2]=MWII::GL_WI.getDefaultWebText("Certificate");
+    }
+    topL[expansionPosition+rgrades.certificateAddition]=MWII::GL_WI.getDefaultWebText("G Link");
+    topL[expansionPosition+rgrades.certificateAddition+1]=MWII::GL_WI.getDefaultWebText("T S");
     long termsAfterExpansion=2;long expansionSize=-100;
     topL[lsz-termsAfterExpansion]=MWII::GL_WI.getDefaultWebText("G S");
     topL[lsz-termsAfterExpansion+1]=MWII::GL_WI.getDefaultWebText("Gr");
@@ -1372,9 +1437,10 @@ namespace APTI{
       linkDispGr1="<a href=\""+urlGrader+forwardingVV+"\">"+MWII::GL_WI.getDefaultWebText("grading")+"</a>";
       linkDispGr2="<a href=\""+urlGrader+forwardingVV+"\">"+label+"</a>";
       if((_psd.isRoot=="yes")&&(inv=="summary")){
-        midL[0]=locV[i].studentName;midL[1]=linkDispTest;midL[2]=linkDispGr1;midL[3]="";midL[lsz-termsAfterExpansion]="";
+        midL[0]=locV[i].studentName;midL[1]=linkDispTest;
+        midL[expansionPosition]=linkDispGr1;midL[expansionPosition+1]="";midL[lsz-termsAfterExpansion]="";
         midL[lsz-termsAfterExpansion+1]=locV[i].graderUName;
-        itRGM=rgm.find(locV[i].userName);
+        itRGM=rgrades.grStatusMap.find(locV[i].userName);
         if(itRGM!=itRGME){
           midL[lsz-termsAfterExpansion]=(itRGM->second).second;
           std::vector<std::string> scores=((itRGM->second).first);
@@ -1397,8 +1463,11 @@ namespace APTI{
                 topL[lsz-jj-1]=oldTopL[oldLSZ-jj-1];
                 midL[lsz-jj-1]=oldMidL[oldLSZ-jj-1];
               }
-              for(long ii=0;ii<expansionSize;++ii){
-                topL[expansionPosition+ii]=std::to_string(1+ii);
+              if(rgrades.certificateAddition){
+                topL[expansionPosition]=oldTopL[expansionPosition];
+              }
+              for(long ii=rgrades.certificateAddition;ii<expansionSize;++ii){
+                topL[expansionPosition+ii]=std::to_string(1+ii-rgrades.certificateAddition);
               }
               topL[expansionPosition+expansionSize]="$\\Sigma$";
               topL[expansionPosition+expansionSize+1]="G Link";
@@ -1535,6 +1604,9 @@ namespace APTI{
         }
         if((allArgs[0]==s_couas)&&(sz==2)){
           return createCouasDisplay(_psd,allArgs[1]);
+        }
+        if((allArgs[0]==s_cert)&&(sz==2)){
+          return createCertDisplay(_psd,allArgs[1]);
         }
         if((allArgs[0]==s_respRecStatus)&&(sz==2)){
           return createRespRecStatusDisplay(_psd,allArgs[1]);
@@ -1858,6 +1930,35 @@ namespace APTI{
     apmf.textNameLabel=MWII::GL_WI.getDefaultWebText("Course/assignment code:");
     return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),s_insertB,s_insertE);
   }
+  std::string AbstractText::createPowerCertEdit(const PSDI::SessionData & _psd, const std::string & _cC){
+    /*CEI::CouasElement cEl(_psd);
+    if(ICEI::initFromCode(_psd,cEl,_cC)=="failed"){
+      return "";
+    }
+    CCFI::ArgsPowerModifyForm apmf;
+    apmf.textToModify=CCFI::hideEncryptedTextInCouas(cEl.getRawText());
+    apmf.linkForm="index.cgi?comEx=yes&";
+    apmf.linkForm+=MWII::GL_WI.get_e_parPage();
+    apmf.linkForm+="="+tName+"&s1=u11&r1=";
+    apmf.linkForm+=_cC;
+    apmf.modifyMe="modifyCourseAssignment";
+    apmf.dbName=_cC;
+    apmf.textNameLabel=MWII::GL_WI.getDefaultWebText("Course/assignment code:");
+    return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),s_insertB,s_insertE);*/
+    CERD::Certificate myCert;
+    int succ=myCert.setFromTextName(_cC);
+    if(succ==0){return "";}
+    CCFI::ArgsPowerModifyForm apmf;
+    apmf.textToModify=myCert.getTextData();
+    apmf.linkForm="index.cgi?comEx=yes&";
+    apmf.linkForm+=MWII::GL_WI.get_e_parPage();
+    apmf.linkForm+="="+tName+"&s1=u11&r1=";
+    apmf.linkForm+=_cC;
+    apmf.modifyMe="modifyCertificate";
+    apmf.dbName=_cC;
+    apmf.textNameLabel=MWII::GL_WI.getDefaultWebText("Certificate code/name:");
+    return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),s_insertB,s_insertE);
+  }
   std::string AbstractText::createMessageDisplay(const PSDI::SessionData & _psd, const std::string & _mC){
     long numMessScroller=10;
     std::string numMessEachSideScroller="3";
@@ -2000,6 +2101,143 @@ namespace APTI{
       }
     }
     return actionLink+cEl.displayCouas(_psd,numMessScroller,numMessEachSideScroller);
+  }
+  AICD::LatexReplacements createLatexReplacementStrings(){
+    AICD::LatexReplacements res;
+    res.websiteURL=MWII::GL_WI.getWSURL();
+    long sz=8;
+    res.htmlTs.resize(sz);
+    res.latexTs.resize(sz);
+    res.htmlTs[0]="\\begin{problem}";
+    res.latexTs[0]=MWII::GL_WI.getDefaultWebText("\\noindent{\\bf Problem} ");
+    res.htmlTs[1]="\\end{problem}";
+    res.latexTs[1]=MWII::GL_WI.getDefaultWebText("%%endProblem");
+    res.htmlTs[2]="\\begin{solution}";
+    res.latexTs[2]=MWII::GL_WI.getDefaultWebText("\\noindent{\\bf Solution.} ");
+    res.htmlTs[3]="\\end{solution}";
+    res.latexTs[3]=MWII::GL_WI.getDefaultWebText("%%endSolution");
+    res.htmlTs[4]="\\begin{box}";
+    res.latexTs[4]=MWII::GL_WI.getDefaultWebText("\\begin{box}");
+    res.htmlTs[5]="\\end{box}";
+    res.latexTs[5]=MWII::GL_WI.getDefaultWebText("\\end{box}");
+    res.htmlTs[6]="\\begin{proof}";
+    res.latexTs[6]=MWII::GL_WI.getDefaultWebText("\\noindent{\\bf Proof.} ");
+    res.htmlTs[7]="\\end{proof}";
+    res.latexTs[7]=MWII::GL_WI.getDefaultWebText("%%endProof");
+    return res;
+  }
+  int AbstractText::allowedToMakePDFForCertificate(const PSDI::SessionData & _psd, const std::string& usernameWhoIsAllowedToMakeCertificate) const{
+    //NOT DONE YET, BUT MUST BE DONE:
+    //     - check whether users other than administrators are allowed to make pdfs
+    //        - The website owners should be provided with a switch that can turn off
+    //          pdf making. PDF making consumes resources: Calling latex is CPU intensive
+    //          In addition, the PDF consume hard disk space. The website owner may want
+    //          to prohibit the PDF generation.
+    //          At the moment, there is nothing in place that prohibits regular users to
+    //          make requests for pdfs.
+    if(_psd.isRoot=="yes"){return 1;}
+    if(_psd.my_un=="visitor"){return 0;}
+    if(CERD::GL_CertificatesOptions.pdfsAllowed.length()>0){
+      char firstCh=CERD::GL_CertificatesOptions.pdfsAllowed[0];
+      if((firstCh=='y')||(firstCh=='Y')||(firstCh=='1')){
+        if((usernameWhoIsAllowedToMakeCertificate=="all")||(usernameWhoIsAllowedToMakeCertificate==_psd.my_un)){
+          return 1;
+        }
+      }
+    }
+    return 0;
+  }
+  std::string AbstractText::pdfForCertificate(const PSDI::SessionData & _psd, const std::string & _code, const std::string & _txts, const std::string& usernameWhoIsAllowedToMakeCertificate){
+    if(allowedToMakePDFForCertificate(_psd,usernameWhoIsAllowedToMakeCertificate)==0){
+      return "";
+    }
+    if(AICD::GL_ReplStrings.htmlTs.size()<1){
+      AICD::GL_ReplStrings = createLatexReplacementStrings();
+    }
+    std::string lStart;
+    lStart=MWII::GL_WI.getDefaultWebText("certPreambleLatexTemplate");
+    if(lStart=="certPreambleLatexTemplate"){
+      lStart=MWII::GL_WI.getDefaultWebText("examPreambleLatexTemplate");
+      if(lStart=="certPreambleLatexTemplate"){
+        lStart==MWII::GL_WI.getDefaultWebText("notesPreambleLatexTemplate");
+      }
+    }
+    long pos; std::pair<std::string,int> allD;
+    pos=0; allD=SF::extract(_txts,pos,"_lStart*!_","_/lStart*!_");
+    std::string txts=_txts;
+    if(allD.second==1){
+      lStart=allD.first;
+      pos=0;allD=SF::extractAndReplace(_txts,pos,"_lStart*!_","_/lStart*!_",0,"");
+      if(allD.second==1){
+        txts=allD.first;
+      }
+    }
+    std::string latexSource;
+    latexSource+=lStart+"\n\n \\begin{document}\n";
+    latexSource+=txts;
+    latexSource+="\n\n\\end{document} \n";
+    std::string pdfNameForCertificate=MWII::GL_WI.getPublicPDFCertLoc()+"/cIC"+_code;
+    IOF::deleteOldFiles(MWII::GL_WI.getPublicPDFCertLoc(),"pdf",CERD::GL_CertificatesOptions.maxTimeToKeepPDF);
+    LMF::createPdfFromTex(latexSource,pdfNameForCertificate,MWII::GL_WI.getPublicPDFCertLoc());
+    pdfNameForCertificate+=".pdf";
+    std::string fR="<p></p><p>\n";
+    fR+=HSF::createButtonLink(pdfNameForCertificate,"Download PDF");
+    fR+="</p>\n";
+    return fR;
+  }
+  std::string AbstractText::createCertDisplay(const PSDI::SessionData & _psd, const std::string & _cC){
+    std::string certCode=_cC;
+    if(_psd.inFormReplace!=""){certCode=_psd.inFormReplace;}
+     if(_psd.messEditReq=="r"){
+      if(_psd.isRoot=="yes"){
+        return createPowerCertEdit(_psd,certCode);
+      }
+      return "";
+    }
+    CERD::Certificate cCert;
+    int certExists=cCert.setFromExternalCode(certCode);
+    if(certExists==0){return "";}
+    std::vector<std::string> certComponents=SF::stringToVector(cCert.getTextData(),"_n*_","_/n*_");
+    std::string latexTemplate, htmlTemplate, parametersRaw;
+    if(certComponents.size()>2){
+      htmlTemplate=certComponents[0];
+      latexTemplate=certComponents[1];
+      parametersRaw=certComponents[2];
+    }
+    else{
+      if(certComponents.size()>1){
+        latexTemplate=certComponents[0];
+        htmlTemplate=latexTemplate;
+        parametersRaw=certComponents[1];
+      }
+    }
+    std::map<std::string,std::string> parameters=SF::stringToMap(parametersRaw,LI::GL_LN.st_sep_vrB,LI::GL_LN.st_sep_vrE,LI::GL_LN.st_sep_vlB,LI::GL_LN.st_sep_vlE);
+    parameters["certId"]=certCode;
+    std::string usernameWhoIsAllowedToMakeCertificate="all";
+    std::map<std::string,std::string>::const_iterator it;
+    it=parameters.find("whoIsAllowedToMakePDF");
+    if(it!=parameters.end()){
+      usernameWhoIsAllowedToMakeCertificate=it->second;
+    }
+    if(allowedToMakePDFForCertificate(_psd,usernameWhoIsAllowedToMakeCertificate)==1){
+      it=parameters.find("pdfLinkIndicator");
+      if(it!=parameters.end()){
+        std::string res=it->second;
+        if(res.length()>0){
+          if((res[0]=='y')||(res[0]=='Y')||(res[0]=='1')){
+            std::string linkURL="index.cgi?" +MWII::GL_WI.get_e_parPage()+"=certificates&s1=u11&r1="+certCode+"&certpdf=yes";
+            htmlTemplate+="<p></p><p>"+HSF::createButtonLink(linkURL,"Generate PDF")+"</p>";
+          }
+        }
+      }
+    }
+    it=(_psd).respMap.find("certpdf");
+    if(it!=(_psd).respMap.end()){
+      if((it->second=="y")||(it->second=="yes")||(it->second=="Y")||(it->second=="YES")){
+        return pdfForCertificate(_psd,certCode,CERTCLI::prepareCertificate(latexTemplate,parameters),usernameWhoIsAllowedToMakeCertificate);
+      }
+    }
+    return CERTCLI::prepareCertificate(htmlTemplate,parameters);
   }
   std::string lastTwoDigitsOfTheYear(const std::string & year){
     std::string res;
