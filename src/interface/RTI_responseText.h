@@ -108,6 +108,8 @@ namespace RTI{
     long actRequest;
     long remainingSeconds;
     long roundingTimeSec;
+    std::string certificateDescriptionCode;
+    std::string certificateIdCode;
     std::string debuggingPrint() const;
   };
   struct LocationOfDocuments{
@@ -157,6 +159,10 @@ namespace RTI{
     std::string s_answer_QRTE="_/aw*|_";
     std::string s_points_QRTB="_pt*|_";
     std::string s_points_QRTE="_/pt*|_";
+    std::string s_certificateDescCodeB="_cdCode*|_";
+    std::string s_certificateDescCodeE="_/cdCode*|_";
+    std::string s_certificateIdCodeB="_cidCode*|_";
+    std::string s_certificateIdCodeE="_/cidCode*|_";
     std::string s_requestType_QRTB="_rq*|_";
     std::string s_requestType_QRTE="_/rq*|_";
     std::string s_radioButtons_QRTB="_rbAll*|_";
@@ -245,9 +251,10 @@ namespace RTI{
     int analyzeAccessAndReportSuspiciousBehavior(const PSDI::SessionData &);
     std::string createStatusAndProgressLineTwoRowTable(const ProblemCommentsAndScores &, const double &, const ResponderInfo &) const;
     std::string createStatusAndProgressLine(const ProblemCommentsAndScores &, const double &, const ResponderInfo &, const long &) const;
+    std::string createLinkToCertificate(const PSDI::SessionData &, const ResponderInfo &) const;
     std::string userAnswerDisplay(const SingleQuestionInfo &, long &) const;
     std::string singleProblemDisplay(const SingleQuestionInfo&, ProblemCommentsAndScores &, long &, double &) const;
-    std::string singleProblemDisplayForGrader(const SingleQuestionInfo &, ProblemCommentsAndScores &, long &, double &) const;
+    std::pair<std::string,int> singleProblemDisplayForGrader(const SingleQuestionInfo &, ProblemCommentsAndScores &, long &, double &) const;
   public:
     Response(const std::string & = "mainTextFirstPage", const std::string & = "no1117", const std::string & = "everyone");
     int initialize(const std::string & = "mainTextFirstPage", const std::string & = "no211", const std::string & = "everyone");
@@ -257,7 +264,7 @@ namespace RTI{
     std::string prepareDefaultRequest(const PSDI::SessionData &, const std::string &);
     std::pair<std::string,std::vector<std::string> > getFormQVector(const std::string &) const;
     std::pair<std::string,std::vector<std::string> > getUsrAVect(const std::string &) const;
-    ResponderInfo infoFromResponseText(const PSDI::SessionData &, const std::string &, const int & = 0);
+    ResponderInfo infoFromResponseText(const PSDI::SessionData &, const std::string &, const int & = 0, const int & = 1);
     std::vector<LocationOfDocuments> getLocations(const PSDI::SessionData &) const;
     std::string indFileSepB(const long &) const;
     std::string indFileSepE(const long &) const;
