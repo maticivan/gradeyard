@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -28,7 +28,6 @@ namespace CEI{
     std::string code;
     std::map<std::string,std::string> grades;
   public:
-
     int setFromString(const std::string &);
     std::string putIntoString() const;
     std::string putIntoString(const int &) const;
@@ -38,7 +37,6 @@ namespace CEI{
     std::string getCode() const;
     std::string getGradeStr(const std::string & ) const;
     double getGradeNum(const std::string & ) const;
-
     void setUName(const std::string &);
     void setFName(const std::string &);
     void setLName(const std::string &);
@@ -46,9 +44,7 @@ namespace CEI{
     void setGradeStr(const std::string &, const std::string &);
     int operator<(const CouasListElAtt &) const;
   };
-
   class CouasAttributes{
-
   public:
     std::string mUserN;
     std::string mFirstN;
@@ -65,25 +61,25 @@ namespace CEI{
     std::string rawText;
     std::vector<CouasListElAtt> gradeData;
     std::map<std::string,std::string> grFormulas;
-
     std::map<std::string,std::string> grDisplays;
-
     std::string prepareGradeFormula(const PSDI::SessionData & ,const std::string &, const std::set<std::string> &, const long &) const;
     void sortGradeData(const std::string &);
     std::string setFromStringEasySteps(const std::string &);
     int setFromString(const std::string &,const std::map<std::string,CouasListElAtt> &);
     std::string putIntoString(const int &, const std::string &) const;
   };
-
+  struct RawGrades{
+  public:
+    std::map<std::string,std::pair<std::vector<std::string>,std::string> > grStatusMap; 
+    int certificateAddition;
+  };
   class CouasElement{
   private:
     std::string cntrCouasCode="couasCode";
     long cntrCC0=19;
     long cntrCC1=14;
     long cntrCCZ=3;
-
     long existenceEstablishedBefore;
-
     std::string st_nil="nil";
     CouasAttributes coaa;
     std::map<std::string,std::string> displVarsThatNeedDBAccess(const std::map<std::string,std::string> & ,const std::map<std::string,std::string> & ) const;
@@ -91,9 +87,7 @@ namespace CEI{
     CouasElement(const PSDI::SessionData & , const std::string & = "", const std::string & = "");
     int initialize(const PSDI::SessionData & , const std::string & , const std::string & );
     std::string createMTEditLink(const std::string & , const std::string & , const std::string & , const std::string & ) const;
-
     std::string getRawText() const;
-
     std::string type() const;
     std::string title() const;
     std::string text() const;
@@ -111,7 +105,6 @@ namespace CEI{
     std::string addStudents(const PSDI::SessionData &, const std::vector<PASF::StudentData> &);
     std::string gradeFromRespReceiver(const PSDI::SessionData &, const int &);
   };
-  std::map<std::string,std::pair<std::vector<std::string>,std::string> > rawGradesAndStatusFromRespReceiver(CouasAttributes & , const PSDI::SessionData & , const std::string &, const int & , const int &);
-
+  RawGrades rawGradesAndStatusFromRespReceiver(CouasAttributes & , const PSDI::SessionData & , const std::string &, const int & , const int &);
 }
 #endif
