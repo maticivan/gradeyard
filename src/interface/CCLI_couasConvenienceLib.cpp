@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -52,7 +52,6 @@ namespace CCLI{
     }
     return it->second;
   }
-
   std::pair<std::string,long> extractLettersAndNumberFromString(const std::string &input){
     std::string outputSt="";
     long outputNum=0;
@@ -83,8 +82,6 @@ namespace CCLI{
     fR.linkForSummary="notFound";
     std::map<std::string,std::string> convenienceMap;
     SF::varValPairs(MWII::GL_WI.getConveniencePackage(),"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_",convenienceMap);
-
-
     std::pair<std::string,long> nameNumPair=extractLettersAndNumberFromString(cElTitle);
     std::string aC=assignmentNameToCode(nameNumPair.first,convenienceMap);
     if(aC=="notFound"){
@@ -98,7 +95,6 @@ namespace CCLI{
       paddedNum=BF::padded(aN,10,"0");
       fR.preFill+=paddedNum;
     }
-
     fR.linkForSummary="index.cgi?page=GrMain";
     fR.linkForSummary+="&ev0=docName&el0="+mainDocNameForCourse;
     fR.linkForSummary+="&ev1=aType&el1="+nameNumPair.first;
@@ -112,9 +108,7 @@ namespace CCLI{
     else{
       fR.linkForSummary+="n";
     }
-
     return fR;
   }
-
 }
 #endif
