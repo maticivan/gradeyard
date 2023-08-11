@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -20,7 +20,6 @@
 #define _INCL_COMMANDCENTER_CPP
 
 namespace CCI{
-
 
   Command::Command(const std::string & _initSt){
     initialized=0;
@@ -253,8 +252,8 @@ namespace CCI{
   std::string Command::executeModifyCouas(SII::SessionInformation & _s){
     long correctSize=2;
     //arguments:
-    // 0) messageId
-    // 1) messageText
+    // 0) couasId
+    // 1) couasText
     long sz=arguments.size();
     if((type!="modifyCourseAssignment")||(sz!=correctSize)){
       return "!failed!:badCommand: Called modify course or assignment method with wrong number of arguments";
@@ -264,13 +263,45 @@ namespace CCI{
   std::string Command::executeDeleteCouas(SII::SessionInformation & _s){
     long correctSizeForThisCommand=2;
     //arguments:
-    // 0) messageId
-    // 1) idOfMessageThatCollectsTheMessages
+    // 0) couasId
+    // 1) idOfCouasThatCollectsTheCouases
     long sz=arguments.size();
     if((type!="deleteCourseAssignment")||(sz!=correctSizeForThisCommand)){
       return "!failed!:badCommand: Called delete course or assignment method with wrong number of arguments";
     }
     return _s.deleteCouas(arguments[0],arguments[1]);
+  }
+  std::string Command::executeCreateCert(SII::SessionInformation & _s){
+    long correctSizeForThisCommand=2;
+    //arguments:
+    // 0) certName (or !*! to generate name)
+    // 1) rawTextForDatabase
+    long sz=arguments.size();
+    if((type!="createCertificate")||(sz!=correctSizeForThisCommand)){
+      return "!failed!:badCommand: Called create certificate method with wrong number of arguments";
+    }
+    return _s.createCert(arguments[0],arguments[1]);
+  }
+  std::string Command::executeModifyCert(SII::SessionInformation & _s){
+    long correctSize=2;
+    //arguments:
+    // 0) certName
+    // 1) certText
+    long sz=arguments.size();
+    if((type!="modifyCertificate")||(sz!=correctSize)){
+      return "!failed!:badCommand: Called modify certificate method with wrong number of arguments";
+    }
+    return _s.modifyCert(arguments[0],arguments[1]);
+  }
+  std::string Command::executeDeleteCert(SII::SessionInformation & _s){
+    long correctSizeForThisCommand=1;
+    //arguments:
+    // 0) certName
+    long sz=arguments.size();
+    if((type!="deleteCertificate")||(sz!=correctSizeForThisCommand)){
+      return "!failed!:badCommand: Called delete certificate method with wrong number of arguments";
+    }
+    return _s.deleteCert(arguments[0]);
   }
   std::string Command::executeCreateGradingForCourse(SII::SessionInformation & _s){
     long correctSizeForThisCommand=2;
@@ -510,6 +541,15 @@ namespace CCI{
     }
     if(type=="deleteCourseAssignment"){
       return executeDeleteCouas(_s);
+    }
+    if(type=="createCertificate"){
+      return executeCreateCert(_s);
+    }
+    if(type=="modifyCertificate"){
+      return executeModifyCert(_s);
+    }
+    if(type=="deleteCertificate"){
+      return executeDeleteCert(_s);
     }
     if(type=="createGradingForCourse"){
       return executeCreateGradingForCourse(_s);
