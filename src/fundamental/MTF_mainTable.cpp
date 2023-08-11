@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -833,8 +833,8 @@ namespace MTF{
     std::string folderQ=tableFolder+"/"+folderInstQueue;
     std::vector<std::string> seqF;
     seqF=IOF::listFiles(folderQ);
-    std::vector<std::string> sFl=IOF::selectFilesWithProperty(seqF,"_crName_extension_/crName_ _ext_"+extForFlag+"_/ext_");
-    std::vector<std::string> sCQ=IOF::selectFilesWithProperty(seqF,"_crName_extension_/crName_ _ext_"+extForCommandsInQueue+"_/ext_");
+    std::vector<std::string> sFl=IOF::selectFilesWithExtension(seqF,extForFlag);
+    std::vector<std::string> sCQ=IOF::selectFilesWithExtension(seqF,extForCommandsInQueue);
     if(sFl.size()>0){
       std::vector<std::time_t> cTimes=IOF::timeOfCreation(sFl);
       SF::sortWithFollower(cTimes,sFl);
