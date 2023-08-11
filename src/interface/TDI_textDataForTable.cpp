@@ -58,7 +58,7 @@ namespace TDI{
     pos=0;
     std::pair<std::string,int> allTD_n=SF::extract(_nText,pos,LI::GL_LN.s_tDataB,LI::GL_LN.s_tDataE);
     TMF::Timer tm;
-    long indicatorAdvancedUser=1;
+    long indicatorNoviceUser=1;
     std::string tNow=tm.timeString();
     std::string tCreated=tNow;
     std::string createdBy=psd.my_un;
@@ -73,17 +73,17 @@ namespace TDI{
         HSF::parametersFromString(allSD_o.first,tCreated,createdBy,tModifiedThatWeDontCareAbout,modifiedByThatWeDontCareAbout,perm,dType);
     }
     if(allSD_n.second==1){
-      indicatorAdvancedUser=0;
+      indicatorNoviceUser=0;
       if(allowedToManuallyInputSystemData(psd,allSD_n.first,perm,dType)==1){
         HSF::parametersFromString(allSD_n.first,tCreated,createdBy,tModified,modifiedBy,perm,dType);
       }
     }
     std::string textData="";
     if(allTD_n.second==1){
-      indicatorAdvancedUser=0;
+      indicatorNoviceUser=0;
       textData=allTD_n.first;
     }
-    if(indicatorAdvancedUser==1){
+    if(indicatorNoviceUser==1){
       textData=_nText;
     }
     std::string newSystemData;
