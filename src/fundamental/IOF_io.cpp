@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -154,7 +154,6 @@ namespace IOF{
     IOF::sys_deleteFile(filePathToSaveData);
     return result;
   }
-
   int toFile(const std::string & filename, const std::vector<std::string> & s){
       sys_deleteFile(filename);
       std::ofstream mfile;
@@ -174,15 +173,12 @@ namespace IOF{
       std::ofstream mfile;
       mfile.open(filename);
       mfile<<s;
-
       mfile.close();
       sys_changePermissions(filename);
       fileToString(filename,1);// refreshing RAM
       return 1;
   }
-
   int toFile(const std::string & filename, const  std::set<std::string>  & s){
-
       sys_deleteFile(filename);
       std::ofstream mfile;
       mfile.open(filename);
@@ -190,21 +186,16 @@ namespace IOF{
       for(it=s.begin();it!=s.end();++it){
         mfile<<*it<<"\n";
       }
-
       mfile.close();
       sys_changePermissions(filename);
       fileToString(filename,1);// refreshing RAM
       return 1;
   }
-
-
   std::time_t timeOfCreation(const std::string & fName){
     std::experimental::filesystem::file_time_type lwt= std::experimental::filesystem::last_write_time(fName);
-
     std::time_t ttlwt= std::experimental::filesystem::file_time_type::clock::to_time_t(lwt);
     return ttlwt;
   }
-
   std::vector<std::time_t> timeOfCreation(const std::vector<std::string> & fNs){
     std::vector<std::time_t> fR;
     long sz=fNs.size();
@@ -216,10 +207,7 @@ namespace IOF{
     }
     return fR;
   }
-
-
   std::string nameOfFolder(const std::string & fullNameOfFile){
-
       std::string rnameOfFolder="";
       long sz=fullNameOfFile.size();
       while(sz>0){
@@ -237,7 +225,6 @@ namespace IOF{
       }
       return nF;
   }
-
   int legalFileName(const std::string & in){
     std::string out=in;
     out=SF::findAndReplace(out,"/","");
@@ -261,14 +248,11 @@ namespace IOF{
     out=SF::findAndReplace(out,"?","");
     out=SF::findAndReplace(out,"<","");
     out=SF::findAndReplace(out,">","");
-
     if(out!=in){
       return 0;
     }
     return 1;
-
   }
-
   std::string justFileNameNoExtensionNoFolder(const std::string & nameOfFile,
                                               const std::string & beginningToIgnore=""){
       std::string folder=nameOfFolder(nameOfFile);
@@ -300,7 +284,6 @@ namespace IOF{
       }
       return justName;
   }
-
   std::string extensionOfFile(const std::string & fName){
     std::string foldN=nameOfFolder(fName);
     long pos=foldN.size();
@@ -320,54 +303,31 @@ namespace IOF{
     }
     return fR;
   }
-  std::vector<std::string> selectFilesWithProperty(const std::vector<std::string>& vFiles,
-                                                    const std::string & _criterion){
-    std::vector<std::string> fR;
-    long pos=0;
-    std::string cr=_criterion;
-    std::string crSNameB="_crName_";
-    std::string crSNameE="_/crName_";
-    std::string exSNB="_ext_";
-    std::string exSNE="_/ext_";
 
-    for(long i=0;i<3;++i){
-      cr += crSNameB+"endCrNames"+crSNameE;
+  std::vector<std::string> selectFilesWithExtension(const std::vector<std::string>& vFiles,
+                                                    const std::string & _extension){
+    std::vector<std::string> fR;
+    long num=0;
+    long sz=vFiles.size();
+    for(long i=0;i<sz;++i){
+      if(_extension==extensionOfFile(vFiles[i])){
+        ++num;
+      }
     }
-    for(long i=0;i<3;++i){
-      cr += exSNB+"endExt"+exSNE;
-    }
-    std::pair<std::string,int> allDataP=SF::extract(cr,pos,crSNameB,crSNameE);
-    std::string crName=allDataP.first;
-    if(crName=="extension"){
-      allDataP=SF::extract(cr,pos,exSNB,exSNE);
-      std::string extension=allDataP.first;
-      if(extension!="endExt"){
-        long num=0;
-        long sz=vFiles.size();
-        for(long i=0;i<sz;++i){
-          if(extension==extensionOfFile(vFiles[i])){
-            ++num;
-          }
-        }
-        fR.resize(num);long counter=0;
-        for(long i=0;i<sz;++i){
-          if(extension==extensionOfFile(vFiles[i])){
-            fR[counter]=vFiles[i];++counter;
-          }
-        }
+    fR.resize(num);long counter=0;
+    for(long i=0;i<sz;++i){
+      if(_extension==extensionOfFile(vFiles[i])){
+        fR[counter]=vFiles[i];++counter;
       }
     }
     return fR;
   }
-
   std::string deleteOldFiles(const std::string & _folderName, const std::string & _extension, const long & defOfOld){
     std::string fR="";
     std::vector<std::string> fList=listFiles( _folderName);
-    std::string criterion="_crName_extension_/crName__ext_"+_extension+"_/ext_";
-    fList=selectFilesWithProperty(fList,criterion);
+    fList=selectFilesWithExtension(fList,_extension);
     long sz=fList.size();
     std::time_t crT;
-
     TMF::Timer tm;long age;long tmNow=tm.timeNow();
     for(long i=0;i<sz;++i){
       crT=timeOfCreation(fList[i]);
@@ -381,14 +341,12 @@ namespace IOF{
   }
   int sys_folderExists(const std::string &folderName){
     struct stat sb;
-
     if (stat(folderName.c_str(), &sb) == 0 && S_ISDIR(sb.st_mode)) {
         return 1;
     }
     return 0;
   }
   int sys_mkdir(const std::string &folderName){
-
       if(folderName==""){
         return 0;
       }
@@ -397,16 +355,12 @@ namespace IOF{
       }
     std::string systemCommand="mkdir "+folderName;
     system(systemCommand.c_str());
-
     systemCommand="chgrp wadmins " +folderName;
     system(systemCommand.c_str());
-
     systemCommand="chmod 774 "+folderName;
     system(systemCommand.c_str());
-
     systemCommand="chmod g+s "+folderName;
     system(systemCommand.c_str());
-
     return 1;
   }
   int sys_createFolderIfDoesNotExist(const std::string &folderName,
@@ -430,6 +384,4 @@ namespace IOF{
     return fR;
   }
 }
-
-
 #endif
