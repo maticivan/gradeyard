@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -186,8 +186,22 @@ namespace BF{
     }
     return res;
   }
-long stringToIntegerRemoveStart(const std::string& _s){
+  long stringToIntegerRemoveStart(const std::string& _s){
     return stringToInteger(removeNonNumericStart(_s));
+  }
+  long stringToIntegerRemoveStartAndEnd(const std::string& _s, long maxInt=1000000){
+    long res=0;
+    long i=0; long sz=_s.length();
+    long zero=static_cast<long>('0');
+    if(maxInt<1){maxInt=1000000;}
+    while((i<sz)&&((_s[i]<'0')||(_s[i]>'9'))){++i;}
+    while((i<sz)&&(_s[i]>='0')&&(_s[i]<='9')){
+      res*=10;
+      res+=static_cast<long>(_s[i])-zero;
+      res%=maxInt;
+      ++i;
+    }
+    return res;
   }
   double stringToDouble(const std::string &_s){
     std::string t=cleanSpaces(_s,1);
