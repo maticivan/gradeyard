@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -36,7 +36,7 @@ namespace TMD{
   MText::MText(const std::string & _tn, const std::string &  _intTId){
     setVariables(_tn,_intTId);
   }
-  void MText::setVariables(const std::string & _tn, const std::string &  _intTId){
+  void MText::setVariables(const std::string & _tn, const std::string & _intTId){
     dbs_key0= ow2_dbs_key0;
     dbs_key1= ow2_dbs_key1;
     dbsMFInd = ow2_dbsMFInd;
