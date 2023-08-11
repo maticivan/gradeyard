@@ -171,44 +171,16 @@ namespace SII{
     long indicatorFileReceived;
     long indicatorFileCanBeAccepted;
     PSDI::SessionData psd;
-    // psd.basicPermitsAndInfo is the
-    // vector with following information
-    // [0] -> username or "visitor" (if not logged in)
-    // [1] -> root or not root user;
-    // [2] -> allowed to execute all commands;
-    // [3] -> y/r/no page edit request (y- yes; r= raw text editing;)
-    // [4] -> df/aw/sl/st/rw (default; answeringMode; solution; status; rawText)
-    //        display request for ResponseReceiver
-    // [5] -> notReceived/accepted/rejected/fileToLarge This flag is for ResponseReceiver;
-    //        notReceived means that the answers were not provided (form was most
-    //        likely accessed by GET and not POST)
-    //        accepted - answers are accepted and database is updated
-    //        rejected - answers are rejected (some dangerous input was provided)
-    // [6] -> when the documentType is problem. The integer value i in this parameter
-    //        will generate a latex source for the version i of the problem
-    // [7] -> nothing/new/edit/delete  - action taken to the database of files
-    // [8] -> file code (in the case that [7] is edit or delete, or that a form is prepared for replacement)
-    // [9] -> HTTP_USER_AGENT
-    // [10] -> REMOTE_ADDR
-    // [11] -> REQUEST_METHOD
-    // [12] -> inForm_searchFor
-    // [13] -> inForm_replaceWith
-    // [14] -> idOfMessageToEdit
-    // [15] -> myFirstName
-    // [16] -> myLastName
-    // [17] -> requestToEditMessage
-    // [18] -> sortCriterion
-    // [19] -> couasEditRequest
-    // [20] -> codeResponseReceiver that should grade the couas
     void updateRespMapToProperlyAccountForBothGraderCommentsAndPoints();
     int updateGradesFromResponse();
     std::vector<std::vector<std::string> > respInOrder;
     int uploadToServer(const cgicc::Cgicc & , const std::string & , const std::string & );//WARNING: this one does not check for permissions
     ExamAttributes attributesFromRespRec(const std::string & ,const std::string & ) const;
-    long checkWhetherAllProblemsExist(const std::string &d) const;
-    ExamAttributes newExamFromTemplate(const std::string &, const std::string & );
+    int checkWhetherSingleProblemExists(const std::string &, TMD::MText& ) const;
+    long checkWhetherAllProblemsExist(const std::vector<std::string> & ) const;
+    ExamAttributes newExamFromTemplate(const std::string &, const std::pair<std::vector<std::string>,std::string>&,  const std::string & );
     std::string enrollExistingStudentsToExam(const ExamAttributes & , const std::string & ,const std::string & );
-    std::string genExamTemplate(const std::string &,const std::string &);
+    std::string genExamTemplate(const std::string &,const std::pair<std::vector<std::string>,std::string> &, const std::string &);
     std::string updateExamDocument(const std::string &,const std::string &,const std::string &);
     std::string createRRBackup(const std::string& , const std::string & ) const;
     SPREPF::StatData prepareStatData() const;
@@ -264,6 +236,8 @@ namespace SII{
     int allowedToModifyMessage(const std::string &,const std::string &) const;
     int allowedToCreateCouas(const std::string &) const;
     int allowedToModifyCouas(const std::string &,const std::string &) const;
+    int allowedToCreateCert(const std::string &) const;
+    int allowedToModifyCert(const std::string &) const;
     std::string createMessage(const std::string &, const std::string &, const std::string &);
     std::string modifyMessage(const std::string &, const std::string &);
     std::string deleteMessage(const std::string &, const std::string &);
@@ -274,6 +248,9 @@ namespace SII{
     std::string createCouas(const std::string &, const std::string &, const std::string &);
     std::string modifyCouas(const std::string &, const std::string &);
     std::string deleteCouas(const std::string &, const std::string &);
+    std::string createCert(const std::string &, const std::string &);
+    std::string modifyCert(const std::string &, const std::string &);
+    std::string deleteCert(const std::string &);
     std::string createGradingForCourse(const std::string &, const std::string &);
     int allowedToCreateRespRec() const;//WARNING: returns 1 only for root
     int allowedToModifyRespRec(const std::string &, const std::string &) const;
