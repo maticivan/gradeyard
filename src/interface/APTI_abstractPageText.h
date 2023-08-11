@@ -78,6 +78,7 @@ namespace APTI{
     std::string s_subText="text";
     std::string s_message="message";
     std::string s_couas="courseAssignment";
+    std::string s_cert="certificate";
     std::string s_respRecStatus="responseReceiverStatus";
     std::string s_codeTest="codeTest";
     std::string s_codeTestInNotes="codeTestInNotes";
@@ -109,6 +110,7 @@ namespace APTI{
     std::string createMessageDisplay(const PSDI::SessionData &,const std::string &);
     std::string createSolvingInvitation(const PSDI::SessionData &,const std::string &,const std::string &,const std::string & ) const;
     std::string createCouasDisplay(const PSDI::SessionData &,const std::string &);
+    std::string createCertDisplay(const PSDI::SessionData &,const std::string &);
     std::string createItemTable(const PSDI::SessionData &,const std::string &) const;
     std::string createInternalLink(const PSDI::SessionData &, const std::string &, const std::string &) const;
     std::string createTextAreaField(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string & ="notFound", const std::string & ="notFound");
@@ -123,7 +125,7 @@ namespace APTI{
     std::pair<std::string,std::string> createLinkPair(const std::vector<std::string> &, const std::vector<std::string> &,const std::string & ) const;
     std::pair<std::string,std::string> createLinkPair(const std::string & , const std::string & ,const std::string & ) const;
     std::stack<std::pair<std::string,std::string> > logInBarRaw(const std::string & ) const;
-    std::string createLogInLink() const; 
+    std::string createLogInLink() const;
     std::string createCloneInvitation(const PSDI::SessionData &);
     std::string createRestoreCommand(const PSDI::SessionData &, const std::string &);
     std::string createStatAnalysisPage(const PSDI::SessionData &, const std::string &) const;
@@ -139,6 +141,7 @@ namespace APTI{
     std::string createLinkToText(const std::string &, const std::string & = "page", const std::string & ="") const;
     std::string createLinkToMessage(const std::string &, const std::string & , const std::string &) const;
     std::string createLinkToCouas(const std::string &, const std::string & ,const std::string &) const;
+    std::string createLinkToCertificate(const std::string &, const std::string & ,const std::string &, const std::string& = "") const;
     std::string createLinkToExecuteBackup(const std::string &, const std::string &) const;
     std::string createLinkToExpandStat(const std::string &, const long & = 1) const;
     std::string createLinkToFile(const std::string &, const std::string &, const std::string &, const std::string &) const;
@@ -149,6 +152,7 @@ namespace APTI{
     std::string createListOfFiles(const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfMessages(const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfCoursesAssignments(const PSDI::SessionData & , const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
+    std::string createListOfCertificates(const PSDI::SessionData & , const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfBackups(const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfStatItems(const PSDI::SessionData &, const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfFStatItems(const std::string & , const std::string & ) const;//WARNING: not fully implemented - works only for root
@@ -157,6 +161,7 @@ namespace APTI{
     std::string pageAttributesForForumScroller(const PSDI::SessionData &) const;
     std::string createPowerMessageEdit(const PSDI::SessionData & ,const std::string &);
     std::string createPowerCouasEdit(const PSDI::SessionData & ,const std::string &);
+    std::string createPowerCertEdit(const PSDI::SessionData & ,const std::string &);
     virtual std::string modifyMe() const = 0;
     long allowedToInputCommands(const PSDI::SessionData &) const;//WARNING not implemented yet
   public:
@@ -190,6 +195,8 @@ namespace APTI{
     std::string createListFromDB(const PSDI::SessionData &, const std::string &,  const std::string &, const std::string &) const;
     int allowedToModifyText(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &) const;
     int allowedToDisplayText(const PSDI::SessionData &, const std::string &, const std::string & ="mainTextPosition") const;
+    int allowedToMakePDFForCertificate(const PSDI::SessionData &, const std::string&) const;
+    std::string pdfForCertificate(const PSDI::SessionData &,const std::string & ,const std::string&,const std::string&);
   };
 }
 #endif
