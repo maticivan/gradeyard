@@ -25,6 +25,7 @@ namespace WSI{
     std::string default_challengeAnswers="mainFolderDB/a0";
     std::string default_fileUploadLoc="f001";
     std::string default_publicSystemFileLoc="fs001";
+    std::string default_publicPDFCertLoc="pc001";
     std::string default_guestClonesRelLoc="si001";
     std::string default_wsName="websiteName";
     std::string default_wsURL="websiteURL";
@@ -48,6 +49,7 @@ namespace WSI{
     std::string vstOptions=default_vstOptions;
     std::string fileUploadLoc=default_fileUploadLoc;
     std::string publicSystemFileLoc=default_publicSystemFileLoc;
+    std::string publicPDFCertLoc=default_publicPDFCertLoc;
     std::string guestClonesRelLoc=default_guestClonesRelLoc;
     std::string cookiePath;
     std::string cookieName=default_cookieName;
@@ -84,6 +86,7 @@ namespace WSI{
     std::string getWSName() const;
     std::string getUploadLoc() const;
     std::string getPublicSystemFileLoc() const;
+    std::string getPublicPDFCertLoc() const;
     std::string getWSURL() const;
     std::string getDebuggingOptions() const;
     std::string getVersionStopOptions() const;
@@ -132,6 +135,7 @@ namespace WSI{
   std::string Setup::getVersionStopOptions() const{return vstOptions;}
   std::string Setup::getUploadLoc() const{    return fileUploadLoc; }
   std::string Setup::getPublicSystemFileLoc() const{ return publicSystemFileLoc;}
+  std::string Setup::getPublicPDFCertLoc() const{ return publicPDFCertLoc;}
   std::string Setup::getCookiePath() const{return cookiePath;}
   std::string Setup::getCookieName() const{return cookieName;}
   std::string Setup::get_e_parPage() const{return e_parPage;}
@@ -211,6 +215,9 @@ namespace WSI{
     publicSystemFileLoc=DD::GL_DBS.getPublicSystemStorage();
     redirectInfo="?rF="+publicSystemFileLoc;
     IOF::sys_createFolderIfDoesNotExist(publicSystemFileLoc,"index.html",HSF::redirectIndexHTML_F(redirectInfo,wsURL));
+    publicPDFCertLoc=DD::GL_DBS.getPublicPDFCertStorage();
+    redirectInfo="?rF="+publicPDFCertLoc;
+    IOF::sys_createFolderIfDoesNotExist(publicPDFCertLoc,"index.html",HSF::redirectIndexHTML_F(redirectInfo,wsURL));
     guestClonesRelLoc=DD::GL_DBS.getGuestClonesRelLoc();
     redirectInfo="?rF="+guestClonesRelLoc;
     if(guestClonesRelLoc!="/"){
@@ -247,6 +254,7 @@ namespace WSI{
       fR+=wsURL+"<BR> \n";
       fR+=fileUploadLoc+"<BR>\n";
       fR+=publicSystemFileLoc+"<BR>\n";
+      fR+=publicPDFCertLoc+"<BR>\n";
       fR+=cookiePath+"<BR>\n";
       fR+=cookieName+"<BR>\n";
       fR+=challengeImages+"<BR>\n";
