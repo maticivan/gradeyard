@@ -408,12 +408,13 @@ namespace RTI{
       }
       return fR;
   }
-  std::string problemCardOpeningTags(const SingleQuestionInfo &sqi, const std::string & lastComponent){
+  std::string problemCardOpeningTags(const SingleQuestionInfo &sqi, const std::string & lastComponent, const int & indicatorRegularProblem){
     std::string fR="";
     fR+=" <div class=\"card border-dark bg-light text-dark\">\n <div class=\"card-header\">\n";
-    fR+="<div class=\"row\"><div class=\"col-sm-1\"><B>"+std::to_string(sqi.num);
+    fR+="<div class=\"row\"><div class=\"col-sm-1\"><B>";
+    if(indicatorRegularProblem){fR+=std::to_string(sqi.num);}
     fR+="</B></div><div class=\"col-sm-8\"><B>";
-    if((sqi.maxPoints!="notFound")&&(sqi.maxPoints!="")){
+    if((indicatorRegularProblem)&&(sqi.maxPoints!="notFound")&&(sqi.maxPoints!="")){
       fR+=" ("+sqi.maxPoints+" "+MWII::GL_WI.getDefaultWebText("points")+") ";
     }
     fR+="</B></div><div class=\"col-sm-3\"> ";
@@ -430,6 +431,7 @@ namespace RTI{
   }
   std::string Response::singleProblemDisplay(const SingleQuestionInfo &sqi, ProblemCommentsAndScores & pcas, long &fileCounter, double &pointsEarned) const{
     pointsEarned=-999.99;
+    if(sqi.displType=="certificate"){return "certificate";}
     std::string fR="";
     std::string answerSubmitted="no";
     std::string barBgColor="bg-warning";
@@ -473,7 +475,7 @@ namespace RTI{
       if(answerSubmitted=="yes"){
         answBarLastComponent="<span class=\"text-success\">"+answSubmittedForTopBar+"</span>";
       }
-      fR+=problemCardOpeningTags(sqi,answBarLastComponent);
+      fR+=problemCardOpeningTags(sqi,answBarLastComponent,1);
       fR+="</div>\n</div>";
       if((sqi.displType==s_textInputReqField)||(sqi.displType==s_textAreaReqField)){
          if((sqi.userAnswer!="notFound")&&(sqi.userAnswer!="")){
@@ -506,7 +508,7 @@ namespace RTI{
       }
     }
     else{
-      fR+=problemCardOpeningTags(sqi,"");
+      fR+=problemCardOpeningTags(sqi,"",1);
       if(sqi.displType==s_radioButtonsField){
         std::vector<std::string> pairsOfValDescriptions=SF::stringToVector(sqi.allChoicesSt,"_rb*_","_/rb*_");
         std::vector<std::string> smallSt;
@@ -575,17 +577,21 @@ namespace RTI{
     }
     return fR;
   }
-  std::string Response::singleProblemDisplayForGrader(const SingleQuestionInfo &sqi, ProblemCommentsAndScores & pcas,long &fileCounter,double &pointsEarned) const{
+  std::pair<std::string,int> Response::singleProblemDisplayForGrader(const SingleQuestionInfo &sqi, ProblemCommentsAndScores & pcas,long &fileCounter,double &pointsEarned) const{
     pointsEarned=-999.99;
     std::string commentText="",pointsEarnedFromSubmission="";
-    std::string fR;
+    std::pair<std::string,int> fR;
+    fR.second=1;
+    if(sqi.displType=="certificate"){fR.second=0;}
     std::string answerSubmitted="no";
     std::string barBgColor="bg-secondary";
     std::string barTextColor="text-warning";
     std::string pointsSubmitted="no";
     std::string pointsEarnedForDisplay="";
-    pcas.completionProgress[sqi.num]="n";
-    pcas.scoringProgress[sqi.num]="-";
+    if(fR.second){
+      pcas.completionProgress[sqi.num]="n";
+      pcas.scoringProgress[sqi.num]="-";
+    }
     if((sqi.graderComment!="notFound")&&(sqi.graderComment!="")){
       pointsSubmitted="yes";
       long pos;std::pair<std::string,int>allD;
@@ -603,9 +609,9 @@ namespace RTI{
       }
     }
     if(sqi.acceptResp==1){
-      fR+="_insert__n*_textAreaField_/n*__n*_"+e_formNameRT+"_/n*_\n_n*_";
-      fR+=sqi.QNum+"_/n*__n*_";
-      fR+=problemCardOpeningTags(sqi,pointsEarnedForDisplay);
+      fR.first+="_insert__n*_textAreaField_/n*__n*_"+e_formNameRT+"_/n*_\n_n*_";
+      fR.first+=sqi.QNum+"_/n*__n*_";
+      fR.first+=problemCardOpeningTags(sqi,pointsEarnedForDisplay,fR.second);
       if(sqi.displType==s_radioButtonsField){
         std::vector<std::string> pairsOfValDescriptions=SF::stringToVector(sqi.allChoicesSt,"_rb*_","_/rb*_");
         std::vector<std::string> smallSt;
@@ -621,60 +627,70 @@ namespace RTI{
               if(smallSt[0]==sqi.userAnswer){
                 openB="<B>";closeB="</B>";
               }
-              fR+="<DIV>"+openB+smallSt[1]+ closeB+"</DIV>";
+              fR.first+="<DIV>"+openB+smallSt[1]+ closeB+"</DIV>";
             }
           }
         }
       }
-      fR+="</div>\n</div>";
-      fR+=userAnswerDisplay(sqi,fileCounter);
+      fR.first+="</div>\n</div>";
+      if(fR.second){fR.first+=userAnswerDisplay(sqi,fileCounter);}
       if(sqi.displaySol==1){
-        fR+="<div class=\"card\">\n<div class=\"card-body\">";
-        if((sqi.officialAnswer!="notFound")&&(sqi.officialAnswer!="")){
-          fR+="<B>"+MWII::GL_WI.getDefaultWebText("Correct answer")+": "+sqi.officialAnswer+"</B>";
+        fR.first+="<div class=\"card\">\n<div class=\"card-body\">";
+        if((sqi.officialAnswer!="notFound")&&(sqi.officialAnswer!="")&&(fR.second)){
+          fR.first+="<B>"+MWII::GL_WI.getDefaultWebText("Correct answer")+": "+sqi.officialAnswer+"</B>";
         }
         if((sqi.officialSolution!="notFound")&&(sqi.officialSolution!="")){
-          fR+="<BR><B>"+MWII::GL_WI.getDefaultWebText("Solution")+"</B>: "+sqi.officialSolution;
-        }
-        fR+="\n</div></div>\n";
-      }
-      if((sqi.displayPoints==1)||(sqi.displayComments==1)){
-        fR+="<div class=\"card\">\n<div class=\"card-body\">";
-        fR+="<FONT COLOR=\""+st_gradingColor+"\">";
-        if((sqi.userPointsEarned!="notFound")&&(sqi.userPointsEarned!="")){
-          fR+="<B>"+MWII::GL_WI.getDefaultWebText("Score")+": "+sqi.userPointsEarned+" "+MWII::GL_WI.getDefaultWebText("points")+".</B>";
-        }
-        if((sqi.graderComment!="notFound")&&(sqi.graderComment!="")){
-          fR+=pointsEarnedForDisplay;
-          if(pointsEarned>-999.99){
-            fR+="<BR>";
-            if(MWII::GL_WI.getDefaultWebText("Comment")!="No"){
-              fR+="<B>"+MWII::GL_WI.getDefaultWebText("Comment")+":</B> ";
-            }
-            fR+=DISPPF::prepareForHTMLDisplay( commentText);
+          if(fR.second){
+            fR.first+="<BR><B>";
+            fR.first+=MWII::GL_WI.getDefaultWebText("Solution")+":";
+            fR.first+="</B> "+sqi.officialSolution;
+          }
+          else{
+            fR.first+="<BR> "+CERTCLI::displayCertificateOptions(sqi.officialSolution);
           }
         }
-        fR+="\n</font>\n</div></div>\n";
+        fR.first+="\n</div></div>\n";
       }
-      fR+="_/n*__n*_";
+      if((sqi.displayPoints==1)||(sqi.displayComments==1)){
+        fR.first+="<div class=\"card\">\n<div class=\"card-body\">";
+        fR.first+="<FONT COLOR=\""+st_gradingColor+"\">";
+        if((fR.second)&&(sqi.userPointsEarned!="notFound")&&(sqi.userPointsEarned!="")){
+          fR.first+="<B>"+MWII::GL_WI.getDefaultWebText("Score")+": "+sqi.userPointsEarned+" "+MWII::GL_WI.getDefaultWebText("points")+".</B>";
+        }
+        if((sqi.graderComment!="notFound")&&(sqi.graderComment!="")){
+          if(fR.second){fR.first+=pointsEarnedForDisplay;}
+          if((pointsEarned>-999.99)||(fR.second==0)){
+            fR.first+="<BR>";
+            if(MWII::GL_WI.getDefaultWebText("Comment")!="No"){
+              fR.first+="<B>";
+              if(fR.second){
+                fR.first+=MWII::GL_WI.getDefaultWebText("Comment");
+              }
+              else{
+                fR.first+=MWII::GL_WI.getDefaultWebText("Certificate");
+              }
+              fR.first+=":</B> ";
+            }
+            fR.first+=DISPPF::prepareForHTMLDisplay(commentText);
+          }
+        }
+        fR.first+="\n</font>\n</div></div>\n";
+      }
+      fR.first+="_/n*__n*_";
       if( commentText!=""){
-        fR+= commentText;
+        fR.first+= commentText;
       }
-      fR+= "_/n*__n*_10_/n*__n*_90_/n*_\n_/insert_\n";
-      std::string diffText1_Label="textInputField";
-      std::string diffText2_Label="_/n*__n*_15_/n*_\n_/insert_\n";
-      if(sqi.displType==s_textAreaReqField){
-        diffText1_Label="textAreaField";
-        diffText2_Label="_/n*__n*_10_/n*__n*_90_/n*_\n_/insert_\n";
+      fR.first+= "_/n*__n*_10_/n*__n*_90_/n*_\n_/insert_\n";
+      if(fR.second){
+        fR.first+="_insert__n*_textInputField_/n*__n*_"+e_formNameRT+"_/n*_\n_n*_";
+        fR.first+="P"+sqi.QNum+"_/n*__n*_";
+        fR.first+="<B>"+MWII::GL_WI.getDefaultWebText("Points")+":</B> ";
+        fR.first+="_/n*__n*_";
+        if(pointsEarnedFromSubmission!="notFound"){
+          fR.first+=pointsEarnedFromSubmission;
+        }
+        fR.first+= "_/n*__n*_15_/n*_\n_/insert_\n";
       }
-      fR+="_insert__n*_textInputField_/n*__n*_"+e_formNameRT+"_/n*_\n_n*_";
-      fR+="P"+sqi.QNum+"_/n*__n*_";
-      fR+="<B>"+MWII::GL_WI.getDefaultWebText("Points")+":</B> ";
-      fR+="_/n*__n*_";
-      if(pointsEarnedFromSubmission!="notFound"){
-        fR+=pointsEarnedFromSubmission;
-      }
-      fR+= "_/n*__n*_15_/n*_\n_/insert_\n";
     }
     return fR;
   }
@@ -690,7 +706,19 @@ namespace RTI{
     }
     return fR;
   }
-  ResponderInfo Response::infoFromResponseText(const PSDI::SessionData & _psd,  const std::string & _req, const int & optimizationParameter){
+  int includeInGradersCommentsMap(const std::string& qLabel, const int & includeCertificateIndicator){
+    if(includeCertificateIndicator==1){
+      return 1;
+    }
+    if(qLabel.size()<2){
+      return 1;
+    }
+    if((qLabel[0]=='Q')&&(qLabel[1]=='C')){
+      return 0;
+    }
+    return 1;
+  }
+  ResponderInfo Response::infoFromResponseText(const PSDI::SessionData & _psd,  const std::string & _req, const int & optimizationParameter, const int & includeCertificateInGradersCommentsMap){
       ResponderInfo rInf;
       rInf.acceptResp=0;
       rInf.acceptGrade=0;
@@ -712,6 +740,8 @@ namespace RTI{
       rInf.actRequest=0;
       rInf.remainingSeconds=-1;
       rInf.roundingTimeSec=30;
+      rInf.certificateDescriptionCode="notFound";
+      rInf.certificateIdCode="notFound";
       long pos;
       std::pair<std::string,int> allD;
       pos=0;allD=SF::extract(rawText,pos,s_iEnd_QRTB,s_iEnd_QRTE);
@@ -725,7 +755,6 @@ namespace RTI{
           rInf.indTimerVersion=tmpLong;
         }
       }
-
       pos=0;allD=SF::extract(rawText,pos,s_statusOfTheForm_ARTB,s_statusOfTheForm_ARTE);
       rInf.statusOfTheForm="nyo";
       if(allD.second==1){
@@ -753,6 +782,7 @@ namespace RTI{
       std::string masterStatusDoc="";
       std::string masterStatus="notFound";
       std::string masterStatusRawData="";
+      std::string locationOfCertificateInfo=rawText;
       if(optimizationParameter==0){
         pos=0; allD=SF::extract(rawText,pos,s_masterStatus_ARTB,s_masterStatus_ARTE);
         if(allD.second==1){
@@ -837,6 +867,7 @@ namespace RTI{
         }
         indGradingDocForRespCorrectlySet=gradingDocumentForReponse.setFromTextName(allD.first);
         if(indGradingDocForRespCorrectlySet==1){
+          locationOfCertificateInfo=gradingDocumentForReponse.getTextData();
           std::vector<std::string> vecAllGCs=SF::stringToVector(gradingDocumentForReponse.getTextData(), s_nextQ_QRTB, s_nextQ_QRTE);
           long sz=vecAllGCs.size();
           std::pair<std::string,std::vector<std::string> > tmpGr;
@@ -856,8 +887,20 @@ namespace RTI{
         for(long i=0;i<sz;++i){
           tmpGr=getUsrAVect(vecAllGCs[i]);
           if(tmpGr.first!="notFound"){
-            (rInf.gradersComments)[tmpGr.first]=(tmpGr.second)[3];
+            if(includeInGradersCommentsMap(tmpGr.first,includeCertificateInGradersCommentsMap)){
+              (rInf.gradersComments)[tmpGr.first]=(tmpGr.second)[3];
+            }
           }
+        }
+      }
+      if((rInf.documentType==st_gradeOfResponse)||(rInf.documentType==st_responseToTest)){
+        pos=0; allD=SF::extract(locationOfCertificateInfo,pos,s_certificateDescCodeB,s_certificateDescCodeE);
+        if(allD.second==1){
+            rInf.certificateDescriptionCode=allD.first;
+        }
+        pos=0; allD=SF::extract(locationOfCertificateInfo,pos,s_certificateIdCodeB,s_certificateIdCodeE);
+        if(allD.second==1){
+            rInf.certificateIdCode=allD.first;
         }
       }
       rInf.idInfoData="notFound";
@@ -1232,6 +1275,23 @@ namespace RTI{
     fR+=" </tbody></table></div>\n";
     return fR;
   }
+  std::string Response::createLinkToCertificate(const PSDI::SessionData& _psd, const ResponderInfo& rInf) const{
+    if((rInf.documentType!=st_responseToTest)&&(rInf.documentType!=st_gradeOfResponse)){
+      return "";
+    }
+    if((rInf.documentType==st_gradeOfResponse)&&(_psd.isRoot=="no")){
+      return "";
+    }
+    if((rInf.certificateDescriptionCode=="notFound")||(rInf.certificateIdCode=="notFound")||(rInf.certificateDescriptionCode=="")||(rInf.certificateIdCode=="")){
+      return "";
+    }
+    std::string linkURL="index.cgi?"+MWII::GL_WI.get_e_parPage()+"=certificates&s1=u11&r1="+rInf.certificateIdCode;
+    std::string certText=MWII::GL_WI.getDefaultWebText("certificateAnnouncement");
+    if(certText=="certificateAnnouncement"){
+      certText="<a href=\"_***CERTURL***_\">Certificate</a>";
+    }
+    return SF::findAndReplace(certText,"_***CERTURL***_",linkURL);
+  }
   int autoGradingIsNeeded(const std::string & grComment){
     int grNeed=0;
     long pos;
@@ -1511,7 +1571,7 @@ namespace RTI{
     LMF::LatexDataSingleQuestion lD_sq;
     SingleQuestionInfo sqi;
     ProblemCommentsAndScores pcas;
-    std::string statusAndProgressLine;
+    std::string statusAndProgressLine,linkToCertificateLine;
     std::set<std::string>::const_iterator it,itE;
     itE=permitRead.end();
     it=permitRead.find("everyone");
@@ -1679,16 +1739,22 @@ namespace RTI{
       sqi.displayQs=res.displayQs;
       if(res.documentType==st_responseToTest){
         problemDisplText=singleProblemDisplay(sqi,pcas, fileCounter, singleProblemScore);
-        if( (sqi.num>displStart)&&(sqi.num<displEndP1)){
-          md+=problemDisplText;
+        if(problemDisplText=="certificate"){
+          --(sqi.num);
+        }
+        else{
+          if( (sqi.num>displStart)&&(sqi.num<displEndP1)){
+            md+=problemDisplText;
+          }
         }
       }
       else{
         sqi.acceptResp=res.acceptGrade;
-        problemDisplText=singleProblemDisplayForGrader(sqi,pcas,fileCounter, singleProblemScore);
-        if( (sqi.num>displStart)&&(sqi.num<displEndP1)){
-          md+=problemDisplText;
+        std::pair<std::string,int> displPairForGrader=singleProblemDisplayForGrader(sqi,pcas,fileCounter, singleProblemScore);
+        if(displPairForGrader.second==0){
+          --(sqi.num);
         }
+        md+=displPairForGrader.first;
       }
       if((totalScore>-999.0)&&(singleProblemScore>-999.0)){
         totalScore+=singleProblemScore;
@@ -1715,6 +1781,8 @@ namespace RTI{
       }
     }
     statusAndProgressLine=createStatusAndProgressLine(pcas,totalScore,res,questions_on_page);
+    linkToCertificateLine=createLinkToCertificate(_psd,res);
+    statusAndProgressLine=linkToCertificateLine+statusAndProgressLine;
     if(sqi.num>questions_on_page){
       std::string pageAtt=MWII::GL_WI.get_e_respRecReqRT()+"="+tName;
       long start=displStart;
