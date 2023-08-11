@@ -7,6 +7,7 @@ _vVPair__vr_countersDB*!_/vr__vl_cntrs_/vl__/vVPair_
 _vVPair__vr_fileManagement*!_/vr__vl_fMan_/vl__/vVPair_
 _vVPair__vr_messageManagement*!_/vr__vl_messMan_/vl__/vVPair_
 _vVPair__vr_couasManagement*!_/vr__vl_couasMa_/vl__/vVPair_
+_vVPair__vr_certManagement*!_/vr__vl_certMa_/vl__/vVPair_
 _vVPair__vr_backupDB*!_/vr__vl_backup_/vl__/vVPair_
 _vVPair__vr_backupMaxSZ*!_/vr__vl_1000_/vl__/vVPair_
 _vVPair__vr_mainText*!_/vr__vl_mTxt_/vl__/vVPair_
@@ -14,7 +15,6 @@ _vVPair__vr_responseDB*!_/vr__vl_rspT_/vl__/vVPair_
 _vVPair__vr_statDB*!_/vr__vl_statT_/vl__/vVPair_
 _vVPair__vr_fstDB*!_/vr__vl_fstT_/vl__/vVPair_
 _vVPair__vr_hierarchyCache*!_/vr__vl_hBossCache_/vl__/vVPair_
-
 _vVPair__vr_dcMountingFolder*!_/vr__vl_dmountF_/vl__/vVPair_
 _vVPair__vr_dImageName*!_/vr__vl_ub_cpp_py_/vl__/vVPair_
 _vVPair__vr_codesToAutoGrade*!_/vr__vl_5_/vl__/vVPair_
@@ -23,6 +23,7 @@ _vVPair__vr_initializerExtension*!_/vr__vl__start_/vl__/vVPair_
 
 _vVPair__vr_publicSubFolderToStoreFiles*!_/vr__vl_qq_/vl__/vVPair_
 _vVPair__vr_publicSubFolderForSystemFiles*!_/vr__vl_qs_/vl__/vVPair_
+_vVPair__vr_publicSubFolderForPdfCertificates*!_/vr__vl_cert_/vl__/vVPair_
 _vVPair__vr_subFolderForGuestClones*!_/vr__vl_sites_/vl__/vVPair_
 
 _vVPair__vr_numStorageSubFoldersInFolder*!_/vr__vl_1000_/vl__/vVPair_
@@ -219,12 +220,7 @@ _/vl__/vVPair_
 
 
 
-
-
 _vVPair__vr_examPreambleLatexTemplate_/vr__vl_
-
-
-
 \documentclass[twoside]{article}
 \newcommand\DS{\displaystyle}
 \newcommand\TS{\textstyle}
@@ -241,16 +237,28 @@ _vVPair__vr_examPreambleLatexTemplate_/vr__vl_
 \textwidth 19.2cm \textheight 23.5cm
 
 \pagestyle{empty}
-
-
-
 _/vl__/vVPair_
 
 
 _vVPair__vr_notesPreambleLatexTemplate_/vr__vl_
+\documentclass[twoside]{article}
+\newcommand\DS{\displaystyle}
+\newcommand\TS{\textstyle}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{times}
+\usepackage{mathptmx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\newcommand{\vect}[1]{\mathbf{#1}}
+
+\topmargin -1in \oddsidemargin -15.5mm \evensidemargin -15.5mm
+\textwidth 19.2cm \textheight 23.5cm
+_/vl__/vVPair_
 
 
-
+_vVPair__vr_certPreambleLatexTemplate_/vr__vl_
 \documentclass[twoside]{article}
 \newcommand\DS{\displaystyle}
 \newcommand\TS{\textstyle}
@@ -266,8 +274,11 @@ _vVPair__vr_notesPreambleLatexTemplate_/vr__vl_
 \topmargin -1in \oddsidemargin -15.5mm \evensidemargin -15.5mm
 \textwidth 19.2cm \textheight 23.5cm
 
-
+\pagestyle{empty}
 _/vl__/vVPair_
+
+
+
 
 
 _vVPair__vr_answerBoxLatexTemplate_/vr__vl_
