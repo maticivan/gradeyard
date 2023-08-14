@@ -667,6 +667,13 @@ namespace SF{
     }
     return fR;
   }
+  std::vector<std::string> stringToVectorSimpleSeparator(const std::string& _nAnswers,const std::string& separator=";"){
+    std::string saB="_n*_", saE="_/n*_";
+    std::string nAnsw=findAndReplace(_nAnswers,separator,saE+saB);
+    nAnsw=saB+nAnsw;
+    nAnsw+=saE;
+    return stringToVector(nAnsw,saB,saE);
+  }
   std::vector<std::vector<std::string> > stringToMatrix(const std::string & _qs,
                                                         const std::string & _nextB,
                                                         const std::string & _nextE,
@@ -1053,7 +1060,7 @@ namespace SF{
       ++it;
     }
     return fR;
-  } 
+  }
   std::map<std::string,std::string> stringToMap(const std::string & everything, const std::string & sepKeyB,const std::string & sepKeyE,const std::string & sepValB,const std::string & sepValE){
     std::map<std::string,std::string> fR;
     int stillWorking=1;
