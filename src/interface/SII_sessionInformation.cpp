@@ -2201,7 +2201,8 @@ namespace SII{
     if(allowedToCreateRespRec()==0){
       return "!failed!: Not allowed";
     }
-    std::vector<std::string> vectProblemsRaw=SF::stringToVector(_dToGenerateFrom,"_in*|_","_/in*|_");
+    std::string dToGenerateFrom=CEVI::createPlaceHoldersForProblemsWithNoDisplays(_dToGenerateFrom);
+    std::vector<std::string> vectProblemsRaw=SF::stringToVector(dToGenerateFrom,"_in*|_","_/in*|_");
     std::pair<std::vector<std::string>,std::string> pairProblemsCert=CERTCLI::problemsAndCertificate(vectProblemsRaw);
     long problemsOK=checkWhetherAllProblemsExist(pairProblemsCert.first);
     if(problemsOK!=1){
@@ -2223,7 +2224,7 @@ namespace SII{
       return "!failed!: Something may be bad with the database. The text name did not exist when checked but could not create text.";
     }
     respRecRequested=sf.getTextName();
-    sf.setTextData(prepareTextForTextTable(genExamTemplate(_dToGenerateFrom,pairProblemsCert,_eName),"!noOldData!"));
+    sf.setTextData(prepareTextForTextTable(genExamTemplate(dToGenerateFrom,pairProblemsCert,_eName),"!noOldData!"));
     sf.putInDB();
     psd.recoveryOperationNames.push("assignmentCreation");
     psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",respRecRequested));
@@ -2356,10 +2357,6 @@ namespace SII{
     if(textExists==0){
       return "!failed!: Exam does not exist";
     }
-    CEVI::StudentAnswRRUpdateData stDataVA=CEVI::createFromString(_textWithUpdate);
-    std::map<std::string,std::string>::const_iterator it,itE,itA,itAE;
-    itE=(stDataVA.uNamesToVersions).end();
-    itAE=(stDataVA.uNamesToAnswers).end();
     respRecRequested=sf.getTextName();
     std::string rawTextRespRec=sf.getTextData();
     long pos; std::pair<std::string, int> allD;
@@ -2367,6 +2364,10 @@ namespace SII{
     if(allD.second==1){
       std::vector<std::string> problemLabels=SF::stringToVector(allD.first,"_lb*|_","_/lb*|_");
       std::vector<std::string> allRawStudentsData=SF::stringToVector(allD.first,"_st*|_","_/st*|_");
+      CEVI::StudentAnswRRUpdateData stDataVA=CEVI::createFromString(problemLabels.size(),allRawStudentsData.size(),_textWithUpdate);
+      std::map<std::string,std::string>::const_iterator it,itE,itA,itAE;
+      itE=(stDataVA.uNamesToVersions).end();
+      itAE=(stDataVA.uNamesToAnswers).end();
       std::vector<std::vector<std::string> > stAllData;
       long sz=allRawStudentsData.size();
       stAllData.resize(sz);
