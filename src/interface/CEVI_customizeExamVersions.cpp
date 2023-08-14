@@ -20,6 +20,8 @@
 #define _INCL_CEVI_CustomizeExamVersions_CPP
 
 namespace CEVI{
+  std::string nDB="_noDisplayProblems|_";
+  std::string nDE="_/noDisplayProblems|_";
   std::string lVB="_listVersions*|_";
   std::string lVE="_/listVersions*|_";
   std::string stCB="_stCustomizations*|_";
@@ -37,12 +39,117 @@ namespace CEVI{
     std::map<std::string,std::string> uNamesToVersions;
     std::map<std::string,std::string> uNamesToAnswers;
   };
-  StudentAnswRRUpdateData createFromString(const std::string & _raw){
+  std::string wrapperString(const std::string& start, const std::string & end, long j){
+    std::string res=start;
+    if(j<10){res+="0";}
+    res+=std::to_string(j);
+    res+=end;
+    return res;
+  }
+  std::string trivialVersions(long numVersions, long _numProblems){
+    std::string fR="";
+    long numProblems=_numProblems+1;
+    for(long i=0;i<numVersions;++i){
+      fR+="_n*_\n_vnm*_"+std::to_string(i)+"_/vnm*_\n_vt*_\n";
+      for(long j=1;j<numProblems%100;++j){
+        fR+=wrapperString("_vQ","*|_",j)+std::to_string(i)+wrapperString("_/vQ","*|_",j)+"\n";
+      }
+      fR+="_/vt*_\n_/n*_\n";
+    }
+    return fR;
+  }
+  std::string placeHoldersForNDP(const std::string& rawNDP){
+    std::vector<std::string> allVersions=SF::stringToVector(rawNDP,"_n*_","_/n*_");
+    std::vector<std::string> allPoints=SF::stringToVector(rawNDP,"_pt*|_","_/pt*|_");
+    std::vector<std::vector<std::string> > probMatrix;
+    long numRows=allVersions.size();
+    if(numRows<1){return "";}
+    probMatrix.resize(numRows);
+    long numProblems=0;
+    for(long i=0;i<numRows;++i){
+      probMatrix[i]=SF::stringToVectorSimpleSeparator(allVersions[i]);
+      if(probMatrix[i].size()>numProblems){
+        numProblems=probMatrix[i].size();
+      }
+    }
+    std::vector<std::string> points;
+    if(allPoints.size()==numProblems){
+      points=std::move(allPoints);
+    }
+    else{
+      if(allPoints.size()<1){
+        points.resize(1);points[0]="1";
+      }
+      else{
+        if(allPoints.size()==1){
+          points=SF::stringToVectorSimpleSeparator(allPoints[0]);
+        }
+        else{
+          points=std::move(allPoints);
+        }
+      }
+      if(points.size()<numProblems){
+        long oldSize=points.size();
+        std::vector<std::string> ptsNew;
+        ptsNew.resize(numProblems);
+        for(long i=0;i<numProblems;++i){
+          if(i<oldSize){
+            ptsNew[i]=points[i];
+          }
+          else{
+            ptsNew[i]=points[oldSize-1];
+          }
+        }
+        points=std::move(ptsNew);
+      }
+    }
+    std::string res;
+    for(long i=0;i<numProblems;++i){
+      res+="\n_in*|_\n_p*|_\n";
+      res+="_tx*|_N/A for problem"+std::to_string(i+1)+"_/tx*|_\n";
+      res+="_sl*|_N/A for problem"+std::to_string(i+1)+"_/sl*|_\n";
+      res+="_aw*|_{answer}_/aw*|_\n_rq*|_textInputField_/rq*|_\n_searchReplace_\n";
+      res+="_v*a_\n{alpha}=1@@\n_/v*a_\n";
+      for(long row=0;row<numRows;++row){
+        res+="_v*"+std::to_string(row)+"_\n";
+        res+="{answer}=";
+        if(i<probMatrix[row].size()){
+          res+=probMatrix[row][i]+"@@\n";
+        }
+        else{
+          res+="na@@\n";
+        }
+        res+="_/v*"+std::to_string(row)+"_\n";
+      }
+      res+="_/searchReplace_\n";
+      res+="_/p*|_\n";
+      res+="_pt*|_"+points[i]+"_/pt*|_\n";
+      res+="_/in*|_\n";
+    }
+    return res;
+  }
+  std::string createPlaceHoldersForProblemsWithNoDisplays(const std::string& in){
+    long pos; std::pair<std::string,int> allD;
+    pos=0;allD=SF::extract(in,pos,nDB,nDE);
+    if(allD.second==0){
+      return in;
+    }
+    pos=0;allD=SF::extractAndReplace(in,pos,nDB,nDE,0,placeHoldersForNDP(allD.first));
+    if(allD.second==0){
+      return in;
+    }
+    return allD.first;
+  }
+  StudentAnswRRUpdateData createFromString(const long& numProblems, const long& numStudents, const std::string & _raw){
       StudentAnswRRUpdateData res;
       long pos;
       std::pair<std::string,long> allDV,allDS;
       pos=0;allDV=SF::extract(_raw,pos,lVB,lVE);
       pos=0;allDS=SF::extract(_raw,pos,stCB,stCE);
+      if((allDV.second==0)||((allDV.first).length()<15)){
+        allDV.first=trivialVersions(numStudents,numProblems);
+        allDV.second=1;
+      }
       if((allDV.second==0)||(allDS.second==0)){
         return res;
       }
@@ -134,11 +241,7 @@ namespace CEVI{
     std::string output=input;
     std::vector<std::string> lb=removeCertificateIfPresent(_lb);
     long sz=lb.size();
-    std::string saB="_n*_", saE="_/n*_";
-    std::string nAnsw=SF::findAndReplace(_nAnswers,";",saE+saB);
-    nAnsw=saB+nAnsw;
-    nAnsw+=saE;
-    std::vector<std::string> answVect=SF::stringToVector(nAnsw,saB,saE); 
+    std::vector<std::string> answVect=SF::stringToVectorSimpleSeparator(_nAnswers);
     long posO,posN;
     std::pair<std::string,int> allDO,allDN;
     if(answVect.size()<sz){
