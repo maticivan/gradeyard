@@ -6075,6 +6075,9 @@ _textData!!_
 
 
  <H2>Create Exam</H2>
+
+<p>For in-person exams that only need auto-grader and do not display problems and solutions, pleas read the instructions placed after the form.</p>
+
 _insert_
 _n*_formInitialization_/n*_
 _n*_reqCommand_/n*_
@@ -6090,14 +6093,15 @@ _n*_
 DO NOT EDIT THIS LINE:_nc***_generateExam_/nc***_
 EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_
 START EDITING AFTER THIS LINE_nc***_
-_problems*|_
 
+ 
+
+_problems*|_
 
 _in*|_
 _p*|_sampleProblem01_/p*|_
 _pt*|_33_/pt*|_
 _/in*|_
-
 
 _in*|_
 _p*|_sampleProblem02_/p*|_
@@ -6108,7 +6112,6 @@ _in*|_
 _p*|_sampleProblem03_/p*|_
 _pt*|_34_/pt*|_
 _/in*|_
-
 
 _in*|_
 _p*|_templateWithCertificates_/p*|_
@@ -6123,11 +6126,9 @@ RECOMMENDED DO NOT EDIT THIS LINE _stLocation*|__vr_docName_/vr_St_/stLocation*|
 
 Number of files that students will be allowed to submit:
 _nf*|_0_/nf*|_
-
-
-
-
 _/students*|_
+
+
 _/nc***_
  _/command__/n*_
 _/insert_
@@ -6135,7 +6136,19 @@ _insert_
 _n*_formPlacement_/n*_
 _n*_reqCommand_/n*_
 _/insert_
-
+<h3>In-person exams with only auto-grader support and no displayed questions</h3>
+<p>Follow the two steps to edit the section between tags <code>_problems*|_</code> and <code>_/problems*|_</code>:</p>
+<ul><li><b>Step 1.</b> Remove the individual problems (the components between tags <code>_in*|_</code> and <code>_/in*|_</code>;
+</li><li><b>Step 2.</b> Put a modification of the document: 
+<pre>_noDisplayProblems|_
+Points assigned to problems: _pt*|_5;5;5;5;10;10;10_/pt*|_
+Answers to version 0: _n*_E;E;A;D;17;28;31_/n*_
+Answers to version 1: _n*_B;A;E;C;27;$\frac{1}{3}$;19_/n*_
+Answers to version 2:_n*_C;E;E;A;$x^2$;-17;29_/n*_
+_/noDisplayProblems|_</pre>
+The number of versions does not have to be 3. The number of problems does not have to be 7. However, it would be the best if each version has equal number of problems. Otherwise, you have to read the source code to see what will happen. When the parameters are badly broken (like unequal numbers of problems in different versions of the exams), then the program will do everything to prevent segmentation fault. The comfort of the administrator who made the bad parameters will be the least of the program's concern. 
+</li>
+</ul>
 _/textData!!_
 
 _/n*!!***!_
@@ -6593,6 +6606,9 @@ _/systemData!!_
 
 _textData!!_
 <H2>Update individual versions for exam</H2>
+
+<p>If you want for every $k$ to make the version <code>k</code> to consist of the problems <code>Q01.k</code>, <code>Q02.k</code>, <code>...</code>, then erase the entire section that starts with <code>_listVersions*|_</code> and terminates with <code>_/listVersions*|_</code>.
+</p>
 _insert_
 _n*_formInitialization_/n*_
 _n*_reqCommand_/n*_
@@ -6602,7 +6618,7 @@ _insert_
 _n*_textAreaField_/n*_
 _n*_reqCommand_/n*_
 _n*_commands_/n*_
-_n*_The command is pre-filled with required parameters and it is best if you just keep them at their default values._/n*_
+_n*_ _/n*_
 _n*_
  _command_
 DO NOT EDIT THIS LINE:_nc***_updateVersionsForExam_/nc***_
