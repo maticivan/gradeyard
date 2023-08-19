@@ -36,6 +36,8 @@ namespace GF{
   std::string GL_HIDING_STRING_PTKF04="WNRf34";
   std::string GL_HIDING_STRING_SF="e!n!S!azm8*81!!7!2203!a";
   std::string GL_HIDING_STRING_TWDVF="!e*n&d=*7e&n&d";
+  std::string GL_sepB="_*!.";
+  std::string GL_sepE="_/*!.";
   std::string GL_errorDidNotCompile="Error:DidNotCompile";
   std::string GL_errorOutputTooBig="Error:OutputTooBig";
   long GL_MAIN_SECRET_NUMBER=17;//This will be set to the secret code in mainFunction.cpp
@@ -63,6 +65,8 @@ namespace GF{
   public:
     std::vector<std::string> strings;
     std::vector<std::string> veryBadStrings;
+    std::set<char> unacceptableCharactersInUsernames;
+    std::set<char> unacceptableCharactersInNames;
     Danger();
   } GL_DANGERS;
   Danger::Danger(){
@@ -95,6 +99,14 @@ namespace GF{
     veryBadStrings[1]="<php";
     veryBadStrings[2]="ata!!_";
     veryBadStrings[3]="ing!!_";
+    std::string unBCharacters="/.\"\'\n\t\\#*=@!~$%^+,;:?<> |";
+    for(long i=0;i<unBCharacters.length();++i){
+      unacceptableCharactersInUsernames.insert(unBCharacters[i]);
+    }
+    std::string nBCharacters="/.\"\'\n\t\\#*=@!~$%^+,;:?<>_|";
+    for(long i=0;i<nBCharacters.length();++i){
+      unacceptableCharactersInNames.insert(nBCharacters[i]);
+    }
   }
   std::map<std::string,std::map<std::string,double> > GL_GRADE_CONVERSION=initializeLetterGradesConversionMap();
   long GL_randSeed= std::chrono::high_resolution_clock::now().time_since_epoch().count();
