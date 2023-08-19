@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -33,45 +33,28 @@ namespace SACF{
     }
     return 1-danger;
   }
-
-  int acceptableNamesForPeople(const std::string & in){
-    std::string out=in;
-    out=SF::findAndReplace(out,"/","");
-    out=SF::findAndReplace(out,".","");
-    out=SF::findAndReplace(out,"\"","");
-    out=SF::findAndReplace(out,"\n","");
-    out=SF::findAndReplace(out,"\t","");
-
-    out=SF::findAndReplace(out,"@","");
-    out=SF::findAndReplace(out,"!","");
-    out=SF::findAndReplace(out,"~","");
-
-    out=SF::findAndReplace(out,"$","");
-    out=SF::findAndReplace(out,"%","");
-    out=SF::findAndReplace(out,"^","");
-    out=SF::findAndReplace(out,"\\","");
-    out=SF::findAndReplace(out,"+","");
-    out=SF::findAndReplace(out,",","");
-    out=SF::findAndReplace(out,";","");
-    out=SF::findAndReplace(out,":","");
-    out=SF::findAndReplace(out,"?","");
-    out=SF::findAndReplace(out,"<","");
-    out=SF::findAndReplace(out,">","");
-
-    if(out!=in){
-      return 0;
+  int badCharactersAvoided(const std::string& in, const std::set<char> &m){
+    int stillGood=1;
+    long i=0;
+    long sz=in.length();
+    while((stillGood==1)&&(i<sz)){
+      if(m.find(in[i])!=m.end()){
+        stillGood=0;
+      }
+      ++i;
     }
-    return 1;
-
+    return stillGood;
   }
   int veryStrictSafetyCheck(const std::string & s){
     if(strictSafetyCheck(s)==0){return 0;}
     return IOF::legalFileName(s);
   }
-
   int lessStrictSafetyCheck(const std::string & s){
     if(strictSafetyCheck(s)==0){return 0;}
-    return acceptableNamesForPeople(s);
+    return badCharactersAvoided(s,GF::GL_DANGERS.unacceptableCharactersInNames);
+  }
+  int acceptableUserName(const std::string& s){
+    return badCharactersAvoided(s,GF::GL_DANGERS.unacceptableCharactersInUsernames);
   }
 }
 
