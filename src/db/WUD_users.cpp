@@ -244,7 +244,7 @@ namespace WUD{
     return 1;
   }
   int User::createUser(const std::string & _uName, const std::string & _masterKey, const std::string & _extId){
-    if(SACF::veryStrictSafetyCheck(_uName)==0){
+    if(SACF::acceptableUserName(_uName)==0){
       return 0; //unsafe username
     }
     if((_extId!="!*!")&&(SACF::veryStrictSafetyCheck(_extId)==0)) {
