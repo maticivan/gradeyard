@@ -494,20 +494,17 @@ namespace SETBF{
       std::pair<std::string,int> setPt=SF::extract(allData,pos,setPtB,setPtE);
       if(setPt.second==0){
           return 0;
-      }
-      //pos=0;
+      } 
       std::pair<std::string,int> setSz=SF::extract(allData,pos,setSzB,setSzE);
       if(setSz.second==0){
           return 0;
       }
-      _size=BF::stringToInteger(setSz.first);
-      //pos=0;
+      _size=BF::stringToInteger(setSz.first); 
       std::pair<std::string,int> setHi=SF::extract(allData,pos,setHiB,setHiE);
       if(setHi.second==0){
           return 0;
       }
-      _height=BF::stringToInteger(setHi.first);
-      //pos=0;
+      _height=BF::stringToInteger(setHi.first); 
       std::pair<std::string,int> setStF=SF::extract(allData,pos,setStFNB,setStFNE);
       if(setStF.second==0){
           return 0;
