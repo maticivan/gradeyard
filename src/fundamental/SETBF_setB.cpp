@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -14,7 +14,6 @@
 //
 //    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
 //    along with this program.  If not, see https://www.gnu.org/licenses/.
-
 
 #ifndef _INCL_SetAugmentedBTree_CPP
 #define _INCL_SetAugmentedBTree_CPP
@@ -31,15 +30,11 @@
 namespace SETBF{
   template<typename TTT> class BasicSet{
   protected:
-
       std::string startingFolderName;
-
       HDPF::Pointer<HBF::Node<TTT> > _dRoot;
       long _size;
       long _height;
       TRF::TreeInsertReturn<TTT> insTreeAdv(HDPF::Pointer<HBF::Node<TTT> > , const TTT &  );
-
-
       HBF::Node<TTT> shiftAndInsertChild(const HDPF::Pointer<HBF::Node<TTT> > & ,
                                        const HDPF::Pointer<HBF::Node<TTT> > & ,
                                        const HBF::Node<TTT> & ,
@@ -51,7 +46,6 @@ namespace SETBF{
       HBF::Node<TTT> removeEdgeValueAfterEdgeDFUpdate(const HDPF::Pointer<HBF::Node<TTT> > & ,
                                                                 const HBF::Node<TTT> &  ,
                                                                 const long &  );
-
       TRF::TreeEraseReturn<TTT> getValueFromASibling(HDPF::Pointer<HBF::Node<TTT> > & ,
                                                 const HBF::Node<TTT>  & ,
                                                 const long & childIndex,
@@ -88,18 +82,14 @@ namespace SETBF{
       TRF::TreeEraseReturn<TTT> removeFromTree(HDPF::Pointer<HBF::Node<TTT> > , const TTT& );
       HDPF::Pointer<HBF::Node<TTT> > duplicateTree(HDPF::Pointer<HBF::Node<TTT> >, const std::string &);
       std::pair<TTT,std::string> b_randomAccess(HDPF::Pointer<HBF::Node<TTT> > , const long & ) const;
-
       virtual void operator=(const BasicSet &);
   public:
       BasicSet();
       virtual void setStartingFolderName(const std::string &);
       std::string getStartingFolderName()const;
-
-
       virtual void copyFromSet(const BasicSet &, const std::string &);
       BasicSet(const BasicSet &);
       BasicSet(BasicSet&&);
-
       virtual void operator=(BasicSet &&);
       long size() const;
       virtual long erase(const TTT & );
@@ -110,8 +100,6 @@ namespace SETBF{
       virtual long operator+=(const BasicSet &);
       virtual long operator-=(const TTT &);
       virtual long operator-=(const BasicSet &);
-
-
       virtual IRFNF::IndRecFName<TTT> findIndexRecordFileName(const TTT & ) const;
       virtual std::pair<long,TTT> findIndexRecordPair(const TTT & ) const;
       virtual long find(const TTT &) const;
@@ -119,30 +107,18 @@ namespace SETBF{
       IRFNF::IndRecFName<TTT> lowerBoundIndexRecordFileName(const TTT & , const long& =0 ) const;
       std::pair<long,TTT> lowerBoundIndexRecordPair(const TTT & ) const;
       long lowerBound(const TTT &) const;
-
       virtual void clear();
-
       void saveToFile(const std::string &, const std::string & = "noSpecialNameForSet") const;
       int loadFromFile(const std::string &, const std::string & = "noSpecialNameForSet");
-
       std::string saveInitializationToString(const std::string &, const std::string & = "noSpecialNameForSet") const;
       int loadInitializationFromString(const std::string &, const std::string & = "noSpecialNameForSet");
-
-
-
       std::pair<TTT,std::string> operator[](const long & ) const;
       virtual ~BasicSet();
-
-
       std::string statusReportForDebugging() const;
-
   };
-
-
   template<typename TTT>  BasicSet<TTT>::BasicSet(const BasicSet<TTT>& _copyFrom){
     startingFolderName=_copyFrom.startingFolderName;
     _dRoot= duplicateTree(_copyFrom._dRoot,startingFolderName);
-
     _size= _copyFrom._size;
     _height=_copyFrom._height;
   }
@@ -151,7 +127,6 @@ namespace SETBF{
       _size=0;
       _height=-117;
   }
-
   template<typename TTT> void BasicSet<TTT>::setStartingFolderName(const std::string &_stFN){
     startingFolderName=_stFN;
   }
@@ -170,9 +145,6 @@ namespace SETBF{
     fR+="\nRoot of the tree report end.";
     return fR;
   }
-
-
-
   template<typename TTT>
   TRF::TreeInsertReturn<TTT> BasicSet<TTT>::insTreeAdv(HDPF::Pointer<HBF::Node<TTT> > root, const TTT & _value){
       if(root.isNullptr()){
@@ -184,7 +156,6 @@ namespace SETBF{
           return fR;
       }
       HBF::Node<TTT> starRoot=root.deRefRead();
-
       //Root is not null pointer!
       if(starRoot.height==0){
         // root is empty - has zero height but the memory is allocated to it.
@@ -196,7 +167,6 @@ namespace SETBF{
         return fR;
       }
       // Root is non-trivial
-
       if( starRoot.height==1){
         // This is a leaf
         RNISF::ResultInsSplit<TTT> resIns=NSPF::insertAndSplitIfNecessary(root,starRoot,_value);
@@ -223,10 +193,7 @@ namespace SETBF{
         DMF::shiftLeftDFNames(fR.aLeft,fR.aRight,HDPF::GLOBAL_PS.getTDegree()+1,((resIns.resultOfSplit).second).num+HDPF::GLOBAL_PS.getTDegree()+1, HDPF::GLOBAL_PS.getTDegree()+1);
         return fR;
       }
-
-
       // Internal node. Its height is bigger than 1
-
       long indToFollow=VSF::lowerBoundSortedVector(starRoot.values,_value);
       if( (indToFollow>-1) && (VSF::valuesEqual(starRoot.values[indToFollow],_value))) {
         // no point in inserting - the value already exists
@@ -242,7 +209,6 @@ namespace SETBF{
         // The node was already in the tree, no insertion needed.
         return fR;
       }
-
       fR.success=1;
       if(resultOfInsertion.nodeSplitIndicator==0){
         // The child did not have to be split.
@@ -257,8 +223,6 @@ namespace SETBF{
                                       resultOfInsertion.pointerToOldLocationOfTheCentralValue,
                                       resultOfInsertion.positionInNodeOfTheCentralValue,
                                       resultOfInsertion.aLeft, resultOfInsertion.aRight,resultOfInsertion.cLeft,resultOfInsertion.cRight);
-
-
       if(resIns.indicatorInsertOrSplitOrNothing==1){
           // insertion happened. The root was able to handle the new node without splitting
           // The root became bigger.
@@ -280,10 +244,6 @@ namespace SETBF{
         DMF::shiftLeftDFNames(fR.aLeft,fR.aRight,HDPF::GLOBAL_PS.getTDegree()+1,((resIns.resultOfSplit).second).num+HDPF::GLOBAL_PS.getTDegree()+1, HDPF::GLOBAL_PS.getTDegree()+1);
         return fR;
   }
-
-
-
-
   template<typename TTT> long  BasicSet<TTT>::insert(const TTT & _value){
       TRF::TreeInsertReturn<TTT> insRes=insTreeAdv(_dRoot,_value);
       if(insRes.success==1){
@@ -310,8 +270,6 @@ namespace SETBF{
       }
       return insRes.success;
   }
-
-
   template<typename TTT> long  BasicSet<TTT>::insert(const BasicSet<TTT> & _s2){
     long l2=_s2.size();
     long fR=0;
@@ -323,12 +281,9 @@ namespace SETBF{
   template<typename TTT> long  BasicSet<TTT>::operator+=(const TTT & _value){
     return insert(_value);
   }
-
   template<typename TTT> long  BasicSet<TTT>::operator+=(const BasicSet<TTT> & _s2){
     return insert(_s2);
   }
-
-
   template<typename TTT>
   IRFNF::IndRecFName<TTT> BasicSet<TTT>::findIndexRecordFileName(const TTT & _v) const{
     HDPF::Pointer<HBF::Node<TTT> > researcher= _dRoot;
@@ -360,17 +315,14 @@ namespace SETBF{
     }
     return found;
   }
-
   template<typename TTT>
   std::pair<long,TTT> BasicSet<TTT>::findIndexRecordPair(const TTT & _v) const{
       IRFNF::IndRecFName<TTT> irf=findIndexRecordFileName(_v);
       return std::pair<long,TTT>(irf.index,irf.record);
   }
-
   template<typename TTT> long BasicSet<TTT>::find(const TTT & _v) const{
     return (findIndexRecordFileName(_v)).index;
   }
-
   template<typename TTT> long BasicSet<TTT>::inPlaceModification(const TTT & _oldVal, const TTT & _newVal, const long & _safeMode){
     IRFNF::IndRecFName<TTT> irfnOld = findIndexRecordFileName(_oldVal);
     long prevIndex=irfnOld.index-1;
@@ -388,13 +340,11 @@ namespace SETBF{
       }
     }
     // We are allowed to do in-place modification from _oldVal to _newVal
-
     HBF::Node<TTT> currentNode = irfnOld.aRecord.deRefRead();
     currentNode.values[irfnOld.positionInNode]=_newVal;
     irfnOld.aRecord.deRefWrite(currentNode);
     return 1;
   }
-
   template<typename TTT>
   IRFNF::IndRecFName<TTT> BasicSet<TTT>::lowerBoundIndexRecordFileName(const TTT & _v, const long & populateRecordFieldEvenIfMissmatch) const{
     HDPF::Pointer<HBF::Node<TTT> > researcher= _dRoot;
@@ -440,17 +390,14 @@ namespace SETBF{
           found.record=previousStepLowerBound;
         }
       }
-
     }
     return found;
   }
-
   template<typename TTT>
   std::pair<long,TTT> BasicSet<TTT>::lowerBoundIndexRecordPair(const TTT & _v) const{
       IRFNF::IndRecFName<TTT> irf=lowerBoundIndexRecordFileName(_v);
       return std::pair<long,TTT>(irf.index,irf.record);
   }
-
   template<typename TTT> long BasicSet<TTT>::lowerBound(const TTT & _v) const{
     return (lowerBoundIndexRecordFileName(_v)).index;
   }
@@ -472,14 +419,12 @@ namespace SETBF{
       long remainingI=i;
       long cntr=0;
       long np1=starRoot.num+1;
-
       while((remainingI>=starRoot.counts[cntr])&&(cntr<np1)){
         remainingI -= starRoot.counts[cntr];
         if(remainingI==0){
           return std::pair<TTT,std::string>(starRoot.values[cntr],root.getNameOfFile());
         }
         --remainingI;
-
         ++cntr;
       }
       if(cntr==np1){
@@ -495,11 +440,9 @@ namespace SETBF{
       TTT randomValue;
       return std::pair<TTT,std::string>(randomValue,"notFound");
   }
-
   template<typename TTT>
   std::string BasicSet<TTT>::saveInitializationToString(const std::string & priorStrToSave, const std::string &sN) const{
       std::string strToSave="";
-
       std::string setNameB="_setN!*"+sN+"!*_";
       std::string setNameE="_/setN!*"+sN+"!*_";
       std::string setPtB="_setPT!*_";
@@ -510,43 +453,27 @@ namespace SETBF{
       std::string setHiE="_/setHi!*_";
       std::string setStFNB="_stfn!*_";
       std::string setStFNE="_/stfn!*_";
-
       long pos=0;
       strToSave=SF::eraseStuffBetween(priorStrToSave,setNameB,setNameE,pos).first;
-
-
-
-      strToSave+=  setNameB+setPtB+ _dRoot.putIntoString()+setPtE;
-      strToSave+= setStFNB + startingFolderName+setStFNE;
+      strToSave+= setNameB;
+      strToSave+= setPtB+ _dRoot.putIntoString()+setPtE;
       strToSave+= setSzB+ std::to_string(_size)+setSzE;
-      strToSave+= setHiB+std::to_string(_height)+setHiE+setNameE;
-
+      strToSave+= setHiB+std::to_string(_height)+setHiE;
+      strToSave+= setStFNB + startingFolderName+setStFNE;
+      strToSave+= setNameE;
       return strToSave;
-
   }
-
   template<typename TTT>
   void BasicSet<TTT>::saveToFile(const std::string &fN, const std::string &sN) const{
       std::string strToSave="";
-
-
-
       if(IOF::fileExists(fN)){
           strToSave=IOF::fileToString(fN);
       }
-
       strToSave=saveInitializationToString(strToSave,sN);
-
       IOF::toFile(fN,strToSave);
-
   }
-
-
-
   template<typename TTT>
   int BasicSet<TTT>::loadInitializationFromString(const std::string & _allData, const std::string &sN){
-
-
       std::string allData=_allData;
       std::string setNameB="_setN!*"+sN+"!*_";
       std::string setNameE="_/setN!*"+sN+"!*_";
@@ -556,13 +483,8 @@ namespace SETBF{
       std::string setSzE="_/setSZ!*_";
       std::string setHiB="_setHi!*_";
       std::string setHiE="_/setHi!*_";
-
-
-
       std::string setStFNB="_stfn!*_";
       std::string setStFNE="_/stfn!*_";
-
-
       long pos=0;
       std::pair<std::string,int> setData=SF::extract(allData,pos,setNameB,setNameE);
       if(setData.second==0){
@@ -573,21 +495,19 @@ namespace SETBF{
       if(setPt.second==0){
           return 0;
       }
-      pos=0;
+      //pos=0;
       std::pair<std::string,int> setSz=SF::extract(allData,pos,setSzB,setSzE);
       if(setSz.second==0){
           return 0;
       }
       _size=BF::stringToInteger(setSz.first);
-
-      pos=0;
+      //pos=0;
       std::pair<std::string,int> setHi=SF::extract(allData,pos,setHiB,setHiE);
       if(setHi.second==0){
           return 0;
       }
       _height=BF::stringToInteger(setHi.first);
-
-      pos=0;
+      //pos=0;
       std::pair<std::string,int> setStF=SF::extract(allData,pos,setStFNB,setStFNE);
       if(setStF.second==0){
           return 0;
@@ -595,22 +515,15 @@ namespace SETBF{
       startingFolderName=setStF.first;
       _dRoot.loadFromString(setPt.first);
       return 1;
-
-
   }
   template<typename TTT>
   int BasicSet<TTT>::loadFromFile(const std::string &fN, const std::string &sN){
-
       if(IOF::fileExists(fN)){
           std::string allData=IOF::fileToString(fN);
           return loadInitializationFromString(allData,sN);
-
-
-
       }
       return 0;
   }
-
   template<typename TTT>
   HDPF::Pointer<HBF::Node<TTT> > BasicSet<TTT>::duplicateTree(HDPF::Pointer<HBF::Node<TTT> >root,const std::string & stFolderToDuplicate){
     HDPF::Pointer<HBF::Node<TTT> >newN;
@@ -618,7 +531,6 @@ namespace SETBF{
           newN.allocateMemory(stFolderToDuplicate);
           HBF::Node<TTT> starNewN;
           HBF::Node<TTT> starRoot=root.deRefRead();
-
           starNewN.height=starRoot.height;
           starNewN.setNum(starRoot.num);
           for(long i=0;i<starRoot.num;++i){
@@ -633,19 +545,13 @@ namespace SETBF{
       }
       return newN;
   }
-
-
   template<typename TTT> void BasicSet<TTT>::clear(){
-
-
       long delSucc;
       while(!_dRoot.isNullptr()){
           removeFromTree(_dRoot,(_dRoot.deRefRead()).values[0]);
           --_size;
       }
-
   }
-
   template<typename TTT> void BasicSet<TTT>::copyFromSet(const BasicSet<TTT>& _copyFrom,const std::string & _sFN){
     if(&_copyFrom!=this){
       clear();
@@ -655,16 +561,12 @@ namespace SETBF{
       _height=_copyFrom._height;
     }
   }
-
-
   template<typename TTT> void BasicSet<TTT>::operator=(const BasicSet<TTT>& _copyFrom){
-
     if(&_copyFrom!=this){
       clear();
       copyFromSet(_copyFrom,_copyFrom.startingFolderName);
     }
   }
-
   template<typename TTT>
   HBF::Node<TTT> BasicSet<TTT>::removeOneValueFromTheNodeThatContainsIt(const HDPF::Pointer<HBF::Node<TTT> > & root,
                                                                    const HBF::Node<TTT> & starRoot,
@@ -703,7 +605,6 @@ namespace SETBF{
     }
     return starNew;
   }
-
   template<typename TTT>
   HBF::Node<TTT> BasicSet<TTT>::removeEdgeValueAfterEdgeDFUpdate(const HDPF::Pointer<HBF::Node<TTT> > & root,
                                                             const HBF::Node<TTT> & starRoot,
@@ -714,7 +615,6 @@ namespace SETBF{
     long iNew=0;
     if(left0_right1==0){
       DMF::shiftLeftDFNames(root,root,1,starRoot.num,1);
-
     }
     long shv=1-left0_right1;
     for(long i=0;i<starNew.num;++i){
@@ -724,10 +624,8 @@ namespace SETBF{
     }
     starNew.children[starNew.num]=starRoot.children[starNew.num+shv];
     starNew.counts[starNew.num]=starRoot.counts[starNew.num+shv];
-
     return starNew;
   }
-
   template<typename TTT>
   HBF::Node<TTT> BasicSet<TTT>::shiftAndInsertChild(const HDPF::Pointer<HBF::Node<TTT> > & root,
                                                const HDPF::Pointer<HBF::Node<TTT> > & aChild,
@@ -737,7 +635,6 @@ namespace SETBF{
                                                const long & countsAttNew,
                                                const long & positionOfChangeInRoot,
                                                const long & childShiftRightInd){
-
     HBF::Node<TTT> starNewChild;
     starNewChild.setNum(starChild.num+1);
     starNewChild.height=starChild.height;
@@ -765,7 +662,6 @@ namespace SETBF{
     starNewChild.children[indexOfNewGrandChild]=childPointerNew;
     return starNewChild;
   }
-
   template<typename TTT>
   TRF::TreeEraseReturn<TTT> BasicSet<TTT>::removeFromComfortableLeaf(HDPF::Pointer<HBF::Node<TTT> > root, const HBF::Node<TTT>& starRoot, const TTT& _value){
     TRF::TreeEraseReturn<TTT> fR;
@@ -792,9 +688,7 @@ namespace SETBF{
     long rightChildInd=leftChildInd+1;
     HDPF::Pointer<HBF::Node<TTT> > aLC=starRoot.children[leftChildInd];
     HDPF::Pointer<HBF::Node<TTT> > aRC=starRoot.children[rightChildInd];
-
     IRFNF::IndRecFName<TTT> myIRFN=findIndexRecordFileName(_value);
-
     HBF::Node<TTT> stLeftCh=aLC.deRefRead();
     HBF::Node<TTT> stRightCh=aRC.deRefRead();
     long indexOfNodeToBeRemovedFromComfortableChild=-1;
@@ -803,15 +697,12 @@ namespace SETBF{
       indexOfNodeToBeRemovedFromComfortableChild=myIRFN.index+1;
       indComfortableChild=rightChildInd;
     }
-
     if(stLeftCh.num >= HDPF::GLOBAL_PS.getTDegree()){
       indexOfNodeToBeRemovedFromComfortableChild=myIRFN.index-1;
       indComfortableChild=leftChildInd;
     }
-
     if(indexOfNodeToBeRemovedFromComfortableChild > -1){
       IRFNF::IndRecFName<TTT> replIRFN = findIndexRecordFileName( (b_randomAccess(_dRoot,indexOfNodeToBeRemovedFromComfortableChild)).first );
-
       DMF::deleteDataFile(root,valIndex);
       DMF::renameDataFile(replIRFN.aRecord, replIRFN.positionInNode ,root, valIndex);
       removeValueThatExists(starRoot.children[indComfortableChild],replIRFN.record);
@@ -825,14 +716,12 @@ namespace SETBF{
       return fR;
     }
     // Merging children:
-
     DMF::renameDataFile(root,valIndex,aLC,stLeftCh.num);
     for(long i=0;i<stRightCh.num;++i){
       DMF::renameDataFile(aRC,i,aLC,stLeftCh.num+i+1);
     }
     HBF::Node<TTT> starNew=removeOneValueFromTheNodeThatContainsIt(root,starRoot,_value,aLC, 0);
     root.deRefWrite(starNew);
-
     HBF::Node<TTT> megaChild;
     megaChild.setNum(stLeftCh.num+stRightCh.num+1);
     megaChild.height=stLeftCh.height;
@@ -848,7 +737,6 @@ namespace SETBF{
     megaChild.counts[counter]=stLeftCh.counts[counter];
     long shift=counter+1;
     counter=0;
-
     while(counter<stRightCh.num){
       megaChild.values[shift]=stRightCh.values[counter];
       megaChild.children[shift]=stRightCh.children[counter];
@@ -860,7 +748,6 @@ namespace SETBF{
     aLC.deRefWrite(megaChild);
     aRC.deAllocateMemory();
     removeValueThatExists(aLC,_value);
-
     fR.aP=root;
     fR.success=1;
     if((starNew.height==_height) && (starNew.num==0)){
@@ -871,7 +758,6 @@ namespace SETBF{
       fR.aP=_dRoot;
       fR.heightDecreased=1;
     }
-
     return fR;
   }
   template<typename TTT>
@@ -900,17 +786,13 @@ namespace SETBF{
       indexOfValueToBeTakenFromSibling=starSibling.num-1;
       indexOfChildToBeTakenFromSibling=starSibling.num;
     }
-
     if(starSibling.num > HDPF::GLOBAL_PS.getTDegree()-1){
       fR.indexOfComfortableSibling=positionOfSiblingToInvestigate;
-
       starNewChild=shiftAndInsertChild(root,aChild,starRoot, starChild,
                                        starSibling.children[indexOfChildToBeTakenFromSibling],
                                        starSibling.counts[indexOfChildToBeTakenFromSibling],
                                        positionOfChangeInRoot,childShiftRightInd);
       DMF::renameDataFile(aSibling,indexOfValueToBeTakenFromSibling,root,positionOfChangeInRoot);
-
-
       starNewSibling=removeEdgeValueAfterEdgeDFUpdate(aSibling,starSibling, siblingEdgeToRemoveLeft0Right1);
       starNewRoot=starRoot;
       starNewRoot.values[positionOfChangeInRoot]=starSibling.values[indexOfValueToBeTakenFromSibling];
@@ -932,9 +814,7 @@ namespace SETBF{
                                                         const long & childIndex,
                                                         HDPF::Pointer<HBF::Node<TTT> > & aChild,
                                                         const HBF::Node<TTT> & starChild){
-
     TRF::TreeEraseReturn<TTT> fR;
-
     long indexOfValueToBeTakenFromSibling=-1;
     long indexOfChildToBeTakenFromSibling=-1;
     long positionOfValueToBePutInChild=-1;
@@ -976,9 +856,7 @@ namespace SETBF{
                               positionOfValueToBePutInChild, positionOfChildToBePutInChild,
                               childShiftRightInd,siblingEdgeToRemoveLeft0Right1);
     }
-
     return fR;
-
   }
   template<typename TTT>
   TRF::TreeEraseReturn<TTT> BasicSet<TTT>::mergeChildWithSibling(HDPF::Pointer<HBF::Node<TTT> >& root,
@@ -1020,22 +898,14 @@ namespace SETBF{
     }
     megaChild.counts[megaChild.num]=starRightC.counts[starRightC.num];
     megaChild.children[megaChild.num]=starRightC.children[starRightC.num];
-
-
     aLeftC.deRefWrite(megaChild);
     aRightC.deAllocateMemory();
     fR.starRootAfterMerging= removeOneValueFromTheNodeThatContainsIt(root, starRoot, starRoot.values[indCentral], aLeftC, 0);
-
-
     root.deRefWrite(fR.starRootAfterMerging);
-
     return fR;
-
   }
-
   template<typename TTT>
   TRF::TreeEraseReturn<TTT> BasicSet<TTT>::removeValueThatExists(HDPF::Pointer<HBF::Node<TTT> > root, const TTT& _value){
-
     TRF::TreeEraseReturn<TTT> fR;
     HBF::Node<TTT> starRoot=root.deRefRead();
     if(starRoot.height==1){
@@ -1070,7 +940,6 @@ namespace SETBF{
     if(fR.indexOfComfortableSibling!=-1){
       starRoot=fR.starRootAfterTrading;
       fR=removeValueThatExists(runner,_value);
-
       fR.aP=root;
       if(fR.success==1){
         starRoot.counts[indexToFollow] -= 1;
@@ -1098,32 +967,23 @@ namespace SETBF{
     }
     return fR;
   }
-
   template<typename TTT>
   TRF::TreeEraseReturn<TTT> BasicSet<TTT>::removeFromTree(HDPF::Pointer<HBF::Node<TTT> > root, const TTT& _value){
     TRF::TreeEraseReturn<TTT> fR;
-
     IRFNF::IndRecFName<TTT> irf=findIndexRecordFileName(_value);
     if(irf.index==-1){
       return fR;
     }
-
     return removeValueThatExists(root,_value);
   }
-
-
-
-
   template<typename TTT> long  BasicSet<TTT>::erase(const TTT & _value){
       TRF::TreeEraseReturn<TTT> delRes=removeFromTree(_dRoot,_value);
       if(delRes.success==1){
         --_size;
         _dRoot=delRes.aP;
       }
-
       return delRes.success;
   }
-
   template<typename TTT> long  BasicSet<TTT>::operator-=(const TTT & _value){
     return erase(_value);
   }
@@ -1135,28 +995,18 @@ namespace SETBF{
     }
     return fR;
   }
-
-
   template<typename TTT> long  BasicSet<TTT>::operator-=(const BasicSet<TTT> & _s2){
     return erase(_s2);
   }
-
-
-
-
-
   template<typename TTT>  BasicSet<TTT>::BasicSet( BasicSet<TTT>&& _moveFrom){
-
    _size= _moveFrom._size;
    _height=_moveFrom._height;
-
    _moveFrom._size=0;
    _moveFrom._height=-3777177;
    startingFolderName=_moveFrom.startingFolderName;
    _dRoot=_moveFrom._dRoot;
      HDPF::Pointer<HBF::Node<TTT> > myNullptr;
    _moveFrom._dRoot=myNullptr;
-
   }
   template<typename TTT> void BasicSet<TTT>::operator=( BasicSet<TTT>&& _moveFrom){
    if(&_moveFrom!=this){
@@ -1171,7 +1021,4 @@ namespace SETBF{
    }
   }
 }
-
-
-
 #endif
