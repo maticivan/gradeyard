@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -23,35 +23,26 @@
 namespace HDPF{
   // GLOBAL SETUP FILE LOADING
   PS00F::PSetup GLOBAL_PS;
-
   // END OF GLOBAL SETUP FILE LOADING
-
   template<class TTT>
   class Pointer{
   private:
       std::string nameOfFile="nullptrFN";
       PS00F::PSetup pS=GLOBAL_PS;
-      std::string sepB="_fNA*!_";
-      std::string sepE="_/fNA*!_";
   public:
       void changeSetup(const PS00F::PSetup& );
       std::string getNameOfFile() const;
       void setNameOfFile(const std::string &);
-
       int isNullptr() const;
-
       // reads the file nameOfFile and returns the object stored in the file
       TTT deRefRead() const;
-
       // puts the object in the file nameOfFile
       int deRefWrite(const TTT &) const;//returns 1 if the object was successfully written to a file
-
       // find the new available fileName and places it in nameOfFile;
       int allocateMemory(const std::string &);
       //  int allocateMemory();
       // deletes the object from nameOfFile and destroys the file.
       int deAllocateMemory() const;
-
       std::string putIntoString() const;
       void loadFromString(const std::string &);
       std::string statusReportForDebugging() const;
@@ -68,7 +59,6 @@ namespace HDPF{
       }
       return 0;
   }
-
   template<class TTT>
   void Pointer<TTT>::changeSetup(const PS00F::PSetup &c){
       pS=c;
@@ -89,19 +79,15 @@ namespace HDPF{
       if(nameOfFile=="nullptrFN"){
           return 0;
       }
-
       return obj.putToFile(nameOfFile);
   }
   template<class TTT>
   int Pointer<TTT>::allocateMemory(const std::string & _stFN){
       std::string fDynData,fReadyNames;
       std::string lastUsedName;
-
       std::string folder=_stFN;
-
       fDynData=folder+"/"+pS.getFileWithDynData();
       fReadyNames=folder+"/"+pS.getAvailableNamesF();
-
       std::string newFileContent=pS.getNextNameB()+"1"+pS.getNextNameE();
       std::string newAvFilesContent=" ";
       std::string oldFileContent,oldAvFilesCont;
@@ -120,12 +106,9 @@ namespace HDPF{
               nameOfFile=folder+"/"+pS.getPrefixFilesPT()+"1."+pS.getExtension();
           }
           else{
-
-
               oldAvFilesCont=IOF::fileToString(fReadyNames);
               oldFileContent=IOF::fileToString(fDynData);
               pos=0;
-
               // Step 1. Read if there was a deleted file that made a name available
               avNameFree=SF::extract(oldAvFilesCont,pos,pS.getNextEmptyB(),pS.getNextEmptyE());
               pos=0;
@@ -137,7 +120,6 @@ namespace HDPF{
                   IOF::toFile(fReadyNames,oldAvFilesCont);
               }
               else{// There are no free names.
-
                   nextFileName=(SF::extract(oldFileContent,pos,pS.getNextNameB(),pS.getNextNameE())).first;
                   if(nextFileName.size()<maxSt.size()){
                       foundMemory=1;
@@ -151,7 +133,6 @@ namespace HDPF{
                       folder += "/"+pS.getPrefixSubDirs();
                       fDynData=folder+"/"+pS.getFileWithDynData();
                       fReadyNames=folder+"/"+pS.getAvailableNamesF();
-
                   }
                   else{
                       nextFileName=SF::incrementString(nextFileName);
@@ -160,45 +141,30 @@ namespace HDPF{
                       IOF::toFile(fDynData,oldFileContent);
                   }
               }
-
           }
-
-
       }
-
       return 1;
-
   }
   template<class TTT>
   int Pointer<TTT>::deAllocateMemory() const{
       std::ifstream fTest(nameOfFile);
       if(fTest.good()){
           std::string fReadyNames=IOF::nameOfFolder(nameOfFile)+"/"+pS.getAvailableNamesF();
-
           std::string oldRNames=IOF::fileToString(fReadyNames);
-
           oldRNames+=pS.getNextEmptyB()+IOF::justFileNameNoExtensionNoFolder(nameOfFile,pS.getPrefixFilesPT())+pS.getNextEmptyE();
           IOF::toFile(fReadyNames,oldRNames);
-
           IOF::sys_deleteFile(nameOfFile);
           return 1;
       }
       return 0;
   }
-
   template<class TTT>
   void Pointer<TTT>::loadFromString(const std::string &s){
-      std::string d=s;
-      d+= sepB+nameOfFile+sepE;
-      long pos=0;
-      nameOfFile=(SF::extract(d,pos,sepB,sepE)).first;
-
-
+    nameOfFile=s;
   }
-
   template<class TTT>
   std::string Pointer<TTT>::putIntoString() const{
-      return sepB+nameOfFile+sepE;
+    return nameOfFile;
   }
 }
 
