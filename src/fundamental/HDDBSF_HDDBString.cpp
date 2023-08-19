@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -20,11 +20,17 @@
 #define _INCL_MYHDString_CPP
 
 namespace HDDBSF{
-  std::string secureForStorage(const std::string & source){
-      return SF::findAndReplace(source,"*!_",GF::GL_HIDING_STRING_HDDBRF);
+  std::string secureForStorage(const std::string & source, int performanceIndicator=1){
+    if(performanceIndicator==1){
+      return SF::findAndReplace(source,"*!.","");
+    }
+    return SF::findAndReplace(source,"*!.",GF::GL_HIDING_STRING_HDDBRF);
   }
-  std::string unpackFromStorage(const std::string & source){
-      return SF::findAndReplace(source,GF::GL_HIDING_STRING_HDDBRF,"*!_");
+  std::string unpackFromStorage(const std::string & source, int performanceIndicator=1){
+    if(performanceIndicator==1){
+      return source;
+    }
+    return SF::findAndReplace(source,GF::GL_HIDING_STRING_HDDBRF,"*!.");
   }
   class String{
   private:
@@ -52,25 +58,11 @@ namespace HDDBSF{
       }
       return 0;
   }
-  void String::loadFromString(const std::string& s){
-      std::string dataB="_dBS*!_";
-      std::string dataE="_/dBS*!_";
-      std::string d=s+dataB+"defaultData"+dataE;
-      std::pair<std::string,int> res;
-      long pos=0;
-      res=SF::extract(d,pos,dataB,dataE);
-      if(res.second==0){
-        mainData= "notFound";
-      }
-      else{
-        mainData= unpackFromStorage(res.first);
-      }
+  void String::loadFromString(const std::string& s){ 
+      mainData=unpackFromStorage(s);
   }
   std::string String::putIntoString() const{
-    std::string dataB="_dBS*!_";
-    std::string dataE="_/dBS*!_";
-    std::string resString=dataB+secureForStorage(mainData)+dataE;
-    return resString;
+    return secureForStorage(mainData);
   }
 }
 #endif
