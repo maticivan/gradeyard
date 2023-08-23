@@ -240,10 +240,6 @@ namespace RTI{
         secondComp.latexPrintingInstructions=allD.first;
       }
     }
-    /*pos=0;allD=SF::extract(_s,pos, s_fileAllowed_QRTB, s_fileAllowed_QRTE);
-    if(allD.second==1){
-      secondComp.filesAllowed=allD.first;
-    } */
     allD=SF::extract(_s,pos, s_points_QRTB, s_points_QRTE);
     if(allD.second==1){
       secondComp.points=allD.first;
@@ -256,7 +252,6 @@ namespace RTI{
     }
     allD=SF::extract(_s,pos,s_gradingRules_QRTB,s_gradingRules_QRTE);
     if(allD.second==1){
-      //secondComp.rawGradingRules=allD.first;
       secondComp.gRules=GRI::gradingRulesMapFromRaw(allD.first);
     }
     fR.second=secondComp;
@@ -403,10 +398,49 @@ namespace RTI{
     }
     return answerPrepared;
   }
+  std::string divClassCardTag(const std::string& att,const std::string& text){
+    return "<div class=\""+att+"\">"+text+"</div>\n";
+  }
+  std::string cardWithHeaderAndBody(const std::string& headerText, const std::string& bodyText, const std::string & headerAtt, const std::string& bodyAtt){
+    std::string res;
+    if(headerText!=""){
+      res+=divClassCardTag(headerAtt,headerText);
+    }
+    if(bodyText!=""){
+      res+=divClassCardTag(bodyAtt,bodyText);
+    }
+    return res;
+  }
+  std::string Response::userAnswerDisplayInnerCard(const SingleQuestionInfo &sqi, long &fileCounter) const{
+    std::string answHeader="<b>"+MWII::GL_WI.getDefaultWebText("Submission")+"</b>";
+    std::string displUserAnswer=MWII::GL_WI.getDefaultWebText("(No submission)");
+    if((sqi.userAnswer!="notFound")&&(sqi.userAnswer!="")){
+      displUserAnswer=prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(sqi);
+      if(sqi.displType==s_textInputReqField){
+        DISPPF::RequestsForSanitizer reqS;
+        displUserAnswer=DISPPF::sanitizeForDisplay(displUserAnswer,reqS);
+      }
+      else{
+        if(sqi.displType==s_textAreaReqField){
+          displUserAnswer=DISPPF::prepareForHTMLDisplay(displUserAnswer);
+        }
+        else{
+          displUserAnswer=DISPPF::prepareForHTMLDisplay(sqi.userAnswer);
+        }
+      }
+    }
+    if(sqi.fileAllowed=="yes"){
+      displUserAnswer+="<p>";
+      displUserAnswer+=fileForProblemInfo(fileCounter);
+      displUserAnswer+="</p>\n";
+      ++fileCounter;
+    }
+    return cardWithHeaderAndBody(answHeader,displUserAnswer, "card-header", "card-body");
+  }
   std::string Response::userAnswerDisplay(const SingleQuestionInfo &sqi, long &fileCounter, const int& squeezeToLeftHalf) const{
     std::string fR="";
     if(squeezeToLeftHalf){fR+="<div class=\"col-md-6\" >\n";}
-    fR+="<div class=\"card border-info text-dark\">\n<div class=\"card-body\">";
+    fR+="<div class=\"card text-dark\">\n<div class=\"card-body\">";
       if((sqi.userAnswer!="notFound")&&(sqi.userAnswer!="")){
         fR+="<B>"+MWII::GL_WI.getDefaultWebText("Answer submitted")+": </B> ";
         std::string displUserAnswer=prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(sqi);
@@ -436,16 +470,24 @@ namespace RTI{
       if(squeezeToLeftHalf){fR+="</div>\n";}
       return fR;
   }
-  std::string problemCardOpeningTags(const SingleQuestionInfo &sqi, const std::string & lastComponent, const int & indicatorRegularProblem){
+  std::string problemCardOpeningTags(const SingleQuestionInfo &sqi, const std::string & lastComponent, const int & indicatorRegularProblem, const std::string & pointsSt){
     std::string fR="";
-    fR+=" <div class=\"card border-dark bg-light text-dark\">\n <div class=\"card-header\">\n";
+    fR+=" <div class=\"card border-dark text-dark\">\n <div class=\"card-header\">\n";
     fR+="<div class=\"row\"><div class=\"col-sm-1\"><B>";
     if(indicatorRegularProblem){fR+=std::to_string(sqi.num);}
-    fR+="</B></div><div class=\"col-sm-8\"><B>";
+    fR+="</B></div><div class=\"col-sm-8\">";
     if((indicatorRegularProblem)&&(sqi.maxPoints!="notFound")&&(sqi.maxPoints!="")){
-      fR+=" ("+sqi.maxPoints+" "+MWII::GL_WI.getDefaultWebText("points")+") ";
+      std::string bgColor="bg-dark";
+      std::string ptsBegin="";
+      if(pointsSt!=""){
+        bgColor="bg-primary";
+        ptsBegin=pointsSt+"/";
+      }
+      fR+="<span class=\"badge badge-pill "+bgColor+"\">";
+      fR+=ptsBegin+sqi.maxPoints+" "+MWII::GL_WI.getDefaultWebText("points");
+      fR+="</span>\n";
     }
-    fR+="</B></div><div class=\"col-sm-3\"> ";
+    fR+="</div><div class=\"col-sm-3\"> ";
     fR+=lastComponent;
     fR+=" </div>\n</div>\n</div><div class=\"card-body\"> "+sqi.formulation;
     return fR;
@@ -503,7 +545,7 @@ namespace RTI{
       if(answerSubmitted=="yes"){
         answBarLastComponent="<span class=\"text-success\">"+answSubmittedForTopBar+"</span>";
       }
-      fR+=problemCardOpeningTags(sqi,answBarLastComponent,1);
+      fR+=problemCardOpeningTags(sqi,answBarLastComponent,1,"");
       fR+="</div>\n</div>";
       if((sqi.displType==s_textInputReqField)||(sqi.displType==s_textAreaReqField)){
          if((sqi.userAnswer!="notFound")&&(sqi.userAnswer!="")){
@@ -536,12 +578,20 @@ namespace RTI{
       }
     }
     else{
-      fR+=problemCardOpeningTags(sqi,"",1);
+      std::string topBarScore="0";
+      if(sqi.scoreForDisplay!=""){
+        topBarScore=sqi.scoreForDisplay;
+      }
+      if(sqi.displayPoints==0){
+        topBarScore="";
+      }
+      fR+=problemCardOpeningTags(sqi,"",1,topBarScore);
       if(sqi.displType==s_radioButtonsField){
         std::vector<std::string> pairsOfValDescriptions=SF::stringToVector(sqi.allChoicesSt,"_rb*_","_/rb*_");
         std::vector<std::string> smallSt;
         std::string openB,closeB;
         long sz=pairsOfValDescriptions.size();
+        fR+="<ul>";
         for(long i=0;i<sz;++i){
           smallSt=SF::stringToVector(pairsOfValDescriptions[i],"_vl*_","_/vl*_");
           if(smallSt.size()>1){
@@ -552,57 +602,50 @@ namespace RTI{
               if(smallSt[0]==sqi.userAnswer){
                 openB="<B>";closeB="</B>";
               }
-              fR+="<div class=\"row\"><div class=\"col-sm-12\">"+openB+smallSt[1]+closeB;
-              fR+="</div></div>";
+              fR+="<li>"+openB+smallSt[1]+closeB;
+              fR+="</li>";
             }
           }
         }
+        fR+="</ul>\n";
       }
-      fR+="</div>\n</div>";
-      if(sqi.displaySol){
-        fR+="<div class=\"row\">\n";
+      fR+="</div>\n ";
+      fR+="<div class=\"row\">\n";
+      std::string usAnswDisplText="";
+      usAnswDisplText=userAnswerDisplayInnerCard(sqi,fileCounter);
+      std::string commentAddition="";
+      if((sqi.displayComments==1)&&(sqi.graderComment!="notFound")&&(sqi.grCommentDisplay!="")){
+        commentAddition+=cardWithHeaderAndBody("<font color=\"purple\"><b>"
+                                                +MWII::GL_WI.getDefaultWebText("Grading feedback")
+                                                +"</b></font>",
+                                               "<font color=\"purple\">"+sqi.grCommentDisplay+"</font>",
+                                               "card-header",
+                                               "card-body");
       }
-      fR+= userAnswerDisplay(sqi,fileCounter,sqi.displaySol);
+      fR+="<div class=\"card-group\" >\n";
+      fR+="<div class=\"card\">\n"+usAnswDisplText+commentAddition+"</div>\n";
       if(sqi.displaySol==1){
-        fR+="<div class=\"col-md-6\" >\n";
-        fR+="<div class=\"card\">\n<div class=\"card-body\">";
-        if((sqi.officialAnswer!="notFound")&&(sqi.officialAnswer!="")){
-          fR+="<B>"+MWII::GL_WI.getDefaultWebText("Correct answer")+": "+sqi.officialAnswer+"</B>";
+        std::string headerText="<b>"+MWII::GL_WI.getDefaultWebText("Solution")+"</b>";
+        std::string officialSolutionText;
+        if((sqi.officialAnswer!="notFound")&&(sqi.officialAnswer!="")&&(sqi.officialAnswer!="na")&&(sqi.officialAnswer!="NA")&&(sqi.officialAnswer!="n/a")&&(sqi.officialAnswer!="N/A")){
+          headerText="<b>"+MWII::GL_WI.getDefaultWebText("Correct answer")+": "+sqi.officialAnswer+"</b>";
         }
         if((sqi.officialSolution!="notFound")&&(sqi.officialSolution!="")){
-          fR+="<BR><B>"+MWII::GL_WI.getDefaultWebText("Solution")+"</B>: "+sqi.officialSolution;
+          officialSolutionText=sqi.officialSolution;
         }
-        fR+="</div>\n</div>\n";
-        fR+="</div>\n";
-        fR+="</div>\n";
+        fR+="<div class=\"card\">\n";
+        fR+=cardWithHeaderAndBody(headerText,officialSolutionText,"card-header","card-body");
+        fR+="</div>";
       }
       if((sqi.displayPoints==1)||(sqi.displayComments==1)){
-        std::string pointsAndComment;
-        if((sqi.userPointsEarned!="notFound")&&(sqi.userPointsEarned!="")){
-          pointsAndComment+="<B>Score: "+sqi.userPointsEarned+" points.</B>";
-        }
         if((sqi.graderComment!="notFound")&&(sqi.graderComment!="")){
           pointsEarned=sqi.scoreForCalculations;
           if(sqi.displayPoints==1){
             pcas.scoringProgress[sqi.num]=sqi.scoreForDisplay;
-            pointsAndComment+="<B>"+MWII::GL_WI.getDefaultWebText("Points earned")+": "+pcas.scoringProgress[sqi.num]+"</B>";
           }
-          if(pointsEarned>-999.99){pointsAndComment+="<hr>";}
-          if(sqi.displayComments==1){
-            if(MWII::GL_WI.getDefaultWebText("Comment")!="No"){
-              pointsAndComment+="<B>"+MWII::GL_WI.getDefaultWebText("Comment")+":</B> ";
-            }
-            pointsAndComment+=sqi.grCommentDisplay;
-          }
-        }
-        if(pointsAndComment!=""){
-          fR+=" <div class=\"card bg-light text-danger\">\n";
-          fR+=" <div class=\"card-body\">";
-          fR+=pointsAndComment;
-          fR+="</div>\n</div>\n";
         }
       }
-      fR+="<p></p>\n";
+      fR+="</div></div></div>\n<p></p>\n";
     }
     return fR;
   }
@@ -655,7 +698,7 @@ namespace RTI{
     if(sqi.acceptResp==1){
       fR.first+="_insert__n*_textAreaField_/n*__n*_"+e_formNameRT+"_/n*_\n_n*_";
       fR.first+=sqi.QNum+"_/n*__n*_"; ;
-      fR.first+=problemCardOpeningTags(sqi,pointsEarnedForDisplay,fR.second);
+      fR.first+=problemCardOpeningTags(sqi,pointsEarnedForDisplay,fR.second,"");
       if(sqi.displType==s_radioButtonsField){
         std::vector<std::string> pairsOfValDescriptions=SF::stringToVector(sqi.allChoicesSt,"_rb*_","_/rb*_");
         std::vector<std::string> smallSt;
@@ -1419,7 +1462,7 @@ namespace RTI{
     sqi.displType=opd.displayType;
     sqi.allChoicesSt=opd.choices;
     sqi.fileAllowed=opd.filesAllowed;
-    sqi.gRulesMap=opd.gRules;//GRI::gradingRulesMapFromRaw(opd.rawGradingRules);
+    sqi.gRulesMap=opd.gRules;
   }
   std::string Response::automaticGrading(const PSDI::SessionData  & _psd,const std::string & _req){
     if(_psd.isRoot=="no"){
