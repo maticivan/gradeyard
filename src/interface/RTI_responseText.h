@@ -273,6 +273,7 @@ namespace RTI{
     std::string createStatusAndProgressLineTwoRowTable(const ProblemCommentsAndScores &, const double &, const ResponderInfo &) const;
     std::string createStatusAndProgressLine(const ProblemCommentsAndScores &, const double &, const ResponderInfo &, const long &) const;
     std::string createLinkToCertificate(const PSDI::SessionData &, const ResponderInfo &) const;
+    std::string userAnswerDisplayInnerCard(const SingleQuestionInfo &, long &) const;
     std::string userAnswerDisplay(const SingleQuestionInfo &, long &, const int&) const;
     std::string singleProblemDisplay(const SingleQuestionInfo&, ProblemCommentsAndScores &, long &, double &) const;
     std::pair<std::string,int> singleProblemDisplayForGrader(const SingleQuestionInfo &, ProblemCommentsAndScores &, long &, double &) const;
