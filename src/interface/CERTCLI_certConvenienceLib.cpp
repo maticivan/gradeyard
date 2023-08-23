@@ -194,6 +194,16 @@ namespace CERTCLI{
         }
       }
     }
+    else{
+      pos=0;allD=SF::extractAndReplace(updatedRawText,pos,"_cdCode*|_","_/cdCode*|_",0,"");
+      if(allD.second==1){
+        updatedRawText=allD.first;
+      }
+      pos=0;allD=SF::extractAndReplace(updatedRawText,pos,"_cidCode*|_","_/cidCode*|_",0,"_cidCode*|_"+nCertIDCode+"_/cidCode*|_");
+      if(allD.second==1){
+        updatedRawText=allD.first;
+      }
+    }
     return updatedRawText;
   }
 }
