@@ -63,8 +63,11 @@ namespace RTI{
     long num;
     std::string QNum, formulation, officialSolution, officialAnswer, maxPoints,
                 displType, allChoicesSt, fileAllowed, userSolution, userAnswer,
-                userPointsEarned, graderComment;
+                userPointsEarned, graderComment, grCommentDisplay,rawComment,rawScore;
+    std::string scoreForDisplay;
+    double scoreForCalculations;
     CodeAutoGraderInfo autoGraderCodeData;
+    std::map<std::string,PSDI::GradingRule> gRulesMap;
     long acceptResp, displaySol, displayPoints, displayComments, displayQs;
   };
   struct ProblemCommentsAndScores{
@@ -96,7 +99,9 @@ namespace RTI{
     std::set<std::string> questionLabels;
     std::map<std::string,std::string> questionVersions;
     std::map<std::string,std::string> submittedAnswers;
+    std::map<std::string,std::string> maxPoints;
     std::map<std::string,std::string> completeProblemDocs;
+    std::map<std::string,std::map<std::string,PSDI::GradingRule> > gradingRules;
     int indicatorOfPOST;
     std::string commAllowedTime;
     std::string commAbsoluteEnd;
@@ -122,6 +127,19 @@ namespace RTI{
     std::string graderUName;
     void getFromString(const std::string &);
     std::string putIntoString() const;
+  };
+  struct OfficialProblemData{
+  public:
+    std::string formulation="notFound";
+    std::string solution="notFound";
+    std::string answer="notFound";
+    std::string points="notFound";
+    std::string displayType="notFound";
+    std::string choices="notFound";
+    std::string filesAllowed="notFound";
+    std::string autoGraderInfo="notFound";
+    std::string latexPrintingInstructions="notFound";
+    std::map<std::string,PSDI::GradingRule> gRules;
   };
   class Response:public APTI::AbstractText{
   protected:
@@ -173,6 +191,8 @@ namespace RTI{
     std::string s_autograderInfo_QRTE="_/agr*|_";
     std::string s_latexPrintingInstructions_QRTB="_lpi*|_";
     std::string s_latexPrintingInstructions_QRTE="_/lpi*|_";
+    std::string s_gradingRules_QRTB="_gru*_";
+    std::string s_gradingRules_QRTE="_/gru*_";
     std::string s_cAllowedTime_QRTB="_cAllT*|_";
     std::string s_cAllowedTime_QRTE="_/cAllT*|_";
     std::string s_cAbsEnd_QRTB="_cAbsEnd*|_";
@@ -241,8 +261,9 @@ namespace RTI{
     long numFilesAllowed;
     std::map<std::string,std::vector<std::string> > userRTAnswMap;
     //key: question number; value = < solution,answer, pointsEarned, graders Comment>
-    std::map<std::string,std::vector<std::string> > formRTQsMap;
+    // std::map<std::string,std::vector<std::string> > formRTQsMap;
     //key: question number; value = <question, formulation, solution, answer, points, displayType, fileAllowed, autoGraderExecutionData,latexPrintingInstructions>
+    std::map<std::string,OfficialProblemData > formRTQsMap;
     long numberOfDifferentDevicesThatAccessedTheForm;
     std::set<std::string> allDevicesThatAccessedTheForm;
     std::string modifyMe() const;
@@ -252,7 +273,7 @@ namespace RTI{
     std::string createStatusAndProgressLineTwoRowTable(const ProblemCommentsAndScores &, const double &, const ResponderInfo &) const;
     std::string createStatusAndProgressLine(const ProblemCommentsAndScores &, const double &, const ResponderInfo &, const long &) const;
     std::string createLinkToCertificate(const PSDI::SessionData &, const ResponderInfo &) const;
-    std::string userAnswerDisplay(const SingleQuestionInfo &, long &) const;
+    std::string userAnswerDisplay(const SingleQuestionInfo &, long &, const int&) const;
     std::string singleProblemDisplay(const SingleQuestionInfo&, ProblemCommentsAndScores &, long &, double &) const;
     std::pair<std::string,int> singleProblemDisplayForGrader(const SingleQuestionInfo &, ProblemCommentsAndScores &, long &, double &) const;
   public:
@@ -262,7 +283,7 @@ namespace RTI{
     std::string automaticGrading(const PSDI::SessionData &, const std::string &);
     std::string displayRespRec(const PSDI::SessionData &);
     std::string prepareDefaultRequest(const PSDI::SessionData &, const std::string &);
-    std::pair<std::string,std::vector<std::string> > getFormQVector(const std::string &) const;
+    std::pair<std::string,OfficialProblemData > getFormQData(const std::string &) const;
     std::pair<std::string,std::vector<std::string> > getUsrAVect(const std::string &) const;
     ResponderInfo infoFromResponseText(const PSDI::SessionData &, const std::string &, const int & = 0, const int & = 1);
     std::vector<LocationOfDocuments> getLocations(const PSDI::SessionData &) const;
