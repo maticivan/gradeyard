@@ -91,17 +91,18 @@ namespace BF{
       }
       return output;
   }
-  std::string cleanSpaces(const std::string & _input, const int removeAllSpaces=0){
+  std::string cleanSpaces(const std::string & _input, const int & removeAllSpaces=0, const int & remove10And13 = 1){
       // removes double space characters
       // removes leading spaces in string
-      std::string input=removeASCII10AND13(_input);
+      std::string input=_input;
+      if(remove10And13){input=removeASCII10AND13(_input);}
       std::string output="";
       int spaceBefore=1;
       int spaceNow;
       long len=input.length();
       for(long i=0;i<len;++i){
           spaceNow=0;
-          if((input[i]==' ')||(input[i]=='\t')||(input[i]=='\n')){
+          if((input[i]==' ')||(input[i]=='\t')||(input[i]=='\n')||(static_cast<long>(input[i])==13)){
               spaceNow=1;
           }
           if(spaceNow!=1){
