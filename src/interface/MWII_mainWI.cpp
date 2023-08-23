@@ -54,6 +54,7 @@ namespace MWII{
 #include "CCLI_couasConvenienceLib.cpp"
 #include "CERTCLI_certConvenienceLib.cpp"
 #include "ICEI_initCouasElements.cpp"
+#include "GRI_gradingRules.cpp"
 #include "GEI_gradeEvaluators.cpp"
 #include "CEI_couasElements.cpp"
 #include "CAGI_codeAutoGrader.h"
