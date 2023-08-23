@@ -56,6 +56,43 @@ _vVPair__vr_allowPDFForCertificates_/vr__vl_yes_/vl__/vVPair_
 _vVPair__vr_timeInSecondsToKeepCertificatePDF_/vr__vl_120_/vl__/vVPair_
 
 _vVPair__vr_defaultTexts_/vr__vl_
+_vVPair__vr_[rule]_/vr__vl_[r]_/vl__/vVPair_
+_vVPair__vr_[/rule]_/vr__vl_[/r]_/vl__/vVPair_
+_vVPair__vr_[addRule]_/vr__vl_[add]_/vl__/vVPair_
+_vVPair__vr_[/addRule]_/vr__vl_[/add]_/vl__/vVPair_
+_vVPair__vr_[deleteRule]_/vr__vl_[delete]_/vl__/vVPair_
+_vVPair__vr_[/deleteRule]_/vr__vl_[/delete]_/vl__/vVPair_
+_vVPair__vr_<p>Help with rules</p>_/vr__vl_
+<h4>Make grading easier with custom rules and policies</h4>
+_hideReveal__revealTitle_Show details_/revealTitle__hideTitle_Hide details_/hideTitle_
+<h5>Adding a rule</h5>
+<p>Let us show an example of a custom rule called <code>pineapple</code>. A rule can be added by inserting the command below into the comment
+section of a problem that is being graded.</p>
+<pre>[add]pineapple;
+-3;
+<p>Your solution contains a recipe that adds pineapple to a pizza.
+This is really bad.
+Three points will be deducted from your score.</p>
+[/add]</pre>
+<p>The rule will be added to a table. The command will disappear from the comment section. </p>
+<h5>Applying a rule</h5> <p>You can apply this rule for any of the students. Just write the following in the comment section: </p>
+<pre>[r]pineapple[/r]</pre>
+<p>The poor student will loose 3 points and receive the feedback specified with the rule.</p>
+<h5>Changing a rule</h5>
+<p>If you later change your mind, and decide that 5 points should be deducted instead of 3, then you need to add the command: </p>
+<pre>[add]pineapple;
+-5;
+<p>Your solution contains a recipe that adds pineapple to a pizza.
+This is really bad.
+Five points will be deducted from your score.</p>
+[/add]</pre>
+<p>All students who were subject to the rule will have their score and the feedback changed.</p>
+<h5>Deleting a rule</h5>
+<p>If you want to delete a rule, then type the command:</p>
+<pre>[delete]pineapple[/delete]</pre>
+_/hideReveal_
+<p></p>
+_/vl__/vVPair_
 _vVPair__vr_certificateAnnouncement_/vr__vl_<p>
 _insert_
 _n*_buttonLink_/n*_
@@ -65,7 +102,7 @@ _n*_<svg width="47" height="30" >
        style="fill:none;stroke:currentcolor;stroke-width:6;"
        d="M 27,27 344,27 344,199 27,199 27,27 Z" />
     <circle
-       style="fill:none;stroke:currentcolor;stroke-width:6;" 
+       style="fill:none;stroke:currentcolor;stroke-width:6;"
        cx="271"
        cy="142"
        r="30" />
@@ -245,7 +282,7 @@ _/vVPair_
 
 _/vl__/vVPair_
 
- 
+
 _/textData!!_
 
 _/n*!!***!_
@@ -730,7 +767,7 @@ _/insert_
 <p></p>
 
 _/textData!!_
- 
+
 
 _/n*!!***!_
 _/nextCommand!*!!_
@@ -6094,7 +6131,7 @@ DO NOT EDIT THIS LINE:_nc***_generateExam_/nc***_
 EXAM CODE (RECOMMENDED DO NOT EDIT):_nc***__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/nc***_
 START EDITING AFTER THIS LINE_nc***_
 
- 
+
 
 _problems*|_
 
@@ -6139,14 +6176,14 @@ _/insert_
 <h3>In-person exams with only auto-grader support and no displayed questions</h3>
 <p>Follow the two steps to edit the section between tags <code>_problems*|_</code> and <code>_/problems*|_</code>:</p>
 <ul><li><b>Step 1.</b> Remove the individual problems (the components between tags <code>_in*|_</code> and <code>_/in*|_</code>;
-</li><li><b>Step 2.</b> Put a modification of the document: 
+</li><li><b>Step 2.</b> Put a modification of the document:
 <pre>_noDisplayProblems|_
 Points assigned to problems: _pt*|_5;5;5;5;10;10;10_/pt*|_
 Answers to version 0: _n*_E;E;A;D;17;28;31_/n*_
 Answers to version 1: _n*_B;A;E;C;27;$\frac{1}{3}$;19_/n*_
 Answers to version 2:_n*_C;E;E;A;$x^2$;-17;29_/n*_
 _/noDisplayProblems|_</pre>
-The number of versions does not have to be 3. The number of problems does not have to be 7. However, it would be the best if each version has equal number of problems. Otherwise, you have to read the source code to see what will happen. When the parameters are badly broken (like unequal numbers of problems in different versions of the exams), then the program will do everything to prevent segmentation fault. The comfort of the administrator who made the bad parameters will be the least of the program's concern. 
+The number of versions does not have to be 3. The number of problems does not have to be 7. However, it would be the best if each version has equal number of problems. Otherwise, you have to read the source code to see what will happen. When the parameters are badly broken (like unequal numbers of problems in different versions of the exams), then the program will do everything to prevent segmentation fault. The comfort of the administrator who made the bad parameters will be the least of the program's concern.
 </li>
 </ul>
 _/textData!!_
@@ -6639,15 +6676,15 @@ _/listVersions*|_
 _stCustomizations*|_
 REPLACE this text with commands corresponding to those
 students whose assignments you want to customize. Replace the
-number 0 with an appropriate version number. 
+number 0 with an appropriate version number.
 
 You can add student's answers as well. After the version parameter,
-you can add 
+you can add
 
-_ans*_B;E;;A;A_/ans*_ 
+_ans*_B;E;;A;A_/ans*_
 
 This will set the answers to the questions
-1, 2, 4, and 5. The answers will be set to 1:B, 2:E, 4:A, 5:A 
+1, 2, 4, and 5. The answers will be set to 1:B, 2:E, 4:A, 5:A
 _/stCustomizations*|_
 
 
@@ -12498,7 +12535,7 @@ _/insert_
 
 
 _/textData!!_
- 
+
 _/n*!!***!_
 _/nextCommand!*!!_
 
@@ -12530,7 +12567,7 @@ _/permission_
 
 _/permissionString!!_
 _/systemData!!_
- 
+
  _textData!!_
 
 _insert_
@@ -12565,7 +12602,7 @@ _/insert_
 
 
 _/textData!!_
- 
+
 _/n*!!***!_
 _/nextCommand!*!!_
 
@@ -12597,22 +12634,22 @@ _/permission_
 
 _/permissionString!!_
 _/systemData!!_
- 
- 
- _textData!!_
- 
 
-_tx*|_ The grader can assign a certificate for success in this problem set. 
+
+ _textData!!_
+
+
+_tx*|_ The grader can assign a certificate for success in this problem set.
 _/tx*|_
 _sl*|_
 
 ***********************
-*** HTML TEMPLATE *** 
+*** HTML TEMPLATE ***
 ***********************
 
  _vVPair__vr_gold_/vr__vl_
 _n*_<h1>Certificate</h1>
-<h2> _vr_award_/vr_</h2>  
+<h2> _vr_award_/vr_</h2>
 <h3>Name: _vr_name_/vr_</h3>
 <p>Certificate ID: _vr_certId_/vr_</p> _/n*_
 
@@ -12633,12 +12670,12 @@ _/n*_
 _n*_
 _vVPair__vr_award_/vr__vl_Gold Medal_/vl_ _/vVPair_
 _vVPair__vr_pdfLinkIndicator_/vr__vl_yes_/vl__/vVPair_
-_/n*_ 
+_/n*_
 _/vl_ _/vVPair_
 
  _vVPair__vr_silver_/vr__vl_
 _n*_<h1>Certificate</h1>
-<h2> _vr_award_/vr_</h2>  
+<h2> _vr_award_/vr_</h2>
 <h3>Name: _vr_name_/vr_</h3>
 <p>Certificate ID: _vr_certId_/vr_</p> _/n*_
 Latex Template
@@ -12651,13 +12688,13 @@ Parameters
 _n*_
 _vVPair__vr_award_/vr__vl_Silver Medal_/vl_ _/vVPair_
 _vVPair__vr_pdfLinkIndicator_/vr__vl_yes_/vl__/vVPair_
-_/n*_ 
+_/n*_
 _/vl_ _/vVPair_
 
 
  _vVPair__vr_bronze_/vr__vl_
 _n*_<h1>Certificate</h1>
-<h2> _vr_award_/vr_</h2>  
+<h2> _vr_award_/vr_</h2>
 <h3>Name: _vr_name_/vr_</h3>
 <p>Certificate ID: _vr_certId_/vr_</p> _/n*_
 Latex Template
@@ -12670,13 +12707,13 @@ Parameters
 _n*_
 _vVPair__vr_award_/vr__vl_Bronze Medal_/vl_ _/vVPair_
 _vVPair__vr_pdfLinkIndicator_/vr__vl_yes_/vl__/vVPair_
-_/n*_ 
+_/n*_
 _/vl_ _/vVPair_
 
 
  _vVPair__vr_honorable_/vr__vl_
 _n*_<h1>Certificate</h1>
-<h2> _vr_award_/vr_</h2>  
+<h2> _vr_award_/vr_</h2>
 <h3>Name: _vr_name_/vr_</h3>
 <p>Certificate ID: _vr_certId_/vr_</p> _/n*_
 Latex Template
@@ -12689,29 +12726,29 @@ Parameters
 _n*_
 _vVPair__vr_award_/vr__vl_Honorable Mention_/vl_ _/vVPair_
 _vVPair__vr_pdfLinkIndicator_/vr__vl_yes_/vl__/vVPair_
-_/n*_ 
+_/n*_
 _/vl_ _/vVPair_
 _/sl*|_
-_aw*|_na_/aw*|_ 
-_rq*|_certificate_/rq*|_  
- 
- 
+_aw*|_na_/aw*|_
+_rq*|_certificate_/rq*|_
+
+
 _searchReplace_
 
 _v*a_
 {\gamma}={\alpha}+1@@
 _/v*a_
-  
- 
-_v*0_ 
-{\alpha}=2@@ 
-_/v*0_ 
-  
- _/searchReplace_     
+
+
+_v*0_
+{\alpha}=2@@
+_/v*0_
+
+ _/searchReplace_
 
 _/textData!!_
- 
- 
+
+
 _/n*!!***!_
 _/nextCommand!*!!_
 
@@ -12743,8 +12780,8 @@ _/permission_
 
 _/permissionString!!_
 _/systemData!!_
- 
- 
+
+
  _textData!!_
 <p></p>
 <h1>Search for Certificate</h1>
@@ -12759,7 +12796,7 @@ _insert_
 _n*_textInputField_/n*_
 _n*_reqCertificate_/n*_
 _n*_r1_/n*_
-_n*_Certificate code:_/n*_ 
+_n*_Certificate code:_/n*_
 _n*__/n*_
 _n*_30_/n*_
 _/insert_
@@ -12771,7 +12808,7 @@ _n*_reqCertificate_/n*_
 _/insert_
 
 _/textData!!_
- 
- 
+
+
 _/n*!!***!_
 _/nextCommand!*!!_
