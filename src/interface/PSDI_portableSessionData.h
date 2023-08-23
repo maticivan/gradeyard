@@ -19,6 +19,12 @@
 #define _INCL_WI_PSDI_SessionData_H
 
 namespace PSDI{
+  int GL_alreadyModifiedGradingRules=0;
+  struct GradingRule{
+  public:
+    double points;
+    std::string display="notFound";
+  };
   struct SessionData{
   public:
     WUD::User myWU;
@@ -52,6 +58,7 @@ namespace PSDI{
     std::string allowRespRecDisplayToOthers;
     std::map<std::string,std::string> respMap;
     std::map<std::string,std::string> encryptionMap;
+    std::map<std::string,std::map<std::string,GradingRule> > addModifyRulesCommands;
     std::stack<std::string> recoveryOperationCommands;
     std::stack<std::string> recoveryOperationNames;
     int indChangeRespRecToPrintVersionOfCommonInClassExam;
@@ -63,7 +70,7 @@ namespace PSDI{
     std::string respRecBackupText;
     int passedAntiSpam;
     std::vector<std::string> displayDaysInWeek;
-    std::vector<std::string> displayMonthsInYear; 
+    std::vector<std::string> displayMonthsInYear;
   };
 }
 #endif
