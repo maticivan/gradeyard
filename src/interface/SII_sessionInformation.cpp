@@ -20,6 +20,32 @@
 #define _INCL_WI_SessionInformation_CPP
 
 namespace SII{
+
+  std::string smallMapPrinting(const std::map<std::string,PSDI::GradingRule>&m ){
+    std::string res;
+    std::map<std::string,PSDI::GradingRule>::const_iterator it,itE;
+    itE=m.end();
+    it=m.begin();
+    while(it!=itE){
+      res+="\t"+it->first+" ";
+      res+=std::to_string((it->second).points)+" "+ (it->second).display +"\n";
+      ++it;
+    }
+    return res;
+  }
+  std::string rulesDebugPrinting(const std::map<std::string,std::map<std::string,PSDI::GradingRule> >& m){
+    std::string debRes;
+    std::map<std::string,std::map<std::string,PSDI::GradingRule> >::const_iterator it,itE;
+    itE=m.end(); it=m.begin();
+    while(it!=itE){
+      debRes+="<pre>"+it->first+"\n";
+      debRes+=smallMapPrinting(it->second);
+      debRes+="</pre>\n";
+      ++it;
+    }
+    return debRes;
+  }
+
   MPTI::MainText SessionInformation::getHeader() const{return header;}
   MPTI::MainText SessionInformation::getFooter() const{return footer;}
   MPTI::MainText SessionInformation::getMainText() const{return mainText;}
@@ -789,6 +815,7 @@ namespace SII{
               RTI::ResponderInfo res=tmpRT.infoFromResponseText(psd,"df");
               if(res.documentType=="gradeOfResponse"){
                 updateRespMapToProperlyAccountForBothGraderCommentsAndPoints();
+                GF::GL_DEB_MESSAGES.addMessage(rulesDebugPrinting(psd.addModifyRulesCommands));
               }
               if(res.exitStatus=="badForm"){
                 res.acceptResp=0;
@@ -2979,8 +3006,6 @@ namespace SII{
                 }
                 nDataText+=itemToReplace;
               }
-
-
             }
             else{
               psd.respRecFlag="fileTooLarge";
@@ -2990,6 +3015,71 @@ namespace SII{
       }
     }
     return nDataText;
+  }
+  std::map<std::string,PSDI::GradingRule> initialProblemRuleMap(const std::string& key, const PSDI:: GradingRule& gr){
+    std::map<std::string,PSDI::GradingRule> initialM;
+    initialM[key]=gr;
+    return initialM;
+  }
+  std::map<std::string,PSDI::GradingRule> initialProblemRuleMap(const std::string& key, const std::string& _display, const double& _points){
+    PSDI::GradingRule gr;
+    gr.display=_display;
+    gr.points=_points;
+    return initialProblemRuleMap(key,gr);
+  }
+  std::string SessionInformation::treatRuleCommands(const std::string& qLabel,const std::string &in){
+    std::string out=in;
+    std::pair<std::vector<std::string>,std::string> rulesToDelete=SF::stringToVectorAndRemoveItems(out,MWII::GL_WI.getDefaultWebText("[deleteRule]"),MWII::GL_WI.getDefaultWebText("[/deleteRule]"),1);
+    if((rulesToDelete.first).size()>0){
+      out=rulesToDelete.second;
+      long sz=(rulesToDelete.first).size();
+      for(long i=0;i<sz;++i){
+        out+=MWII::GL_WI.getDefaultWebText("[addRule]")+(rulesToDelete.first)[i]+";";
+        out+="0;*del*"+MWII::GL_WI.getDefaultWebText("[/addRule]");
+      }
+    }
+    std::pair<std::vector<std::string>,std::string> rules=SF::stringToVectorAndRemoveItems(out,MWII::GL_WI.getDefaultWebText("[addRule]"),MWII::GL_WI.getDefaultWebText("[/addRule]"),1);
+    if((rules.first).size()>0){
+      out=rules.second;
+      long sz=(rules.first).size();
+      std::string ruleName; double rulePoints;std::string ruleDisplay;
+      long pos; std::pair<std::string,int> allD;
+      std::map<std::string,std::map<std::string,PSDI::GradingRule> >::iterator it,itE;
+      PSDI::GradingRule nextRule;
+      if(psd.isRoot=="yes"){
+        for(long i=0;i<sz;++i){
+          pos=0;allD=SF::getEverythingBefore((rules.first)[i],pos,";");
+          if(allD.second==1){
+            ruleName=BF::cleanSpaces(allD.first,0,0);
+            ruleDisplay=ruleName;
+            long oldPosSave=pos;
+            allD=SF::getEverythingBefore((rules.first)[i],pos,";");
+            if(allD.second==1){
+              rulePoints=BF::stringToDouble(allD.first);
+              ruleDisplay="";
+              SF::copyTheRestOfTheStringAndGiveUp((rules.first)[i],pos,ruleDisplay,1);
+              ruleDisplay=BF::cleanSpaces(ruleDisplay,0,0);
+            }
+            else{
+              std::string pointsString;
+              SF::copyTheRestOfTheStringAndGiveUp((rules.first)[i],oldPosSave,pointsString,1);
+              rulePoints=BF::stringToDouble(pointsString);
+            }
+            itE=(psd.addModifyRulesCommands).end();
+            it=(psd.addModifyRulesCommands).find(qLabel);
+            if(it==itE){
+              (psd.addModifyRulesCommands)[qLabel]=initialProblemRuleMap(ruleName,ruleDisplay,rulePoints);
+            }
+            else{
+              nextRule.points=rulePoints;
+              nextRule.display=ruleDisplay;
+              ((psd.addModifyRulesCommands)[qLabel])[ruleName]=nextRule;
+            }
+          }
+        }
+      }
+    }
+    return out;
   }
   void SessionInformation::updateRespMapToProperlyAccountForBothGraderCommentsAndPoints(){
     std::map<std::string,std::string> tempRespToKeepPointsOnly;
@@ -3007,7 +3097,7 @@ namespace SII{
           tempRespToKeepPointsOnly[it->first]="_comment_"+ it->second+"_/comment_";
         }
         else{
-          it2->second += "_comment_"+it->second+"_/comment_";
+          it2->second += "_comment_"+treatRuleCommands(it->first,it->second)+"_/comment_";
         }
       }
       sz=(it->first).size();
