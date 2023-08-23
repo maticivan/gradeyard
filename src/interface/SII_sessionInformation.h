@@ -183,6 +183,7 @@ namespace SII{
     std::string genExamTemplate(const std::string &,const std::pair<std::vector<std::string>,std::string> &, const std::string &);
     std::string updateExamDocument(const std::string &,const std::string &,const std::string &);
     std::string createRRBackup(const std::string& , const std::string & ) const;
+    std::string treatRuleCommands(const std::string& ,const std::string &);
     SPREPF::StatData prepareStatData() const;
     std::map<std::string,std::string> mapNamesRawTexts(const std::set<std::string>& );
     std::string getOfflineAutograderData(const std::string& );
