@@ -618,14 +618,10 @@ namespace CEI{
           it=((rV[i]).gradersComments).begin();
           alternativeLine=mLine;
           while(it!=itE){
-            pos=0;allD=SF::extract(it->second,pos,"_score_","_/score_");
-            if(allD.second==1){
-              mLine[j]=allD.first;
-              score+=BF::stringToDouble(mLine[j]);
-              qNum=BF::stringToIntegerRemoveStart(it->first)+1;
-              if( (qNum>1) && (qNum<lsz-1) ){
-                alternativeLine[qNum]=mLine[j];
-              }
+            qNum=BF::stringToIntegerRemoveStart(it->first)+1;
+            GRI::updateScoresIfRulesWereUsed(mLine[j],score,res.gradingRules,res.maxPoints,it->first,it->second);
+            if( (qNum>1) && (qNum<lsz-1) ){
+              alternativeLine[qNum]=mLine[j];
             }
             ++it;++j;
           }
