@@ -154,6 +154,7 @@ namespace SF{
       std::pair<std::string,int> fR;
       fR.first="";
       fR.second=0;
+      long saveOldPos=pos;
       std::pair<std::string,int> thrashSt=getEverythingBefore(src,pos,startString,caseSensitive);
       std::pair<std::string,int> beforeNextStart,beforeNextEnd;
       if(thrashSt.second==1){
@@ -200,6 +201,7 @@ namespace SF{
       }
       if(fR.second==0){
           fR.first="";
+          pos=saveOldPos;
       }
       return fR;
   }
@@ -212,7 +214,6 @@ namespace SF{
       if(startString!=endString){
         return extrStrong(src,pos,startString,endString,caseSensitive);
       }
-
       std::pair<std::string,int> fR;
       fR.first="";
       fR.second=0;
@@ -393,6 +394,28 @@ namespace SF{
       s.push(t.top());
       t.pop();
     }
+  }
+
+  template<typename TTT>
+  std::stack<TTT> clearStack(std::stack<TTT> & v){
+    if(v.empty()){
+      return v;
+    }
+    v.pop();
+    return clearStack(v);
+  }
+  template<typename TTT>
+  std::vector<TTT> stackToVector(std::stack<TTT> & st){//returns flipped stack as a vector
+    std::vector<TTT> fR;
+    long sz=st.size();
+    if(sz>0){
+      fR.resize(sz);
+      for(long i=0;i<sz;++i){
+        fR[sz-i-1]=st.top();
+        st.pop();
+      }
+    }
+    return fR;
   }
   template<typename TTT>
   std::set<TTT> vectorToSet(const std::vector<TTT> &_v){
@@ -636,36 +659,72 @@ namespace SF{
     }
     return fR;
   }
+  long copyTheRestOfTheStringAndGiveUp(const std::string& in, const long& oldPosSave, std::string& out,const int& copyIsNecessary){
+    long len=in.length();
+    if(copyIsNecessary==0){
+      return len;
+    }
+    long pos=oldPosSave;
+    while(pos<len){
+      out+=in[pos];
+      ++pos;
+    }
+    return pos;
+  }
+  std::pair<std::stack<std::string>,std::string>
+                  stringToStackAndRemoveItems(const std::string & _allItems,
+                                              const std::string & _nextB="_n_",
+                                              const std::string & _nextE="_/n_",
+                                              const int & removalIsNecessary=1,
+                                              const std::string & _attMustHave="!*!"){
+    std::pair<std::stack<std::string>,std::string> fR;
+    long pos=0; std::pair<std::string,int> allD;
+    long len=_allItems.length(); long openTagLen=_nextB.length();
+    std::string stBefore,nextSt;
+    long oldPosSave;
+    while(pos<len){
+      oldPosSave=pos;
+      allD=getEverythingBefore(_allItems,pos,_nextB);
+      if(allD.second==0){
+        pos=copyTheRestOfTheStringAndGiveUp(_allItems,oldPosSave,fR.second,removalIsNecessary);
+      }
+      else{
+        pos-=openTagLen;
+        stBefore=allD.first;
+        allD=extract(_allItems,pos,_nextB,_nextE);
+        if(allD.second==0){
+          pos=copyTheRestOfTheStringAndGiveUp(_allItems,oldPosSave,fR.second,removalIsNecessary);
+        }
+        else{
+          nextSt=allD.first;
+          if(removalIsNecessary){fR.second+=stBefore;}
+          if((_attMustHave=="!*!") || (findAndReplace(nextSt,_attMustHave,"")!=nextSt) ){
+            (fR.first).push(nextSt);
+          }
+        }
+      }
+    }
+    return fR;
+  }
+  std::pair<std::vector<std::string>,std::string>
+                  stringToVectorAndRemoveItems(const std::string & _allItems,
+                                               const std::string & _nextB="_n_",
+                                               const std::string & _nextE="_/n_",
+                                               const int & removalIsNecessary=1,
+                                               const std::string & _attMustHave="!*!"){
+    std::pair<std::vector<std::string>,std::string> fR;
+    std::pair<std::stack<std::string>,std::string> tmpStack;
+    tmpStack=stringToStackAndRemoveItems(_allItems,_nextB,_nextE,removalIsNecessary,_attMustHave);
+    fR.second=tmpStack.second;
+    fR.first=stackToVector(tmpStack.first);
+    return fR;
+  } 
   std::vector<std::string> stringToVector(const std::string & _allItems,
                                           const std::string & _nextB="_n_",
                                           const std::string & _nextE="_/n_",
                                           const std::string & _attMustHave="!*!"){
     std::vector<std::string> fR;
-    long sz,szAll;
-    sz=countInString(_allItems,_nextB,_nextE);
-    szAll=sz;
-    if(_attMustHave!="!*!"){
-      sz=countInString(_allItems,_nextB,_nextE,_attMustHave);
-    }
-    if(sz==0){
-      return fR;
-    }
-    fR.resize(sz);
-    long pos=0;
-    std::string nextSt;
-    long j=0,i;
-    for(i=0;i<szAll;++i){
-        nextSt= extract(_allItems,pos,_nextB,_nextE).first;
-        if(_attMustHave=="!*!"){
-          fR[i]=nextSt;
-        }
-        else{
-          if(firstContainsTheOther(nextSt,_attMustHave)==1){
-            fR[j]=nextSt;++j;
-          }
-        }
-    }
-    return fR;
+    return stringToVectorAndRemoveItems(_allItems,_nextB,_nextE,0,_attMustHave).first;
   }
   std::vector<std::string> stringToVectorSimpleSeparator(const std::string& _nAnswers,const std::string& separator=";"){
     std::string saB="_n*_", saE="_/n*_";
@@ -1109,27 +1168,6 @@ namespace SF{
   template<typename TTT>
   std::vector<TTT> oneElementVector(const TTT& el){
     std::vector<TTT> fR;fR.resize(1);fR[0]=el;
-    return fR;
-  }
-  template<typename TTT>
-  std::stack<TTT> clearStack(std::stack<TTT> & v){
-    if(v.empty()){
-      return v;
-    }
-    v.pop();
-    return clearStack(v);
-  }
-  template<typename TTT>
-  std::vector<TTT> stackToVector(std::stack<TTT> & st){//returns flipped stack as a vector
-    std::vector<TTT> fR;
-    long sz=st.size();
-    if(sz>0){
-      fR.resize(sz);
-      for(long i=0;i<sz;++i){
-        fR[sz-i-1]=st.top();
-        st.pop();
-      }
-    }
     return fR;
   }
   std::vector<std::string> getLines(const std::string& input, char lineSeparator='\n'){
