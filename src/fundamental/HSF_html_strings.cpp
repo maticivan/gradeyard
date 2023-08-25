@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -205,9 +205,9 @@ namespace HSF{
     std::string input=_input;
     std::vector<std::string> tags=_tags;
     if(caseSensitive==0){
-      input=SF::toLowerCase(input);
+      input=MFRF::toLowerCase(input);
       for(long i=0;i<sz;++i){
-        tags[i]=SF::toLowerCase(tags[i]);
+        tags[i]=MFRF::toLowerCase(tags[i]);
       }
     }
     fR.resize(sz);
@@ -260,13 +260,10 @@ namespace HSF{
                                             const std::string& addToFront="<pre>",
                                             const std::string& addToBack="</pre>"
                                             ){
-    std::string output = input;
-    if(input==SF::findAndReplace(input,signAdvanced01,"")){
-      if(input==SF::findAndReplace(input,signAdvanced02,"")){
-        output=addToFront+input+addToBack;
-      }
+    if(MFRF::find(input,signAdvanced01,signAdvanced02).second==-1){
+      return addToFront+input+addToBack;
     }
-    return output;
+    return input;
   }
   std::string urlEnvVarsFromForwardedParameters(const std::map<std::string,std::string> & respMap, const std::string & variable, const std::string & value, const std::string &forwardVariable, const std::string & forwardValue, const long & maxNumOfVarValTranslationsThatCanBeAddedThroughTheURLString=10){
     std::string fR;
