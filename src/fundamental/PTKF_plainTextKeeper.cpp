@@ -37,30 +37,6 @@ namespace PTKF{
     void treatBoxCode();
     void treatMath();
   };
-  void treatHTMLTagsInNonMathText(std::string &t){
-    t=SF::findAndReplace(t,"<","\\(<\\)");
-    t=SF::findAndReplace(t,">","\\(>\\)");
-  }
-  void makeItMoreProfessional(std::string & t){
-    t=SF::findAndReplace(t,"\n","<BR>");
-    std::vector<std::string> seqLongSpaces,seqQuads;
-    std::string currentLongSpace="  ",currentQuad="\\quad";
-    long numS=25;
-    seqLongSpaces.resize(numS);seqQuads.resize(numS);
-    for(long i=0;i<numS;++i){
-      seqLongSpaces[i]=currentLongSpace;
-      seqQuads[i]=currentQuad;
-      currentLongSpace+=" ";
-      if(i%2==1){
-        currentQuad+="\\quad";
-      }
-    }
-    long i=numS;
-    while(i>0){
-      --i;
-      t=SF::findAndReplace(t,seqLongSpaces[i],"\\("+seqQuads[i]+"\\)");
-    }
-  }
   PlainTextKeeper::PlainTextKeeper(const std::string & salt){
     plainTextBank.clear();
     sepB=sepBStB+salt+sepEC;
@@ -76,33 +52,28 @@ namespace PTKF{
   }
   std::string PlainTextKeeper::recover(const std::string & _textWithDeposits) const{
     std::map<long,std::string>::const_iterator it,itE;
-    std::string returnText=_textWithDeposits;
     it=plainTextBank.begin();
     itE=plainTextBank.end();
-    std::vector<std::string> sF,rW;
+    std::map<std::string,std::string> replMap;
     if(plainTextBank.size()>0){
-      sF.resize(plainTextBank.size());
-      rW.resize(plainTextBank.size());
-      long i=0;
+      std::string deb_str;
       while(it!=itE){
-        sF[i]=generateReceipt(it->first);
-        rW[i]=it->second;
+        replMap[generateReceipt(it->first)]=it->second;
         ++it;
-        ++i;
       }
-      returnText=SF::findAndReplace(returnText,sF,rW);
+      return MFRF::findAndReplace(_textWithDeposits,replMap);
     }
-    return returnText;
+    return _textWithDeposits;
   }
   std::string padIneqSigns(const std::string &in){
-    std::string output=in;
-    output=SF::findAndReplace(output,"< ","!*goodSpAftOIn*!");
-    output=SF::findAndReplace(output," >","!*goodSpBefCIn*!");
-    output=SF::findAndReplace(output,"<","< ");
-    output=SF::findAndReplace(output,">"," >");
-    output=SF::findAndReplace(output,"!*goodSpBefCIn*!"," >");
-    output=SF::findAndReplace(output,"!*goodSpAftOIn*!","< ");
-    return output;
+    std::map<std::string,std::string> replMap;
+    replMap["< "]="!*goodSpAftOIn*!";
+    replMap[" >"]="!*goodSpBefCIn*!";
+    replMap["<"]="< ";
+    replMap[">"]=" >";
+    replMap["!*goodSpBefCIn*!"]=" >";
+    replMap["!*goodSpAftOIn*!"]="< ";
+    return MFRF::findAndReplace(in,replMap);
   }
   void PlainTextKeeper::treatMath(){
     long sz=plainTextBank.size();
@@ -132,24 +103,26 @@ namespace PTKF{
       }
     }
   }
+
   void PlainTextKeeper::treatPre(const std::string &preOpen, const std::string &preClose, const std::string & pOOverwrite, const std::string & pCOverwrite){
     long sz=plainTextBank.size();
-    std::string st;
     std::string alakazamOpen=GF::GL_HIDING_STRING_PTKF01+GL_MAIN_SETUP_FILE_NAME+GF::GL_HIDING_STRING_PTKF02;
     std::string alakazamClose=GF::GL_HIDING_STRING_PTKF03+GL_MAIN_SETUP_FILE_NAME+GF::GL_HIDING_STRING_PTKF04;
     std::string oOverwrite=preOpen;
     std::string cOverwrite=preClose;
     if(pOOverwrite!=""){oOverwrite=pOOverwrite;}
     if(pCOverwrite!=""){cOverwrite=pCOverwrite;}
+    std::map<std::string,std::string> replMap0, replMap1 ,replMap2;
+    replMap0[preOpen]=alakazamOpen;
+    replMap0[preClose]=alakazamClose;
+    replMap1["<"]="&lt;";
+    replMap1[">"]="&gt;";
+    replMap2[alakazamClose]=cOverwrite;
+    replMap2[alakazamOpen]=oOverwrite;
     for(long i=0;i<sz;++i){
-      st=plainTextBank[i];
-      st=SF::findAndReplace(st,preOpen,alakazamOpen);
-      st=SF::findAndReplace(st,preClose,alakazamClose);
-      st=SF::findAndReplace(st,"<","&lt;");
-      st=SF::findAndReplace(st,">","&gt;");
-      st=SF::findAndReplace(st,alakazamClose,cOverwrite);
-      st=SF::findAndReplace(st,alakazamOpen,oOverwrite);
-      plainTextBank[i]=st;
+      plainTextBank[i]=MFRF::findAndReplace(plainTextBank[i],replMap0);
+      plainTextBank[i]=MFRF::findAndReplace(plainTextBank[i],replMap1);
+      plainTextBank[i]=MFRF::findAndReplace(plainTextBank[i],replMap2);
     }
   }
   void PlainTextKeeper::treatCODE(const std::string & codeOpen, const std::string & codeClose){
