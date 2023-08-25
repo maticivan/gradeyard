@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -22,30 +22,36 @@
 namespace TFTI{
   long convertStringToSeconds(const std::string &st){
     std::string repl=st;
-    repl=SF::findAndReplace(repl,"and","");
-    repl=SF::findAndReplace(repl,"years","y");
-    repl=SF::findAndReplace(repl,"year","y");
-    repl=SF::findAndReplace(repl,"yr","y");
-    repl=SF::findAndReplace(repl,"months","z");
-    repl=SF::findAndReplace(repl,"month","z");
-    repl=SF::findAndReplace(repl,"mon","z");
-    repl=SF::findAndReplace(repl,"mnth","z");
-    repl=SF::findAndReplace(repl,"mnt","z");
-    repl=SF::findAndReplace(repl,"mn","z");
-    repl=SF::findAndReplace(repl,"days","d");
-    repl=SF::findAndReplace(repl,"day","d");
-    repl=SF::findAndReplace(repl,"hours","h");
-    repl=SF::findAndReplace(repl,"hour","h");
-    repl=SF::findAndReplace(repl,"minutes","m");
-    repl=SF::findAndReplace(repl,"minute","m");
-    repl=SF::findAndReplace(repl,"min","m");
-    repl=SF::findAndReplace(repl,"seconds","s");
-    repl=SF::findAndReplace(repl,"second","s");
-    repl=SF::findAndReplace(repl,"sec","s");
-    repl=SF::findAndReplace(repl,",","");
-    repl=SF::findAndReplace(repl," ","");
-    repl=SF::findAndReplace(repl,"\t","");
-    repl=SF::findAndReplace(repl,"\n","");
+    std::map<std::string,std::string> replMap;
+    replMap["years"]="y";
+    replMap["yr"]="y";
+    replMap["months"]="z";
+    replMap["month"]="z";
+    replMap["mnth"]="z";
+    replMap["days"]="d";
+    replMap["hours"]="h";
+    replMap["minutes"]="m";
+    replMap["seconds"]="s";
+    replMap[","]="";
+    replMap[" "]="";
+    replMap["\t"]="";
+    replMap["\n"]="";
+    replMap["and"]="";
+    repl=MFRF::findAndReplace(repl,replMap);
+    replMap.clear();
+    replMap["year"]="y";
+    replMap["mon"]="z";
+    replMap["mnt"]="z";
+    replMap["day"]="d";
+    replMap["hour"]="h";
+    replMap["minute"]="m";
+    replMap["second"]="s";
+    repl=MFRF::findAndReplace(repl,replMap);
+    replMap.clear();
+    replMap["mn"]="z";
+    replMap["min"]="m";
+    replMap["sec"]="s";
+    repl=MFRF::findAndReplace(repl,replMap); 
     std::pair<std::string,int> allD;long pos;long oldPos;
     long yr=0;long mn=0;long dy=0;long h=0;long m=0;long s=0;
     oldPos=0;pos=0;allD=SF::getEverythingBefore(repl,pos,"y");
