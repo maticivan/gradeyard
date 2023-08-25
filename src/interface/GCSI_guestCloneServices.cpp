@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -27,19 +27,13 @@ namespace GCSI{
   }
   int preparePublicFolder(const std::string & userWithWebsite, const std::string & encPassword){
     std::string setupText=IOF::fileToString( MWII::GL_WI.getClonesSystemFolder()+"/"+ GL_MAIN_SETUP_FILE_NAME);
-    setupText=SF::findAndReplace(setupText,
-                            "_mainFolderDB*!_"+DD::GL_DBS.getMainFolder()+"_/mainFolderDB*!_",
-                            "_mainFolderDB*!_"+DD::GL_DBS.getClonesMainDBFolder()+"/"+userWithWebsite +"_/mainFolderDB*!_");
-    setupText=SF::findAndReplace(setupText,
-                            "_websiteURL*!_"+MWII::GL_WI.getWSURL()+"_/websiteURL*!_",
-                            "_websiteURL*!_"+MWII::GL_WI.getWSURL()+"/"+DD::GL_DBS.getGuestClonesRelLoc()+userWithWebsite+"_/websiteURL*!_");
-    setupText=SF::findAndReplace(setupText,
-                            "_cookiePath*!_"+MWII::GL_WI.getCookiePath()+"_/cookiePath*!_",
-                            "_cookiePath*!_"+MWII::GL_WI.getCookiePath()+"/"+DD::GL_DBS.getGuestClonesRelLoc()+userWithWebsite+"_/cookiePath*!_");
+    std::map<std::string,std::string> replMap;
+    replMap["_mainFolderDB*!_"+DD::GL_DBS.getMainFolder()+"_/mainFolderDB*!_"]="_mainFolderDB*!_"+DD::GL_DBS.getClonesMainDBFolder()+"/"+userWithWebsite +"_/mainFolderDB*!_";
+    replMap["_websiteURL*!_"+MWII::GL_WI.getWSURL()+"_/websiteURL*!_"]="_websiteURL*!_"+MWII::GL_WI.getWSURL()+"/"+DD::GL_DBS.getGuestClonesRelLoc()+userWithWebsite+"_/websiteURL*!_";
+    replMap["_cookiePath*!_"+MWII::GL_WI.getCookiePath()+"_/cookiePath*!_"]="_cookiePath*!_"+MWII::GL_WI.getCookiePath()+"/"+DD::GL_DBS.getGuestClonesRelLoc()+userWithWebsite+"_/cookiePath*!_";
+    replMap["_cookieName*!_"+MWII::GL_WI.getCookieName()+"_/cookieName*!_"]="_cookieName*!_"+MWII::GL_WI.getCookieName()+userWithWebsite+"_/cookieName*!_";
+    setupText=MFRF::findAndReplace(setupText,replMap);
     setupText=SF::findAndReplace(setupText,"_cookiePath*!_//","_cookiePath*!_/");
-    setupText=SF::findAndReplace(setupText,
-                            "_cookieName*!_"+MWII::GL_WI.getCookieName()+"_/cookieName*!_",
-                            "_cookieName*!_"+MWII::GL_WI.getCookieName()+userWithWebsite+"_/cookieName*!_");
     std::string wFolder=DD::GL_DBS.getGuestClonesRelLoc()+userWithWebsite;
     int folderCreated=IOF::sys_createFolderIfDoesNotExist(wFolder,GL_MAIN_SETUP_FILE_NAME,setupText);
     IOF::sys_copyAllFilesButIgnoreThoseThatExist( MWII::GL_WI.getClonesSystemFolder(),wFolder);
@@ -47,8 +41,10 @@ namespace GCSI{
     fToUpdate=wFolder;
     fToUpdate+="/mainText"+DD::GL_DBS.getInitExtension()+".txt";
     fContent=IOF::fileToString(fToUpdate,1);
-    fContent=SF::findAndReplace(fContent,"_THIS*WEBSITE*URL*_",MWII::GL_WI.getWSURL());
-    fContent=SF::findAndReplace(fContent,">Home</a>",">"+userWithWebsite+"</a>");
+    replMap.clear();
+    replMap["_THIS*WEBSITE*URL*_"]=MWII::GL_WI.getWSURL();
+    replMap[">Home</a>"]=">"+userWithWebsite+"</a>";
+    fContent=MFRF::findAndReplace(fContent,replMap);
     IOF::toFile(fToUpdate,fContent);
     fToUpdate=wFolder;
     fToUpdate+="/uns"+DD::GL_DBS.getInitExtension()+".txt";
@@ -61,7 +57,6 @@ namespace GCSI{
       for(long i=0;i<sz-1;++i){
         fContent += "_nextCommand!*!!_\n"+individualUsers[i]+"_/nextCommand!*!!_\n\n";
       }
-
       fContent+="_nextCommand!*!!_\n";
       std::vector<std::string> itemsInLastData=SF::stringToVector(lastUserData,"_n*!!***!_","_/n*!!***!_");
       long correctSizeForItemsInInsertUserCommand=4;
@@ -109,7 +104,7 @@ namespace GCSI{
     if(IOF::legalFileName(guestUName)==0){
       return 0;
     }
-    if(guestUName!=SF::toLowerCase(guestUName)){
+    if(guestUName!=MFRF::toLowerCase(guestUName)){
       return 0;// only usernames that are pure lowercase characters can have clones.
       // The URLs are not case sensitive
     }
@@ -118,7 +113,6 @@ namespace GCSI{
         return 0;
       }
     }
-
     deleteClonedWebsite(guestUName);
     preparePublicFolder(guestUName,encPassword);
     return 1;
