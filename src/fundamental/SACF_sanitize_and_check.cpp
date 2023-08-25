@@ -22,16 +22,10 @@
 namespace SACF{
   std::string sanitizeInFormSearchFor(const std::string & s){return "**sF!!";}
   int strictSafetyCheck(const std::string & s){
-    long dsz=GF::GL_DANGERS.strings.size();
-    long i=0;
-    long danger=0;
-    while((danger==0)&&(i<dsz)){
-      if( s!=SF::findAndReplace(s,GF::GL_DANGERS.strings[i],"")){
-        danger=1;
-      }
-      ++i;
+    if(MFRF::find(s,GF::GL_DANGERS.strings).second>-1){
+      return 0;
     }
-    return 1-danger;
+    return 1;
   }
   int badCharactersAvoided(const std::string& in, const std::set<char> &m){
     int stillGood=1;
@@ -57,5 +51,4 @@ namespace SACF{
     return badCharactersAvoided(s,GF::GL_DANGERS.unacceptableCharactersInUsernames);
   }
 }
-
 #endif
