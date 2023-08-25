@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -26,15 +26,12 @@ namespace INCII{
         return -1;
     }
     std::string versions=allD.first;
-
     std::vector<std::string> openingVersions=SF::stringToVector(versions,"_v*","_");
     std::vector<std::string> closingVersions=SF::stringToVector(versions,"_/v*","_");
-
     long numV=openingVersions.size();
     if(numV!=closingVersions.size()){
       return -1;
     }
-
     long i=0;
     long numNonNumeric=0;
     while(i<numV){
@@ -49,7 +46,6 @@ namespace INCII{
       ++i;
     }
     return numV-numNonNumeric;
-
   }
   std::string singleExamParameters(const std::vector<std::vector<long> > &per, const std::vector<long> & szs, const long & j){
     std::string res="";
@@ -67,7 +63,6 @@ namespace INCII{
     res="_n*_\n_vnm*_"+std::to_string(j)+"_/vnm*_\n_vt*_\n"+res;
     res+="_/vt*_\n_/n*_\n";
     return res;
-
   }
   std::string randomizeExamVersions(const std::string & _eName, const long &numExams,const std::string & howOftenToRandomize){
     std::string res="";
@@ -94,7 +89,6 @@ namespace INCII{
       numVersions[i]=getNumberOfVersions(allQuestions[i]);
       permutations[i]=RNDF::genRandPermutation(numVersions[i]);
     }
-
     for(long j=0;j<numExams;++j){
       res+="\n";
       res+=singleExamParameters(permutations,numVersions,j);
@@ -128,7 +122,6 @@ namespace INCII{
     for(long i=0;i<sNum;++i){
       res+=formatSingleStudentData(stVect[i])+"\n";
     }
-
     return res;
   }
   std::string evaluateInCommandInsert(const std::vector<std::string> & args){
@@ -159,15 +152,13 @@ namespace INCII{
       args[i]=SF::stringToVector(cInserts[i],"_n*_","_/n*_");
       result[i]=evaluateInCommandInsert(args[i]);
     }
-    std::string out=in;
+    std::map<std::string,std::string> replMap;
     for(long i=0;i<numInserts;++i){
       if((result[i]!="")&&(result[i]!="error")){
-        out=SF::findAndReplace(out,oldText[i],result[i]);
+        replMap[oldText[i]]=result[i];
       }
     }
-
-    return out;
+    return MFRF::findAndReplace(in,replMap);
   }
-
 }
 #endif
