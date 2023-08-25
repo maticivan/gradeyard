@@ -236,21 +236,13 @@ namespace DISPPF{
       ws.resize(2);
       ws[0]="1";ws[1]="2";
       dollarsToLatexSymbols(t);
-    } 
+    }
     std::string tForTesting1=t;
     tForTesting1=SF::findAndReplace(tForTesting1,"_/comment_"," _/comment_");
-    std::string tForTesting2=tForTesting1;
-    long sz=GF::GL_DANGERS.strings.size();
-    for(long i=0;i<sz;++i){
-      tForTesting2=SF::findAndReplace(tForTesting2,GF::GL_DANGERS.strings[i],"");
-    }
-    if( (tForTesting1!=tForTesting2) && (rs.exitWithErrorIfUnsafe==1)){
+    if((MFRF::find(tForTesting1,GF::GL_DANGERS.strings).second>-1)&&(rs.exitWithErrorIfUnsafe==1)){
       return "unsafeInput";
     }
-    sz=GF::GL_DANGERS.veryBadStrings.size();
-    for(long i=0;i<sz;++i){
-      t=SF::findAndReplace(t,GF::GL_DANGERS.veryBadStrings[i],"");
-    }
+    t=MFRF::findAndReplace(t,GF::GL_DANGERS.veryBadStringsToBeErased);
     PTKF::PlainTextKeeper mth1("m01");
     indicatorSafety=PTKF::removeToSafety(mth1,t,"\\(","\\)");
     if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
@@ -283,18 +275,14 @@ namespace DISPPF{
     mth1.treatMath();
     if(rs.htmlTolerance<2){
       if(rs.htmlTolerance==1){
-        sz=GL_HTML_Tags.formattingTags.size();
-        for(long i=0;i<sz;++i){
-          t=SF::findAndReplace(t,GL_HTML_Tags.formattingTags[i],GL_HTML_Tags.alakazams[i]);
-        }
+        t=MFRF::findAndReplace(t,GL_HTML_Tags.formattingTags,GL_HTML_Tags.alakazams);
       }
-      t=SF::findAndReplace(t,"<","\\(<\\)");
-      t=SF::findAndReplace(t,">","\\(>\\)");
+      std::map<std::string,std::string> replMap;
+      replMap["<"]="\\(<\\)";
+      replMap[">"]="\\(>\\)";
+      t=MFRF::findAndReplace(t,replMap);
       if(rs.htmlTolerance==1){
-        sz=GL_HTML_Tags.formattingTags.size();
-        for(long i=0;i<sz;++i){
-          t=SF::findAndReplace(t,GL_HTML_Tags.alakazams[i],GL_HTML_Tags.formattingTags[i]);
-        }
+        t=MFRF::findAndReplace(t,GL_HTML_Tags.alakazams,GL_HTML_Tags.formattingTags);
       }
     }
     t=mth5.recover(t);
@@ -312,39 +300,23 @@ namespace DISPPF{
     return t;
   }
   std::string finalizeForDisplay(const std::map<std::string,std::string> &findReplacePairs, const std::string & _t){
-    std::string t=_t;
-    std::map<std::string,std::string>::const_iterator itFR,itFRE;
-    itFR=findReplacePairs.cbegin();
-    itFRE=findReplacePairs.cend();
-    while(itFR!=itFRE){
-      t=SF::findAndReplace(t,itFR->first,itFR->second);
-      ++itFR;
-    }
+    std::string t=MFRF::findAndReplace(_t,findReplacePairs);
     t=LNF::labelsAndNumbers(t);
     RequestsForSanitizer reqS;
     reqS.convertDollarsToLatex=1;
     reqS.htmlTolerance=2;
     reqS.exitWithErrorIfUnsafe=0;
     std::string fR= PTKF::GL_PLAINTEXT_KEEPER.recover(sanitizeForDisplay(t,reqS));
-    fR=SF::massiveFiReplReverse(fR,HCBF::verySafePlace,0);
+    fR=MFRF::findAndReplace(fR,HCBF::verySafePlace,1,-1);
     return fR;
   }
   long checkForHTMLAwareness(const std::string &input){
-    std::string out1;
-    out1=SF::findAndReplace(input,"<br>","!",0,0);
-    if(out1.length()!=input.length()){
-      return 1;
-    }
-    out1=SF::findAndReplace(input,"<p>","!",0,0);
-    if(out1.length()!=input.length()){
-      return 1;
-    }
-    out1=SF::findAndReplace(input,"<div>","!",0,0);
-    if(out1.length()!=input.length()){
-      return 1;
-    }
-    out1=SF::findAndReplace(input,"<b>","!",0,0);
-    if(out1.length()!=input.length()){
+    std::set<std::string> tagsToTest;
+    tagsToTest.insert("<br>");
+    tagsToTest.insert("<p>");
+    tagsToTest.insert("<div>");
+    tagsToTest.insert("<b>");
+    if(MFRF::find(input,tagsToTest).second>-1){
       return 1;
     }
     return 0;
