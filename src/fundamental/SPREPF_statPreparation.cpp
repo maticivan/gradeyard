@@ -64,10 +64,10 @@ namespace SPREPF{
   };
   std::string statPrepare(const std::string &i){
     std::map<std::string,std::string> replMap;
-    replMap[STAT_CONSTS.sepStat_NRSB]=[STAT_CONSTS.sepStat_akzSB;
-    replMap[STAT_CONSTS.sepStat_NRSE]=[STAT_CONSTS.sepStat_akzSE;
-    replMap[STAT_CONSTS.sepStat_NRDB]=[STAT_CONSTS.sepStat_akzDB;
-    replMap[STAT_CONSTS.sepStat_NRDE]=[STAT_CONSTS.sepStat_akzDE;
+    replMap[STAT_CONSTS.sepStat_NRSB]=STAT_CONSTS.sepStat_akzSB;
+    replMap[STAT_CONSTS.sepStat_NRSE]=STAT_CONSTS.sepStat_akzSE;
+    replMap[STAT_CONSTS.sepStat_NRDB]=STAT_CONSTS.sepStat_akzDB;
+    replMap[STAT_CONSTS.sepStat_NRDE]=STAT_CONSTS.sepStat_akzDE;
     std::string o=MFRF::findAndReplace(i,replMap);
     if(o.size()>70){
       std::string newO="";
