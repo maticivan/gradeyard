@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -14,7 +14,6 @@
 //
 //    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
 //    along with this program.  If not, see https://www.gnu.org/licenses/.
-
 
 #ifndef _INCL_FORMULACENTER_CPP
 #define _INCL_FORMULACENTER_CPP
@@ -98,7 +97,7 @@ namespace FF{
     error.second=0;
     y.second=1;
     std::string fName;
-    fName=SF::toLowerCase(BF::cleanAllSpaces(SF::findAndReplace(_fName,"\\","")));
+    fName=MFRF::toLowerCase(BF::cleanAllSpaces(SF::findAndReplace(_fName,"\\","")));
     if(fName=="sin"){
       y.first=std::sin(x); return y;
     }
@@ -177,9 +176,11 @@ namespace FF{
     lBoundSt=BF::cleanAllSpaces(lBoundSt);
     uBoundSt=BF::cleanAllSpaces(uBoundSt);
     integrand=BF::cleanAllSpaces(integrand);
-    integrand=SF::findAndReplace(integrand,"\\,","");
-    integrand=SF::findAndReplace(integrand,"\\;","");
-    integrand=SF::findAndReplace(integrand,"\\quad","");
+    std::map<std::string,std::string> replMap;
+    replMap["\\,"]="";
+    replMap["\\;"]="";
+    replMap["\\quad"]="";
+    integrand=MFRF::findAndReplace(integrand,replMap);
     initialized=1;
     return 1;
   }
@@ -479,6 +480,7 @@ namespace FF{
       if(numI>0){
         FormulaEvaluationData integralValue;
         long i=0;
+        std::map<std::string,std::string> replMap;
         while(i<numI){
           integralValue=evaluateIntegral(allIntegrals[i],compositionRecursionDepthRemaining);
           if(integralValue.success==0){
@@ -487,9 +489,10 @@ namespace FF{
           if(integralValue.indicatorSimpson==1){
             finalResult.indicatorSimpson=1;
           }
-          rawFormula=SF::findAndReplace(rawFormula,allIntegrals[i].getRawString(),BF::doubleToString( integralValue.result ));
+          replMap[allIntegrals[i].getRawString()]=BF::doubleToString( integralValue.result );
           ++i;
         }
+        rawFormula=MFRF::findAndReplace(rawFormula,replMap);
       }
     }
     // Step 2: Evaluate functions
@@ -508,14 +511,16 @@ namespace FF{
         }
         i=0;
         std::pair<double,int> evfRes;
+        std::map<std::string,std::string> replMap;
         while(i<numF){
           evfRes=evaluateFunction(allFunctions[i].getFunctionName(),valuesOfArguments[i]);
           if(evfRes.second==0){
             return failure;
           }
-          rawFormula=SF::findAndReplace(rawFormula,allFunctions[i].getRawString(),BF::doubleToString(evfRes.first));
+          replMap[allFunctions[i].getRawString()]=BF::doubleToString(evfRes.first);
           ++i;
         }
+        rawFormula=MFRF::findAndReplace(rawFormula,replMap);
       }
     }
     // Step 3: Finalize arithmetic
@@ -528,8 +533,10 @@ namespace FF{
     //second component is 1 if the formula was evaluated
     //                 or 0 if the formula was not possible to evaluate
     std::string rawFormula=_rawFormula;
-    rawFormula=SF::findAndReplace(rawFormula,"\\cdot","*");
-    rawFormula=SF::findAndReplace(rawFormula,"\\int_{","int_{");
+    std::map<std::string,std::string> replMap;
+    replMap["\\cdot"]="*";
+    replMap["\\int_{"]="int_{";
+    rawFormula=MFRF::findAndReplace(rawFormula,replMap);
     FormulaEvaluationData fedRes= evFormulaClean(rawFormula,compositionRecursionDepthRemaining);
     std::pair<double, int> finalResult;
     finalResult.second=fedRes.success;
