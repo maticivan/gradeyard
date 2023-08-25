@@ -175,12 +175,9 @@ namespace APTI{
     long getSubTextRecursionDepth() const;
     void setSubTextRecursionDepth(const long &);
     void addToText(const std::string &);
-    void updateLogInBar(const std::string &);
     std::stack<std::pair<std::string,std::string> > secondMenuStack(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &) const;
-    void updateSecondMenuBar(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &);
     std::stack<std::pair<std::string,std::string> > thirdMenuStack(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &) const;
-    void updateThirdMenuBar(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &);
-    void updateMainMenuBar(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &);
+    void updateLogInAndMenuBars(const PSDI::SessionData &, const std::string& , const std::string &);
     void updateFooterBar(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &);
     int rawSysDataAllowed(const PSDI::SessionData  &) const;//WARNING not implemented yet
     int sysDataAllowed(const PSDI::SessionData  &) const;//WARNING not implemented yet
