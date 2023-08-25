@@ -88,14 +88,6 @@ namespace ASMRIF{
     }
     return res;
   }
-  int isEmptyLine(const std::string& x){
-    std::string y=x;
-    y=SF::findAndReplace(y,"\n","");
-    y=SF::findAndReplace(y,"\t","");
-    y=SF::findAndReplace(y," ","");
-    if(y==""){return 1;}
-    return 0;
-  }
   std::string getNextDeref(const std::string& st, long& pos){
     std::string res;
     long sz=st.length();
@@ -181,9 +173,8 @@ namespace ASMRIF{
       return res;
     }
     res.derefIndicator=1;
-    std::string shiftTest=SF::findAndReplace(rSt,",","");
     long pos2=1;
-    if(shiftTest==rSt){
+    if(MFRF::find(rSt,",",1).second==-1){
       res.argName=getNextBeforeSep(rSt,pos2,']');
       return res;
     }
@@ -237,7 +228,7 @@ namespace ASMRIF{
   }
   void expandInstructionStack(std::stack<Arm64Instruction>& , const std::string& );
   void updatePreIndexing(std::string& st, PreIndexAndPostIndexInstructionData& ppiData){
-    if(st!=SF::findAndReplace(st,"]!","")){
+    if(MFRF::find(st,"]!").second>-1){
       std::pair<std::string,int> allD; long pos;
       pos=0;allD=SF::extract(st,pos,"[","]!");
       if(allD.second==1){
@@ -250,7 +241,7 @@ namespace ASMRIF{
     }
   }
   void updatePostIndexing(std::string& st, PreIndexAndPostIndexInstructionData& ppiData){
-    if(st!=SF::findAndReplace(st,"],","")){
+    if(MFRF::find(st,"],").second>-1){
       std::pair<std::string,int> allD; long pos;
       std::string argumentName;
       pos=0;allD=SF::extract(st,pos,"[","],");
@@ -274,16 +265,20 @@ namespace ASMRIF{
     }
   }
   void separateShifts(std::string & st){
-    st=SF::findAndReplace(st,"lsl ","lsl|");
-    st=SF::findAndReplace(st,"lsr ","lsr|");
-    st=SF::findAndReplace(st,"asr ","asr|");
-    st=SF::findAndReplace(st,"ror ","ror|");
+    std::map<std::string,std::string> replMap;
+    replMap["lsl "]="lsl|";
+    replMap["lsr "]="lsr|";
+    replMap["asr "]="asr|";
+    replMap["ror "]="ror|";
+    st=MFRF::findAndReplace(st,replMap);
   }
   void restoreShifts(std::string & st){
-    st=SF::findAndReplace(st,"lsl|","lsl ");
-    st=SF::findAndReplace(st,"lsr|","lsr ");
-    st=SF::findAndReplace(st,"asr|","asr ");
-    st=SF::findAndReplace(st,"ror|","ror ");
+    std::map<std::string,std::string> replMap;
+    replMap["lsl|"]="lsl ";
+    replMap["lsr|"]="lsr ";
+    replMap["asr|"]="asr ";
+    replMap["ror|"]="ror ";
+    st=MFRF::findAndReplace(st,replMap);
   }
   void expandInstructionStack(std::stack<Arm64Instruction>& instStack, const std::string& _st){
     Arm64Instruction res;
@@ -298,8 +293,10 @@ namespace ASMRIF{
         return;
       }
     }
-    st=SF::findAndReplace(st,"#","");
-    st=SF::findAndReplace(st,"\t"," ");
+    std::map<std::string,std::string> replMap;
+    replMap["#"]="";
+    replMap["\t"]=" ";
+    st=MFRF::findAndReplace(st,replMap);
     std::string nextSt;
     long pos=0;
     long sz=st.length();
@@ -309,7 +306,7 @@ namespace ASMRIF{
       instStack.push(res);
       return;
     }
-    res.name=SF::toLowerCase(nextSt);
+    res.name=MFRF::toLowerCase(nextSt);
     std::string stOld=st;
     st="";
     while(pos<sz){
@@ -319,7 +316,7 @@ namespace ASMRIF{
     st=BF::cleanAllSpaces(st);
     restoreShifts(st);
     if(res.name[0]!='b'){
-      st=SF::toLowerCase(st);
+      st=MFRF::toLowerCase(st);
     }
     PreIndexAndPostIndexInstructionData ppiData;
     updatePreIndexing(st,ppiData);
@@ -370,7 +367,7 @@ namespace ASMRIF{
     std::stack<Arm64Instruction> instStack;
     for(long i=0;i<sz;++i){
       instLines[i]=BF::cleanSpaces(instLines[i]);
-      if(!isEmptyLine(instLines[i])){
+      if(BF::cleanAllSpaces(instLines[i])!=""){
         expandInstructionStack(instStack,instLines[i]);
       }
     }
