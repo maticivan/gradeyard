@@ -158,10 +158,12 @@ namespace CEVI{
       itE=vRawMap.end();
       it=vRawMap.begin();
       std::string rawStData=allDS.first;
-      while(it!=itE){
-        rawStData=SF::findAndReplace(rawStData,vnmB+it->first+vnmE,vtB+it->second+vtE);
+      std::map<std::string,std::string> replMap;
+      while(it!=itE){ 
+        replMap[vnmB+it->first+vnmE]=vtB+it->second+vtE;
         ++it;
       }
+      rawStData=MFRF::findAndReplace(rawStData,replMap);
       res.uNamesToVersions=SF::stringToMap(rawStData,unB,unE,vtB,vtE);
       res.uNamesToAnswers=SF::stringToMap(rawStData,unB,unE,ansB,ansE);
       return res;
@@ -172,6 +174,7 @@ namespace CEVI{
     long posO,posN;
     std::pair<std::string,int> allDO,allDN;
     std::string sB,sE;
+    std::map<std::string,std::string> replMap;
     for(long i=0;i<sz;++i){
       sB=lb[i]+"*|_";
       sE="_/v"+sB;
@@ -179,9 +182,10 @@ namespace CEVI{
       posO=0;allDO=SF::extract(output,posO,sB,sE);
       posN=0;allDN=SF::extract(nVersions,posN,sB,sE);
       if((allDO.second==1)&&(allDN.second==1)){
-        output=SF::findAndReplace(output,sB+allDO.first+sE,sB+allDN.first+sE);
+        replMap[sB+allDO.first+sE]=sB+allDN.first+sE;
       }
     }
+    output=MFRF::findAndReplace(output,replMap);
     return output;
   }
   int isCertificate(const std::string& s){
@@ -257,5 +261,4 @@ namespace CEVI{
     return output;
   }
 }
-
 #endif
