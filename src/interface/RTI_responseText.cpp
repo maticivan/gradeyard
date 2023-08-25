@@ -596,8 +596,10 @@ namespace RTI{
           smallSt=SF::stringToVector(pairsOfValDescriptions[i],"_vl*_","_/vl*_");
           if(smallSt.size()>1){
             if(smallSt[0]!=""){
-              smallSt[1]=SF::findAndReplace(smallSt[1],"<B>","");
-              smallSt[1]=SF::findAndReplace(smallSt[1],"</B>","");
+              std::map<std::string,std::string> replMap;
+              replMap["<B>"]="";
+              replMap["</B>"]="";
+              smallSt[1]=MFRF::findAndReplace(smallSt[1],replMap);
               openB="";closeB="";
               if(smallSt[0]==sqi.userAnswer){
                 openB="<B>";closeB="</B>";
@@ -679,8 +681,10 @@ namespace RTI{
     std::string certComment;
     if(sqi.displType=="certificate"){
       fR.second=0;
-      certComment=SF::findAndReplace(sqi.graderComment,"_comment_","");
-      certComment=SF::findAndReplace(certComment,"_/comment_","");
+      std::map<std::string,std::string> replMap;
+      replMap["_comment_"]="";
+      replMap["_/comment_"]="";
+      certComment=MFRF::findAndReplace(sqi.graderComment,replMap);
     }
     std::string answerSubmitted="no";
     std::string barBgColor="bg-secondary";
@@ -708,8 +712,10 @@ namespace RTI{
           smallSt=SF::stringToVector(pairsOfValDescriptions[i],"_vl*_","_/vl*_");
           if(smallSt.size()>1){
             if(smallSt[0]!=""){
-              smallSt[1]=SF::findAndReplace(smallSt[1],"<B>","");
-              smallSt[1]=SF::findAndReplace(smallSt[1],"</B>","");
+              std::map<std::string,std::string> replMap;
+              replMap["<B>"]="";
+              replMap["</B>"]="";
+              smallSt[1]=MFRF::findAndReplace(smallSt[1],replMap);
               openB="";closeB="";
               if(smallSt[0]==sqi.userAnswer){
                 openB="<B>";closeB="</B>";
