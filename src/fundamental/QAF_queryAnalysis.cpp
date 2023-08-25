@@ -159,10 +159,10 @@ namespace QAF{
     }
     return std::pair<long,int>(GL_MIN_INFTY_INT,0);
   }
-  std::string cleanString(const std::string &in,const std::string& toCleanWith=";"){
+  std::string cleanString(const std::string &in,const std::string& r1="?", const std::string& r2=",", const std::string& toCleanWith=";"){
     std::map<std::string,std::string> replMap;
-    replMap["?"]=toCleanWith;
-    replMap[","]=toCleanWith;
+    replMap[r1]=toCleanWith;
+    replMap[r2]=toCleanWith;
     return MFRF::findAndReplace(in,replMap,1);
   }
   std::pair<NormalDistributionParameters,int> getNDParametersFromDParameters(const DistributionParameters &dp){
@@ -236,8 +236,8 @@ namespace QAF{
     std::string cleanLabel;
     std::string cleanNum;
     for(long i=0;i<sz;++i){
-      cleanLabel=cleanString(labels[i]);
-      cleanNum=cleanString(nums[i]);
+      cleanLabel=cleanString(labels[i],";","=","");
+      cleanNum=cleanString(nums[i],";","=","");
       if(cleanLabel=="dist"){
         fR.name=cleanNum;
       }
@@ -266,7 +266,7 @@ namespace QAF{
     std::string question=_q;
     question=BF::removeASCII10AND13(question);
     question=BF::cleanSpaces(question);
-    question=cleanString(question);
+    question=cleanString(question,"?",",",";");
     PermutationParameters fR;
     fR.numSamples=-1;
     if(MFRF::find(question,"permutation").second==-1){
