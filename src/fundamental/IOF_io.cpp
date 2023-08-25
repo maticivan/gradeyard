@@ -28,15 +28,12 @@ namespace IOF{
     return 1;
   }
   int sys_deleteFile(const std::string &nameOfFile){
-
     std::map<std::string,std::string>::iterator it,itE;
     itE=GF::GL_OPENED_FILES.end();
     it=GF::GL_OPENED_FILES.find(nameOfFile);
     if(it!=itE){
       GF::GL_OPENED_FILES.erase(it);
     }
-
-
     std::ifstream fTest(nameOfFile);
     if(fTest.good()){
       std::string systemCommand="rm ";
@@ -58,7 +55,6 @@ namespace IOF{
     system(command.c_str());
     return 1;
   }
-
   std::vector<std::string> listFiles(const std::string &dirPath){
     std::vector<std::string> fR;
     long sz=0;
@@ -73,7 +69,6 @@ namespace IOF{
     }
     return fR;
   }
-
   int fileExists(const std::string &fN){
       std::ifstream fTest(fN);
       if(fTest.good()){
@@ -226,32 +221,32 @@ namespace IOF{
       return nF;
   }
   int legalFileName(const std::string & in){
-    std::string out=in;
-    out=SF::findAndReplace(out,"/","");
-    out=SF::findAndReplace(out,".","");
-    out=SF::findAndReplace(out,"\"","");
-    out=SF::findAndReplace(out,"\n","");
-    out=SF::findAndReplace(out,"\t","");
-    out=SF::findAndReplace(out,"\'","");
-    out=SF::findAndReplace(out,"@","");
-    out=SF::findAndReplace(out,"!","");
-    out=SF::findAndReplace(out,"~","");
-    out=SF::findAndReplace(out,"`","");
-    out=SF::findAndReplace(out,"$","");
-    out=SF::findAndReplace(out,"%","");
-    out=SF::findAndReplace(out,"^","");
-    out=SF::findAndReplace(out,"\\","");
-    out=SF::findAndReplace(out,"+","");
-    out=SF::findAndReplace(out,",","");
-    out=SF::findAndReplace(out,";","");
-    out=SF::findAndReplace(out,":","");
-    out=SF::findAndReplace(out,"?","");
-    out=SF::findAndReplace(out,"<","");
-    out=SF::findAndReplace(out,">","");
-    if(out!=in){
-      return 0;
+    std::set<std::string> badStrings;
+    badStrings.insert("/");
+    badStrings.insert(".");
+    badStrings.insert("\"");
+    badStrings.insert("\n");
+    badStrings.insert("\t");
+    badStrings.insert("\'");
+    badStrings.insert("@");
+    badStrings.insert("!");
+    badStrings.insert("~");
+    badStrings.insert("`");
+    badStrings.insert("$");
+    badStrings.insert("%");
+    badStrings.insert("^");
+    badStrings.insert("\\");
+    badStrings.insert("+");
+    badStrings.insert(",");
+    badStrings.insert(";");
+    badStrings.insert(":");
+    badStrings.insert("?");
+    badStrings.insert("<");
+    badStrings.insert(">");
+    if(MFRF::find(in,badStrings).second==-1){
+      return 1;
     }
-    return 1;
+    return 0;
   }
   std::string justFileNameNoExtensionNoFolder(const std::string & nameOfFile,
                                               const std::string & beginningToIgnore=""){
