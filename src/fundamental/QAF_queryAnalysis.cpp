@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -25,7 +25,6 @@ namespace QAF{
   double GL_EPSILON=0.0000001;
   long GL_bigInt=100000;
   long GL_RNGbigInt=1000000000;
-
   double GL_TwoPi=6.283185307179586476925;
   double GL_OneOverSqRootTwo=0.707106781186547524400844;
   struct DistributionParameters{
@@ -160,12 +159,11 @@ namespace QAF{
     }
     return std::pair<long,int>(GL_MIN_INFTY_INT,0);
   }
-
-  std::string cleanString(const std::string &in){
-    std::string out=in;
-    out=SF::findAndReplace(out,";","");
-    out=SF::findAndReplace(out,"=","");
-    return out;
+  std::string cleanString(const std::string &in,const std::string& toCleanWith=";"){
+    std::map<std::string,std::string> replMap;
+    replMap["?"]=toCleanWith;
+    replMap[","]=toCleanWith;
+    return MFRF::findAndReplace(in,replMap,1);
   }
   std::pair<NormalDistributionParameters,int> getNDParametersFromDParameters(const DistributionParameters &dp){
     std::pair<NormalDistributionParameters,int> ndp;
@@ -212,21 +210,19 @@ namespace QAF{
     std::string question=_q;
     question=BF::removeASCII10AND13(question);
     question=BF::cleanSpaces(question);
-    question=SF::toLowerCase(question);
-    question=SF::findAndReplace(question,"?",";");
-    question=SF::findAndReplace(question,",",";");
-    question=SF::findAndReplace(question,"distribution","dist");
-    question=SF::findAndReplace(question,"sample size","size");
-    question=SF::findAndReplace(question,"samplesize","size");
-    question=SF::findAndReplace(question,"sample","size");
-
-    question=SF::findAndReplace(question,"discrete uniform","discunif");
-
-    question=SF::findAndReplace(question,"discreteuniform","discunif");
-    question=SF::findAndReplace(question,"uniformdiscrete","discunif");
-    question=SF::findAndReplace(question,"uniform discrete","discunif");
-
-
+    question=MFRF::toLowerCase(question);
+    std::map<std::string,std::string> replMap;
+    replMap["?"]=";";
+    replMap[","]=";";
+    replMap["distribution"]="dist";
+    replMap["sample size"]="size";
+    replMap["samplesize"]="size";
+    replMap["discrete uniform"]="discunif";
+    replMap["discreteuniform"]="discunif";
+    replMap["uniformdiscrete"]="discunif";
+    replMap["uniform discrete"]="discunif";
+    question=MFRF::findAndReplace(question,replMap,1);
+    question=SF::findAndReplace(question,"sample","size",1,1);
     question+="; ";
     question=";"+question;
     std::vector<std::string> nums=SF::stringToVector(question,"=",";");
@@ -249,7 +245,6 @@ namespace QAF{
         cleanLabel=BF::cleanSpaces(cleanLabel,1);
         fR.parameters[cleanLabel]=BF::stringToDouble(cleanNum);
       }
-
     }
     fR.sampleSize=1;
     std::pair<long,int> numSP=getIntParameter(fR.parameters,"size");
@@ -271,22 +266,17 @@ namespace QAF{
     std::string question=_q;
     question=BF::removeASCII10AND13(question);
     question=BF::cleanSpaces(question);
-    question=SF::findAndReplace(question,"?",";");
-    question=SF::findAndReplace(question,",",";");
-    std::string qWithoutPermutation=SF::findAndReplace(question,"permutation","");
+    question=cleanString(question);
     PermutationParameters fR;
     fR.numSamples=-1;
-    if(qWithoutPermutation==question){
+    if(MFRF::find(question,"permutation").second==-1){
       return fR;
     }
-
     question+="; ";
     question=";"+question;
     std::vector<std::string> nums=SF::stringToVector(question,"=",";");
-
     fR.writingDirection="vertical";
-    std::string qWithoutVertical=SF::findAndReplace(question,"vertical","");
-    if(qWithoutVertical==question){
+    if(MFRF::find(question,"vertical").second==-1){
       fR.writingDirection="horizontal";
     }
     long nsz=nums.size();
@@ -319,7 +309,6 @@ namespace QAF{
       fR.smallest=threeNums[1];fR.largest=threeNums[0];
     }
     return fR;
-
   }
   std::vector<double> sampleFromNormal(const DistributionParameters& dp){
     std::vector<double> res;
@@ -334,7 +323,6 @@ namespace QAF{
   }
   std::vector<double> sampleFromUniform(const DistributionParameters& dp){
     std::vector<double> res;
-
     long sz=dp.sampleSize;
     if(sz<1){sz=1;}
     res.resize(sz);
@@ -344,7 +332,6 @@ namespace QAF{
     namesA[5]="lower";namesA[6]="low";namesA[7]="lower bound"; namesA[8]="lower bound";
     namesB.resize(nmsz);namesB[0]="b";namesB[1]="largest";namesB[2]="max";namesB[3]="maximal";namesB[4]="maximum";
     namesB[5]="upper";namesB[6]="up";namesB[7]="upper bound"; namesB[8]="upper bound";
-
     double a=getParameter(dp.parameters,namesA).first;
     double b=getParameter(dp.parameters,namesB).first;
     if(b-a<GL_EPSILON){
@@ -355,10 +342,8 @@ namespace QAF{
     }
     return res;
   }
-
   std::vector<double> sampleFromExponential(const DistributionParameters& dp){
     std::vector<double> res;
-
     long sz=dp.sampleSize;
     if(sz<1){sz=1;}
     res.resize(sz);
@@ -366,7 +351,6 @@ namespace QAF{
     long nmsz=8;
     namesA.resize(nmsz);namesA[0]="a";namesA[1]="lambda";namesA[2]="l";namesA[3]="parameter";namesA[4]="par";
     namesA[5]="p";namesA[6]="m";namesA[7]="mu";
-
     double a=getParameter(dp.parameters,namesA).first;
     if(a<GL_EPSILON){
       a=1.0;
@@ -378,7 +362,6 @@ namespace QAF{
   }
   std::vector<double> sampleFromUniformDiscrete(const DistributionParameters& dp){
     std::vector<double> res;
-
     long sz=dp.sampleSize;
     if(sz<1){sz=1;}
     res.resize(sz);
@@ -388,7 +371,6 @@ namespace QAF{
     namesA[5]="lower";namesA[6]="low";namesA[7]="lower bound"; namesA[8]="lower bound";
     namesB.resize(nmsz);namesB[0]="b";namesB[1]="largest";namesB[2]="max";namesB[3]="maximal";namesB[4]="maximum";
     namesB[5]="upper";namesB[6]="up";namesB[7]="upper bound"; namesB[8]="upper bound";
-
     long a=getIntParameter(dp.parameters,namesA).first;
     long b=getIntParameter(dp.parameters,namesB).first;
     if(b-a<2){
@@ -402,7 +384,6 @@ namespace QAF{
   }
   std::vector<double> sampleFromBinomial(const DistributionParameters& dp,const long & overwriteN=0){
     std::vector<double> res;
-
     long sz=dp.sampleSize;
     if(sz<1){sz=1;}
     res.resize(sz);
@@ -434,7 +415,6 @@ namespace QAF{
   }
   std::vector<double> sampleFromGeometric(const DistributionParameters& dp){
     std::vector<double> res;
-
     long sz=dp.sampleSize;
     if(sz<1){sz=1;}
     res.resize(sz);
@@ -442,9 +422,7 @@ namespace QAF{
     long nmsz=6;
     namesB.resize(nmsz);namesB[0]="p";namesB[1]="probability";namesB[2]="bias";namesB[3]="b";
     namesB[4]="parameter";namesB[5]="lambda";
-
     double p=getParameter(dp.parameters,namesB).first;
-
     if((p<GL_EPSILON)||(p>1- GL_EPSILON)) {
       p=0.5;
     }
@@ -455,7 +433,6 @@ namespace QAF{
   }
   std::vector<double> sampleFromPoisson(const DistributionParameters& dp){
     std::vector<double> res;
-
     long sz=dp.sampleSize;
     if(sz<1){sz=1;}
     res.resize(sz);
@@ -463,9 +440,7 @@ namespace QAF{
     long nmsz=6;
     namesB.resize(nmsz);namesB[0]="p";namesB[1]="probability";namesB[2]="bias";namesB[3]="b";
     namesB[4]="parameter";namesB[5]="lambda";
-
     double lambda=getParameter(dp.parameters,namesB).first;
-
     if(lambda<0.01 ) {
       lambda=1.0;
     }
@@ -476,7 +451,6 @@ namespace QAF{
     valVect.resize(nums);
     double total=0.0;
     double current=1.0;
-
     for(long i=0;i<nums;++i){
       valVect[i]=i;
       pVect[i]=current;
@@ -484,11 +458,7 @@ namespace QAF{
       current *= lambda;
       current /= static_cast<double>(i+1);
     }
-
     double recTotal=1.0/total;
-
-
-
     for(long i=0;i<nums;++i){
       pVect[i] *= recTotal;
     }
@@ -500,7 +470,6 @@ namespace QAF{
     for(long i=0;i<10;++i){
       ms+=std::to_string(pVect[i])+"\t";
     }
-
     for(long i=0;i<sz;++i){
       res[i]=static_cast<double>(generalDiscrete(valVect,pVect));
     }
@@ -532,7 +501,6 @@ namespace QAF{
     if(dp.name=="poisson"){
       return sampleFromPoisson(dp);
     }
-
     return res;
   }
   std::vector<std::vector<long> > generatePermutations(const PermutationParameters& pp){
@@ -648,29 +616,18 @@ namespace QAF{
     }
     res+="</pre>";
     return putInBox(res);
-
-  }
-  std::string replaceEAndPiWithAppropriateConstants(const std::string & in){
-    std::string out=in;
-    out=SF::findAndReplace(out,"e",BF::doubleToString(FF::GL_CONST_E));
-    out=SF::findAndReplace(out,"pi",BF::doubleToString(FF::GL_CONST_PI));
-    return out;
   }
    std::string answerTheQuestion(const std::string & _q){
-
-
      if(BF::isNumeric(_q)){
        return coinDie(BF::stringToInteger(_q));
      }
      std::string res;
      std::string separator="\t";
-
      std::string question=SF::findAndReplace(_q,"comma","");
      if(question!=_q){
        separator=",";
      }
      DistributionParameters dp=getDParametersFromQuestion(question);
-
      if(dp.name!="notFound"){
        return displayRes(question,sampleFromDistribution(dp),separator);
      }
@@ -678,30 +635,32 @@ namespace QAF{
      if(pp.numSamples>0){
        return displayRes(question,generatePermutations(pp),separator);
      }
-     std::string questionNRepl=SF::findAndReplace(question,"CDF","");
-     questionNRepl=SF::findAndReplace(questionNRepl,"cumulative","");
-     questionNRepl=SF::findAndReplace(questionNRepl,"distribution","");
-     questionNRepl=SF::findAndReplace(questionNRepl,"function","");
-     questionNRepl=SF::findAndReplace(questionNRepl,"of","");
-     questionNRepl=SF::findAndReplace(questionNRepl,"the","");
-     questionNRepl=SF::findAndReplace(questionNRepl,"normal","");
-     questionNRepl=SF::findAndReplace(questionNRepl,"random","");
-     questionNRepl=SF::findAndReplace(questionNRepl,"variable","");
-
+     std::map<std::string,std::string> replMap;
+     replMap["CDF"]="";
+     replMap["cumulative"]="";
+     replMap["distribution"]="";
+     replMap["function"]="";
+     replMap["of"]="";
+     replMap["the"]="";
+     replMap["normal"]="";
+     replMap["random"]="";
+     replMap["variable"]="";
+     std::string questionNRepl=MFRF::findAndReplace(question,replMap);
      if(question!=questionNRepl){
        NormalDistributionParameters ndp=getNDParametersFromQuestion(questionNRepl);
        return displayRes(question,evaluateNormalCDF(ndp),separator);
      }
-     std::string questionCleaned=question;
-     questionCleaned=SF::findAndReplace(questionCleaned,"=","");
-     questionCleaned=SF::findAndReplace(questionCleaned,"?","");
-     questionCleaned=replaceEAndPiWithAppropriateConstants(questionCleaned);
+     replMap.clear();
+     replMap["="]="";
+     replMap["?"]="";
+     replMap["e"]=BF::doubleToString(FF::GL_CONST_E);
+     replMap["pi"]=BF::doubleToString(FF::GL_CONST_PI);
+     std::string questionCleaned=MFRF::findAndReplace(question,replMap);
      std::pair<double,int> evFormRes=FF::evFormula(questionCleaned);
      if(evFormRes.second==0){
        return finalDisplay(question,"The request was not understood.\nPlease try again.");
      }
      return finalDisplay(question, BF::doubleToString(evFormRes.first,10) );
-
    }
 }
 #endif
