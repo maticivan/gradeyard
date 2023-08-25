@@ -18,12 +18,22 @@
 #ifndef _INCL_WI_AbstractText_CPP
 #define _INCL_WI_AbstractText_CPP
 
-
 namespace APTI{
   AbstractText::AbstractText(const std::string & _nameInDB, const std::string & _sysR, const std::string & _u){
   }
   void AbstractText::addToText(const std::string &_a){
     rawText+=_a;
+  }
+  std::stack<std::pair<std::string,std::string> > AbstractText::logInBarRaw(const std::string & _uN) const{
+    std::stack<std::pair<std::string,std::string> > lbr;
+    lbr.push( createLinkPair("page","changePassword",_uN) );
+    lbr.push(createLogOutPair(MWII::GL_WI.getDefaultWebText("Log Out")));
+    if(_uN=="visitor"){
+      SF::clearStack(lbr);
+      lbr.push(createLogInLinkPair(MWII::GL_WI.getDefaultWebText("Sign in")));
+    }
+    SF::flipTheStack(lbr);
+    return lbr;
   }
   std::stack<std::pair<std::string,std::string> > AbstractText::secondMenuStack(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN) const{
     std::stack<std::pair<std::string,std::string> > fR;
@@ -49,9 +59,6 @@ namespace APTI{
     SF::flipTheStack(fR);
     return fR;
   }
-  void AbstractText::updateSecondMenuBar(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN){
-    rawText= SF::findAndReplace(rawText,"_**LINKS*LINE2*_", HSF::buttonsBar(secondMenuStack(_psd,  _pR, _rRR, _uN) ));
-  }
   std::stack<std::pair<std::string,std::string> > AbstractText::thirdMenuStack(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN) const{
     std::pair<std::string,std::string> tP=createModifyLinkPair(_psd,_pR,_rRR,_uN,"n","");
     std::stack<std::pair<std::string,std::string> > mS;
@@ -60,32 +67,19 @@ namespace APTI{
     }
     return mS;
   }
-  void AbstractText::updateThirdMenuBar(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN){
-    rawText= SF::findAndReplace(rawText,"_**LINKS*LINE3*_",HSF::buttonsBar(thirdMenuStack( _psd,  _pR, _rRR,_uN)));
-  }
-  void AbstractText::updateMainMenuBar(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN){
-    std::string tBar="";
-    rawText= SF::findAndReplace(rawText,"_LIST*OF*MENU*ITEMS_",tBar);
+  void AbstractText::updateLogInAndMenuBars(const PSDI::SessionData & _psd, const std::string& _pR, const std::string & _rRR){
+    std::map<std::string,std::string> replMap;
+    replMap["_THIS*WEBSITE*URL*_"]=MWII::GL_WI.getWSURL();
+    replMap["_LOGIN*OUT*REGISTER*_"]=HSF::buttonsBar(logInBarRaw(_psd.my_un));
+    replMap["_LOGIN*OUT*REGISTER*NAVBAR*_"]=HSF::buttonsBar(logInBarRaw(_psd.my_un),"navBar");
+    replMap["_**LINKS*LINE2*_"]=HSF::buttonsBar(secondMenuStack(_psd,  _pR, _rRR, _psd.my_un));
+    replMap["_**LINKS*LINE3*_"]=HSF::buttonsBar(thirdMenuStack( _psd,  _pR, _rRR, _psd.my_un));
+    replMap["_LIST*OF*MENU*ITEMS_"]="";
+    rawText=MFRF::findAndReplace(rawText,replMap);
   }
   void AbstractText::updateFooterBar(const PSDI::SessionData & _psd, const std::string & _pR, const std::string & _rRR, const std::string & _uN){
     std::string tBar="";
     rawText= SF::findAndReplace(rawText,"_FOOTER*BAR*_ ",tBar);
-  }
-  std::stack<std::pair<std::string,std::string> > AbstractText::logInBarRaw(const std::string & _uN) const{
-    std::stack<std::pair<std::string,std::string> > lbr;
-    lbr.push( createLinkPair("page","changePassword",_uN) );
-    lbr.push(createLogOutPair(MWII::GL_WI.getDefaultWebText("Log Out")));
-    if(_uN=="visitor"){
-      SF::clearStack(lbr);
-      lbr.push(createLogInLinkPair(MWII::GL_WI.getDefaultWebText("Sign in")));
-    }
-    SF::flipTheStack(lbr);
-    return lbr;
-  }
-  void AbstractText::updateLogInBar(const std::string & _uN){
-    rawText= SF::findAndReplace(rawText,"_THIS*WEBSITE*URL*_",MWII::GL_WI.getWSURL());
-    rawText= SF::findAndReplace(rawText,"_LOGIN*OUT*REGISTER*_",HSF::buttonsBar(logInBarRaw(_uN)));
-    rawText= SF::findAndReplace(rawText,"_LOGIN*OUT*REGISTER*NAVBAR*_",HSF::buttonsBar(logInBarRaw(_uN),"navBar"));
   }
   int AbstractText::rawSysDataAllowed(const PSDI::SessionData & _psd) const{
     // WARNING this has to be modified
@@ -1206,22 +1200,22 @@ namespace APTI{
                                 const std::string& officialSolution,
                                 const std::string& agrParameters,
                                 const std::string& userAnswer,
-                                const std::string& oldDisplayString,
+                                const std::string& displStr,
                                 const std::string& solutionAllowedToDisplay,
                                 const std::string& _messageInsteadOfGrading){
-    std::string displStr=oldDisplayString;
+    std::map<std::string,std::string> replMap;
     if((solutionAllowedToDisplay=="yes")||(solutionAllowedToDisplay=="Yes")){
-      displStr=SF::findAndReplace(displStr,"_*officialSolution*_",officialSolution);
+      replMap["_*officialSolution*_"]=officialSolution;
     }
     else{
-      displStr=SF::findAndReplace(displStr,"_*officialSolution*_","");
+      replMap["_*officialSolution*_"]="";
     }
-    displStr=SF::findAndReplace(displStr,"_*text*_",formulation);
-    displStr=SF::findAndReplace(displStr,"_*userAnswer*_",HSF::codeDisplayForNonAdvanceUsers(userAnswer));
-    displStr=SF::findAndReplace(displStr,"_*rawUserAnswer*_",userAnswer);
+    replMap["_*text*_"]=formulation;
+    replMap["_*userAnswer*_"]=HSF::codeDisplayForNonAdvanceUsers(userAnswer);
+    replMap["_*rawUserAnswer*_"]=userAnswer;
     std::string grResult;
     std::string messageInsteadOfGrading=_messageInsteadOfGrading;
-    if(displStr!=SF::findAndReplace(displStr,"_*gradingResult*_","")){
+    if(MFRF::find(displStr,"_*gradingResult*_").second>-1){
       if(messageInsteadOfGrading==""){
         if(BF::cleanSpaces(userAnswer)==""){
           messageInsteadOfGrading="No code submitted!";
@@ -1247,8 +1241,8 @@ namespace APTI{
         grResult+="</h2>\n</div>\n</div>\n";
       }
     }
-    displStr=SF::findAndReplace(displStr,"_*gradingResult*_",grResult);
-    return displStr;
+    replMap["_*gradingResult*_"]=grResult;
+    return MFRF::findAndReplace(displStr,replMap);
   }
   std::string AbstractText::createCodeTest(const PSDI::SessionData & _psd, const std::string & respRecCode, const std::string & qLabel, const std::string & baseText) const{
     if(GL_studentsAllowedToExecuteCodeOnPublicTestCases!="yes"){
