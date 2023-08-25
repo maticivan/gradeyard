@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -24,36 +24,24 @@ namespace SPREPF{
     long maxNumFiles=100;
     long maxItemsInFile=250;
     long paddingConst=100000;
-
     long numFilesToLookForSpammerBehavior=3;
-
-
     long numLoginAttemptsToStartCollectingData=5;
-
     long numLoginAttemptsToGetSuspcious=7;
-
     long cutoff_in_seconds_ForStalling=5;
-
     std::string sepStat_NRDB="_nD*_";
     std::string sepStat_NRDE="_/nD*_";
     std::string sepStat_akzDB="aaaDZMB";
     std::string sepStat_akzDE="aaaDZME";
-
-
     std::string sepStat_NRSB="_nS*_";
     std::string sepStat_NRSE="_/nS*_";
     std::string sepStat_akzSB="aaaSZMB";
     std::string sepStat_akzSE="aaaSZME";
-
     std::string catDefaultBB="_cat";
     std::string catDefaultBE="_";
     std::string catDefaultEB="_/cat";
     std::string catDefaultEE="_";
-
     std::string catCurrentItemB="_cIID_";
     std::string catCurrentItemE="_/cIID_";
-
-
     std::string catNameB="_nm_";
     std::string catNameE="_/nm_";
     std::string catItemVB="_v_";
@@ -62,11 +50,7 @@ namespace SPREPF{
     std::string catItemBE="_";
     std::string catItemEB="_/i";
     std::string catItemEE="_";
-
-
-
   } STAT_CONSTS;
-
   struct StatData{
   public:
     std::string userName;
@@ -75,16 +59,16 @@ namespace SPREPF{
     std::string att_page;
     std::string att_rr;
     std::string pass1;
-
     std::string putIntoString() const;
     void setFromString(const std::string &s);
   };
   std::string statPrepare(const std::string &i){
-    std::string o=i;
-    o=SF::findAndReplace(o,STAT_CONSTS.sepStat_NRSB,STAT_CONSTS.sepStat_akzSB);
-    o=SF::findAndReplace(o,STAT_CONSTS.sepStat_NRSE,STAT_CONSTS.sepStat_akzSE);
-    o=SF::findAndReplace(o,STAT_CONSTS.sepStat_NRDB,STAT_CONSTS.sepStat_akzDB);
-    o=SF::findAndReplace(o,STAT_CONSTS.sepStat_NRDE,STAT_CONSTS.sepStat_akzDE);
+    std::map<std::string,std::string> replMap;
+    replMap[STAT_CONSTS.sepStat_NRSB]=[STAT_CONSTS.sepStat_akzSB;
+    replMap[STAT_CONSTS.sepStat_NRSE]=[STAT_CONSTS.sepStat_akzSE;
+    replMap[STAT_CONSTS.sepStat_NRDB]=[STAT_CONSTS.sepStat_akzDB;
+    replMap[STAT_CONSTS.sepStat_NRDE]=[STAT_CONSTS.sepStat_akzDE;
+    std::string o=MFRF::findAndReplace(i,replMap);
     if(o.size()>70){
       std::string newO="";
       for(long i=0;i<70;++i){
@@ -103,7 +87,6 @@ namespace SPREPF{
     fR+=bS+statPrepare(ipAddr)+eS;
     fR+=bS+statPrepare(att_page)+eS;
     fR+=bS+statPrepare(att_rr)+eS;
-
     return fR;
   }
   void StatData::setFromString(const std::string &i){
@@ -117,43 +100,35 @@ namespace SPREPF{
       att_rr=dv[4];
     }
   }
-
   struct StatAtom{
   public:
     std::string name;
     long visits;
   };
-
   class StatPeriod{
   private:
     long maxItems;
     std::string periodName;
-
     long currentItemIDNum;
     std::string currentItemName;
     long currentItemValue;
-
     std::string rawString;
     std::string usefulRawStr;
-
     std::string catNB;
     std::string catNE;
     std::string catCIB;
     std::string catCIE;
-
     void setCurrentItemFromRawString();
     void updateUsefulRawStrFirstSoRawStringCanBeUpdated();
     std::string currentItemToString() const;
   public:
     StatPeriod(const std::string & = "noName", const long & = 1000);
-
     std::string getPeriodName() const;
     long getMaxItems() const;
     long getCurrentItemIDNum() const;
     std::string getCurrentItemName() const;
     long getCurrentItemValue() const;
     std::string getRawString() const;
-
     void setPeriodName(const std::string &);
     void setMaxItems(const long &);
     void setCurrentItemIDNum(const long &);
@@ -163,7 +138,6 @@ namespace SPREPF{
     void setCurrentItemValue(const long &);
     void setRawString(const std::string &);
     void setRawStringAndUpdate(const std::string &,const std::string &);
-
     void updateRawString();
     std::vector<StatAtom> statSummary(const long & = 0) const;
     std::string debugPrinting() const;
@@ -178,9 +152,6 @@ namespace SPREPF{
   std::string StatPeriod::getCurrentItemName() const{return currentItemName;}
   long StatPeriod::getCurrentItemValue() const{return currentItemValue;}
   std::string StatPeriod::getRawString() const{return rawString;}
-
-
-
   void StatPeriod::setMaxItems(const long & m){
     maxItems=m;
   }
@@ -220,11 +191,7 @@ namespace SPREPF{
       setCurrentItemName("nothingYet");
       setCurrentItemValue(0);
     }
-
   }
-
-
-
   void StatPeriod::setRawString(const std::string & _r){
     rawString = _r;
     long pos;std::pair<std::string,int> allD;
@@ -235,7 +202,6 @@ namespace SPREPF{
     }
     setCurrentItemFromRawString();
   }
-
   void StatPeriod::updateIfPeriodItemIsChanging(const std::string & newPI){
     if(currentItemName=="nothingYet"){
       currentItemName=newPI;
@@ -266,15 +232,12 @@ namespace SPREPF{
     return currentItemRawData;
   }
   void StatPeriod::updateUsefulRawStrFirstSoRawStringCanBeUpdated(){
-
     std::string currentItemRawData=currentItemToString();
-
     long pos; std::pair<std::string, int> allD;
     std::string newCurrentItemID=STAT_CONSTS.catCurrentItemB+std::to_string(currentItemIDNum)+STAT_CONSTS.catCurrentItemE;
     pos=0;allD=SF::extractAndReplace(usefulRawStr,pos,STAT_CONSTS.catCurrentItemB,STAT_CONSTS.catCurrentItemE,0,newCurrentItemID);
     if(allD.second==1){
       usefulRawStr=allD.first;
-
       pos=0;allD=SF::extractAndReplace(usefulRawStr,pos,catCIB,catCIE,0,currentItemRawData);
       if(allD.second==1){
         usefulRawStr=allD.first;
@@ -282,7 +245,6 @@ namespace SPREPF{
       else{
         usefulRawStr+="\n"+currentItemRawData;
       }
-
     }
     else{
       usefulRawStr= newCurrentItemID + "\n"+currentItemRawData;
@@ -347,6 +309,4 @@ namespace SPREPF{
     return fR;
   }
 }
-
-
 #endif
