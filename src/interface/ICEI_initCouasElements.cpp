@@ -143,6 +143,7 @@ namespace ICEI{
     it1=recursiveCalculations.begin();it1E=recursiveCalculations.end();
     std::string to_repl, to_search;
     double numGr;
+    std::map<std::string,std::string> replMap;
     while(it1!=it1E){
       to_repl="";
       to_search=it1->first;
@@ -156,10 +157,10 @@ namespace ICEI{
           to_repl="0";
         }
       }
-      fR=SF::findAndReplace(fR,to_search,to_repl);
+      replMap[to_search]=to_repl;
       ++it1;
     }
-    std::string oldFR=fR;
+    std::string oldFR=MFRF::findAndReplace(fR,replMap);
     if(oldFR==""){
       return "";
     }
@@ -180,9 +181,10 @@ namespace ICEI{
     fR+="_/v*0_";
     fR+="_/searchReplace_";
     fR=TWDVF::singleVersion(fR,0);
-    fR=SF::findAndReplace(fR,"{_","{");
-    fR=SF::findAndReplace(fR,"_}","}");
-    return fR;
+    replMap.clear();
+    replMap["{_"]="{";
+    replMap["_}"]="}";
+    return MFRF::findAndReplace(fR,replMap);
   }
   std::pair<CEI::CouasListElAtt,int> updateGrades(const CEI::CouasListElAtt &st, const GEI::GEvalData & ged,
                                              const std::map<std::string, std::map<std::string,CEI::CouasListElAtt> > & recursiveCalculations){
@@ -231,7 +233,7 @@ namespace ICEI{
       sz=gdrv.size();
       for(long i=0;i<sz;++i){
         tmp.setFromString(gdrv[i]);
-        fR[tmp.getUName()]=tmp; 
+        fR[tmp.getUName()]=tmp;
         allStudents.insert(tmp.getUName());
       }
     }
