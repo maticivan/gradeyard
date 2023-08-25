@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -107,16 +107,15 @@ namespace MPTI{
         }
       }
       if(good==1){
-        std::string cleanForm;
-        cleanForm=SF::findAndReplace(systemText,
-                                 "_sectionHD*!_"+headerText+"_/sectionHD*!_",
-                                 headerChoice);
-        cleanForm=SF::findAndReplace(cleanForm,
-                                 "_actionText*!_"+actionText+"_/actionText*!_",
-                                 actionChoice);
-        cleanForm=SF::findAndReplace(cleanForm,"_existingTitleOrDescription!*_",existingTitleOrDescription);
-        rawText=SF::findAndReplace(rawText,"_systemText*!_"+systemText+"_/systemText*!_",cleanForm);
-        rawText=SF::findAndReplace(rawText,"_startOfList*!!_",startOfList);
+        std::map<std::string,std::string> replMap;
+        replMap["_sectionHD*!_"+headerText+"_/sectionHD*!_"]=headerChoice;
+        replMap["_actionText*!_"+actionText+"_/actionText*!_"]=actionChoice;
+        replMap["_existingTitleOrDescription!*_"]=existingTitleOrDescription;
+        std::string cleanForm=MFRF::findAndReplace(systemText,replMap);
+        replMap.clear();
+        replMap["_systemText*!_"+systemText+"_/systemText*!_"]=cleanForm;
+        replMap["_startOfList*!!_"]=startOfList;
+        rawText=MFRF::findAndReplace(rawText,replMap);
       }
     }
   }
