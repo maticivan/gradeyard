@@ -241,10 +241,17 @@ namespace MFRF{
         std::map<std::string,std::string>::const_iterator it,itE;
         itE=_keyReplacementMap.end();
         it=_keyReplacementMap.begin();
+        std::string lCase;
         while(it!=itE){
-          keyReplacementMap[toLowerCase(it->first)]=it->second;
+          lCase=toLowerCase(it->first);
+          if(lCase!=(it->second)){
+            keyReplacementMap[lCase]=it->second;
+          }
           ++it;
         }
+      }
+      if(keyReplacementMap.size()<1){
+        return inputWord;
       }
       MassiveSearchTreeNode<char,std::string>* aRoot=createMassSearchTree(keyReplacementMap);
       std::string result=findAndReplace(inputWord,keyReplacementMap,aRoot,caseSensitive);
