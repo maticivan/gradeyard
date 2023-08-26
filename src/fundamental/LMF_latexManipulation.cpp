@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -60,44 +60,49 @@ namespace LMF{
   long calculateWidth(const std::string & _input){
     std::string input=_input;
     std::string input2=input;
-    input=SF::findAndReplace(input,"eqnarray","a");
-    input=SF::findAndReplace(input,"$$","a");
+    std::map<std::string,std::string> replMap;
+    replMap["eqnarray"]="a";
+    replMap["$$"]="a";
+    input=MFRF::findAndReplace(input,replMap);
     if(input.length()!=input2.length()){
       return 500;
     }
-    input=SF::findAndReplace(input,"\\frac","");
-    input=SF::findAndReplace(input,"\\hfill","");
-    input=SF::findAndReplace(input,"\\mathbb","");
-    input=SF::findAndReplace(input,"\\mathcal","");
-    input=SF::findAndReplace(input,"\\noindent","");
-    input=SF::findAndReplace(input,"\\alpha","a");
-    input=SF::findAndReplace(input,"\\beta","a");
-    input=SF::findAndReplace(input,"\\gamma","a");
-    input=SF::findAndReplace(input,"\\delta","a");
-    input=SF::findAndReplace(input,"\\varphi","a");
-    input=SF::findAndReplace(input,"\\phi","a");
-    input=SF::findAndReplace(input,"\\Phi","a");
-    input=SF::findAndReplace(input,"\\Gamma","a");
-    input=SF::findAndReplace(input,"\\nabla","a");
-    input=SF::findAndReplace(input,"\\circ","a");
-    input=SF::findAndReplace(input,"\\mapsto","a");
-    input=SF::findAndReplace(input,"\\to","a");
-    input=SF::findAndReplace(input,"\\left","a");
-    input=SF::findAndReplace(input,"\\right","a");
-    input=SF::findAndReplace(input,"\\equiv","a");
-    input=SF::findAndReplace(input,"\\cong","a");
-    input=SF::findAndReplace(input,"\\triangle","a");
-    input=SF::findAndReplace(input,"\\star","a");
-    input=SF::findAndReplace(input,"\\ast","a");
+    replMap.clear();
+    replMap["\\frac"]="";
+    replMap["\\hfill"]="";
+    replMap["\\mathbb"]="";
+    replMap["\\mathcal"]="";
+    replMap["\\noindent"]="";
+    replMap["\\alpha"]="a";
+    replMap["\\beta"]="a";
+    replMap["\\gamma"]="a";
+    replMap["\\delta"]="a";
+    replMap["\\varphi"]="a";
+    replMap["\\phi"]="a";
+    replMap["\\Phi"]="a";
+    replMap["\\Gamma"]="a";
+    replMap["\\nabla"]="a";
+    replMap["\\circ"]="a";
+    replMap["\\mapsto"]="a";
+    replMap["\\to"]="a";
+    replMap["\\left"]="a";
+    replMap["\\right"]="a";
+    replMap["\\equiv"]="a";
+    replMap["\\cong"]="a";
+    replMap["\\triangle"]="a";
+    replMap["\\star"]="a";
+    replMap["\\ast"]="a";
+    input=MFRF::findAndReplace(input,replMap);
     return input.length();
   }
   long calculateProblemHeight(const std::string & _input){
-    std::string input=_input;
-    input=SF::findAndReplace(input,"\n","_nL*_s_/nL*_");
-    input=SF::findAndReplace(input,"\\item","_nL*_s_/nL*_");
-    input=SF::findAndReplace(input,"\\\\","_nL*_s_/nL*_");
-    input=SF::findAndReplace(input,"\\begin{enumerate}","_nL*_s_/nL*_");
-    input=SF::findAndReplace(input,"\\begin{itemize}","_nL*_s_/nL*_");
+    std::map<std::string,std::string> replMap;
+    replMap["\n"]="_nL*_s_/nL*_";
+    replMap["\\item"]="_nL*_s_/nL*_";
+    replMap["\\\\"]="_nL*_s_/nL*_";
+    replMap["\\begin{enumerate}"]="_nL*_s_/nL*_";
+    replMap["\\begin{itemize}"]="_nL*_s_/nL*_";
+    std::string input=MFRF::findAndReplace(_input,replMap);
     long countNLines=SF::countInString(input,"_nL*_","_/nL*_");
     return countNLines + (input.length() / 150);
   }
@@ -184,34 +189,33 @@ namespace LMF{
     return input;
   }
   std::string htmlToLatexFormatting(const std::string &_input){
-    std::string input=_input;
-    input=SF::findAndReplace(input,"<b>","{\\bf ");
-    input=SF::findAndReplace(input,"</b>","}");
-    input=SF::findAndReplace(input,"<i>","{\\em ");
-    input=SF::findAndReplace(input,"</i>","}");
-    input=SF::findAndReplace(input,"_cde_","\\verb@");
-    input=SF::findAndReplace(input,"_/cde_","@");
-    input=SF::findAndReplace(input,"_code_","\\begin{verbatim}");
-    input=SF::findAndReplace(input,"_/code_","\\end{verbatim}");
-    input=SF::findAndReplace(input,"<code>","\\verb@");
-    input=SF::findAndReplace(input,"</code>","@");
-    input=SF::findAndReplace(input,"<pre>","\\begin{verbatim}");
-    input=SF::findAndReplace(input,"</pre>","\\end{verbatim}\n");
-    input=SF::findAndReplace(input,"\\newline","\\\\");
-    input=SF::findAndReplace(input,"<ul>","\\begin{itemize}");
-    input=SF::findAndReplace(input,"</ul>","\\end{itemize}");
-    input=SF::findAndReplace(input,"<center>","\\begin{center}");
-    input=SF::findAndReplace(input,"</center>","\\end{center}");
-    input=SF::findAndReplace(input,"<li>","\\item ");
-    input=SF::findAndReplace(input,"</li>","");
-    input=SF::findAndReplace(input,"<br>","\n\n");
-    input=SF::findAndReplace(input,"<p>","\n\n\\vspace{0.1cm}\n\\noindent ");
-    input=SF::findAndReplace(input,"<div>","\n\n");
-    input=SF::findAndReplace(input,"</p>","");
-    input=SF::findAndReplace(input,"</div>","");
-    input=SF::findAndReplace(input,"</br>","");
-    input=htmlToLatexPictures(input);
-    return input;
+    std::map<std::string,std::string> replMap;
+    replMap["<b>"]="{\\bf ";
+    replMap["</b>"]="}";
+    replMap["<i>"]="{\\em ";
+    replMap["</i>"]="}";
+    replMap["_cde_"]="\\verb@";
+    replMap["_/cde_"]="@";
+    replMap["_code_"]="\\begin{verbatim}";
+    replMap["_/code_"]="\\end{verbatim}";
+    replMap["<code>"]="\\verb@";
+    replMap["</code>"]="@";
+    replMap["<pre>"]="\\begin{verbatim}";
+    replMap["</pre>"]="\\end{verbatim}\n";
+    replMap["\\newline"]="\\\\";
+    replMap["<ul>"]="\\begin{itemize}";
+    replMap["</ul>"]="\\end{itemize}";
+    replMap["<center>"]="\\begin{center}";
+    replMap["</center>"]="\\end{center}";
+    replMap["<li>"]="\\item ";
+    replMap["</li>"]="";
+    replMap["<br>"]="\n\n";
+    replMap["<p>"]="\n\n\\vspace{0.1cm}\n\\noindent ";
+    replMap["<div>"]="\n\n";
+    replMap["</p>"]="";
+    replMap["</div>"]="";
+    replMap["</br>"]="";
+    return htmlToLatexPictures(MFRF::findAndReplace(_input,replMap));
   }
   std::string prepareSingleProblemForPrinting(const LatexDataSingleQuestion & sq,const LatexDataExamPaper & exam){
     std::string fR="";
@@ -242,7 +246,6 @@ namespace LMF{
       padNum*=10;
     }
     padNum/=10;
-
     std::vector<long> randP=RNDF::genRandPermutation(numCodes);
     for(long i=0;i<numCodes;++i){
       for(long j=0;j<noiseSize;++j){
