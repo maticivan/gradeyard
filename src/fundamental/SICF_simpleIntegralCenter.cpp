@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -398,9 +398,10 @@ namespace SICF{
     return pFirst;
   }
   int checkIfOnlyOneVariable(const std::string & _in, const std::string &varName){
-    std::string in=_in;
-    in=SF::findAndReplace(in,varName,"");
-    in=SF::findAndReplace(in,"\\","");
+    std::map<std::string,std::string> replMap;
+    replMap[varName]="";
+    replMap["\\"]="";
+    std::string in=MFRF::findAndReplace(_in,replMap);
     if(SF::getPositionOfFirstLetterOrBS(in)>-1){
       return 0;
     }
@@ -413,17 +414,14 @@ namespace SICF{
       return failure;
     }
     std::string goodStr=in;
-    std::string goodStrImproved;
-    goodStrImproved=SF::findAndReplace(goodStr,"("+varName+")",varName);
-    while(goodStrImproved!=goodStr){
-      goodStrImproved=SF::findAndReplace(goodStr,"("+varName+")",varName);
-    }
     std::string azmEnd="!*azm&"+RNDF::genRandCode(5)+"&J";
-    goodStr=SF::findAndReplace(goodStr,varName+")",varName+"^1)");
-    goodStr=SF::findAndReplace(goodStr,varName+"+",varName+"^1+");
-    goodStr=SF::findAndReplace(goodStr,varName+"-",varName+"^1-");
-    goodStr=SF::findAndReplace(goodStr,varName+"*",varName+"^1*");
-    goodStr=SF::findAndReplace(goodStr,varName+"/",varName+"^1/");
+    std::map<std::string,std::string> replMap;
+    replMap[varName+")"]=varName+"^1)";
+    replMap[varName+"+"]=varName+"^1+";
+    replMap[varName+"-"]=varName+"^1-";
+    replMap[varName+"*"]=varName+"^1*";
+    replMap[varName+"/"]=varName+"^1/";
+    goodStr=MFRF::findAndReplace(goodStr,replMap);
     goodStr+=azmEnd;
     goodStr=SF::findAndReplace(goodStr,varName+azmEnd,varName+"^1");
     goodStr=SF::findAndReplace(goodStr,azmEnd,"");
