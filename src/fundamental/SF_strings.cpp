@@ -428,7 +428,8 @@ namespace SF{
       // Searches input for _searchFor; The first one is replaced by _replaceWith[0],
       // the second occurrence with _replaceWith[1], ..., the _replaceWith.size()-th ocurrence
       // with _replaceWith[0] again and it cycles
-
+      if(input.length()<1){return input;}
+      if(_searchFor.length()<1){return input;}
       std::string searchFor=_searchFor;
       std::vector<std::string> replaceWith=_replaceWith;
       if(replaceWith.size()==0){
@@ -481,6 +482,7 @@ namespace SF{
       if(searchFor==_replaceWith){
         return input;
       }
+      if(input.length()<1){return input;}
       std::vector<std::string> replw;
       replw.resize(1);
       replw[0]=_replaceWith;
