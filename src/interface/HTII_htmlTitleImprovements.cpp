@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -43,25 +43,18 @@ namespace HTII{
     }
     return in;
   }
-
   std::string noHyperLinks(const std::string& x){
-    std::string y=x;
-    y=SF::findAndReplace(y,"<","");
-    y=SF::findAndReplace(y,">","");
-    y=SF::findAndReplace(y,"\"","");
-    y=SF::findAndReplace(y,"\'","");
-    return y;
+    std::map<std::string,std::string> replMap;
+    replMap["<"]="";
+    replMap[">"]="";
+    replMap["\""]="";
+    replMap["\'"]="";
+    replMap["\\"]="";
+    return MFRF::findAndReplace(x,replMap);
   }
   std::string extractTextForTD(const std::string& in,const long & mLen){
-    std::string out=in;
-    long nTags=DISPPF::GL_HTML_Tags.formattingTags.size();
-    for(long i=0;i<nTags;++i){
-      out=SF::findAndReplace(out,DISPPF::GL_HTML_Tags.formattingTags[i],"");
-    }
-    nTags=DISPPF::GL_HTML_Tags.toEliminateFromSimpleTexts.size();
-    for(long i=0;i<nTags;++i){
-      out=SF::findAndReplace(out,DISPPF::GL_HTML_Tags.toEliminateFromSimpleTexts[i],"");
-    }
+    std::string out=MFRF::findAndReplace(in,DISPPF::GL_HTML_Tags.tagRemovalMap);
+    out=SF::findAndReplace(out,"\\big","");
     out=truncateLength(out,mLen);
     out=noHyperLinks(out);
     return out;
@@ -96,7 +89,6 @@ namespace HTII{
       return extractTextForTD(out,GL_title.maxTitleLength);
     }
     return extractTextForTD(out,GL_title.maxTitleLength);
-    //return out;
   }
   std::string generateDescription(const PageElements& pels){
     std::string out;
@@ -120,7 +112,6 @@ namespace HTII{
     res.pFormulations=SF::stringToVector(rawText,"\\begin{problem}","\\end{problem}");
     res.theorems=SF::stringToVector(rawText,"\\begin{theorem}","\\end{theorem}");
     res.definitions=SF::stringToVector(rawText,"\\begin{definition}","\\end{definition}");
-
     return res;
   }
 }
