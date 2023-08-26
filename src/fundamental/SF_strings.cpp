@@ -15,7 +15,6 @@
 //    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
 //    along with this program.  If not, see https://www.gnu.org/licenses/.
 
-
 #ifndef _INCL_SF_STRINGS_CPP
 #define _INCL_SF_STRINGS_CPP
 
@@ -57,21 +56,6 @@ namespace SF{
       }
     }
   }
-  char toLowerCase(const char & x){
-      char fR=x;
-      if((x>='A')&&(x<='Z')){
-          fR=fR-'A'+'a';
-      }
-      return fR;
-  }
-  std::string toLowerCase(const std::string & input){
-      std::string output=input;
-      long len = input.length();
-      for(long i=0;i<len;++i){
-          output[i]=toLowerCase(input[i]);
-      }
-      return output;
-  }
   int isLetterOrBS(const char & c){
     if( (c>='a') && (c<='z')){return 1;}
     if( (c>='A') && (c<='Z')){return 1;}
@@ -111,8 +95,8 @@ namespace SF{
           currentCh=src[pos];
           compareCh=endSt[posInEnd];
           if(caseSensitive==0){
-              currentCh=toLowerCase(currentCh);
-              compareCh=toLowerCase(compareCh);
+              currentCh=MFRF::toLowerCase(currentCh);
+              compareCh=MFRF::toLowerCase(compareCh);
           }
           stToAdd+= src[pos];
           if(currentCh==compareCh){
@@ -356,6 +340,7 @@ namespace SF{
   std::string replaceVariablesWithValues(const std::string & input,
                                          const std::string & sepVarB, const std::string & sepVarE,
                                          const std::map<std::string,std::string> & varsToVals){
+    if(varsToVals.size()<1){return input;}
     std::string output=input;
     std::string currentVar,currentVal;
     long sepLens=sepVarB.length()+sepVarE.length();
@@ -493,7 +478,6 @@ namespace SF{
                           const std::string &_replaceWith,
                           const int &all=1,
                           const int &caseSensitive=0){
-
       if(searchFor==_replaceWith){
         return input;
       }
@@ -718,7 +702,7 @@ namespace SF{
     fR.second=tmpStack.second;
     fR.first=stackToVector(tmpStack.first);
     return fR;
-  } 
+  }
   std::vector<std::string> stringToVector(const std::string & _allItems,
                                           const std::string & _nextB="_n_",
                                           const std::string & _nextE="_/n_",
@@ -1029,22 +1013,6 @@ namespace SF{
       }
     }
   }
-  std::string massiveFiRepl(const std::string &input, const std::vector<std::pair<std::string, std::string> > & v, const int & caseSensitive){
-    std::string output=input;
-    long sz=v.size();
-    for(long i=0;i<sz;++i){
-      output=findAndReplace(output,v[i].first,v[i].second,1,caseSensitive);
-    }
-    return output;
-  }
-  std::string massiveFiReplReverse(const std::string &input, const std::vector<std::pair<std::string, std::string> > & v, const int & caseSensitive){
-    std::string output=input;
-    long sz=v.size();
-    for(long i=0;i<sz;++i){
-      output=findAndReplace(output,v[i].second,v[i].first,1,caseSensitive);
-    }
-    return output;
-  }
   std::pair<std::string,int> replaceAllOuterLayerSeparators(const std::string &input,
                                                             const std::string & _cOpen,
                                                             const std::string &_cClose,
@@ -1068,7 +1036,7 @@ namespace SF{
     while(keepGoing==1){
       replacingPart= allD.first;
       if(szV>0){
-        replacingPart=massiveFiRepl(replacingPart,permanentChangesForProtection,caseSensitive);
+        replacingPart=MFRF::findAndReplace(replacingPart,permanentChangesForProtection,caseSensitive,1);
       }
       allDB=getEverythingBefore(input,oldPos,_cOpen,caseSensitive);
       if(allDB.second==1){
@@ -1159,10 +1127,12 @@ namespace SF{
     std::string output=input;
     std::map<std::string,std::string>::const_iterator it,itE;
     it=sr.begin();itE=sr.end();
+    std::map<std::string,std::string> replMap;
     while(it!=itE){
-      output=findAndReplace(output,sB+(it->first)+sE,sB+(it->second)+sE);
+      replMap[sB+(it->first)+sE]=sB+(it->second)+sE;
       ++it;
     }
+    output=MFRF::findAndReplace(output,replMap);
     return output;
   }
   template<typename TTT>
