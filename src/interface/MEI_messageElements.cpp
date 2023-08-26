@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -76,12 +76,10 @@ namespace MEI{
     nmCodes=mElCodes.size();
     mNavEls=SF::stringToVector(navigationSt,"_n_","_/n_");
     nmNavEls=mNavEls.size();
-
     pos=0;allD=SF::extract(mE,pos,st_sepAddMessB,st_sepAddMessE);
     if(allD.second==1){
         PBD::createPermitSet(permitAdd, allD.first,s_individualPermissionB,  s_individualPermissionE);
     }
-
     return 1;
   }
   int MElement::allowedToRead(const std::string & _uN) const{
@@ -162,12 +160,10 @@ namespace MEI{
       if(tTitle!=""){
         prevDispl=createLinkToTopic(tCode,tTitle,_page);
       }
-
       fR+=prevDispl;
     }
     return fR;
   }
-
   std::string MElement::createLinkToTopic(const std::string & tNum, const std::string & tName,const std::string & _page) const{
     return HSF::createButtonLink(MWII::GL_WI.getWSURL()+"/index.cgi?page="+_page+"&s1=u11&r1="+tNum,tName);
   }
@@ -210,24 +206,23 @@ namespace MEI{
     fR+="</div>";
     return fR;
   }
-
   std::string MElement::newMessageBoxOrLink(const std::string &prevCode,const long & messageOrLinkChoice,const std::string &_page) const{
     if(messageOrLinkChoice==1){return prepareEditBox(prevCode,"nm","",_page);}
     return createMTEditLink(prevCode,"nm",MWII::GL_WI.getDefaultWebText("New Message"),"",_page);
   }
   std::string prepareMCreatedString(const PSDI::SessionData & _psd, const std::string & in){
-    std::string out=in;
+    std::map<std::string,std::string> replMap;
     if(_psd.displayDaysInWeek.size()==TMF::GLOBAL_NUM_DAYS_IN_WEEK){
       for(long i=0;i<TMF::GLOBAL_NUM_DAYS_IN_WEEK;++i){
-        out=SF::findAndReplace(out,TMF::GLOBAL_DAYS_OF_WEEK_A[i],_psd.displayDaysInWeek[i]);
+        replMap[TMF::GLOBAL_DAYS_OF_WEEK_A[i]]=_psd.displayDaysInWeek[i];
       }
     }
     if(_psd.displayMonthsInYear.size()==TMF::GLOBAL_NUM_MONTHS_IN_YEAR){
       for(long i=0;i<TMF::GLOBAL_NUM_MONTHS_IN_YEAR;++i){
-        out=SF::findAndReplace(out,TMF::GLOBAL_MONTHS_A[i],_psd.displayMonthsInYear[i]);
+        replMap[TMF::GLOBAL_MONTHS_A[i]]=_psd.displayMonthsInYear[i];
       }
     }
-    return out;
+    return MFRF::findAndReplace(in,replMap);
   }
   std::string MElement::prepareMT(const PSDI::SessionData & _psd, const std::string & prevCode, const std::string & mToEdit, const std::string &displText, const std::string &startM, const int & editLinkInd,const std::string &_page) const{
     std::string fR="";
