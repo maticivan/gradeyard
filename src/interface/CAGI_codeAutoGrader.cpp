@@ -19,8 +19,10 @@
 #define _INCL_CAGI_CodeAutoGrader_CPP
 namespace CAGI{
   std::string lastCode(const std::string & _input){
-    std::string input=SF::findAndReplace(_input,"_code_","<pre>");
-    input=SF::findAndReplace(input,"_/code_","</pre>");
+    std::map<std::string,std::string> replMap;
+    replMap["_code_"]="<pre>";
+    replMap["_/code_"]="</pre>";
+    std::string input=MFRF::findAndReplace(_input,replMap);
     std::vector<std::string> allCodes= SF::stringToVector(input,"<pre>","</pre>");
     long sz=allCodes.size();
     if(sz<1){
@@ -29,9 +31,9 @@ namespace CAGI{
     return allCodes[sz-1];
   }
   std::string removeForbiddenStrings(const std::string& _src, const std::vector<std::string> & forb){
-    std::string src=_src;
     std::string hidingSt;
     long fsz=forb.size();
+    std::map<std::string,std::string> replMap;
     for(long i=0; i<fsz;++i){
       if((forb[i]=="[")||(forb[i]=="]")){
         hidingSt="seqNotAllowed";
@@ -39,9 +41,9 @@ namespace CAGI{
       else{
         hidingSt=forb[i];
       }
-      src=SF::findAndReplace(src,forb[i],GL_Obf.secretOpenTag+hidingSt+GL_Obf.secretCloseTag);
+      replMap[forb[i]]=GL_Obf.secretOpenTag+hidingSt+GL_Obf.secretCloseTag;
     }
-    return src;
+    return MFRF::findAndReplace(_src,replMap);
   }
   OfflineAutograderData oagDataFromString(const std::string& data){
     OfflineAutograderData res;
@@ -211,8 +213,7 @@ namespace CAGI{
         cInfo.publicRevealTestCasesAfterGrading[i]="yes";
       }
     }
-    std::string testEmbed=SF::findAndReplace(cInfo.codeToEmbed,"_*embedHere*_","");
-    if(cInfo.codeToEmbed!=testEmbed){
+    if(MFRF::find(cInfo.codeToEmbed,"_*embedHere*_").second>-1){
       if(cInfo.language=="py"){
         cInfo.officialSource=PISI::embedPythonCode(cInfo.codeToEmbed,cInfo.officialSource);
         cInfo.userSource=PISI::embedPythonCode(cInfo.codeToEmbed,cInfo.userSource);
@@ -231,12 +232,10 @@ namespace CAGI{
   int sufficientlyEqual(const std::string & _a, const std::string &_b){
     std::string a=TWDVF::eraseLeadingAndTrailingEmptyCharacters(_a);
     std::string b=TWDVF::eraseLeadingAndTrailingEmptyCharacters(_b);
+    a=BF::cleanSpaces(a,0,1);
+    b=BF::cleanSpaces(b,0,1);
     a=SF::findAndReplace(a,"\t"," ");
     b=SF::findAndReplace(b,"\t"," ");
-    a=SF::findAndReplace(a,"   "," ");
-    b=SF::findAndReplace(b,"   "," ");
-    a=SF::findAndReplace(a,"  "," ");
-    b=SF::findAndReplace(b,"  "," ");
     if(a==b){
       return 1;
     }
@@ -263,10 +262,10 @@ namespace CAGI{
     long i=0;
     std::string mDNCompile=official_mDNCompile;
     while((i<sz) && (indicatorOfficialSolutionBad==0)){
-      if(officialOutput[i] != SF::findAndReplace(officialOutput[i],GF::GL_errorOutputTooBig,"")){
+      if(MFRF::find(officialOutput[i],GF::GL_errorOutputTooBig).second>-1){
         indicatorOfficialSolutionBad=1;
       }
-      if(officialOutput[i] != SF::findAndReplace(officialOutput[i],"_error*|_yes_/error*|_","")){
+      if(MFRF::find(officialOutput[i],"_error*|_yes_/error*|_").second>-1){
         indicatorOfficialSolutionBad=1;
       }
       if(officialOutput[i] ==""){
@@ -289,7 +288,7 @@ namespace CAGI{
         res.comment+="\nCorrect: "+officialOutput[i]+"\n";
         tcRes.input=inputTestCases[i];tcRes.output=userOutput[i];tcRes.correct=officialOutput[i];
       }
-      if((indicatorDidNotCompile==0)&&(userOutput[i] != SF::findAndReplace(userOutput[i],"_error*|_yes_/error*|_",""))) {
+      if((indicatorDidNotCompile==0)&&(MFRF::find(userOutput[i],"_error*|_yes_/error*|_").second>-1)) {
         indicatorDidNotCompile=1;
         mDNCompile=AGRDI::analyzeError(userOutput[i],language,official_mDNCompile);
         res.errorMessage=mDNCompile;
