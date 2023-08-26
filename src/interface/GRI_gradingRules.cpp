@@ -50,13 +50,17 @@ namespace GRI{
       std::vector<std::string> rlsUsed=SF::stringToVector(res.grCommentDisplay,MWII::GL_WI.getDefaultWebText("[rule]"),MWII::GL_WI.getDefaultWebText("[/rule]"));
       long sz=rlsUsed.size();
       std::map<std::string,PSDI::GradingRule>::const_iterator it,itE=mRules.end();
+      std::map<std::string,std::string> replMap;
       for(long i=0;i<sz;++i){
         it=mRules.find(rlsUsed[i]);
         if(it!=itE){
-          res.grCommentDisplay=SF::findAndReplace(res.grCommentDisplay,MWII::GL_WI.getDefaultWebText("[rule]")+it->first+MWII::GL_WI.getDefaultWebText("[/rule]"),(it->second).display);
+          replMap[MWII::GL_WI.getDefaultWebText("[rule]")+it->first+MWII::GL_WI.getDefaultWebText("[/rule]")]=(it->second).display;
           displScoreToOverwrite="y";
           calculatedScore+=(it->second).points;
         }
+      }
+      if(replMap.size()>0){
+        res.grCommentDisplay=MFRF::findAndReplace(res.grCommentDisplay,replMap);
       }
       if(displScoreToOverwrite!=""){
         if(calculatedScore<0.0){
