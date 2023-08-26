@@ -56,6 +56,7 @@ namespace DISPPF{
     std::vector<std::string> formattingTags;
     std::vector<std::string> toEliminateFromSimpleTexts;
     std::vector<std::string> alakazams;
+    std::map<std::string,std::string> tagRemovalMap;
     HTML_Tags();
   };
   HTML_Tags::HTML_Tags(){
@@ -92,7 +93,7 @@ namespace DISPPF{
     for(long i=0;i<sz;++i){
       alakazams[i]=azm+std::to_string(i)+"e|";
     }
-    toEliminateFromSimpleTexts.resize(19);
+    toEliminateFromSimpleTexts.resize(17);
     i=-1;
     ++i;toEliminateFromSimpleTexts[i]="<div>";
     ++i;toEliminateFromSimpleTexts[i]="</div>";
@@ -106,13 +107,17 @@ namespace DISPPF{
     ++i;toEliminateFromSimpleTexts[i]="$";
     ++i;toEliminateFromSimpleTexts[i]="\\left";
     ++i;toEliminateFromSimpleTexts[i]="\\right";
-    ++i;toEliminateFromSimpleTexts[i]="\\big";
     ++i;toEliminateFromSimpleTexts[i]="\\bigg";
-    ++i;toEliminateFromSimpleTexts[i]="\\";
     ++i;toEliminateFromSimpleTexts[i]="begin{eqnarray}";
     ++i;toEliminateFromSimpleTexts[i]="begin{eqnarray*}";
     ++i;toEliminateFromSimpleTexts[i]="end{eqnarray}";
     ++i;toEliminateFromSimpleTexts[i]="end{eqnarray*}";
+    for(long j=0;j<formattingTags.size();++j){
+      tagRemovalMap[formattingTags[j]]="";
+    }
+    for(long j=0;j<toEliminateFromSimpleTexts.size();++j){
+      tagRemovalMap[toEliminateFromSimpleTexts[j]]="";
+    }
   }
   HTML_Tags GL_HTML_Tags;
   std::string treatHideReveal(const std::string & _input){
