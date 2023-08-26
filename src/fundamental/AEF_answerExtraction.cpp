@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -19,25 +19,24 @@
 #ifndef _INCL_AEF_ANSWEREXTRACTION_CPP
 #define _INCL_AEF_ANSWEREXTRACTION_CPP
 
-
 namespace AEF{
   std::string allLatexTagsIntoDollars(const std::string& input){
-    std::string result=input;
-    result=SF::findAndReplace(result,"\\$","");
-    result=SF::findAndReplace(result,"$$"," $ ");
-    result=SF::findAndReplace(result,"\\begin{eqnarray*}"," $");
-    result=SF::findAndReplace(result,"\\begin{eqnarray}"," $");
-    result=SF::findAndReplace(result,"\\end{eqnarray*}","$ ");
-    result=SF::findAndReplace(result,"\\end{eqnarray}","$ ");
-    result=SF::findAndReplace(result,"\\begin{equation*}"," $");
-    result=SF::findAndReplace(result,"\\begin{equation}"," $");
-    result=SF::findAndReplace(result,"\\end{equation*}","$ ");
-    result=SF::findAndReplace(result,"\\end{equation}","$ ");
-    result=SF::findAndReplace(result,"\\("," $");
-    result=SF::findAndReplace(result,"\\["," $");
-    result=SF::findAndReplace(result,"\\)","$ ");
-    result=SF::findAndReplace(result,"\\]","$ ");
-    return result;
+    std::map<std::string,std::string> replMap;
+    replMap["\\$"]="";
+    replMap["$$"]=" $ ";
+    replMap["\\begin{eqnarray*}"]=" $";
+    replMap["\\begin{eqnarray}"]=" $";
+    replMap["\\end{eqnarray*}"]="$ ";
+    replMap["\\end{eqnarray}"]="$ ";
+    replMap["\\begin{equation*}"]=" $";
+    replMap["\\begin{equation}"]=" $";
+    replMap["\\end{equation*}"]="$ ";
+    replMap["\\end{equation}"]="$ ";
+    replMap["\\("]=" $";
+    replMap["\\["]=" $";
+    replMap["\\)"]="$ ";
+    replMap["\\]"]="$ ";
+    return MFRF::findAndReplace(input,replMap);
   }
   std::string reverse(const std::string& input){
     std::string result;
