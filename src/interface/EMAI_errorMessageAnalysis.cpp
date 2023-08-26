@@ -33,12 +33,13 @@ namespace EMAI{
     return inRev;
   }
   std::string adjustIfForbiddenWordWasUsed(const std::string& rawError){
-    if(rawError==SF::findAndReplace(rawError,CAGI::GL_Obf.secretOpenTag,"")){
+    if(MFRF::find(rawError,CAGI::GL_Obf.secretOpenTag).second<0){
       return rawError;
     }
-    std::string rAtt=rawError;
-    rAtt=SF::findAndReplace(rAtt,"\'"+CAGI::GL_Obf.secretOpenTag,"");
-    rAtt=SF::findAndReplace(rAtt,"\'"+CAGI::GL_Obf.secretCloseTag,"");
+    std::map<std::string,std::string> replMap;
+    replMap["\'"+CAGI::GL_Obf.secretOpenTag]="";
+    replMap["\'"+CAGI::GL_Obf.secretCloseTag]="";
+    std::string rAtt=MFRF::findAndReplace(rawError,replMap);
     std::vector<std::string> forbidden=SF::stringToVector(rAtt,CAGI::GL_Obf.secretOpenTag,CAGI::GL_Obf.secretCloseTag);
     long sz=forbidden.size();
     if(sz<1){
