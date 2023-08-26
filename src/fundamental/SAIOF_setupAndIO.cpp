@@ -19,6 +19,7 @@
 #define _INCL_SAIOF_CPP
 
 #include "SSF_sortedSeq.cpp"
+#include "MFRF_massiveFindReplace.cpp"
 #include "BF_bijFunction.cpp"
 #include "TMF_timer.cpp"
 #include "DEBMF_debuggingMessages.cpp"
