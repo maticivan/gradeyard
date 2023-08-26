@@ -34,7 +34,6 @@ namespace AICD{
     }
     return _in;
   }
-
   std::string createSubText(const std::string& textName, const long& remRecDepth){
     if(remRecDepth<1){return "";}
     return prepareLatexTextRec(TMD::rawTextData(textName),remRecDepth-1);
@@ -126,31 +125,31 @@ namespace AICD{
      return fR;
   }
   std::string htmlHTagsToLatex(const std::string & in){
-    std::string out=in;
-    out=SF::findAndReplace(out,"<h1>","\\chapter{");
-    out=SF::findAndReplace(out,"</h1>","}");
-    out=SF::findAndReplace(out,"<h2>","\\section*{");
-    out=SF::findAndReplace(out,"</h2>","}");
-    out=SF::findAndReplace(out,"<h3>","\\subsection*{");
-    out=SF::findAndReplace(out,"</h3>","}");
-    out=SF::findAndReplace(out,"<h4>","\\subsubsection*{");
-    out=SF::findAndReplace(out,"</h4>","}");
-    out=SF::findAndReplace(out,"<h5>","\\subsubsection*{");
-    out=SF::findAndReplace(out,"</h5>","}");
-    return out;
+    std::map<std::string,std::string> replMap;
+    replMap["<h1>"]="\\chapter{";
+    replMap["</h1>"]="}";
+    replMap["<h2>"]="\\section*{";
+    replMap["</h2>"]="}";
+    replMap["<h3>"]="\\subsection*{";
+    replMap["</h3>"]="}";
+    replMap["<h4>"]="\\subsubsection*{";
+    replMap["</h4>"]="}";
+    replMap["<h5>"]="\\subsubsection*{";
+    replMap["</h5>"]="}";
+    return MFRF::findAndReplace(in,replMap);
   }
   std::string additionalCustomizationForProblemsAndSolutions(const std::string& in){
-    std::string out=in;
     long sz=GL_ReplStrings.htmlTs.size();
     if(sz!=GL_ReplStrings.latexTs.size()){
       return in;
     }
+    std::map<std::string,std::string> replMap;
     for(long i=0;i<sz;++i){
       if(GL_ReplStrings.htmlTs[i]!=GL_ReplStrings.latexTs[i]){
-        out=SF::findAndReplace(out,GL_ReplStrings.htmlTs[i],GL_ReplStrings.latexTs[i]);
+        replMap[GL_ReplStrings.htmlTs[i]]=GL_ReplStrings.latexTs[i];
       }
     }
-    return out;
+    return MFRF::findAndReplace(in,replMap);
   }
   std::string prepareLatexTextRec(const std::string& _in, const long& insertRemainingDepth ){
     std::string res=_in;
