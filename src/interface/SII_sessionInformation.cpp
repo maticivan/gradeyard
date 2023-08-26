@@ -92,10 +92,10 @@ namespace SII{
       changeMainText(psd.createStandardCourseMainDocName);
       psd.pageRequested=psd.createStandardCourseMainDocName;
     }
-    header.updateLogInBar(psd.my_un);
-    header.updateSecondMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
-    header.updateThirdMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
-    header.updateMainMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
+    //header.updateLogInBar(psd.my_un);
+    //header.updateSecondMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
+    //header.updateThirdMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
+    header.updateLogInAndMenuBars(psd, psd.pageRequested,respRecRequested);
     footer.updateFooterBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
     std::string savedPER=psd.pEditReq;
     psd.pEditReq="no";
@@ -175,13 +175,17 @@ namespace SII{
     }
     std::string beforeFormRepl= DISPPF::finalizeForDisplay(MWII::GL_WI.getDefaultFindReplaceMap(), fR+psd.passwordChangeStatus+"</div>"+footerFR);
     std::string afterFormRepl=beforeFormRepl;
+    std::map<std::string,std::string> replMap;
     if((psd.inFormSearch!="")&&(psd.inFormReplace!="")){
-      afterFormRepl=SF::findAndReplace(afterFormRepl,psd.inFormSearch,psd.inFormReplace);
+      replMap[psd.inFormSearch]=psd.inFormReplace;
     }
     if( (psd.isRoot=="no") && ((psd.pageRequested=="createWebsite")||(psd.pageRequested=="changePassword")) ){
-      afterFormRepl=SF::findAndReplace(afterFormRepl,"_THIS*WEBSITE*URL*_",MWII::GL_WI.getWSURL());
-      afterFormRepl=SF::findAndReplace(afterFormRepl,"_GUEST*SITES*_",DD::GL_DBS.getGuestClonesRelLoc());
-      afterFormRepl=SF::findAndReplace(afterFormRepl,"_MY*USERNAME*_",psd.my_un);
+      replMap["_THIS*WEBSITE*URL*_"]=MWII::GL_WI.getWSURL();
+      replMap["_GUEST*SITES*_"]=DD::GL_DBS.getGuestClonesRelLoc();
+      replMap["_MY*USERNAME*_"]=psd.my_un;
+    }
+    if(replMap.size()>0){
+      afterFormRepl=MFRF::findAndReplace(afterFormRepl,replMap);
     }
     timeToGenerateWebsite.end();
     if(psd.queryAnswRequired){
@@ -829,7 +833,8 @@ namespace SII{
                 std::pair<std::string,int> allD;
                 std::string dataToModify=tmpRT.getRawText();
                 if(dataToModify!=""){
-                  std::string dataToModifyOld=dataToModify;
+                  std::string dataToAdd;
+                  std::map<std::string,std::string> replMap;
                   std::set<std::string> qLabels;
                   qLabels=res.questionLabels;
                   std::vector<std::string> oldAnswers=SF::stringToVector(dataToModify,"_in*|_","_/in*|_");
@@ -879,10 +884,10 @@ namespace SII{
                         answUpdated+=itM->first+"_/lb*|_ _/in*|_";
                         itInvF=invFunc.find(itM->first);
                         if(itInvF==itInvFE){
-                          dataToModify+=answUpdated;
+                          dataToAdd+=answUpdated;
                         }
                         else{
-                          dataToModify=SF::findAndReplace(dataToModify,"_in*|_"+oldAnswers[itInvF->second]+"_/in*|_",answUpdated,0);
+                          replMap["_in*|_"+oldAnswers[itInvF->second]+"_/in*|_"]=answUpdated;
                         }
                         if(isCertificate){
                           std::string oldCertificate;
@@ -895,6 +900,8 @@ namespace SII{
                     }
                     ++it;
                   }
+                  dataToModify=MFRF::findAndReplace(dataToModify,replMap);
+                  dataToModify+=dataToAdd;
                   if(dangerousInputDetected==0){
                     psd.respRecFlag="accepted";
                     dataToModify=uploadFilesFromResponseReceiver(ch,respRecRequested,dataToModify,res.fileInfoV,tmpRT,res.idInfoData);
@@ -1275,11 +1282,15 @@ namespace SII{
     }
     psd.pageRequested=sf.getTextName();
     std::string textData=prepareTextForTextTable(_tData,"!noOldData!");
+    std::map<std::string,std::string> replMap;
     if(_readPermitOverwrite!="!*!"){
-      textData=SF::findAndReplace(textData,"_permission__name_read_/name__userOrGroup_everyone_/userOrGroup__/permission_","_permission__name_read_/name__userOrGroup_"+_readPermitOverwrite+"_/userOrGroup__/permission_");
+      replMap["_permission__name_read_/name__userOrGroup_everyone_/userOrGroup__/permission_"]="_permission__name_read_/name__userOrGroup_"+_readPermitOverwrite+"_/userOrGroup__/permission_";
     }
     if(_typeOverwrite!="!*!"){
-      textData=SF::findAndReplace(textData,"_documentType!!_regularText_/documentType!!_","_documentType!!_"+_typeOverwrite+"_/documentType!!_");
+      replMap["_documentType!!_regularText_/documentType!!_"]="_documentType!!_"+_typeOverwrite+"_/documentType!!_";
+    }
+    if(replMap.size()>0){
+      textData=MFRF::findAndReplace(textData,replMap);
     }
     sf.setTextData(textData);
     sf.putInDB();
