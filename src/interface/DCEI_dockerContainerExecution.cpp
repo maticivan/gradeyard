@@ -291,6 +291,10 @@ namespace DCEI{
     long szI;
     std::string mFolder=myMountFolder(_psd.my_un)+"/";
     std::string outFileName,errFileName;
+    std::map<std::string,std::string> replMap;
+    replMap["<"]=".";
+    replMap[">"]=",";
+    replMap["_"]=" ";
     for(long i=0;i<numFiles;++i){
       szI=ced.inputData[i].size();
       res[i].resize(szI);
@@ -298,10 +302,8 @@ namespace DCEI{
         outFileName=mFolder+ fileFullName(ced.outDataFNBase,".txt",i,j);
         errFileName=mFolder+ fileFullName(ced.errDataFNBase,".txt",i,j);
         res[i][j]=IOF::fileToString(outFileName,1);
-        if(SF::findAndReplace(res[i][j],GF::GL_errorDidNotCompile,"")==res[i][j]){
-          res[i][j]=SF::findAndReplace(res[i][j],"<",".");
-          res[i][j]=SF::findAndReplace(res[i][j],">",",");
-          res[i][j]=SF::findAndReplace(res[i][j],"_"," ");
+        if(MFRF::find(res[i][j],GF::GL_errorDidNotCompile).second<0){
+          res[i][j]=MFRF::findAndReplace(res[i][j],replMap);
         }
         else{
           res[i][j]=IOF::fileToString(errFileName,1);
@@ -313,13 +315,14 @@ namespace DCEI{
   }
   std::pair<std::string,std::string> replaceDangerWords(const std::string & _in, const std::vector<std::string> & listDangers, const std::string & startReplWord){
     std::pair<std::string,std::string>out;
-    out.first=_in;
     std::string replacementWord=startReplWord;
     long numDangers=listDangers.size();
+    std::map<std::string,std::string> replMap;
     for(long i=0;i<numDangers;++i){
       replacementWord=SF::findYForNonSubstring(out.first,replacementWord,"b","e");
-      out.first=SF::findAndReplace(out.first,listDangers[i],"b"+replacementWord+"e");
+      replMap[listDangers[i]]="b"+replacementWord+"e";
     }
+    out.first=MFRF::findAndReplace(_in,replMap);
     out.second=replacementWord;
     return out;
   }
@@ -353,8 +356,10 @@ namespace DCEI{
     improvedCode=replaceDangerWords(out,GL_DCEI_const.dangerousPythonCommands,replacementWord);
     out=improvedCode.first;
     replacementWord=improvedCode.second;
-    out=SF::findAndReplace(out,"from","#from");
-    out=SF::findAndReplace(out,"import","#import");
+    std::map<std::string,std::string> replMap;
+    replMap["from"]="#from";
+    replMap["import"]="#import";
+    out=MFRF::findAndReplace(out,replMap);
     long isz=incl.size();
     if(isz>0){
       while(isz>0){
@@ -367,11 +372,9 @@ namespace DCEI{
   std::vector<std::string> improveCPPIncludes(const std::vector<std::string> &oldIncl){
     std::vector<std::string> newIncl=oldIncl;
     long sz=oldIncl.size();
-    std::string tmp;
     for(long i=0;i<sz;++i){
-      tmp=SF::findAndReplace(oldIncl[i],"#","");
-      if(tmp==oldIncl[i]){
-        newIncl[i]="#include<"+tmp+">";
+      if(MFRF::find(oldIncl[i],"#").second<0){
+        newIncl[i]="#include<"+oldIncl[i]+">";
       }
     }
     return newIncl;
@@ -379,14 +382,9 @@ namespace DCEI{
   std::vector<std::string> improvePythonIncludes(const std::vector<std::string> &oldIncl){
     std::vector<std::string> newIncl=oldIncl;
     long sz=oldIncl.size();
-    std::string tmp;
     for(long i=0;i<sz;++i){
-      tmp=SF::findAndReplace(oldIncl[i],"from","");
-      if(tmp==oldIncl[i]){
-        tmp=SF::findAndReplace(oldIncl[i],"import","");
-        if(tmp==oldIncl[i]){
-          newIncl[i]="import "+tmp;
-        }
+      if(MFRF::find(oldIncl[i],"from","import").second<0){
+        newIncl[i]="import "+oldIncl[i];
       }
     }
     return newIncl;
