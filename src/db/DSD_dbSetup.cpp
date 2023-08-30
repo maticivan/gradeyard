@@ -166,7 +166,7 @@ namespace DSD{
     extIdDB=mainFolder+"/"+extIdDB_jN;
     SF::assignValueFromMap(stMap,"usernameDB*!",userNameDB_jN);
     userNameDB=mainFolder+"/"+userNameDB_jN;
-    SF::assignValueFromMap(stMap,"hierarchy",hierarchy_jN);
+    SF::assignValueFromMap(stMap,"hierarchy*!",hierarchy_jN);
     hierarchy=mainFolder+"/"+hierarchy_jN;
     SF::assignValueFromMap(stMap,"hierarchyCache*!",hCache_jN);
     hCache=mainFolder+"/"+hCache_jN;
