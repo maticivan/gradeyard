@@ -204,7 +204,7 @@ namespace RTI{
     }
     allD=SF::extract(_s,pos, s_answer_QRTB, s_answer_QRTE);
     if(allD.second==1){
-      secondComp.answer=allD.first;
+      secondComp.answer=SF::answerToStandardForm(allD.first);
     }
     allD=SF::extract(_s,pos, s_requestType_QRTB, s_requestType_QRTE);
     if(allD.second==1){
@@ -629,7 +629,7 @@ namespace RTI{
       if(sqi.displaySol==1){
         std::string headerText="<b>"+MWII::GL_WI.getDefaultWebText("Solution")+"</b>";
         std::string officialSolutionText;
-        if((sqi.officialAnswer!="notFound")&&(sqi.officialAnswer!="")&&(sqi.officialAnswer!="na")&&(sqi.officialAnswer!="NA")&&(sqi.officialAnswer!="n/a")&&(sqi.officialAnswer!="N/A")){
+        if((sqi.officialAnswer!="notFound")&&(sqi.officialAnswer!="")&&(sqi.officialAnswer!=GF::GL_officialNA)){
           headerText="<b>"+MWII::GL_WI.getDefaultWebText("Correct answer")+": "+sqi.officialAnswer+"</b>";
         }
         if((sqi.officialSolution!="notFound")&&(sqi.officialSolution!="")){
@@ -1523,7 +1523,7 @@ namespace RTI{
       }
       else{
         sqi.userSolution=(itu->second)[0];
-        sqi.userAnswer=(itu->second)[1];
+        sqi.userAnswer=SF::answerToStandardForm((itu->second)[1]);
         sqi.userPointsEarned=(itu->second)[2];
       }
       sqi.autoGraderCodeData=CAGI::getAutoGraderCodeData((itf->second).autoGraderInfo,sqi.officialSolution,sqi.userAnswer,sqi.maxPoints);
@@ -1542,7 +1542,7 @@ namespace RTI{
           sqi.userAnswer=BF::doubleToString(AEF::getLastNumericalValue(sqi.userAnswer));
         }
       }
-      if( (sqi.userAnswer!="notFound")&&(sqi.userAnswer!="na")&&(sqi.userAnswer!="NA")&&(sqi.userAnswer!="n/a")&&(sqi.userAnswer!="N/A")&&(sqi.userAnswer!="")&&(sqi.userAnswer==sqi.officialAnswer)){
+      if( (sqi.userAnswer!="notFound")&&(sqi.userAnswer!=GF::GL_officialNA)&&(sqi.userAnswer==sqi.officialAnswer)){
         CAGI::GradingResult tmpMaxPt;
         tmpMaxPt.score=sqi.maxPoints;
         tmpMaxPt.numericScore=BF::stringToDouble(sqi.maxPoints);
@@ -1855,7 +1855,7 @@ namespace RTI{
       }
       else{
         sqi.userSolution=(itu->second)[0];
-        sqi.userAnswer=(itu->second)[1];
+        sqi.userAnswer=SF::answerToStandardForm((itu->second)[1]);
         sqi.userPointsEarned=(itu->second)[2];
       }
       sqi.autoGraderCodeData=CAGI::getAutoGraderCodeData((itf->second).autoGraderInfo,sqi.officialSolution,sqi.userAnswer,sqi.maxPoints);
