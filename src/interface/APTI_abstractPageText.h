@@ -138,7 +138,7 @@ namespace APTI{
     std::string createLinkForEditUser(const std::string &) const;
     std::string createLinkForEditUserAdvanced(const std::string &,const std::string &) const;
     std::string createLinkForEditUserExtraAdvanced(const std::string &,const std::string &) const;
-    std::string createLinkToText(const std::string &, const std::string & = "page", const std::string & ="") const;
+    std::string createLinkToText(const std::string &, const std::string & = "page", const std::string & = "", const std::string & = "") const;
     std::string createLinkToMessage(const std::string &, const std::string & , const std::string &) const;
     std::string createLinkToCouas(const std::string &, const std::string & ,const std::string &) const;
     std::string createLinkToCertificate(const std::string &, const std::string & ,const std::string &, const std::string& = "") const;
