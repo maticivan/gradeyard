@@ -35,7 +35,7 @@ namespace PTKF{
     void treatCDE(const std::string & ="_cde_", const std::string & = "_/cde_");
     void treatPre(const std::string & = "<pre>", const std::string & = "</pre>", const std::string & = "", const std::string & = "");
     void treatBoxCode();
-    void treatMath();
+    //void treatMath();
   };
   PlainTextKeeper::PlainTextKeeper(const std::string & salt){
     plainTextBank.clear();
@@ -64,24 +64,7 @@ namespace PTKF{
       return MFRF::findAndReplace(_textWithDeposits,replMap);
     }
     return _textWithDeposits;
-  }
-  std::string padIneqSigns(const std::string &in){
-    std::map<std::string,std::string> replMap;
-    replMap["< "]="!*goodSpAftOIn*!";
-    replMap[" >"]="!*goodSpBefCIn*!";
-    replMap["<"]="< ";
-    replMap[">"]=" >";
-    replMap["!*goodSpBefCIn*!"]=" >";
-    replMap["!*goodSpAftOIn*!"]="< ";
-    return MFRF::findAndReplace(in,replMap);
-  }
-  void PlainTextKeeper::treatMath(){
-    long sz=plainTextBank.size();
-    std::string st;
-    for(long i=0;i<sz;++i){
-      plainTextBank[i]=padIneqSigns(plainTextBank[i]);
-    }
-  }
+  } 
   void PlainTextKeeper::treatCDE(const std::string & cdeOpen, const std::string & cdeClose){
     std::string dnchaB="_doNotChangeAlphabet*_";
     std::string dnchaE="_/doNotChangeAlphabet*_";
