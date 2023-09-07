@@ -34,8 +34,7 @@ namespace PTKF{
     void treatCODE(const std::string & ="_code_", const std::string & = "_/code_");
     void treatCDE(const std::string & ="_cde_", const std::string & = "_/cde_");
     void treatPre(const std::string & = "<pre>", const std::string & = "</pre>", const std::string & = "", const std::string & = "");
-    void treatBoxCode();
-    //void treatMath();
+    void treatBoxCode(); 
   };
   PlainTextKeeper::PlainTextKeeper(const std::string & salt){
     plainTextBank.clear();
