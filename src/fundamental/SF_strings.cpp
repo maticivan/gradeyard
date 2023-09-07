@@ -1248,5 +1248,11 @@ namespace SF{
   void assignToConst(const T& receiver, const T& sender){
     *(T*)(&receiver)=sender;
   }
+  std::string answerToStandardForm(const std::string& oldAnsw){
+    if((oldAnsw=="na")||(oldAnsw=="NA")||(oldAnsw=="n/a")){
+      return GF::GL_officialNA;
+    }
+    return oldAnsw;
+  }
 }
 #endif
