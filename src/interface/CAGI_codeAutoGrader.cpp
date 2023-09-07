@@ -450,15 +450,15 @@ namespace CAGI{
     inputTestCases[0]=cInfo.inputTestCases;
     std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd, sources,languages,cFlags,includes,dbIncludes,inputTestCases);
     std::string fR;
-    fR+="<H2> Code source</H2><P></P> <textarea name=\"probSource\" rows=\"15\"";
+    fR+="\\begin{box}\n<H2> Code source</H2><P></P> <textarea name=\"probSource\" rows=\"15\"";
     fR+=" cols=\"100\">";
-    fR+=cInfo.officialSource+"</textarea>\n";
-    fR+="<p></p><h2>Code execution on test cases</h2>";
+    fR+=cInfo.officialSource+"</textarea>\n\\end{box}\n";
+    fR+="\\begin{box}<h2>Code execution on test cases</h2>";
     if((aGOutput.second==0)||(aGOutput.first.size()!=1)){
-      fR+=wrongLengthsOfVectors();
+      fR+=wrongLengthsOfVectors()+"\\end{box}\n";
       return fR;
     }
-    fR+=presentationOfResultsOfTests(inputTestCases[0],aGOutput.first[0]);
+    fR+=presentationOfResultsOfTests(inputTestCases[0],aGOutput.first[0])+"\\end{box}\n";
     return fR;
   }
 }
