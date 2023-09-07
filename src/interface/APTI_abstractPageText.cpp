@@ -459,12 +459,12 @@ namespace APTI{
     allLines.push(topLine);
     return BI::createScroller(start,end,numUsr,numb,"!*!",_numOnEachSide,sc)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
   }
-  std::string AbstractText::createLinkToText(const std::string &tN,const std::string &parameter, const std::string & _label) const{
+  std::string AbstractText::createLinkToText(const std::string &tN,const std::string &parameter, const std::string & _label, const std::string& _addition) const{
     std::string label=_label;
     if(label==""){
       label=tN;
     }
-    return HSF::linkFromPair(createLinkPair(parameter,tN,label));
+    return HSF::linkFromPair(createLinkPair(parameter,tN,label),_addition);
   }
   std::string AbstractText::createLinkToMessage(const std::string &mId,const std::string & _messNameOrId,const std::string &_page) const{
     std::string messNameOrId=_messNameOrId;
@@ -1691,29 +1691,44 @@ namespace APTI{
     std::string fR="";
     std::vector<long>aV=TWDVF::identifyVersions(_raw);
     long sz=aV.size();
+    std::string lAdd="class=\"page-link\" ";
+    std::string liB="<li class=\"page-item\">";
+    std::string liBActive="<li class=\"page-item active\">";
+    std::string liE="</li>";
     std::string par=MWII::GL_WI.get_e_parPage()+"="+tName+"&ver";
-    fR+="<TABLE BORDER=0><TR>";
-    fR+="<TD>";
-    if(_psd.versionToLatex=="all"){
-      fR+=MWII::GL_WI.getDefaultWebText("all");
-    }
-    else{
-      fR+=createLinkToText("all",par, MWII::GL_WI.getDefaultWebText("all"));
-    }
-    fR+="</TD>";
-    std::string sti;
+    long maxInLine=20;
+    fR+="<div><ul class=\"pagination\">\n";
+    std::string sti, stiPlane;
     for(long i=0;i<sz;++i){
       sti=std::to_string(i);
-      fR+="<TD>";
+      stiPlane=sti;
       if(_psd.versionToLatex==sti){
-        fR+=sti;
+        fR+=liBActive;
       }
       else{
-        fR+=createLinkToText(sti,par);
+        fR+=liB;
       }
-      fR+="</TD>";
+      if((sz>9)&&(i<10)){
+        sti="0"+sti;
+      }
+      if((sz>99)&&(i<100)){
+        sti="0"+sti;
+      }
+      fR+=createLinkToText(stiPlane,par,"<code>"+sti+"</code>",lAdd)+liE;
+      if( ( (i%maxInLine) == maxInLine-1) && (i<sz-1) ){
+        fR+="</ul></div>\n<div><ul class=\"pagination\">\n";
+      }
     }
-    fR+="</TR></TABLE>";
+    if(sz<maxInLine){
+      if(_psd.versionToLatex=="all"){
+        fR+=liBActive;
+      }
+      else{
+        fR+=liB;
+      }
+      fR+=createLinkToText("all",par, MWII::GL_WI.getDefaultWebText("all versions"),lAdd)+liE;
+    }
+    fR+="</ul></div>\n";
     std::string probData;long pos;std::pair<std::string,int> allD;
     for(long i=0;i<sz;++i){
       if((_psd.versionToLatex=="all")||(BF::stringToInteger(_psd.versionToLatex)==i)) {
@@ -1721,14 +1736,15 @@ namespace APTI{
         pos=0;
         allD=SF::extract(probData,pos,"_tx*|_","_/tx*|_");
         if(allD.second==1){
+          fR+="\\begin{box}\n";
           fR+="<H2>"+MWII::GL_WI.getDefaultWebText("Formulation")+"</H2> <P></P>"+allD.first;
+          fR+="\\end{box}\n";
         }
         pos=0;
         allD=SF::extract(probData,pos,"_rbAll*|_","_/rbAll*|_");
         if(allD.second==1){
-          fR+="<H2>"+MWII::GL_WI.getDefaultWebText("Choices")+"</H2><P></P>";
+          fR+="\\begin{box}\n<H2>"+MWII::GL_WI.getDefaultWebText("Choices")+"</H2><P></P>";
           std::vector<std::string> chSt=SF::stringToVector(allD.first,"_rb*_","_/rb*_"),chStSm;
-
           long sz1=chSt.size();
           std::string ul="<ul>";
           for(long j=0;j<sz1;++j){
@@ -1741,20 +1757,35 @@ namespace APTI{
           if(ul==""){
             fR+="</ul>";
           }
+          fR+="\\end{box}\n";
         }
-        std::string officialSolutionText="";
+        std::string officialSolutionText,officialAnswText; int officialAnswExists;
         pos=0; allD=SF::extract(probData,pos,"_sl*|_","_/sl*|_");
         if(allD.second==1){
-          fR+="<H2>"+MWII::GL_WI.getDefaultWebText("Solution")+"</H2> <P></P>"+allD.first;
           officialSolutionText=allD.first;
         }
         pos=0;allD=SF::extract(probData,pos,"_aw*|_","_/aw*|_");
-        if(allD.second==1){
-          fR+="<H2>"+MWII::GL_WI.getDefaultWebText("Answer")+"</H2> <P></P>"+allD.first;
-
-          fR+="<H2>"+MWII::GL_WI.getDefaultWebText("Latex source")+"</H2><P></P> <textarea name=\"probText\" rows=\"15\"";
+        officialAnswExists=allD.second;
+        if(officialAnswExists){
+          officialAnswText=SF::answerToStandardForm(allD.first);
+        }
+        if( (officialSolutionText!="")|| (officialAnswText!=GF::GL_officialNA)){
+          fR+="\\begin{box}<H2>";
+          if((officialAnswText!="")&&(officialAnswText!=GF::GL_officialNA)){
+            fR+=MWII::GL_WI.getDefaultWebText("Answer")+": "+officialAnswText;
+          }
+          else{
+            fR+=MWII::GL_WI.getDefaultWebText("Solution");
+          }
+          fR+="</H2>";
+          fR+=officialSolutionText;
+          fR+="\\end{box}\n";
+        }
+        if(officialAnswExists){
+          fR+="\\begin{box}\n<H2>"+MWII::GL_WI.getDefaultWebText("Latex source")+"</H2><P></P> <textarea name=\"probText\" rows=\"15\"";
           fR+=" cols=\"100\">";
           fR+=PTKF::GL_PLAINTEXT_KEEPER.depositTxt(probData)+"</textarea>\n";
+          fR+="\\end{box}\n";
         }
         pos=0;allD=SF::extract(probData,pos,"_agr*|_","_/agr*|_");
         if(allD.second==1){
