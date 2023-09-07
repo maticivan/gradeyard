@@ -40,6 +40,7 @@ namespace GF{
   std::string GL_sepE="_/*!.";
   std::string GL_errorDidNotCompile="Error:DidNotCompile";
   std::string GL_errorOutputTooBig="Error:OutputTooBig";
+  std::string GL_officialNA="N/A";
   long GL_MAIN_SECRET_NUMBER=17;//This will be set to the secret code in mainFunction.cpp
   std::string GL_Alphabet;//This will be set to "english" in WSI_wiSetup.cpp
   std::map<std::string,std::map<std::string,double> > initializeLetterGradesConversionMap(){
@@ -92,7 +93,7 @@ namespace GF{
     strings.insert("rmits*");
     strings.insert("ables*");
     strings.insert("opicCode_");
-    strings.insert("_/n*_"); 
+    strings.insert("_/n*_");
     veryBadStringsToBeErased["<?"]="";
     veryBadStringsToBeErased["<php"]="";
     veryBadStringsToBeErased["ata!!_"]="";
