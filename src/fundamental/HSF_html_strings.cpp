@@ -163,8 +163,8 @@ namespace HSF{
   std::string  tableFromStack(std::stack<std::vector<std::string> > &st, const std::string & tOpenTag, const std::string & thOpenTag){
     return tableOrCSVFromStack(st,"table",tOpenTag,thOpenTag);
   }
-  std::string linkFromPair(const std::pair<std::string,std::string> & lp){
-    return "<A href=\""+lp.first+"\">"+lp.second+"</A>";
+  std::string linkFromPair(const std::pair<std::string,std::string> & lp, const std::string& linkAddition=""){
+    return "<A "+linkAddition+"href=\""+lp.first+"\">"+lp.second+"</A>";
   }
   std::string createButtonLink(const std::string &uRL, const std::string &label, const std::string & bSize="btn-sm", const std::string & bOutline = "dark"){
       if(bSize=="standardSize"){
