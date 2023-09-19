@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -19,11 +19,9 @@
 #ifndef _INCL_WI_StatText_CPP
 #define _INCL_WI_StatText_CPP
 namespace STI{
-
   int StatText::isInitialized() const{
     return ind_initSuccess;
   }
-
   StatText::StatText(const std::string & _nameInDB, const std::string & _sysR, const std::string & _u){
     initialize(_nameInDB,_sysR,_u);
   }
@@ -45,29 +43,19 @@ namespace STI{
     sysDataRequested="no111";
     myUserName=_uName;
     sysDataRequested=_sysReq;
-
-
-
     if(s==1){
       initText=meSM.getTextData();
-
-
       long pos=0;
       std::pair<std::string,int> allSD=SF::extract(initText,pos,s_sysDataB,s_sysDataE);
       pos=0;
       std::pair<std::string,int> allTD=SF::extract(initText,pos,s_tDataB,s_tDataE);
-
       if(allSD.second==1){
-
         sysDataRaw=allSD.first;
         std::string pText=s_notFound;
-
         HSF::parametersFromString(allSD.first,tCreated,createdBy,tModified,modifiedBy,pText,documentType);
-
         if(pText!=s_notFound){
           std::vector<std::string> rawPermisssionsRead= SF::stringToVector(pText,s_individualPermissionB, s_individualPermissionE,"_name_read_/name_");
           std::vector<std::string> rawPermisssionsWrite= SF::stringToVector(pText,s_individualPermissionB, s_individualPermissionE,"_name_write_/name_");
-
           std::vector<std::string> pReadV=PBD::getPermitsFromRaw_N(rawPermisssionsRead);
           std::vector<std::string> pWriteV=PBD::getPermitsFromRaw_N(rawPermisssionsWrite);
           long sz=pReadV.size();
@@ -79,14 +67,9 @@ namespace STI{
             permitWrite.insert(pWriteV[i]);
           }
         }
-
       }
-
-
-
       tName=meSM.getTextName();
       tExternalId=meSM.getExternalCodeFromInternalNumber();
-
       if(allTD.second==1){
         rawText=allTD.first;
       }
@@ -129,7 +112,6 @@ namespace STI{
         counterF=SPREPF::STAT_CONSTS.maxNumFiles;
       }
     }
-
     return fR;
   }
   std::string updateStatCountersAndGetDataFName(const std::string & cFName, long newCF,long newCI, long update){
@@ -139,7 +121,6 @@ namespace STI{
       return dataFileName;
     }
     ++newCI;
-
     if(newCI>SPREPF::STAT_CONSTS.maxItemsInFile){
       newCI=1;
       ++newCF;
@@ -152,7 +133,6 @@ namespace STI{
   }
   std::string getStatDataFileName(const long & updateCounters=0){
     std::string cFName =countersFName();
-
     long newCF,newCI;
     std::pair<long,long> cfi=getTwoCounters(cFName);
     newCF=cfi.first;newCI=cfi.second;
@@ -160,7 +140,6 @@ namespace STI{
       return updateStatCountersAndGetDataFName(cFName,newCF,newCI,1);
     }
     return updateStatCountersAndGetDataFName(cFName,newCF,newCI,0);
-
   }
   std::string addRawDataToStat(const SPREPF::StatData &st){
     std::string dataFileName=getStatDataFileName(1);
@@ -170,16 +149,13 @@ namespace STI{
     }
     st_Data+="_nD*_"+st.putIntoString()+"_/nD*_\n";
     IOF::toFile(dataFileName,st_Data);
-
     return "success";
   }
-
   std::string addDataToStat(const SPREPF::StatData &st){
     std::string fR=addRawDataToStat(st);
     return fR;
   }
   std::vector<SPREPF::StatData> getStatData(const long & numF){
-
     std::vector<std::string> statFNames=statFileNames(numF);
     std::stack<SPREPF::StatData> fSt; SPREPF::StatData temp;
     std::vector<std::string> singleFileRawData;
@@ -193,7 +169,6 @@ namespace STI{
         temp.setFromString(singleFileRawData[j]);
         fSt.push(temp);
       }
-
     }
     SF::flipTheStack(fSt);
     return SF::stackToVector(fSt);
@@ -203,14 +178,12 @@ namespace STI{
     long sz=_input.size();
     long DEB_succ=0, DEB_fail=0;
     for(long i=0;i<sz;++i){
-      if(_input[i].ipAddr==st_D.ipAddr){ 
-
+      if(_input[i].ipAddr==st_D.ipAddr){
         if(_input[i].att_page==_pg){
           fRS.push(_input[i]);
         }
       }
     }
-
     SF::flipTheStack(fRS);
     return fRS;
   }
@@ -222,7 +195,6 @@ namespace STI{
     }
     return fR;
   }
-
   long secondsSinceLastVisit(const SPREPF::StatData & ist_D, const std::string & pageName){
     std::vector<SPREPF::StatData> v_D=getStatData(SPREPF::STAT_CONSTS.numFilesToLookForSpammerBehavior);
     std::stack<SPREPF::StatData> st_DR=statDataForSingleIPAndPage(v_D,ist_D,pageName);
@@ -235,19 +207,16 @@ namespace STI{
     }
     return secBetween;
   }
-
   std::string checkIfSpammerIsTryingToGuessPasswords(const SPREPF::StatData & ist_D){
     std::vector<SPREPF::StatData> v_D=getStatData(SPREPF::STAT_CONSTS.numFilesToLookForSpammerBehavior);
     std::stack<SPREPF::StatData> st_DR=statDataForSingleIPAndPage(v_D,ist_D,"!*LOGIN*ATTEMPT*!");
     std::vector<long> timeVect;
     long secBetween;
-
     if(st_DR.size()>SPREPF::STAT_CONSTS.numLoginAttemptsToStartCollectingData){
       SPREPF::StatData dataCollector=ist_D;
       if(dataCollector.pass1!=""){
         dataCollector.att_rr="psswdAtt";
       }
-
       addRawDataToStat(dataCollector);
     }
     long cutoff=SPREPF::STAT_CONSTS.numLoginAttemptsToGetSuspcious;
@@ -270,9 +239,6 @@ namespace STI{
     }
     return "ok";
   }
-
-
-
   std::string hidePageFromThoseWhoAreTryingToGuessPasswords(const std::string & _input,const SPREPF::StatData & ist_D){
     if((_input!="login")&&(_input!="registration")){
       return _input;
@@ -281,25 +247,19 @@ namespace STI{
       return _input;
     }
     std::vector<SPREPF::StatData> v_D=getStatData(SPREPF::STAT_CONSTS.numFilesToLookForSpammerBehavior);
-
     std::stack<SPREPF::StatData> st_DR=statDataForSingleIPAndPage(v_D,ist_D,_input);
     std::vector<long> timeVect;
     long secBetween;
-
-
     if(st_DR.size()>SPREPF::STAT_CONSTS.numLoginAttemptsToGetSuspcious){
       SPREPF::StatData last=st_DR.top();
       st_DR.pop();
       SPREPF::StatData prev=st_DR.top();
       st_DR.push(last);
       secBetween=TMF::getSecondsSinceYYYY(TMF::stGMT_to_timeVectorTMF(last.timeString))-TMF::getSecondsSinceYYYY(TMF::stGMT_to_timeVectorTMF(prev.timeString));
-
       if(secBetween<SPREPF::STAT_CONSTS.cutoff_in_seconds_ForStalling){
-
         return "tooManyAttemptsInShortTime";
       }
     }
-
     return _input;
   }
   std::string updateRawSt(const std::string & rawSt,const std::string &cat, const std::string &name, const long &max){
@@ -334,10 +294,7 @@ namespace STI{
     rawT=updateRawSt(rawT,cMonth,yyyymm,GF::GLOBAL_MAX_MONTHS_ST);
     rawT=updateRawSt(rawT,cYear,yyyy,GF::GLOBAL_MAX_YEARS_ST);
     rawT=updateRawSt(rawT,cAll,"all",GF::GLOBAL_MAX_YEARS_ST);
-
-    statTb.insert(name,rawT);
-
-
+    statTb.insertMTF(name,rawT);
   }
   void updateFastUpdatingStatDB(const std::string & pageName){
     FUTF::FastUpdatingTable& fustatTb = DD::GL_MAIN_DB.fu_dbsM["fStat"];
@@ -347,7 +304,6 @@ namespace STI{
     }
     fustatTb.incrementSafe(pageName);
   }
-
   void delFromFastUpdatingStatDB(const std::string & pageName){
     FUTF::FastUpdatingTable& fustatTb = DD::GL_MAIN_DB.fu_dbsM["fStat"];
     fustatTb.deleteSafe(pageName);
@@ -411,7 +367,6 @@ namespace STI{
   std::string mapsIntoTable(const std::map<std::string, long> & m1, const std::map<std::string,long> &m2){
     return threeMapsIntoTable(m1,m2,addMaps(m1,m2));
   }
-
   std::map<std::string,long> catToMap(const std::string & rawSt,const std::string &cat,const long &max){
     std::map<std::string,long> res;
     SPREPF::StatPeriod sp(cat,max);
@@ -464,11 +419,9 @@ namespace STI{
       sA+="</div><div class=\"col-sm\">";
       sA+="Total: "+std::to_string(vML+vVL);
       sA+="</div></div></div>";
-
     }
     return sA;
   }
-
 }
 
 #endif
