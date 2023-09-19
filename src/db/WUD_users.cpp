@@ -154,9 +154,7 @@ namespace WUD{
     int existsPath(const std::string & , const std::string & = "meHigh", const std::string & = "uName", const long & = 0) const;
     // if the last argument is 1 - the algorithm will be faster
     // it won't check database very often
-    int deleteUser(const long & = 1);
-    // argument: 0 - put only into queue
-    //           1 - put in database
+    int deleteUser();
     long checkExistenceInDatabase() const;
     // checks whether (username,externalId,internalId) is a good combination
     // returns:
@@ -329,7 +327,7 @@ namespace WUD{
     (DD::GL_MAIN_DB.dbsM[dbsMEIUInd]).delRow(kV);
     externalId=extId;
     kV[0]=externalId;kV[1]=internalId;
-    (DD::GL_MAIN_DB.dbsM[dbsMEIUInd]).insert(kV,currentIdAndCache.second);
+    (DD::GL_MAIN_DB.dbsM[dbsMEIUInd]).insertMTF(kV,currentIdAndCache.second);
     return 1;
   }
   void User::setOtherData(const std::string &_o){
@@ -354,14 +352,14 @@ namespace WUD{
       DD::GL_MAIN_DB.dbsM[dbsMEIUInd].insertQ(kV,hC);
     }
     else{
-      DD::GL_MAIN_DB.dbsM[dbsMEIUInd].insert(kV,hC);
+      DD::GL_MAIN_DB.dbsM[dbsMEIUInd].insertMTF(kV,hC);
     }
     kV[1]=username;kV[0]=internalId;
     if(_qOrDB==0){
       DD::GL_MAIN_DB.dbsM[dbsMUInd].insertQ(kV,otherData);
     }
     else{
-      DD::GL_MAIN_DB.dbsM[dbsMUInd].insert(kV,otherData);
+      DD::GL_MAIN_DB.dbsM[dbsMUInd].insertMTF(kV,otherData);
     }
     existenceEstablishedBefore=1;
     return 1;
@@ -415,7 +413,7 @@ namespace WUD{
     fR.second=comp2;
     return fR;
   }
-  int User::deleteUser(const long & _qOrDB){
+  int User::deleteUser(){
     if(checkExistenceInDatabase()!=1){
       return 0;
     }
@@ -424,19 +422,9 @@ namespace WUD{
     std::vector<std::string> kV;
     kV.resize(2);
     kV[0]=externalId;kV[1]=internalId;
-    if(_qOrDB==0){
-      (DD::GL_MAIN_DB.dbsM[dbsMEIUInd]).delRowQ(kV);
-    }
-    else{
-      (DD::GL_MAIN_DB.dbsM[dbsMEIUInd]).delRow(kV);
-    }
+    (DD::GL_MAIN_DB.dbsM[dbsMEIUInd]).delRow(kV);
     kV[0]=internalId;kV[1]=username;
-    if(_qOrDB==0){
-      (DD::GL_MAIN_DB.dbsM[dbsMUInd]).delRowQ(kV);
-    }
-    else{
-      (DD::GL_MAIN_DB.dbsM[dbsMUInd]).delRow(kV);
-    }
+    (DD::GL_MAIN_DB.dbsM[dbsMUInd]).delRow(kV);
     existenceEstablishedBefore=0;
     return 1;
   }
@@ -555,7 +543,7 @@ namespace WUD{
         kV[0]=internalId;
         kV[1]=_s;
     }
-    (DD::GL_MAIN_DB.dbsM[dbsMHInd]).insert(kV,datIns);
+    (DD::GL_MAIN_DB.dbsM[dbsMHInd]).insertMTF(kV,datIns);
     return 1;
   }
   int User::removeFromHierarchy(const std::string & _s, const std::string & position){
