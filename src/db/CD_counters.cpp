@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -19,8 +19,6 @@
 #ifndef _INCL_COUNTERS_CPP
 #define _INCL_COUNTERS_CPP
 
-
-
 namespace CD{
   class Counter{
   private:
@@ -28,7 +26,6 @@ namespace CD{
     std::string dbsMCInd="counters";
     std::vector<long> states;
     long numStates;
-
     long shift=76442;
     long maxState=500000000000;
     long primeIndex0=0;
@@ -51,31 +48,20 @@ namespace CD{
     std::vector<long> getStates() const;
     std::string getCodeWord(const std::vector<long> &, const long & =0 ) const;
     std::string getCodeWord(const long & =0) const;
-
     std::vector<long> plainSeqFromString(const std::string &, const long & =0)const;
-
-
-
     long getNumStates() const;
     void putInDB();
     void increase();
-
   };
-
   std::string Counter::getCodeWord(const std::vector<long> & v, const long & indSimple) const{
     return BF::getCodeWord(v, indCombs, permuts01, f0, f1, shift,  indSimple);
-
   }
-
   std::string Counter::getCodeWord(const long &indSimple) const{
     return getCodeWord(states,indSimple);
   }
-
   std::vector<long> Counter::plainSeqFromString(const std::string & input, const long & indSimple) const{
     return BF::plainSeqFromString(input, indCombs, permuts01, f0, f1, shift, indSimple);
-
   }
-
   Counter::Counter(const std::string & _n, const long & _pI0, const long & _pI1, const long & _permutInd, const long & _sh){
     setVariables(_n, _pI0, _pI1, _permutInd,_sh);
   }
@@ -97,7 +83,6 @@ namespace CD{
     lenEach=permuts01[0].size();
     return ind;
   }
-
   void Counter::setVariables(const std::string & _n, const long & _pI0, const long & _pI1, const long & _permutInd, const long & _sh){
     primeIndex0= setPrimesCorrectly(f0,_pI0, BF::GLOBAL_NUM_PRIME_SEQUENCES);
     primeIndex1= setPrimesCorrectly(f1,_pI1, BF::GLOBAL_NUM_PRIME_SEQUENCES);
@@ -110,16 +95,13 @@ namespace CD{
     std::vector<std::string> k,v,vp;
     k.resize(1);vp.resize(1);
     k[0]="counterName";
-
     vp[0]=name;
     std::vector< std::pair<std::vector<std::string>, std::string> > searchRes;
     searchRes=DD::GL_MAIN_DB.dbsM[dbsMCInd].search(vp,k);
-
-
     long sz=searchRes.size();
     std::string textStates="_numStates*_1_/numStates*_ _n*0_0_/n*0_";
     if(sz==0){
-      DD::GL_MAIN_DB.dbsM[dbsMCInd].insert(vp,textStates);
+      DD::GL_MAIN_DB.dbsM[dbsMCInd].insertMTF(vp,textStates);
     }
     else{
       textStates=searchRes[0].second;
@@ -136,8 +118,6 @@ namespace CD{
       pos=0;
       states[i]=BF::stringToInteger((SF::extract(textStates,pos,sB,sE)).first);
     }
-
-
   }
   long Counter::getNumStates() const{
     return numStates;
@@ -169,9 +149,8 @@ namespace CD{
     }
     std::vector<std::string> vp;
     vp.resize(1);vp[0]=name;
-    DD::GL_MAIN_DB.dbsM[dbsMCInd].insert(vp,textToPut);
+    DD::GL_MAIN_DB.dbsM[dbsMCInd].insertMTF(vp,textToPut);
   }
-
   void Counter::increase() {
     long i=0;
     long finished=0;
@@ -198,7 +177,4 @@ namespace CD{
      putInDB();
   }
 }
-
-
-
 #endif
