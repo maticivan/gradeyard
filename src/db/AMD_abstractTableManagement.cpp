@@ -62,9 +62,7 @@ namespace AMD{
     //                       Can be updated
     int setFromInternalId(const std::string &);
     int setFromExternalCode(const std::string &);
-    int deleteRecord(const long & = 1);
-    // argument: 0 - put only into queue
-    //           1 - delete from database
+    int deleteRecord();
     int putInDB(const long & = 1);
     // argument: 0 - put only into queue
     //           1 - put in database
@@ -172,19 +170,14 @@ namespace AMD{
     *nonConstPointerAEEB=1;
     return 1;
   }
-  int AbstractManager::deleteRecord(const long & _qOrDB){
+  int AbstractManager::deleteRecord(){
     if(checkExistenceInDatabase()!=1){
       return 0;
     }
     std::vector<std::string> kV;
     kV.resize(2);
     kV[0]=getInternalIdFromInternalNumber();kV[1]=getKey1();
-    if(_qOrDB==0){
-      (DD::GL_MAIN_DB.dbsM[dbsMFInd]).delRowQ(kV);
-    }
-    else{
-      (DD::GL_MAIN_DB.dbsM[dbsMFInd]).delRow(kV);
-    }
+    (DD::GL_MAIN_DB.dbsM[dbsMFInd]).delRow(kV); 
     existenceEstablishedBefore=0;
     return 1;
   }
@@ -202,7 +195,7 @@ namespace AMD{
       DD::GL_MAIN_DB.dbsM[dbsMFInd].insertQ(kV,textData);
     }
     else{
-      DD::GL_MAIN_DB.dbsM[dbsMFInd].insert(kV,textData);
+      DD::GL_MAIN_DB.dbsM[dbsMFInd].insertMTF(kV,textData);
     }
     existenceEstablishedBefore=1;
     return 1;
