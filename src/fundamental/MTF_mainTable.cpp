@@ -122,7 +122,7 @@ namespace MTF{
       int initTableFromStr(const std::string &);
       int insertQ(const::std::vector<std::string> &, const std::string &);
       //This will only insert in queue - requires executeFromQueue() afterwards
-      int insert(const::std::vector<std::string> &, const std::string &, const long & = 1000);
+      int insertMTF(const::std::vector<std::string> &, const std::string &, const long & = 1000);
       // This will force insert in the database. Before and after the insert it will clear
       // the execution Queue - it will make multiple attempts (the last argument is the number of attempts)
       int executeFromQueue();
@@ -153,7 +153,7 @@ namespace MTF{
       int delRowQ(const std::vector<std::string> &);
       //This will only submit delRow request to queue - requires executeFromQueue() afterwards
       int delRow(const std::vector<std::string> &, const long & = 1000);
-      // This will force insert in the database. Before and after the insert it will clear
+      // This will force delete from the database. Before and after the delete it will clear
       // the execution Queue - it will make multiple attempts (the last argument is the number of attempts)
       long size() const;
       std::string statusReportForDebugging() const;
@@ -766,7 +766,7 @@ namespace MTF{
     IOF::toFile(fileName,entireSt);
     return 1;
   }
-  int Table::insert(const std::vector<std::string> & keyV, const std::string & data, const long & numAttempts){
+  int Table::insertMTF(const std::vector<std::string> & keyV, const std::string & data, const long & numAttempts){
     if(keyV.size()!=keyNames.size()){
       return 0;
     }
