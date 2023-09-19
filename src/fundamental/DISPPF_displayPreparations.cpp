@@ -272,7 +272,12 @@ namespace DISPPF{
     indicatorSafety=PTKF::removeToSafety(mth5,t,"\\begin{equation}","\\end{equation}");
     if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
       return unsafe+"8";
-    } 
+    }
+    mth5.treatMath();
+    mth4.treatMath();
+    mth3.treatMath();
+    mth2.treatMath();
+    mth1.treatMath();
     if(rs.htmlTolerance<2){
       if(rs.htmlTolerance==1){
         t=MFRF::findAndReplace(t,GL_HTML_Tags.formattingTags,GL_HTML_Tags.alakazams);
