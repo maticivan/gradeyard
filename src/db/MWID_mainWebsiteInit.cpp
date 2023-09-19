@@ -244,7 +244,7 @@ namespace MWID{
             for(long j=0;j<szIn-2;++j){
               kV[j]=allCommands[i][j+1];
             }
-            dbsM[_internalTableNickName].insert(kV,allCommands[i][szIn-1]);
+            dbsM[_internalTableNickName].insertMTF(kV,allCommands[i][szIn-1]);
           }
         }
       }
