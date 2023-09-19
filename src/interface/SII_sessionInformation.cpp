@@ -91,10 +91,7 @@ namespace SII{
     if(psd.createStandardCourseSuccess=="yes"){
       changeMainText(psd.createStandardCourseMainDocName);
       psd.pageRequested=psd.createStandardCourseMainDocName;
-    }
-    //header.updateLogInBar(psd.my_un);
-    //header.updateSecondMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
-    //header.updateThirdMenuBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
+    } 
     header.updateLogInAndMenuBars(psd, psd.pageRequested,respRecRequested);
     footer.updateFooterBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
     std::string savedPER=psd.pEditReq;
@@ -3204,7 +3201,7 @@ namespace SII{
       std::pair<std::vector<std::string>, std::string> firstEl=backupT[0];
       backupT.delRow(firstEl.first);
     }
-    backupT.insert(name,finalResult);
+    backupT.insertMTF(name,finalResult);
     return "done";
   }
 }
