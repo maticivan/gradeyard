@@ -1379,15 +1379,73 @@ namespace APTI{
     res+="</p>";
     return res;
   }
-  std::string AbstractText::createSolvingInvitation(const PSDI::SessionData & _psd, const std::string & respRecN,const std::string & label,   const std::string &inv) const{
+  int correctType(const char& ch, const int& digitRemoval){
+    int isDigit=0;
+    if((ch>='0')&&(ch<='9')){
+      isDigit=1;
+    }
+    return (digitRemoval+isDigit+1)%2;
+  }
+  std::string removeStartingDigitsOrStartingNonDigits(const std::string& in){
+    long len=in.length();
+    if(len<1){return "";}
+    int digitRemoval=0;
+    if((in[0]>='0')&&(in[0]<='9')){
+      digitRemoval=1;
+    }
+    std::string out;
+    long i=0;
+    while((i<len)&&(correctType(in[i],digitRemoval))) {
+      ++i;
+    }
+    while(i<len){
+      out+=in[i];
+      ++i;
+    }
+    return out;
+  }
+  std::string AbstractText::checkIfTheUserIsTA(const PSDI::SessionData & _psd, const std::string& rName) const{
+    if(_psd.isRoot=="yes"){
+      return "yes";
+    }
+    if(_psd.my_un=="visitor"){
+      return "no";
+    }
+    std::string permitToCheck;
+    std::string nameReversed=SF::reverseString(rName);
+    std::string result="no";
+    while((result=="no")&&(nameReversed!="")){
+      permitToCheck=SF::reverseString(nameReversed);
+      if((_psd.my_un!=permitToCheck)&&(_psd.myWU.existsPath(permitToCheck)) ){
+        // IMPORTANT The check _psd.my_un!=permitToCheck is necessary to prvent
+        // possible unauthorized access to grades. A mischevious user could create
+        // an account with the name "f2023mth" and then be able to access the grades
+        result="yes";
+      }
+      nameReversed=removeStartingDigitsOrStartingNonDigits(nameReversed);
+    }
+    return result;
+  }
+  std::string AbstractText::createSolvingInvitation(const PSDI::SessionData & _psd, const std::string & respRecN,const std::string & label,   const std::string &_inv) const{
     RTI::Response respT(respRecN,"no",_psd.my_un);
-    if(respT.isInitialized()==0){ return ""; }
+    if(respT.isInitialized()==0){return ""; }
     CEI::RawGrades rgrades;
     rgrades.certificateAddition=0;
     std::map<std::string,std::pair<std::vector<std::string>,std::string> >::const_iterator itRGM,itRGME;
     CEI::CouasAttributes cIrrelevant;
     std::string csvInd="no";
-    if((_psd.isRoot=="yes")&&(inv=="summary")) {
+    std::string isTA=_psd.isRoot;
+    std::string inv=_inv;
+    if(inv=="summaryTA"){
+      // The call to the method checkIfTheUserIsTA is somewhat expensive. In particular,
+      // the calls that return "no" are the most expensive. Thus, we make the calls only
+      // if the web document has an explicit request for "summaryTA"
+      // If the request is for "summary", then we won't enter this block.
+      // The check was already performed. We only verified whether the
+      // user was a root. Both answers "yes" and "no" were equally cheap to derive.
+      isTA=checkIfTheUserIsTA(_psd,respRecN);inv="summary";
+    }
+    if((isTA=="yes")&&(inv=="summary")) {
       rgrades=CEI::rawGradesAndStatusFromRespReceiver(cIrrelevant, _psd,respRecN, 0, 1);
       itRGME=rgrades.grStatusMap.end();
       std::map<std::string,std::string>::const_iterator itCSVRM,itCSVRME;
@@ -1421,7 +1479,7 @@ namespace APTI{
     topL[lsz-termsAfterExpansion]=MWII::GL_WI.getDefaultWebText("G S");
     topL[lsz-termsAfterExpansion+1]=MWII::GL_WI.getDefaultWebText("Gr");
     std::string forwardingVV="";
-    if(_psd.isRoot=="yes"){
+    if(isTA=="yes"){
       forwardingVV+=SF::forwardValVarPairs(_psd.respMap,LI::GL_LN.st_envVName_Variable,LI::GL_LN.st_envVName_Value,10);
     }
     while ((i<sz)&&(stillWorking=1)){
@@ -1430,7 +1488,7 @@ namespace APTI{
       linkDispTest="<a href=\""+urlTest+forwardingVV+"\">"+label+"</a>";
       linkDispGr1="<a href=\""+urlGrader+forwardingVV+"\">"+MWII::GL_WI.getDefaultWebText("grading")+"</a>";
       linkDispGr2="<a href=\""+urlGrader+forwardingVV+"\">"+label+"</a>";
-      if((_psd.isRoot=="yes")&&(inv=="summary")){
+      if((isTA=="yes")&&(inv=="summary")){
         midL[0]=locV[i].studentName;midL[1]=linkDispTest;
         midL[expansionPosition]=linkDispGr1;midL[expansionPosition+1]="";midL[lsz-termsAfterExpansion]="";
         midL[lsz-termsAfterExpansion+1]=locV[i].graderUName;
@@ -1491,7 +1549,7 @@ namespace APTI{
       }
       ++i;
     }
-    if(_psd.isRoot=="yes") {
+    if(isTA=="yes") {
       SF::flipTheStack(allLines);
       if(csvInd=="yes"){
         SF::flipTheStack(allLinesCSV);
@@ -1956,20 +2014,6 @@ namespace APTI{
     return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),s_insertB,s_insertE);
   }
   std::string AbstractText::createPowerCertEdit(const PSDI::SessionData & _psd, const std::string & _cC){
-    /*CEI::CouasElement cEl(_psd);
-    if(ICEI::initFromCode(_psd,cEl,_cC)=="failed"){
-      return "";
-    }
-    CCFI::ArgsPowerModifyForm apmf;
-    apmf.textToModify=CCFI::hideEncryptedTextInCouas(cEl.getRawText());
-    apmf.linkForm="index.cgi?comEx=yes&";
-    apmf.linkForm+=MWII::GL_WI.get_e_parPage();
-    apmf.linkForm+="="+tName+"&s1=u11&r1=";
-    apmf.linkForm+=_cC;
-    apmf.modifyMe="modifyCourseAssignment";
-    apmf.dbName=_cC;
-    apmf.textNameLabel=MWII::GL_WI.getDefaultWebText("Course/assignment code:");
-    return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),s_insertB,s_insertE);*/
     CERD::Certificate myCert;
     int succ=myCert.setFromTextName(_cC);
     if(succ==0){return "";}
