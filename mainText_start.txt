@@ -12812,3 +12812,58 @@ _/textData!!_
 
 _/n*!!***!_
 _/nextCommand!*!!_
+
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000127_/n*!!***!_
+_n*!!***!_GrTAMain_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+
+
+ <h2>_vr_aType_/vr_ _vr_aNum_/vr_  Grading</h2>
+
+
+ 
+
+
+  _insert_
+ _n*_invitationToSolve_/n*_
+ _n*__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/n*_
+ _n*__vr_aType_/vr_  _vr_aNum_/vr__/n*_
+ _n*_summaryTA_/n*_
+ _/insert_
+
+
+
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
