@@ -108,6 +108,7 @@ namespace APTI{
     std::string createUserPermitInfo(const PSDI::SessionData &,const std::string &);
     std::string createRespRecStatusDisplay(const PSDI::SessionData & , const std::string & ) const;
     std::string createMessageDisplay(const PSDI::SessionData &,const std::string &);
+    std::string checkIfTheUserIsTA(const PSDI::SessionData &, const std::string & ) const;
     std::string createSolvingInvitation(const PSDI::SessionData &,const std::string &,const std::string &,const std::string & ) const;
     std::string createCouasDisplay(const PSDI::SessionData &,const std::string &);
     std::string createCertDisplay(const PSDI::SessionData &,const std::string &);
