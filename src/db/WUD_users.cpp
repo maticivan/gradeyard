@@ -707,7 +707,6 @@ namespace WUD{
       }
     }
     return found;
-
   }
   int User::encryptOneParameter(const std::map<std::string,std::string> & mPlain, std::map<std::string,std::string> & mEnc,
                           const std::string & nmPlain, const std::string & nmEnc, const std::string & password){
