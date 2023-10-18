@@ -91,7 +91,7 @@ namespace SII{
     if(psd.createStandardCourseSuccess=="yes"){
       changeMainText(psd.createStandardCourseMainDocName);
       psd.pageRequested=psd.createStandardCourseMainDocName;
-    } 
+    }
     header.updateLogInAndMenuBars(psd, psd.pageRequested,respRecRequested);
     footer.updateFooterBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
     std::string savedPER=psd.pEditReq;
@@ -596,6 +596,7 @@ namespace SII{
       if((loginActionIndicator==-1)&&(loginStatusIndicator==1)){
         (psd.myWU).logOut();
         std::cout<<cookieText(MWII::GL_WI.getCookieName(),"deleted")<<"\n";
+        IOF::deleteOldFiles(DD::GL_DBS.getChallengeAnswStorage(),(psd.myWU).getUsername(),0);
         loginStatusIndicator=0;
       }
       if((loginActionIndicator==1)&&(loginStatusIndicator==0)){
@@ -613,6 +614,8 @@ namespace SII{
             if(succ==1){
               loginStatusIndicator=1;
               std::string newCookie=(psd.myWU).logIn();
+              IOF::deleteOldFiles(DD::GL_DBS.getChallengeAnswStorage(),(psd.myWU).getUsername(),0);
+              IOF::deleteOldFiles(DD::GL_DBS.getChallengeAnswStorage(),"txt",10800,1);
               std::cout<<cookieText(MWII::GL_WI.getCookieName(),newCookie);
               loginFailedIndicator=0;
             }
@@ -815,8 +818,7 @@ namespace SII{
             if(tmpRT.isInitialized()==1){
               RTI::ResponderInfo res=tmpRT.infoFromResponseText(psd,"df");
               if(res.documentType=="gradeOfResponse"){
-                updateRespMapToProperlyAccountForBothGraderCommentsAndPoints();
-                GF::GL_DEB_MESSAGES.addMessage(rulesDebugPrinting(psd.addModifyRulesCommands));
+                updateRespMapToProperlyAccountForBothGraderCommentsAndPoints(res);
               }
               if(res.exitStatus=="badForm"){
                 res.acceptResp=0;
@@ -3089,14 +3091,83 @@ namespace SII{
     }
     return out;
   }
-  void SessionInformation::updateRespMapToProperlyAccountForBothGraderCommentsAndPoints(){
+  std::map<std::string,std::string> separateQuestionsAndComments(const std::map<std::string,std::string> & in){
+    std::map<std::string,std::string> res;
+    std::map<std::string,std::string>::const_iterator it,itE;
+    it=in.begin(); itE=in.end();
+    std::pair<std::string,int> allD; long pos;
+    std::string score; std::string comment;
+    while(it!=itE){
+      pos=0; allD=SF::extract(it->second,pos,"_score_","_/score_");
+      if(allD.second){
+        score=allD.first;
+        pos=0;allD=SF::extract(it->second,pos,"_comment_","_/comment_");
+        if(allD.second){
+          comment=allD.first;
+          res[it->first]=comment;
+          res["P"+it->first]=score;
+        }
+        else{
+          res[it->first]=it->second;
+        }
+      }
+      else{
+        res[it->first]=it->second;
+      }
+      ++it;
+    }
+    return res;
+  }
+  void correctRespMapForDataRace(std::map<std::string,std::string>& resp, const std::map<std::string,std::string>& snapshotBeforeEdit, const std::map<std::string,std::string>& mostCurrentVersion){
+    std::map<std::string,std::string>::iterator it,itE;
+    std::map<std::string,std::string>::const_iterator itS, itSE, itC, itCE;
+    it=resp.begin(); itE=resp.end();
+    itSE=snapshotBeforeEdit.end();
+    itCE=mostCurrentVersion.end();
+    while(it!=itE){
+      if( ((it->first)[0]=='Q')
+                     ||
+          (
+            ((it->first).length()>1)
+              &&
+            ((it->first)[0]=='P')
+              &&
+            ((it->first)[1]=='Q')
+          )
+        ){
+        itS=snapshotBeforeEdit.find(it->first);
+        if(itS!=itSE){
+          if( it->second == itS->second ){
+            itC=mostCurrentVersion.find(it->first);
+            if(itC!=itCE){
+              it->second=itC->second;
+            }
+          }
+        }
+        itC=mostCurrentVersion.find(it->first);
+      }
+      ++it;
+    }
+  }
+  void SessionInformation::updateRespMapToProperlyAccountForBothGraderCommentsAndPoints(const RTI::ResponderInfo& res){
+    std::map<std::string,std::string>
+      oldMap=SF::stringToMap( IOF::fileToString(
+                                DD::GL_DBS.getChallengeAnswStorage()+"/"+"gr_"+res.docName+"."+psd.my_un,
+                                1
+                              ),
+                              "_ky*_",
+                              "_/ky*_",
+                              "_vl*_",
+                              "_/vl*_"
+                            );
+    correctRespMapForDataRace(psd.respMap,separateQuestionsAndComments(oldMap),separateQuestionsAndComments(res.gradersComments));
     std::map<std::string,std::string> tempRespToKeepPointsOnly;
     std::map<std::string,std::string>::iterator it,it2,itE,it2E;
     it=(psd.respMap).begin();
     itE=(psd.respMap).end();
     std::string qAnswerKey;
     long sz;
-    while(it!=itE){
+    while(it!=itE){ 
       it2E=tempRespToKeepPointsOnly.end();
       if((it->first)[0]=='Q'){
         //we found a comment to question
