@@ -298,29 +298,27 @@ namespace IOF{
     }
     return fR;
   }
-
   std::vector<std::string> selectFilesWithExtension(const std::vector<std::string>& vFiles,
-                                                    const std::string & _extension){
+                                                    const std::string & _extension,
+                                                    const int & complement = 0){
     std::vector<std::string> fR;
     long num=0;
     long sz=vFiles.size();
     for(long i=0;i<sz;++i){
-      if(_extension==extensionOfFile(vFiles[i])){
-        ++num;
-      }
+      if( (_extension==extensionOfFile(vFiles[i])) == 1-complement){++num;}
     }
     fR.resize(num);long counter=0;
     for(long i=0;i<sz;++i){
-      if(_extension==extensionOfFile(vFiles[i])){
+      if( (_extension==extensionOfFile(vFiles[i])) == 1-complement){
         fR[counter]=vFiles[i];++counter;
       }
     }
     return fR;
   }
-  std::string deleteOldFiles(const std::string & _folderName, const std::string & _extension, const long & defOfOld){
+  std::string deleteOldFiles(const std::string & _folderName, const std::string & _extension, const long & defOfOld, const int & complement = 0){
     std::string fR="";
     std::vector<std::string> fList=listFiles( _folderName);
-    fList=selectFilesWithExtension(fList,_extension);
+    fList=selectFilesWithExtension(fList,_extension,complement);
     long sz=fList.size();
     std::time_t crT;
     TMF::Timer tm;long age;long tmNow=tm.timeNow();
