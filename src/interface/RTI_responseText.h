@@ -77,6 +77,7 @@ namespace RTI{
   };
   struct ResponderInfo{
   public:
+    std::string docName;
     std::vector<std::string> fileInfoV;
     std::string statusOfTheForm;
     std::string formulationDocument;
