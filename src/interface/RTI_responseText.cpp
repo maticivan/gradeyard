@@ -652,7 +652,7 @@ namespace RTI{
     return fR;
   }
   std::string displayGradingRulesToGrader(const std::map<std::string,PSDI::GradingRule>& m){
-    std::string res,resM;
+    std::string res,resM,resRaw;
     std::map<std::string,PSDI::GradingRule>::const_iterator it,itE;
     it=m.begin(); itE=m.end();
     while(it!=itE){
@@ -662,6 +662,12 @@ namespace RTI{
       resM+="</td><td>";
       resM+=(it->second).display;
       resM+="</td></tr>\n";
+      resRaw+="\n\n"+MWII::GL_WI.getDefaultWebText("[addRule]")+it->first+";\n";
+      resRaw+=BF::doubleToString((it->second).points)+";";
+      if((it->second).display!=""){
+        resRaw+="\n"+(it->second).display;
+      }
+      resRaw+="\n"+MWII::GL_WI.getDefaultWebText("[/addRule]");
       ++it;
     }
     if(resM!=""){
@@ -670,7 +676,11 @@ namespace RTI{
       res+="<table class=\"table table-striped\"><thead class=\"table-secondary\"><tr>";
       res+="<th>Name</th><th>Points</th><th>Display</th></tr></thead>\n<tbody>\n";
       res+=resM;
-      res+="\n</tbody></table>\n</div></div>\n";
+      res+="\n</tbody></table><br>";
+      res+="_hideReveal__revealTitle_Show source codes for rules_/revealTitle__hideTitle_Hide source codes for rules_/hideTitle_<pre>";
+      res+=resRaw;
+      res+="</pre>_/hideReveal_\n";
+      res+="</div></div>\n";
     }
     return res;
   }
@@ -839,6 +849,7 @@ namespace RTI{
   }
   ResponderInfo Response::infoFromResponseText(const PSDI::SessionData & _psd,  const std::string & _req, const int & optimizationParameter, const int & includeCertificateInGradersCommentsMap){
       ResponderInfo rInf;
+      rInf.docName=tName;
       rInf.acceptResp=0;
       rInf.acceptGrade=0;
       rInf.displaySol=0;
@@ -1758,6 +1769,10 @@ namespace RTI{
       res.displaySol=1;
       res.displayPoints=1;
       res.displayComments=1;
+      if(_psd.my_un!="visitor"){
+        IOF::deleteOldFiles(DD::GL_DBS.getChallengeAnswStorage(),_psd.my_un,10*CERD::GL_CertificatesOptions.maxTimeToKeepPDF);
+        IOF::toFile(DD::GL_DBS.getChallengeAnswStorage()+"/"+"gr_"+tName+"."+_psd.my_un,SF::mapToString(res.gradersComments,"_vV*_","_/vV*_","_ky*_","_/ky*_","_vl*_","_/vl*_"));
+      }
     }
     if((res.documentType==st_gradeOfResponse)&&(res.gradingStatus!="a")){
       res.displayQs=0;
