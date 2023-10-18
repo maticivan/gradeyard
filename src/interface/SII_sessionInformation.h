@@ -171,7 +171,7 @@ namespace SII{
     long indicatorFileReceived;
     long indicatorFileCanBeAccepted;
     PSDI::SessionData psd;
-    void updateRespMapToProperlyAccountForBothGraderCommentsAndPoints();
+    void updateRespMapToProperlyAccountForBothGraderCommentsAndPoints(const RTI::ResponderInfo&);
     int updateGradesFromResponse();
     std::vector<std::vector<std::string> > respInOrder;
     int uploadToServer(const cgicc::Cgicc & , const std::string & , const std::string & );//WARNING: this one does not check for permissions
