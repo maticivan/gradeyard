@@ -335,5 +335,8 @@ namespace DISPPF{
     output=sanitizeForDisplay(output,reqS);
     return output;
   }
+  std::string prepareForHTMLDisplayTextInputField(const std::string& in){
+    return prepareForHTMLDisplay(in);
+  }
 }
 #endif
