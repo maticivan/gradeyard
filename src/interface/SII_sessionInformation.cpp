@@ -240,7 +240,6 @@ namespace SII{
     psd.displayMonthsInYear.resize(0);
     indicatorInitialized=0;
     indicatorFormResponded=-1;
-    indicatorFormResponseCanBeAccepted=-1;
     loginActionIndicator=0;
     loginStatusIndicator=0;
     indicatorFileReceived=-1;
@@ -971,7 +970,6 @@ namespace SII{
   }
   long SessionInformation::isInitialized() const{return indicatorInitialized;}
   long SessionInformation::isFormResponded() const{return indicatorFormResponded;}
-  long SessionInformation::canFormResponseBeAccepted() const{return indicatorFormResponseCanBeAccepted;}
   long SessionInformation::isFileReceived() const{return indicatorFileReceived;}
   long SessionInformation::canFileBeAccepted() const{return indicatorFileCanBeAccepted;}
   std::string SessionInformation::enhanceTheCommandDueToComfUserEdit(const std::string & s) const{
@@ -3167,7 +3165,7 @@ namespace SII{
     itE=(psd.respMap).end();
     std::string qAnswerKey;
     long sz;
-    while(it!=itE){ 
+    while(it!=itE){
       it2E=tempRespToKeepPointsOnly.end();
       if((it->first)[0]=='Q'){
         //we found a comment to question
