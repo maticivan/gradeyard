@@ -167,7 +167,7 @@ namespace SII{
     long indicatorInitialized;
     int indicatorRespRecInitialized;
     long indicatorFormResponded;
-    long indicatorFormResponseCanBeAccepted;
+    //long indicatorFormResponseCanBeAccepted;
     long indicatorFileReceived;
     long indicatorFileCanBeAccepted;
     PSDI::SessionData psd;
@@ -200,8 +200,7 @@ namespace SII{
     std::string getResponse(const std::string & ) const;
     long countSubmittedFiles(const cgicc::Cgicc & ) const;
     void analyzeEnvVarsAndForms(const cgicc::Cgicc &);
-    long isFormResponded() const;
-    long canFormResponseBeAccepted() const;
+    long isFormResponded() const; 
     long isFileReceived() const;
     long canFileBeAccepted() const;
     int allowedToAssignPermit(const std::string &, const std::string &) const;
