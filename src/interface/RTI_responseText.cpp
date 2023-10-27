@@ -417,8 +417,7 @@ namespace RTI{
     if((sqi.userAnswer!="notFound")&&(sqi.userAnswer!="")){
       displUserAnswer=prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(sqi);
       if(sqi.displType==s_textInputReqField){
-        DISPPF::RequestsForSanitizer reqS;
-        displUserAnswer=DISPPF::sanitizeForDisplay(displUserAnswer,reqS);
+        displUserAnswer=DISPPF::prepareForHTMLDisplayTextInputField(displUserAnswer);
       }
       else{
         if(sqi.displType==s_textAreaReqField){
@@ -445,8 +444,7 @@ namespace RTI{
         fR+="<B>"+MWII::GL_WI.getDefaultWebText("Answer submitted")+": </B> ";
         std::string displUserAnswer=prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(sqi);
         if(sqi.displType==s_textInputReqField){
-          DISPPF::RequestsForSanitizer reqS;
-          fR+=DISPPF::sanitizeForDisplay(displUserAnswer,reqS);
+          fR+=DISPPF::prepareForHTMLDisplayTextInputField(displUserAnswer);
         }
         else{
           if(sqi.displType==s_textAreaReqField){
@@ -552,8 +550,7 @@ namespace RTI{
            fR+=submissionOpeningTags(sqi,MWII::GL_WI.getDefaultWebText("Current submission"),linkCodeAutograderTest);
            std::string displUserAnswer=prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(sqi);
            if(sqi.displType==s_textInputReqField){
-             DISPPF::RequestsForSanitizer reqS;
-             fR+=DISPPF::sanitizeForDisplay( displUserAnswer,reqS);
+             fR+=DISPPF::prepareForHTMLDisplayTextInputField(displUserAnswer);
            }
            else{
              fR+="<BR>"+DISPPF::prepareForHTMLDisplay(displUserAnswer);
