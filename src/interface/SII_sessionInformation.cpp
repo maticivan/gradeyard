@@ -2410,19 +2410,17 @@ namespace SII{
       for(long i=0;i<sz;++i){
         stAllData[i]=SF::stringToVector(allRawStudentsData[i],"_n*|_","_/n*|_");
         if(stAllData[i].size()>5){
-          it=(stDataVA.uNamesToVersions).find(stAllData[i][4]);
-          if(it!=itE){
-            RMD::Response ssf;
-            if(ssf.setFromTextName(stAllData[i][0])){
-              std::string td=ssf.getTextData();
-              td=CEVI::updateVersionsForStudent(td,it->second,problemLabels);
-              itA=(stDataVA.uNamesToAnswers).find(stAllData[i][4]);
-              if(itA!=itAE){
-                td=CEVI::updateAnswersForStudent(td,itA->second,problemLabels);
-              }
-              ssf.setTextData(td);
-              ssf.putInDB();
+          RMD::Response ssf;
+          if(ssf.setFromTextName(stAllData[i][0])){
+            std::string td=ssf.getTextData();
+            it=(stDataVA.uNamesToVersions).find(stAllData[i][4]);
+            if(it!=itE){td=CEVI::updateVersionsForStudent(td,it->second,problemLabels);}
+            itA=(stDataVA.uNamesToAnswers).find(stAllData[i][4]);
+            if(itA!=itAE){
+              td=CEVI::updateAnswersForStudent(td,itA->second,problemLabels);
             }
+            ssf.setTextData(td);
+            ssf.putInDB();
           }
         }
       }
