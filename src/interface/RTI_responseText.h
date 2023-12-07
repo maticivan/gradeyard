@@ -215,11 +215,7 @@ namespace RTI{
     std::string s_notReadyForGrading_QRTB="_noGrading*|_";
     std::string s_notReadyForGrading_QRTE="_/noGrading*|_";
     std::string s_needsActivation_QRTB="_startMessage*|_";
-    std::string s_needsActivation_QRTE="_/startMessage*|_";
-    std::string s_score_GRTB="_score_";
-    std::string s_score_GRTE="_/score_";
-    std::string s_comment_GRTB="_comment_";
-    std::string s_comment_GRTE="_/comment_";
+    std::string s_needsActivation_QRTE="_/startMessage*|_"; 
     std::string s_statusOfTheForm_ARTB="_sf*|_";
     std::string s_statusOfTheForm_ARTE="_/sf*|_";
     std::string s_statusOfTheGrading_ARTB="_sgr*|_";
