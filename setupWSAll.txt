@@ -1,4 +1,3 @@
-
 _vVPair__vr_mainFolderDB*!_/vr__vl_/webFiles/mainTeaching_/vl__/vVPair_
 _vVPair__vr_externalIDDB*!_/vr__vl_eIDDB_/vl__/vVPair_
 _vVPair__vr_usernameDB*!_/vr__vl_unamesDB_/vl__/vVPair_
@@ -271,14 +270,10 @@ _vVPair__vr_certPreambleLatexTemplate_/vr__vl_
 \usepackage{amsmath}
 \newcommand{\vect}[1]{\mathbf{#1}}
 
-\topmargin -1in \oddsidemargin -15.5mm \evensidemargin -15.5mm
-\textwidth 19.2cm \textheight 23.5cm
+ 
 
 \pagestyle{empty}
 _/vl__/vVPair_
-
-
-
 
 
 _vVPair__vr_answerBoxLatexTemplate_/vr__vl_
