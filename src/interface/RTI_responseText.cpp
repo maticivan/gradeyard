@@ -1516,7 +1516,7 @@ namespace RTI{
     int grNeed;
     while(itf!=itfE){
       sqi.QNum=itf->first;
-      placeHoldersForGrader+="_in*|_ _gc*|__score__/score__comment__/comment__/gc*|_ _lb*|_"+sqi.QNum+"_/lb*|_ _/in*|_";
+      placeHoldersForGrader+="_in*|_ _gc*|__/gc*|_ _lb*|_"+sqi.QNum+"_/lb*|_ _/in*|_";
       copyOfficialQuestionComponents(sqi,itf->second);
       sqi.graderComment="notFound";
       itGrC=(res.gradersComments).find(sqi.QNum);
@@ -1894,6 +1894,7 @@ namespace RTI{
         problemDisplText=singleProblemDisplay(sqi,pcas, fileCounter, singleProblemScore);
         if(problemDisplText=="certificate"){
           --(sqi.num);
+          lD_ep.questionsStack.pop();
         }
         else{
           if( (sqi.num>displStart)&&(sqi.num<displEndP1)){
