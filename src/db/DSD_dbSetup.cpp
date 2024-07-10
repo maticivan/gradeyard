@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -36,11 +36,13 @@ namespace DSD{
       std::string default_mText="mainFolderDB/mainTextDB";
       std::string default_responseTable="mainFolderDB/responseDB";
       std::string default_statTable="mainFolderDB/statDB";
+      std::string default_fileForms="mainFolderDB/fForms";
       std::string default_fastUpdatingStatTable="mainFolderDB/fuStatDB";
       std::string default_initExtension="_initFile";
       std::string default_publicStorage="q0";
       std::string default_publicSystemStorage="qs0";
       std::string default_publicPDFCertStorage="pdfcrt0";
+      std::string default_publicPDFFormStorage="pdffrm0";
       std::string default_guestClonesRelLoc="st";
       std::string default_challengeImages="c0";
       std::string default_challengeAnswers="mainFolderDB/a0";
@@ -63,12 +65,14 @@ namespace DSD{
       std::string mText=default_mText;
       std::string responseTable=default_responseTable;
       std::string statTable=default_statTable;
+      std::string fileForms=default_fileForms;
       std::string fastUpdatingStatTable=default_fastUpdatingStatTable;
       std::string initExtension=default_initExtension;
       std::string hCache=default_hCache;
       std::string publicStorage=default_publicStorage;
       std::string publicSystemStorage=default_publicSystemStorage;
       std::string publicPDFCertStorage=default_publicPDFCertStorage;
+      std::string publicPDFFormStorage=default_publicPDFFormStorage;
       std::string folderMainDBGuestClone;
       std::string systemFolderClones;
       std::string guestClonesRelLoc=default_guestClonesRelLoc;
@@ -91,6 +95,7 @@ namespace DSD{
       std::string mText_jN;
       std::string responseTable_jN;
       std::string statTable_jN;
+      std::string fileForms_jN;
       std::string fastUpdatingStatTable_jN;
       std::string hCache_jN;
       std::string chIm_jN;
@@ -113,12 +118,14 @@ namespace DSD{
       std::string getMainText() const;
       std::string getResponseTable() const;
       std::string getStatTable() const;
+      std::string getFileFormsFolder() const;
       std::string getFastUpdatingStatTable() const;
       std::string getInitExtension() const;
       std::string printSetup() const;
       std::string getPublicStorage() const;
       std::string getPublicSystemStorage() const;
       std::string getPublicPDFCertStorage() const;
+      std::string getPublicPDFFormStorage() const;
       std::string getGuestClonesRelLoc() const;
       std::string getChallengeImStorage() const;
       std::string getChallengeAnswStorage() const;
@@ -131,8 +138,8 @@ namespace DSD{
       long getNumFilesInFolder() const;
   };
   std::string Setup::getMainFolder() const{return mainFolder;}
-  std::string Setup::getExternalIDDB() const{    return extIdDB; }
-  std::string Setup::getUserNameDB() const{ return userNameDB;}
+  std::string Setup::getExternalIDDB() const{return extIdDB; }
+  std::string Setup::getUserNameDB() const{return userNameDB;}
   std::string Setup::getHierarchy() const{return hierarchy;}
   std::string Setup::getCounters() const{return counters;}
   std::string Setup::getFileManage() const{return fManage;}
@@ -144,12 +151,14 @@ namespace DSD{
   std::string Setup::getMainText() const{return mText;}
   std::string Setup::getResponseTable() const{return responseTable;}
   std::string Setup::getStatTable() const{return statTable;}
+  std::string Setup::getFileFormsFolder() const{return fileForms;}
   std::string Setup::getFastUpdatingStatTable() const{return fastUpdatingStatTable;}
   std::string Setup::getInitExtension() const{return initExtension;}
   std::string Setup::getHCache() const{return hCache;}
   std::string Setup::getPublicStorage() const{return publicStorage;}
   std::string Setup::getPublicSystemStorage() const{return publicSystemStorage;}
   std::string Setup::getPublicPDFCertStorage() const{return publicPDFCertStorage;}
+  std::string Setup::getPublicPDFFormStorage() const{return publicPDFFormStorage;}
   std::string Setup::getGuestClonesRelLoc() const{return guestClonesRelLoc;}
   std::string Setup::getChallengeImStorage() const{return challengeImages;}
   std::string Setup::getChallengeAnswStorage() const{return challengeAnswers;}
@@ -189,6 +198,8 @@ namespace DSD{
     responseTable=mainFolder+"/"+responseTable_jN;
     SF::assignValueFromMap(stMap,"statDB*!",statTable_jN);
     statTable=mainFolder+"/"+statTable_jN;
+    SF::assignValueFromMap(stMap,"fileForms*!",fileForms_jN);
+    fileForms=mainFolder+"/"+fileForms_jN;
     SF::assignValueFromMap(stMap,"fstDB*!",fastUpdatingStatTable_jN);
     fastUpdatingStatTable=mainFolder+"/"+fastUpdatingStatTable_jN;
     SF::assignValueFromMap(stMap,"publicImages*!",chIm_jN);
@@ -203,6 +214,7 @@ namespace DSD{
     SF::assignValueFromMap(stMap,"publicSubFolderToStoreFiles*!",publicStorage);
     SF::assignValueFromMap(stMap,"publicSubFolderForSystemFiles*!",publicSystemStorage);
     SF::assignValueFromMap(stMap,"publicSubFolderForPdfCertificates*!",publicPDFCertStorage);
+    SF::assignValueFromMap(stMap,"publicSubFolderForPdfForms*!",publicPDFFormStorage);
     SF::assignValueFromMap(stMap,"subFolderForGuestClones*!",guestClonesRelLoc);
     folderMainDBGuestClone=mainFolder+"/"+guestClonesRelLoc;
     systemFolderClones=mainFolder+"/"+"sys_"+guestClonesRelLoc;
@@ -213,6 +225,9 @@ namespace DSD{
     }
     SF::assignValueFromMap(stMap,"numStorageSubFoldersInFolder*!",numSubFolders);
     SF::assignValueFromMap(stMap,"numFilesInFolder*!",numFilesInFolder);
+    (IOF::GL_folders.s).insert(mainFolder);
+    (IOF::GL_folders.s).insert("/");
+    IOF::GL_folders.safeNameOfFolderThatDoesNotExist= certManage+"/"+"w"+SAIOF::get_GL_MAIN_SETUP_FILE_NAME();
   }
   std::string Setup::printSetup() const{
       std::string fR=mainFolder+"\n";
@@ -230,11 +245,13 @@ namespace DSD{
       fR+=mText+"\n";
       fR+=responseTable+"\n";
       fR+=statTable+"\n";
+      fR+=fileForms+"\n";
       fR+=fastUpdatingStatTable+"\n";
       fR+=initExtension+"\n";
       fR+=publicStorage+"\n";
       fR+=publicSystemStorage+"\n";
       fR+=publicPDFCertStorage+"\n";
+      fR+=publicPDFFormStorage+"\n";
       fR+=guestClonesRelLoc+"\n";
       fR+=challengeImages+"\n";
       fR+=challengeAnswers+"\n";
