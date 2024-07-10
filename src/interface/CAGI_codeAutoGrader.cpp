@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -18,18 +18,7 @@
 #ifndef _INCL_CAGI_CodeAutoGrader_CPP
 #define _INCL_CAGI_CodeAutoGrader_CPP
 namespace CAGI{
-  std::string lastCode(const std::string & _input){
-    std::map<std::string,std::string> replMap;
-    replMap["_code_"]="<pre>";
-    replMap["_/code_"]="</pre>";
-    std::string input=MFRF::findAndReplace(_input,replMap);
-    std::vector<std::string> allCodes= SF::stringToVector(input,"<pre>","</pre>");
-    long sz=allCodes.size();
-    if(sz<1){
-      return _input;
-    }
-    return allCodes[sz-1];
-  }
+  long GL_maxOutputSizeDefault=1025;
   std::string removeForbiddenStrings(const std::string& _src, const std::vector<std::string> & forb){
     std::string hidingSt;
     long fsz=forb.size();
@@ -67,8 +56,8 @@ namespace CAGI{
   RTI::CodeAutoGraderInfo getAutoGraderCodeData(const std::string &agParameters, const std::string & offSolution, const std::string & userSolution, const std::string & maxPoints){
     RTI::CodeAutoGraderInfo cInfo;
     OfflineAutograderData offlineAGData=oagDataFromString(agParameters);
-    cInfo.officialSource=lastCode(offSolution);
-    cInfo.userSource=lastCode(userSolution);
+    cInfo.officialSource=DCEI::lastCode(offSolution);
+    cInfo.userSource=DCEI::lastCode(userSolution);
     std::pair<std::string,int> allD; long pos;
     pos=0;allD=SF::extract(agParameters,pos,"_language_","_/language_");
     cInfo.language="none";
@@ -95,12 +84,12 @@ namespace CAGI{
     pos=0;allD=SF::extract(agParameters,pos,"_asmRules_","_/asmRules_");
     if(allD.second==1){
       if(offlineAGData.isEmpty){
-        cInfo.asmRules=lastCode(TMD::rawTextData(allD.first));
+        cInfo.asmRules=DCEI::lastCode(TMD::rawTextData(allD.first));
       }
       else{
         std::map<std::string,std::string>::const_iterator it=offlineAGData.asmRules.find(allD.first);
         if(it!=offlineAGData.asmRules.end()){
-          cInfo.asmRules=lastCode(it->second);
+          cInfo.asmRules=DCEI::lastCode(it->second);
         }
       }
     }
@@ -131,7 +120,7 @@ namespace CAGI{
       long dbinsz=cInfo.dbIncludes.size();
       if(offlineAGData.isEmpty){
         for(long i=0;i<dbinsz;++i){
-          cInfo.dbIncludes[i]=lastCode(TMD::rawTextData(cInfo.dbIncludes[i]));
+          cInfo.dbIncludes[i]=DCEI::lastCode(TMD::rawTextData(cInfo.dbIncludes[i]));
         }
       }
       else{
@@ -143,7 +132,7 @@ namespace CAGI{
             cInfo.dbIncludes[i]="";
           }
           else{
-            cInfo.dbIncludes[i]=lastCode(it->second);
+            cInfo.dbIncludes[i]=DCEI::lastCode(it->second);
           }
         }
       }
@@ -385,7 +374,7 @@ namespace CAGI{
       ++i;
       ++it;
     }
-    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd,sources,languages,cFlags,includes,dbIncludes,inputTestCases);
+    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd,sources,languages,cFlags,includes,dbIncludes,inputTestCases,GL_maxOutputSizeDefault);
     if(aGOutput.second==0){
       return 0;
     }
@@ -448,7 +437,7 @@ namespace CAGI{
     includes[0]=cInfo.includes;
     dbIncludes[0]=cInfo.dbIncludes;
     inputTestCases[0]=cInfo.inputTestCases;
-    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd, sources,languages,cFlags,includes,dbIncludes,inputTestCases);
+    std::pair<std::vector<std::vector<std::string> >,int> aGOutput=DCEI::executePrograms(_psd, sources,languages,cFlags,includes,dbIncludes,inputTestCases,GL_maxOutputSizeDefault);
     std::string fR;
     fR+="\\begin{box}\n<H2> Code source</H2><P></P> <textarea name=\"probSource\" rows=\"15\"";
     fR+=" cols=\"100\">";
