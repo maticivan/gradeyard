@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -662,9 +662,9 @@ namespace CEI{
       if(workIsDone==1){
         m_coaaI.gradeData=mapToGradeData(mapGr);
         std::string newGrData=m_coaaI.putIntoString(0,_psd.masterKey);
-        MCWCPI::modifyCouasWithoutCheckingPermissions(_psd,m_coaaI.myCode,newGrData);
-      }
-    }
+        MCWCPI::modifyCouasWithoutCheckingPermissions(_psd,m_coaaI.myCode,newGrData); 
+      } 
+    } 
     return finalResult;
   }
   std::string CouasElement::gradeFromRespReceiver(const PSDI::SessionData & _psd,const int & submit){
