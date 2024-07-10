@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -33,8 +33,8 @@ namespace STI{
     int s=meSM.setFromTextName(_nameInDB);
     permitRead.clear();
     permitWrite.clear();
-    permitRead.insert(s_root);
-    permitWrite.insert(s_root);
+    permitRead.insert(APTI::GL_syntax.s_root);
+    permitWrite.insert(APTI::GL_syntax.s_root);
     tCreated="unknown";
     createdBy="unknown";
     tModified="unknown";
@@ -46,16 +46,16 @@ namespace STI{
     if(s==1){
       initText=meSM.getTextData();
       long pos=0;
-      std::pair<std::string,int> allSD=SF::extract(initText,pos,s_sysDataB,s_sysDataE);
+      std::pair<std::string,int> allSD=SF::extract(initText,pos,APTI::GL_syntax.s_sysDataB,APTI::GL_syntax.s_sysDataE);
       pos=0;
-      std::pair<std::string,int> allTD=SF::extract(initText,pos,s_tDataB,s_tDataE);
+      std::pair<std::string,int> allTD=SF::extract(initText,pos,APTI::GL_syntax.s_tDataB,APTI::GL_syntax.s_tDataE);
       if(allSD.second==1){
         sysDataRaw=allSD.first;
-        std::string pText=s_notFound;
+        std::string pText=APTI::GL_syntax.s_notFound;
         HSF::parametersFromString(allSD.first,tCreated,createdBy,tModified,modifiedBy,pText,documentType);
-        if(pText!=s_notFound){
-          std::vector<std::string> rawPermisssionsRead= SF::stringToVector(pText,s_individualPermissionB, s_individualPermissionE,"_name_read_/name_");
-          std::vector<std::string> rawPermisssionsWrite= SF::stringToVector(pText,s_individualPermissionB, s_individualPermissionE,"_name_write_/name_");
+        if(pText!=APTI::GL_syntax.s_notFound){
+          std::vector<std::string> rawPermisssionsRead= SF::stringToVector(pText,APTI::GL_syntax.s_individualPermissionB, APTI::GL_syntax.s_individualPermissionE,"_name_read_/name_");
+          std::vector<std::string> rawPermisssionsWrite= SF::stringToVector(pText,APTI::GL_syntax.s_individualPermissionB, APTI::GL_syntax.s_individualPermissionE,"_name_write_/name_");
           std::vector<std::string> pReadV=PBD::getPermitsFromRaw_N(rawPermisssionsRead);
           std::vector<std::string> pWriteV=PBD::getPermitsFromRaw_N(rawPermisssionsWrite);
           long sz=pReadV.size();
