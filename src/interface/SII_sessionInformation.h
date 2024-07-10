@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -285,8 +285,7 @@ namespace SII{
     std::string createAccountsForStudents(std::vector<PASF::StudentData> & ,const std::string & );
     std::string submitEnrollmentReport(const std::string &, const std::string &, const std::vector<PASF::StudentData> & );
     std::string enrollStudents(const std::string &, const std::string &, const std::string &, const std::string &);
-    std::string backupDBs(const std::string &, const std::string & );
-    std::string prepareTextForTextTable(const std::string &, const std::string & = "noOldData") const;
+    std::string backupDBs(const std::string &, const std::string & ); 
     std::string analyzeRequestToChangePassword();
     std::string enrollStudentsInCouas(const std::string & , const std::vector<PASF::StudentData> & , const long & = 10 );
     std::string cookieText(const std::string & = "s", const std::string & ="deleted") const;
