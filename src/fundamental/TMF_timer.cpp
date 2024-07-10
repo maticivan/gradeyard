@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -165,7 +165,7 @@ namespace TMF{
       ySince=(ySince/100)*100;
     }
     long daysSinceYYYY = getDaysSinceYYYY(tmp,ySince);
-    std::vector ymd=daysSinceYYYYToYMD(daysSinceYYYY,ySince);
+    std::vector<long> ymd=daysSinceYYYYToYMD(daysSinceYYYY,ySince);
     tmp[0]=ymd[0];tmp[1]=ymd[1];tmp[2]=ymd[2];
     return tmp;
   }
