@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -28,7 +28,14 @@ namespace BF{
   PS1F::PermutationSequences GLOBAL_PERMUTATION_SEQUENCES;
   long GLOBAL_NUM_PERMUTATION_SEQUENCES=10;
   const char CONST_DECIMAL_SEPARATOR='.';
+  const std::string CONST_DECIMAL_SEPARATOR_ST=".";
   const char CONST_THOUSANDS_SEPARATOR=',';
+  const std::string CONST_THOUSANDS_SEPARATOR_ST=",";
+  int isLetter(const char& c){
+    if((c>='a')&&(c<='z')){return 1;}
+    if((c>='A')&&(c<='Z')){return 1;}
+    return 0;
+  }
   int isNumeric(const std::string & s,const long & tolerateSignsInFront = 1){
     long sz=s.length();
     long i=0;
@@ -242,12 +249,12 @@ namespace BF{
   }
   std::string eraseTrailingZeros(const std::string &st){
     long len=st.length();
-    long pos=len-1;
+    long pos=len-1;int decimalSeparatorFound=0;
     while((pos>-1)&&(st[pos]=='0')){
       --pos;
     }
     if((pos>-1)&&(st[pos]==CONST_DECIMAL_SEPARATOR)){
-      --pos;
+      --pos;decimalSeparatorFound=1;
     }
     if(pos==-1){
       return "0";
@@ -256,8 +263,64 @@ namespace BF{
     ++pos;
     for(long i=0;i<pos;++i){
       output+=st[i];
+      if(st[i]==CONST_DECIMAL_SEPARATOR){decimalSeparatorFound=1;}
+    }
+    if(decimalSeparatorFound==0){
+      return st;
     }
     return output;
+  }
+  std::string forceDecimals(const double& _d, const long& nD){
+    double d=_d;std::string stSign="";
+    if(d<0){d=(-1.0)*d;stSign="-";}
+    double modified=d;
+    for(long i=0;i<nD;++i){
+      modified *= 10.0;
+    }
+    modified *= 10.0;
+    long intVal=static_cast<long>(modified);
+    long roundUp=0;
+    if(intVal%10>4){roundUp=1;}
+    intVal/=10;
+    intVal+=roundUp;
+    std::string result; int dotPrinted=0;
+    long i=0;
+    if(intVal==0){
+      if(nD<1){
+        return "0";
+      }
+      result="0"+CONST_DECIMAL_SEPARATOR_ST;
+      for(long i=0;i<nD;++i){
+        result+="0";
+      }
+      return result;
+    }
+    if(nD<1){
+      return stSign+std::to_string(intVal);
+    }
+    while(intVal>0){
+      result = std::to_string(intVal%10)+result;
+      ++i;
+      if(i==nD){
+        result = CONST_DECIMAL_SEPARATOR_ST+result;
+        dotPrinted=1;
+      }
+      intVal/=10;
+    }
+    while(i<nD){
+      result = "0"+result;
+      ++i;
+    }
+    if(dotPrinted==0){
+      result= CONST_DECIMAL_SEPARATOR_ST+result;
+    }
+    if(result[0]==CONST_DECIMAL_SEPARATOR){
+      result = "0"+result;
+    }
+    return stSign+result;
+  }
+  std::string forceDecimals(const std::string& st, const long& nD){
+    return forceDecimals(stringToDouble(st),nD);
   }
   std::string double_to_string_withPrecision(const double & d, const long &p){
     std::ostringstream tmp;
