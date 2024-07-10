@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -279,6 +279,8 @@ namespace MWID{
     dbsM["response"]=createTableWithTwoKeys("response", DD::GL_DBS.getResponseTable(),"response","id","name","tData");
     // stat initialization
     dbsM["stat"]=createTableWithOneKey("stat", DD::GL_DBS.getStatTable(),"stat","name","tData");
+    // file forms folder initialization
+    IOF::sys_createFolderIfDoesNotExist(DD::GL_DBS.getFileFormsFolder(),"readme.txt","Do not edit this folder");
     // fast updating stat saveInitialization
     fu_dbsM["fStat"]=createFastUpdatingTable("fStat",DD::GL_DBS.getFastUpdatingStatTable(),"fStat");
     executeQueues();
