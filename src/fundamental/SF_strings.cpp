@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -74,6 +74,9 @@ namespace SF{
     }
     return res;
   }
+  bool caseInsensitiveComp(char a, char b){
+    return (MFRF::toLowerCase(a)==MFRF::toLowerCase(b));
+  }
   std::pair<std::string, int> getEverythingBefore(const std::string & src,
                                                   long & pos,
                                                   const std::string &endSt,
@@ -84,38 +87,24 @@ namespace SF{
       // long pos=7;
       // std::pair<std::string,int> res=SF::getEverythingBefore(src,pos,"5678");
       // then you will have res.first="78901234" and pos=19
-      long size=src.length();
-      std::string fR="";
-      long endingLen=endSt.length();
-      std::string stToAdd="";
-      long posInEnd=0;
-      char currentCh;
-      char compareCh;
-      while ((pos<size) &&(posInEnd<endingLen ) ){
-          currentCh=src[pos];
-          compareCh=endSt[posInEnd];
-          if(caseSensitive==0){
-              currentCh=MFRF::toLowerCase(currentCh);
-              compareCh=MFRF::toLowerCase(compareCh);
-          }
-          stToAdd+= src[pos];
-          if(currentCh==compareCh){
-              ++posInEnd;
-          }
-          else{
-              pos-=stToAdd.length();
-              ++pos;
-              fR+=stToAdd[0];
-              posInEnd=0;
-              stToAdd="";
-          }
-          ++pos;
+      std::string::const_iterator srcIt=src.begin(),j;
+      srcIt+=pos;
+      if(caseSensitive==0){
+        j=std::search(srcIt,src.end(),endSt.begin(),endSt.end(),caseInsensitiveComp);
       }
-      int success=0;
-      if(posInEnd==endingLen){
-          success=1;
+      else{
+        j=std::search(srcIt,src.end(),endSt.begin(),endSt.end());
       }
-      return std::make_pair(fR,success);
+      if(j==src.end()){
+        pos=src.length();
+        return std::make_pair(src,0);
+      }
+      std::string fR;
+      while(srcIt!=j){
+        fR+=*srcIt; ++srcIt;++pos;
+      }
+      pos+=endSt.length();
+      return std::make_pair(fR,1);
   }
   long firstContainsTheOther(const std::string &st1,const std::string &st2,const int & caseSensitive=0){
     long pos=0;
@@ -408,6 +397,19 @@ namespace SF{
     long sz=_v.size();
     for(long i=0;i<sz;++i){
       fR.insert(_v[i]);
+    }
+    return fR;
+  }
+  template<typename TTT>
+  std::vector<TTT> setToVector(const std::set<TTT> &_s){
+    std::vector<TTT> fR;
+    long sz=_s.size();
+    fR.resize(sz);
+    typename std::set<TTT>::const_iterator it=_s.begin(),itE=_s.end();
+    long i=0;
+    while(it!=itE){
+      fR[i]=*it;
+      ++it;++i;
     }
     return fR;
   }
@@ -709,8 +711,13 @@ namespace SF{
                                           const std::string & _nextB="_n_",
                                           const std::string & _nextE="_/n_",
                                           const std::string & _attMustHave="!*!"){
-    std::vector<std::string> fR;
     return stringToVectorAndRemoveItems(_allItems,_nextB,_nextE,0,_attMustHave).first;
+  }
+  std::stack<std::string> stringToStack(const std::string & _allItems,
+                                        const std::string & _nextB="_n_",
+                                        const std::string & _nextE="_/n_",
+                                        const std::string & _attMustHave="!*!"){
+    return stringToStackAndRemoveItems(_allItems,_nextB,_nextE,0,_attMustHave).first;
   }
   std::vector<std::string> stringToVectorSimpleSeparator(const std::string& _nAnswers,const std::string& separator=";"){
     std::string saB="_n*_", saE="_/n*_";
@@ -985,7 +992,7 @@ namespace SF{
   void assignValueFromMap(const std::map<std::string,std::string>& mM, const std::string &key, std::vector<std::string>& valAssignIfInMap){
     std::map<std::string,std::string>::const_iterator it=mM.find(key);
     if(it!=mM.end()){
-      valAssignIfInMap=SF::stringToVector(it->second,"_n*_","_/n*_");
+      valAssignIfInMap=stringToVector(it->second,"_n*_","_/n*_");
     }
   }
   void assignValueFromMap(const std::map<std::string,std::string>& mM, const std::string &key, long& valAssignIfInMap){
@@ -1253,6 +1260,55 @@ namespace SF{
       return GF::GL_officialNA;
     }
     return oldAnsw;
+  }
+  std::string insertReasonableLineBreaks(const std::string& in){
+    long startConvertingSpaceToLineBreak=80;
+    long startConvertingAnythingToLineBreak=100;
+    std::string out;
+    long i,cLine;
+    i=0;
+    long sz=in.length();
+    cLine=0;
+    while(i<sz){
+      if((in[i]==' ')||(in[i]=='\t')||(in[i]=='\n')||(static_cast<long>(in[i])==13)){
+          if(cLine>startConvertingSpaceToLineBreak){
+            out+="\n";
+            cLine=0;
+          }
+          else{
+            out+=in[i];
+            ++cLine;
+          }
+      }
+      else{
+        if(cLine>startConvertingAnythingToLineBreak){
+          out+="\n";
+          cLine=0;
+        }
+        ++cLine;
+        out+=in[i];
+      }
+      ++i;
+    }
+    return out;
+  }
+  class LSPair{
+  public:
+    long l;
+    std::string s;
+    int operator<(const LSPair& )const;
+  };
+  int LSPair::operator<(const LSPair& b) const{
+    if(l<b.l) return 1;
+    if(l>b.l) return 0;
+    if(s<b.s) return 1;
+    return 0;
+  }
+  LSPair toLSPair(const std::string& s){
+    LSPair res;
+    res.l=s.size();
+    res.s=s;
+    return res;
   }
 }
 #endif
