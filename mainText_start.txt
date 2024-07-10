@@ -54,8 +54,14 @@ _vVPair__vr_allowRespRecToOthers_/vr__vl_yes_/vl__/vVPair_
 
 _vVPair__vr_allowPDFForCertificates_/vr__vl_yes_/vl__/vVPair_
 _vVPair__vr_timeInSecondsToKeepCertificatePDF_/vr__vl_120_/vl__/vVPair_
+_vVPair__vr_allowPDFForForms_/vr__vl_yes_/vl__/vVPair_
+_vVPair__vr_timeInSecondsToKeepFormPDF_/vr__vl_120_/vl__/vVPair_
 
 _vVPair__vr_defaultTexts_/vr__vl_
+_vVPair__vr_couasMigrationText01_/vr__vl_\begin{box} <p><b>!WARNING! </b> Missing entry in the database with courses and assignments. </p><p>
+<a href="?page=_/vl__/vVPair_
+_vVPair__vr_couasMigrationText02_/vr__vl_&cmt001=yes">
+<button type="button" class="btn btn-outline-dark btn-sm">Recovery attempt</button></a></p>\end{box}_/vl__/vVPair_
 _vVPair__vr_[rule]_/vr__vl_[r]_/vl__/vVPair_
 _vVPair__vr_[/rule]_/vr__vl_[/r]_/vl__/vVPair_
 _vVPair__vr_[addRule]_/vr__vl_[add]_/vl__/vVPair_
@@ -354,7 +360,11 @@ function toggle(hidingDiv, linkDiv,revealName,hideName) {
  <script id="MathJax-script" async
           src="_THIS*WEBSITE*URL*_/mathjax/tex-mml-chtml.js">
   </script>
-
+ <style>
+      canvas {
+        border: 1px solid black;
+      }
+</style>
 </head>
 <body>
 
@@ -3687,6 +3697,7 @@ _textData!!_
  </thead><tbody>
 <tr><td><A href="index.cgi?page=listTexts">Texts</A></td><td>Manual</td></tr>
 <tr><td><A href="index.cgi?page=listResponses">Response Receivers</A></td><td>Automatic 1</td></tr>
+<tr><td><A href="index.cgi?page=listOfForms">Forms</A></td><td>Automatic 1</td></tr>
 <tr><td> <A href="index.cgi?page=listUsers">Users</A></td><td>Automatic 1</td></tr>
 <tr><td> <A href="index.cgi?page=listCoursesAndAssignments">Courses and Assignments</A></td><td>Automatic 2</td></tr>
 <tr><td> <A href="index.cgi?page=listCertificates">Certificates</A></td><td>Automatic 2</td></tr>
@@ -10319,7 +10330,7 @@ _systemData!!_
 
 _created!!_BeforeTimeExisted_/created!!_
 _createdBy!!_SystemProgrammers_/createdBy!!_
-_permissionString!!__permission__name_read_/name__userOrGroup_everyone_/userOrGroup__/permission_
+_permissionString!!__permission__name_read_/name__userOrGroup_administrator_/userOrGroup__/permission_
 _permission__name_write_/name__userOrGroup_administrator_/userOrGroup__/permission_
 _/permissionString!!__documentType!!_regularText_/documentType!!_
 _/systemData!!_
@@ -10405,7 +10416,7 @@ _systemData!!_
 
 _created!!_BeforeTimeExisted_/created!!_
 _createdBy!!_SystemProgrammers_/createdBy!!_
-_permissionString!!__permission__name_read_/name__userOrGroup_everyone_/userOrGroup__/permission_
+_permissionString!!__permission__name_read_/name__userOrGroup_administrator_/userOrGroup__/permission_
 _permission__name_write_/name__userOrGroup_administrator_/userOrGroup__/permission_
 _/permissionString!!__documentType!!_regularText_/documentType!!_
 _/systemData!!_
@@ -12850,7 +12861,7 @@ _/systemData!!_
  <h2>_vr_aType_/vr_ _vr_aNum_/vr_  Grading</h2>
 
 
- 
+
 
 
   _insert_
@@ -12862,6 +12873,2816 @@ _/systemData!!_
 
 
 
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000128_/n*!!***!_
+_n*!!***!_coordinatesInImage_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+
+
+<p></p>
+<h1> Coordinates in Image</h1>
+<script type="text/javascript">
+<!--
+
+function mPosition(e)
+{
+   var tX=0;
+   var tY=0;
+   while(e){
+      tX += e.offsetLeft;
+      tY += e.offsetTop;
+      e=e.offsetParent;
+    }
+    return [tX,tY];
+}
+
+function imgAnalysis()
+{
+ var imgPos = mPosition(iForCoordinates);
+ var cX = window.event.pageX - imgPos[0];
+ var cY = window.event.pageY - imgPos[1];
+ var hX =(cX * 1020)/ iForCoordinates.width;
+ var hY=(cY * 1320)/   iForCoordinates.height;
+ var llX=0.0220379147 * hX -4.0682464455;
+ var llY=-0.02197558 * hY +3.6259711432;
+ var lrX=llX-0.5;
+ var lrY=llY;
+ var lcX=llX-0.3;
+ var lcY=llY;
+ document.getElementById("llxF19271").innerHTML = llX.toFixed(2);
+ document.getElementById("llyF19271").innerHTML = llY.toFixed(2);
+ document.getElementById("lrxF19271").innerHTML = lrX.toFixed(2);
+ document.getElementById("lryF19271").innerHTML = lrY.toFixed(2);
+ document.getElementById("lcxF19271").innerHTML = lcX.toFixed(2);
+ document.getElementById("lcyF19271").innerHTML = lcY.toFixed(2);
+ document.getElementById("xF19271").innerHTML = hX.toFixed(0);
+ document.getElementById("yF19271").innerHTML = hY.toFixed(0);
+ document.getElementById("hxF19271").innerHTML = cX;
+ document.getElementById("hyF19271").innerHTML = cY;
+ document.getElementById("bxF19271").innerHTML = iForCoordinates.width;
+ document.getElementById("byF19271").innerHTML = iForCoordinates.height;
+}
+
+//-->
+</script>
+
+<script>
+    function coordinate(event) {
+        let x = event.clientX;
+        let y = event.clientY;
+        document.getElementById("X").value = x;
+        document.getElementById("Y").value = y;
+    }
+</script>
+  <table >
+<tbody><tr><td>
+<img src="qq/qq0000/f2efAXfB2qwCCCKLQX5covvCJKT14.gif" width="1020" height="1320" alt="" id="imageForCoordinates" />
+
+</td><td valign="top">
+<table class="table table-striped">
+<thead>
+<tr>
+<th>Alignment</th><th>$\; $ Coordinates</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>left:</td><td>(<span id="llxF19271"></span>, <span id="llyF19271"></span>)</td></tr>
+<tr><td>right:</td><td>(<span id="lrxF19271"></span>, <span id="lryF19271"></span>)</td></tr>
+<tr><td>node</td><td>(<span id="lcxF19271"></span>, <span id="lcyF19271"></span>)</td></tr>
+<tr><td>in image</td><td>(<span id="hxF19271"></span>, <span id="hyF19271"></span>)</td></tr>
+<tr><td>in window</td><td>(<span id="xF19271"></span>, <span id="yF19271"></span>)</td></tr>
+<tr><td>dimensions</td><td><span id="bxF19271"></span> $\times$ <span id="byF19271"></span> </td></tr>
+</tbody></table>
+</td></tr></tbody></table>
+<script type="text/javascript">
+<!--
+var iForCoordinates = document.getElementById("imageForCoordinates");
+iForCoordinates.onmousedown = imgAnalysis;
+//-->
+</script>
+
+
+
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000129_/n*!!***!_
+_n*!!***!_mFileForm_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+<p></p>
+
+
+_insert_
+     _n*_fileForm_/n*_
+     _n*_userConvenientDisplay_/n*_
+     _n*__vr_fTmpl_/vr__/n*_
+     _n*__vr_fl01_/vr__/n*_
+     _n*__vr_u02_/vr__/n*_
+_/insert_
+
+
+
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000130_/n*!!***!_
+_n*!!***!_listOfForms_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+<p></p><h1>Forms and Tables</h1>
+
+
+_insert_
+     _n*_fileForm_/n*_
+     _n*_userList_/n*_
+     _n*__vr_unm_/vr__/n*_
+     _n*__vr_tmn_/vr__/n*_
+     _n*_25_/n*_
+_/insert_
+
+
+
+
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000131_/n*!!***!_
+_n*!!***!_tableCPP_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_formTemplate_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+
+      <p></p>
+<h1>C++ Tables</h1>
+
+<pre>
+[parameters]
+[k]saveButtonTitle[/k] [v]Save/Update[/v]
+[k]calculateButtonTitle[/k][v]Calculate/Display[/v]
+[/parameters]
+[p]
+   [k]maxNumberOfFiles[/k]
+   [v]20[/v]
+[/p]
+[p]
+   [k]fillOut[/k]
+   [v]
+
+        [p]
+           [k]matrixTemplate[/k]
+           [v]
+              [p]
+                    [k]matrixName[/k]
+                    [v]inMatrix[/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+              [p]
+                    [k]totalNumRows[/k]
+                    [v]20[/v]
+              [/p]
+              [p]
+                    [k]totalNumCols[/k]
+                    [v]20[/v]
+              [/p]
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]8[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]5[/v]
+              [/p]
+              [p]
+                    [k]quickLink[/k]
+                    [v]Input matrix[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+
+        [p]
+           [k]code001[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Two matrices <code>A</code> and <code>B</code> will be already declared in the program and their dimensions will be set to $10\times 10$. Their declarations are <pre>std::vector<std::vector<double> >A, B;</pre> The matrix <code>A</code> will contain the input values inserted above. The matrix <code>B</code> will be displayed in the output.  [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]string[/v]
+              [/p]
+              [p]
+                    [k]codeInsertion[/k]
+                    [v]_*userCodeInsertion001*_[/v]
+              [/p]
+              [p]
+                    [k]quickLink[/k]
+                    [v]C++ code[/v]
+              [/p]
+           [/v]
+        [/p]
+   [/v]
+[/p]
+
+
+
+
+[p]
+   [k]calcResult[/k]
+   [v]
+           [p]
+           [k]total01[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Total income from the two W2 forms[/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]2[/v]
+              [/p]
+           [/v]
+        [/p]
+   [/v]
+[/p]
+
+[p]
+   [k]program[/k]
+   [v]
+           [p][k]language[/k][v]cpp[/v][/p]
+           [p]
+           [k]includes[/k]
+           [v]
+              [p]iostream[/p]
+              [p]set[/p]
+              [p]map[/p]
+              [p]cmath[/p]
+              [p]vector[/p]
+              [p]string[/p]
+              [p]iomanip[/p]
+              [p]fstream[/p]
+              [p]sstream[/p]
+              [p]streambuf[/p]
+           [/v]
+           [/p]
+           [p]
+           [k]compilerFlags[/k]
+           [v]-std=c++11[/v]
+           [/p]
+           [p]
+           [k]dbIncludes[/k]
+           [v]
+              [p]cppNotesStatSequenceForIncludingInCode[/p]
+              [p]cppNotesNumbersWorkForIncludingInCode[/p]
+           [/v]
+           [/p]
+           [p]
+           [k]source[/k]
+           [v]
+void userCalculations(std::vector<std::vector<double> >& A, std::vector<std::vector<double> >& B){
+  _*userCodeInsertion001*_
+}
+[#]IOStructures[/#]
+int main(){
+  long dim=20; long precision=8;
+  [displMatrix]
+    [k]name[/k][v]inMatrix[/v]
+    [k]dim[/k][v]20[/v]
+    [k]type[/k][v]cpp[/v]
+    [k]varName[/k][v]A[/v]
+    [k]vType[/k][v]double[/v]
+    [k]position[/k][v]before[/v]
+    [k]direction[/k][v]input[/v]
+  [/displMatrix]
+  [displMatrix]
+    [k]name[/k][v]outMatrix[/v]
+    [k]dim[/k][v]20[/v]
+    [k]type[/k][v]cpp[/v]
+    [k]openTag[/k][v]o[/v]
+    [k]closeTag[/k][v]c[/v]
+    [k]varName[/k][v]B[/v]
+    [k]vType[/k][v]double[/v]
+    [k]position[/k][v]before[/v]
+    [k]direction[/k][v]output[/v]
+  [/displMatrix]
+  userCalculations(A,B);
+  [displMatrix]
+    [k]name[/k][v]outMatrix[/v]
+    [k]dim[/k][v]20[/v]
+    [k]type[/k][v]cpp[/v]
+    [k]openTag[/k][v]o[/v]
+    [k]closeTag[/k][v]c[/v]
+    [k]varName[/k][v]B[/v]
+    [k]vType[/k][v]double[/v]
+    [k]position[/k][v]after[/v]
+    [k]direction[/k][v]output[/v]
+  [/displMatrix]
+  [#]printOutput[/#]
+  return 0;
+}
+           [/v]
+           [/p]
+   [/v]
+[/p]
+[p][k]htmlSource[/k][v]tableCPPHDocument[/v][/p]
+</pre>
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000132_/n*!!***!_
+_n*!!***!_tableCPPHDocument_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+
+
+ <p></p>
+
+  <h1>C++ Tables</h1>
+ <div id="accordion">
+ <div class="card">
+    <div class="card-header" id="mOut">
+       <button class="btn btn-link" data-toggle="collapse" data-target="#resC1" aria-expanded="true" aria-controls="resC1">
+          <div class="text-primary"><h5>Output table</h5></div>
+       </button>
+    </div>
+    <div id="resC1" class="collapse" aria-labelledby="mOut" data-parent="#accordion">
+       <div class="card-body">
+ <div class="table-responsive">
+ <table class="table table-bordered"><tbody>
+ [displMatrix]
+ [k]name[/k][v]outMatrix[/v]
+ [k]dim[/k][v]20[/v]
+ [k]type[/k][v]html[/v]
+ [k]openTag[/k][v]o[/v]
+ [k]closeTag[/k][v]c[/v]
+ [/displMatrix]
+ </tbody>
+ </table>
+ </div>
+       </div>
+    </div>
+ </div>
+
+
+ <div class="card">
+    <div class="card-header" id="mIn">
+       <button class="btn btn-link" data-toggle="collapse" data-target="#resC2" aria-expanded="true" aria-controls="resC2">
+          <div class="text-primary"><h5>Input table</h5></div>
+       </button>
+    </div>
+    <div id="resC2" class="collapse" aria-labelledby="mIn" data-parent="#accordion">
+       <div class="card-body">
+         <div class="table-responsive">
+ <table class="table table-bordered"><tbody>
+
+ [displMatrix]
+ [k]name[/k][v]inMatrix[/v]
+ [k]dim[/k][v]20[/v]
+ [k]type[/k][v]html[/v]
+ [/displMatrix]
+
+ </tbody>
+ </table>
+ </div>
+       </div>
+    </div>
+ </div>
+
+
+
+ <div class="card">
+    <div class="card-header" id="codeCpp">
+       <button class="btn btn-link" data-toggle="collapse" data-target="#resC3" aria-expanded="true" aria-controls="resC3">
+          <div class="text-primary"><h5>Program in C++</h5></div>
+       </button>
+    </div>
+    <div id="resC3" class="collapse" aria-labelledby="codeCpp" data-parent="#accordion">
+       <div class="card-body">
+           <pre>[k]code001[/k]</pre>
+       </div>
+    </div>
+ </div>
+ </div>
+ 
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000133_/n*!!***!_
+_n*!!***!_cppNotesStatSequenceForIncludingInCode_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+
+
+<pre>
+//*************************************************************************************************
+//*************************************************************************************************
+//* The MIT License (MIT)                                                                         *
+//* Copyright (C) 2024 Ivan Matic                                                                 *
+//*                                                                                               *
+//* Permission is hereby granted, free of charge, to any person obtaining a copy of this          *
+//* software and associated documentation files (the "Software"), to deal in the Software         *
+//* without restriction, including without limitation the rights to use, copy, modify, merge,     *
+//* publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons    *
+//* to whom the Software is furnished to do so, subject to the following conditions:              *
+//*                                                                                               *
+//* The above copyright notice and this permission notice shall be included in all copies or      *
+//* substantial portions of the Software.                                                         *
+//*                                                                                               *
+//* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,           *
+//* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR      *
+//* PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE     *
+//* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR          *
+//* OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER        *
+//* DEALINGS IN THE SOFTWARE.                                                                     *
+//*************************************************************************************************
+
+#ifndef _INCL_STsetmap_CPP
+#define _INCL_STsetmap_CPP
+
+namespace ssm{
+  template<typename KEY> class set{
+  private:
+    class AVLNode{
+    public:
+      KEY value;
+      long leftCount;
+      long rightCount;
+      long height;
+      AVLNode* leftChild;
+      AVLNode* rightChild;
+      AVLNode(){
+        leftChild=nullptr;
+        rightChild=nullptr;
+        leftCount=-17;
+        rightCount=-17;
+      }
+      AVLNode(const KEY& k ) {
+        value = k; leftChild = nullptr;
+        rightChild = nullptr;
+        leftCount=-17;
+        rightCount=-17;
+        height = 1;
+      }
+    }* _dRoot;
+    long _size;
+    long getHeight(AVLNode * );
+    long hDiff(AVLNode * );
+    long redoHeight(AVLNode * );
+    AVLNode* rRotation(AVLNode* );
+    AVLNode* lRotation(AVLNode* );
+    AVLNode* balance(AVLNode* );
+    AVLNode* insertInTree(AVLNode* , const KEY & , long & );
+    AVLNode* getMinNode(AVLNode* );
+    AVLNode* rewireMin(AVLNode* );
+    AVLNode* removeFromTree(AVLNode* , const KEY& , long & );
+    AVLNode* duplicateTree(AVLNode*);
+    void clearAVLTree(AVLNode*);
+    KEY avl_access(AVLNode* , const long & ) const;
+  public:
+    set();
+    set(const set &);
+    set& operator=(const set &);
+    set(set&&);
+    set& operator=(set &&);
+    long size() const;
+    long erase(const KEY & );
+    long erase(const set & );
+    long insert(const KEY & );
+    long insert(const set &);
+    long operator+=(const KEY &);
+    long operator+=(const set &);
+    long operator-=(const KEY &);
+    long operator-=(const set &);
+    std::pair<long,KEY> findIK(const KEY &, const long & = 0) const;
+    long find(const KEY &, const long & = 0) const;
+    long upperBound(const KEY &) const;
+    void clear();
+    KEY operator[](const long & ) const;
+    virtual ~set();
+  };
+  template<typename KEY> long set<KEY>::getHeight(AVLNode * root){
+    if(root==nullptr){
+      return 0;
+    }
+    return root->height;
+  }
+  template<typename KEY> long set<KEY>::hDiff(AVLNode * root){
+    return getHeight(root->rightChild)-getHeight(root->leftChild);
+  }
+  template<typename KEY> long set<KEY>::redoHeight(AVLNode * root){
+    long lHeight = getHeight(root->leftChild);
+    long rHeight = getHeight(root->rightChild);
+    root->height = rHeight;
+    if(lHeight>rHeight){root->height = lHeight;}
+    root->height += 1;
+    return root->height;
+  }
+  template<typename KEY>
+  typename set<KEY>::AVLNode* set<KEY>::rRotation(AVLNode * root){
+    AVLNode * other = root->leftChild;
+    root->leftChild = other->rightChild;
+    other->rightChild = root;
+    long a,c;
+    a= other->leftCount;
+    c= root->rightCount;
+    root->leftCount -= (a+1);
+    other->rightCount += (c+1);
+    redoHeight(root);
+    redoHeight(other);
+    return other;
+  }
+  template<typename KEY>
+  typename set<KEY>::AVLNode * set<KEY>::lRotation(AVLNode * root){
+    AVLNode * other = root->rightChild;
+    root->rightChild = other->leftChild;
+    other->leftChild = root;
+    long a,c;
+    a= other->rightCount;
+    c=root->leftCount;
+    root->rightCount -= (a+1);
+    other->leftCount += (c+1);
+    redoHeight(root);
+    redoHeight(other);
+    return other;
+  }
+  template<typename KEY>
+  typename set<KEY>::AVLNode * set<KEY>::
+  balance(AVLNode * root){
+    redoHeight(root);
+    if( hDiff(root)==2 ){
+      if( hDiff(root->rightChild) < 0 ){
+        root->rightChild = rRotation(root->rightChild);
+      }
+      return lRotation(root);
+    }
+    if( hDiff(root)==-2 ){
+      if( hDiff(root->leftChild) > 0 ){
+        root->leftChild = lRotation(root->leftChild);
+      }
+      return rRotation(root);
+    }
+    return root;
+  }
+  template<typename KEY>
+  typename set<KEY>::AVLNode * set<KEY>::
+  insertInTree(AVLNode * root, const KEY & _value, long & insSucc){
+    if( root==nullptr ){
+      insSucc=1;
+      AVLNode *fR=new AVLNode (_value);
+      fR->leftCount=0;
+      fR->rightCount=0;
+      return fR;
+    }
+    if( _value < root->value ){
+      root->leftChild = insertInTree(root->leftChild,_value,insSucc);
+      if(insSucc==1){
+        root->leftCount+=1;
+      }
+    }
+    else{
+      if(root->value < _value ){
+        root->rightChild = insertInTree(root->rightChild,_value,insSucc);
+        if(insSucc==1){
+          root->rightCount+=1;
+        }
+      }
+      else{
+        insSucc=0;
+        return root;
+      }
+    }
+    if(insSucc==1){
+      return balance(root);
+    }
+    return root;
+  }
+  template<typename KEY>
+  typename set<KEY>::AVLNode * set<KEY>::getMinNode(AVLNode * root){
+    if(root->leftChild==nullptr){
+      return root;
+    }
+    return getMinNode(root->leftChild);
+  }
+  template<typename KEY>
+  typename set<KEY>::AVLNode * set<KEY>::rewireMin(AVLNode * root){
+    if( root->leftChild==nullptr ){
+      return root->rightChild;
+    }
+    root->leftChild = rewireMin(root->leftChild);
+    root->leftCount -= 1;
+    return balance(root);
+  }
+  template<typename KEY>
+  typename set<KEY>::AVLNode *
+        set<KEY>::removeFromTree(AVLNode * root, const KEY& _value,
+           long & remSucc){
+    if( root==nullptr ){
+      remSucc=0;
+      return nullptr;
+    }
+    if( _value < root->value ){
+      root->leftChild = removeFromTree(root->leftChild,_value, remSucc);
+      if(remSucc==1){
+        root->leftCount -=1;
+      }
+    }
+    else{
+      if(root->value < _value ){
+        root->rightChild = removeFromTree(root->rightChild,_value,remSucc);
+        if(remSucc==1){
+          root->rightCount -=1;
+        }
+      }
+      else{
+        AVLNode * lTemp = root->leftChild;
+        AVLNode * rTemp = root->rightChild;
+        long oldleftCount,oldrightCount;
+        oldleftCount=root->leftCount;
+        oldrightCount=root->rightCount;
+        delete root;
+        remSucc=1;
+        if( rTemp == nullptr ){
+          return lTemp;
+        }
+        AVLNode * rightMin = getMinNode(rTemp);
+        rightMin->rightChild = rewireMin(rTemp);
+        rightMin->leftChild = lTemp;
+        rightMin->leftCount=oldleftCount;
+        rightMin->rightCount=oldrightCount-1;
+        remSucc=1;
+        return balance(rightMin);
+      }
+    }
+    return balance(root);
+  }
+  template<typename KEY> void set<KEY>::clearAVLTree(AVLNode *root){
+    if(root!=nullptr){
+      clearAVLTree(root->leftChild);
+      clearAVLTree(root->rightChild);
+      delete root;
+    }
+    return;
+  }
+  template<typename KEY>
+  typename set<KEY>::AVLNode *
+     set<KEY>::duplicateTree(AVLNode *root){
+    AVLNode *newN;
+    newN=nullptr;
+    if(root!=nullptr){
+      newN=new AVLNode;
+      newN->value=root->value;
+      newN->leftCount=root->leftCount;
+      newN->rightCount=root->rightCount;
+      newN->height=root->height;
+      newN->leftChild = duplicateTree(root->leftChild);
+      newN->rightChild= duplicateTree(root->rightChild);
+    }
+    return newN;
+  }
+  template<typename KEY> KEY
+   set<KEY>::avl_access(AVLNode *root, const long &i) const{
+    if(root==nullptr){
+      KEY tempWithRandValue;
+      return tempWithRandValue;
+    }
+    if(i==root->leftCount){
+      return root->value;
+    }
+    if(i<root->leftCount){
+      return avl_access(root->leftChild,i);
+    }
+    return avl_access(root->rightChild, i-root->leftCount-1);
+  }
+  template<typename KEY> set<KEY>::set(){
+    _dRoot=nullptr;
+    _size=0;
+  }
+  template<typename KEY> set<KEY>::set(const set<KEY>& _copyFrom){
+    _dRoot=nullptr;
+    _dRoot= duplicateTree(_copyFrom._dRoot);
+    _size= _copyFrom._size;
+  }
+  template<typename KEY> set<KEY>::set( set<KEY>&& _moveFrom){
+    _size= _moveFrom._size;
+    _moveFrom._size=0;
+    _dRoot=_moveFrom._dRoot;
+    _moveFrom._dRoot=nullptr;
+  }
+  template<typename KEY> set<KEY>&
+    set<KEY>::operator=(const set<KEY>& _copyFrom){
+    if(&_copyFrom!=this){
+      clear();
+      _dRoot= duplicateTree(_copyFrom._dRoot);
+      _size= _copyFrom._size;
+    }
+    return *this;
+  }
+  template<typename KEY> set<KEY>&
+     set<KEY>::operator=( set<KEY>&& _moveFrom){
+    if(&_moveFrom!=this){
+      clear();
+      _size= _moveFrom._size;
+      _dRoot= _moveFrom._dRoot;
+      _moveFrom._size=0;
+      _moveFrom._dRoot=nullptr;
+    }
+    return *this;
+  }
+  template<typename KEY> long set<KEY>::size() const{
+    return _size;
+  }
+  template<typename KEY> set<KEY>::~set(){
+    clear();
+  }
+  template<typename KEY> void set<KEY>::clear(){
+    _size=0;
+    clearAVLTree(_dRoot);
+    _dRoot=nullptr;
+  }
+  template<typename KEY> long set<KEY>::erase(const KEY & _value){
+    long delSucc=0;
+    _dRoot=removeFromTree(_dRoot,_value,delSucc);
+    if(delSucc==1){
+      --_size;
+    }
+    return delSucc;
+  }
+  template<typename KEY> long set<KEY>::insert(const KEY & _value){
+    long addSucc=0;
+    _dRoot=insertInTree(_dRoot,_value,addSucc);
+    if(addSucc==1){
+      ++_size;
+    }
+    return addSucc;
+  }
+  template<typename KEY> long set<KEY>::insert(const set<KEY> & _s2){
+    long l2=_s2.size();
+    long fR=0;
+    for(int i=0;i<l2;++i){
+      fR+= insert(_s2[i]);
+    }
+    return fR;
+  }
+  template<typename KEY> long set<KEY>::erase(const set<KEY> & _s2){
+    long l2=_s2.size();
+    long fR=0;
+    for(int i=0;i<l2;++i){
+      fR+= erase(_s2[i]);
+    }
+    return fR;
+  }
+  template<typename KEY> long set<KEY>::operator+=(const KEY & _value){
+    return insert(_value);
+  }
+  template<typename KEY> long set<KEY>::operator+=(const set<KEY> & _s){
+    return insert(_s);
+  }
+  template<typename KEY> long set<KEY>::operator-=(const KEY & _value){
+    return erase(_value);
+  }
+  template<typename KEY> long set<KEY>::operator-=(const set<KEY> & _s){
+    return erase(_s);
+  }
+  template<typename KEY> KEY set<KEY>::operator[](const long & i) const{
+    if((i>-1)&&(i<_size)){
+      return avl_access(_dRoot,i);
+    }
+    KEY irrelevantValue;
+    return irrelevantValue;
+  }
+  template<typename KEY> std::pair<long,KEY>
+  set<KEY>::findIK(const KEY & _v,
+      const long & upperBoundInsteadOfNegOne) const{
+    AVLNode* researcher= _dRoot;
+    std::pair<long, KEY> found;
+    found.first=-1;
+    long discardedLeft=0;
+    while( (researcher!=nullptr)&&(found.first==-1)){
+      if(_v<researcher->value){
+        researcher=researcher->leftChild;
+      }
+      else{
+        if(researcher->value < _v){
+          discardedLeft+=researcher->leftCount+1;
+          researcher=researcher->rightChild;
+        }
+        else{
+          found.first=discardedLeft+researcher->leftCount;
+          found.second=researcher->value;
+        }
+      }
+    }
+    if(found.first*upperBoundInsteadOfNegOne==-1){
+      found.first=discardedLeft;
+    }
+    return found;
+  }
+  template<typename KEY> long
+  set<KEY>::find(const KEY & _v,
+      const long & upperBoundInsteadOfNegOne) const{
+     return findIK(_v,upperBoundInsteadOfNegOne).first;
+  }
+  template<typename KEY> long
+    set<KEY>::upperBound(const KEY & _v) const{
+    return find(_v,1);
+  }
+  template<typename KEY, typename VAL> class map{
+  private:
+    struct CompPair{
+    public:
+      KEY k;
+      VAL v;
+      int operator<(const CompPair& ) const;
+    };
+    set<CompPair> s;
+  public:
+    long size() const;
+    long erase(const KEY & );
+    long erase(const map & );
+    long insert(const KEY & , const VAL &);
+    long insert(const map &);
+    std::pair<long,std::pair<KEY,VAL> >
+    findIKV(const KEY & , const long & = 0) const;
+    long find(const KEY &, const long & = 0) const;
+    long upperBound(const KEY &) const;
+    void clear();
+    std::pair<KEY,VAL> operator[](const long & ) const;
+  };
+  template<typename KEY, typename VAL>
+  int map<KEY,VAL>::CompPair::operator<(const CompPair& oth) const{
+    if(k<oth.k){return 1;}
+    return 0;
+  }
+  template<typename KEY, typename VAL>
+  long map<KEY,VAL>::size() const{
+    return s.size();
+  }
+  template<typename KEY, typename VAL>
+  long map<KEY,VAL>::erase(const KEY & _k){
+    CompPair p;
+    p.k=_k;
+    return s.erase(p);
+  }
+  template<typename KEY, typename VAL>
+  long map<KEY,VAL>::erase(const map<KEY,VAL>& _m){
+    return s.erase(_m.s);
+  }
+  template<typename KEY, typename VAL>
+  long map<KEY,VAL>::insert(const KEY& _k, const VAL& _v){
+    CompPair p;
+    p.k=_k;p.v=_v;
+    return s.insert(p);
+  }
+  template<typename KEY, typename VAL>
+  long map<KEY,VAL>::insert(const map<KEY,VAL>& _m){
+    return s.insert(_m.s);
+  }
+  template<typename KEY, typename VAL>
+  std::pair<long, std::pair<KEY,VAL> >
+  map<KEY,VAL>::findIKV(const KEY & _k,
+  const long & upperBoundInsteadOfNegOne) const{
+     CompPair p;
+     p.k=_k;
+     std::pair<long, CompPair> res=s.findIK(p,upperBoundInsteadOfNegOne);
+     std::pair<long,std::pair<KEY,VAL> > retVal;
+     retVal.first=res.first;
+     retVal.second.first=res.second.k;
+     retVal.second.second=res.second.v;
+     return retVal;
+  }
+  template<typename KEY, typename VAL>
+  long map<KEY,VAL>::find(const KEY & _k,
+    const long & upperBoundInsteadOfNegOne) const{
+    CompPair p;
+    p.k=_k;
+    return s.find(p,upperBoundInsteadOfNegOne);
+  }
+  template<typename KEY, typename VAL>
+  long map<KEY,VAL>::upperBound(const KEY & _k) const{
+    return find(_k,1);
+  }
+  template<typename KEY, typename VAL>
+  void map<KEY,VAL>::clear(){
+    s.clear();
+  }
+  template<typename KEY, typename VAL>
+  std::pair<KEY,VAL> map<KEY,VAL>::operator[](const long & j) const{
+    std::pair<KEY,VAL> res;
+    CompPair p=s[j];
+    res.first=p.k; res.second=p.v;
+    return res;
+  }
+}
+#endif</pre>
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000134_/n*!!***!_
+_n*!!***!_cppNotesNumbersWorkForIncludingInCode_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+ <pre>
+ //*************************************************************************************************
+ //*************************************************************************************************
+ //* The MIT License (MIT)                                                                         *
+ //* Copyright (C) 2024 Ivan Matic                                                                 *
+ //*                                                                                               *
+ //* Permission is hereby granted, free of charge, to any person obtaining a copy of this          *
+ //* software and associated documentation files (the "Software"), to deal in the Software         *
+ //* without restriction, including without limitation the rights to use, copy, modify, merge,     *
+ //* publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons    *
+ //* to whom the Software is furnished to do so, subject to the following conditions:              *
+ //*                                                                                               *
+ //* The above copyright notice and this permission notice shall be included in all copies or      *
+ //* substantial portions of the Software.                                                         *
+ //*                                                                                               *
+ //* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,           *
+ //* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR      *
+ //* PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE     *
+ //* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR          *
+ //* OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER        *
+ //* DEALINGS IN THE SOFTWARE.                                                                     *
+ //*************************************************************************************************
+
+ #ifndef _INCL_NW_CPP
+ #define _INCL_NW_CPP
+ namespace BF{
+   double GLOBAL_EPSILON=0.000000001;
+   const char CONST_DECIMAL_SEPARATOR='.';
+   const std::string CONST_DECIMAL_SEPARATOR_ST=".";
+   const char CONST_THOUSANDS_SEPARATOR=',';
+   const std::string CONST_THOUSANDS_SEPARATOR_ST=",";
+   int isNumeric(const std::string & s,const long & tolerateSignsInFront = 1){
+     long sz=s.length();
+     long i=0;
+     long numDecPoints=0;
+     int res=1;
+     if(tolerateSignsInFront){
+       while( (i<sz) && ((s[i]=='-')||(s[i]=='+'))){
+         ++i;
+       }
+     }
+     while((res==1)&&(i<sz)){
+       if(s[i]==CONST_DECIMAL_SEPARATOR){
+         ++numDecPoints;
+       }
+       else{
+         if((s[i]!=CONST_THOUSANDS_SEPARATOR)&&((s[i]<'0')||(s[i]>'9'))){
+           res=0;
+         }
+       }
+       if(numDecPoints>1){res=0;}
+       ++i;
+     }
+     return res;
+   }
+   std::string makeItZeroIfNotNumeric(const std::string &s, const long & tolerateSignsInFront = 1){
+     if(isNumeric(s,tolerateSignsInFront)){
+       return s;
+     }
+     return "0";
+   }
+   std::string padded(const long & _x,const long & _d, const std::string &paddingSt=" "){
+     // Examples:
+     // BF::padded(3,100,"0")=003
+     // BF::padded(33,100,"0")=033
+     // BF::padded(0,100,"0")=000
+     // BF::padded(33,100000,"0")=000033
+       long x=_x;
+       if(x<0){x*=-1;}
+       long d=_d;
+       std::string fR="";
+       while(d>x){
+           fR+=paddingSt;
+           d/=10;
+       }
+       if(x>0){fR+=std::to_string(x);}
+       return fR;
+   }
+   std::string removeASCII10AND13(const std::string &_input,const std::string & _replaceWith=""){
+       std::string output;
+       long len=_input.length();
+       long i=0;
+       while(i<len){
+           if(( static_cast<long>(_input[i])!=13)&&( static_cast<long>(_input[i])!=10)){
+               output+=_input[i];
+           }
+           else{
+             output+=_replaceWith;
+           }
+           ++i;
+       }
+       return output;
+   }
+   std::string cleanSpaces(const std::string & _input, const int & removeAllSpaces=0, const int & remove10And13 = 1){
+       // removes double space characters
+       // removes leading spaces in string
+       std::string input=_input;
+       if(remove10And13){input=removeASCII10AND13(_input);}
+       std::string output="";
+       int spaceBefore=1;
+       int spaceNow;
+       long len=input.length();
+       for(long i=0;i<len;++i){
+           spaceNow=0;
+           if((input[i]==' ')||(input[i]=='\t')||(input[i]=='\n')||(static_cast<long>(input[i])==13)){
+               spaceNow=1;
+           }
+           if(spaceNow!=1){
+               output+=input[i];
+               spaceBefore=0;
+           }
+           else{
+               if(spaceBefore!=1){
+                   if(removeAllSpaces==0){output+=input[i];}
+               }
+               spaceBefore=1;
+           }
+       }
+       return output;
+   }
+   std::string cleanAllSpaces(const std::string &_input){
+     return cleanSpaces(_input,1);
+   }
+   long stringToInteger(const std::string &_s){
+     std::string t=cleanSpaces(_s,1);
+     long sign=1;
+     long pos=0;
+     long len=t.length();
+     if(len<1){
+       return 0;
+     }
+     long fR=0;
+       while((pos<len)&&((t[pos]=='+')||(t[pos]=='-'))){
+           if(t[pos]=='-'){
+               sign *=-1;
+           }
+           ++pos;
+       }
+     long zero=static_cast<long>('0');
+     while(pos<len){
+       if(t[pos]!=CONST_THOUSANDS_SEPARATOR){
+         fR*=10;
+         fR+=static_cast<long>(t[pos])-zero;
+       }
+       ++pos;
+     }
+     fR*=sign;
+     return fR;
+   }
+   std::string removeNonNumericStart(const std::string & _s){
+     std::string res;
+     long sz=_s.length();
+     int stillOK=1;
+     while(stillOK&&(sz>0)){
+       --sz;
+       if( (_s[sz]>='0')&&(_s[sz]<='9') ){
+         res = _s[sz]+res;
+       }
+       else{
+         stillOK=1;
+       }
+     }
+     if(sz<1){return res;}
+     stillOK=0;++sz;
+     while(stillOK && (sz>0)){
+       --sz;
+       if( (_s[sz]=='-')||(_s[sz]=='+')){
+         res = _s[sz] + res;
+       }
+       else{
+         if( (_s[sz]!=' ')&&(_s[sz]!='\t')&&(_s[sz]!='\n') ){
+           stillOK=0;
+         }
+       }
+     }
+     return res;
+   }
+   long stringToIntegerRemoveStart(const std::string& _s){
+     return stringToInteger(removeNonNumericStart(_s));
+   }
+   long stringToIntegerRemoveStartAndEnd(const std::string& _s, long maxInt=1000000){
+     long res=0;
+     long i=0; long sz=_s.length();
+     long zero=static_cast<long>('0');
+     if(maxInt<1){maxInt=1000000;}
+     while((i<sz)&&((_s[i]<'0')||(_s[i]>'9'))){++i;}
+     while((i<sz)&&(_s[i]>='0')&&(_s[i]<='9')){
+       res*=10;
+       res+=static_cast<long>(_s[i])-zero;
+       res%=maxInt;
+       ++i;
+     }
+     return res;
+   }
+   double stringToDouble(const std::string &_s){
+     std::string t=cleanSpaces(_s,1);
+     double sign=1.0;
+     long pos=0;
+     long len=t.length();
+     if(len<1){
+       return 0.0;
+     }
+     double fR=0.0;
+       while((pos<len)&&((t[pos]=='+')||(t[pos]=='-'))){
+           if(t[pos]=='-'){
+               sign *=-1.0;
+           }
+           ++pos;
+       }
+     double zero=static_cast<double>(static_cast<long>('0'));
+     while((pos<len)&&(t[pos]!=CONST_DECIMAL_SEPARATOR)){
+       if(t[pos]!=CONST_THOUSANDS_SEPARATOR){
+         fR*=10.0;
+         fR+=static_cast<long>(t[pos])-zero;
+       }
+       ++pos;
+     }
+     if(pos<len){
+       // We reached the decimal separator
+       double decimalMultiplier=0.1;
+       ++pos;
+       while(pos<len){
+         fR+= decimalMultiplier*(static_cast<double>( (t[pos]))-zero);
+         decimalMultiplier*=0.1;
+         ++pos;
+       }
+     }
+     fR*=sign;
+     return fR;
+   }
+   std::string eraseTrailingZeros(const std::string &st){
+     long len=st.length();
+     long pos=len-1;int decimalSeparatorFound=0;
+     while((pos>-1)&&(st[pos]=='0')){
+       --pos;
+     }
+     if((pos>-1)&&(st[pos]==CONST_DECIMAL_SEPARATOR)){
+       --pos;decimalSeparatorFound=1;
+     }
+     if(pos==-1){
+       return "0";
+     }
+     std::string output="";
+     ++pos;
+     for(long i=0;i<pos;++i){
+       output+=st[i];
+       if(st[i]==CONST_DECIMAL_SEPARATOR){decimalSeparatorFound=1;}
+     }
+     if(decimalSeparatorFound==0){
+       return st;
+     }
+     return output;
+   }
+     std::string forceDecimals(const double& _d, const long& nD){
+     double d=_d;std::string stSign="";
+     if(d<0){d=(-1.0)*d;stSign="-";}
+     double modified=d;
+     for(long i=0;i<nD;++i){
+       modified *= 10.0;
+     }
+     modified *= 10.0;
+     long intVal=static_cast<long>(modified);
+     long roundUp=0;
+     if(intVal%10>4){roundUp=1;}
+     intVal/=10;
+     intVal+=roundUp;
+     std::string result; int dotPrinted=0;
+     long i=0;
+     if(intVal==0){
+       if(nD<1){
+         return "0";
+       }
+       result="0"+CONST_DECIMAL_SEPARATOR_ST;
+       for(long i=0;i<nD;++i){
+         result+="0";
+       }
+       return result;
+     }
+     if(nD<1){
+       return stSign+std::to_string(intVal);
+     }
+     while(intVal>0){
+       result = std::to_string(intVal%10)+result;
+       ++i;
+       if(i==nD){
+         result = CONST_DECIMAL_SEPARATOR_ST+result;
+         dotPrinted=1;
+       }
+       intVal/=10;
+     }
+     while(i<nD){
+       result = "0"+result;
+       ++i;
+     }
+     if(dotPrinted==0){
+       result= CONST_DECIMAL_SEPARATOR_ST+result;
+     }
+     if(result[0]==CONST_DECIMAL_SEPARATOR){
+       result = "0"+result;
+     }
+     return stSign+result;
+   }
+   std::string double_to_string_withPrecision(const double & d, const long &p){
+     std::ostringstream tmp;
+     tmp.precision(p);
+     tmp<<std::fixed;
+     tmp<<d;
+     return tmp.str();
+   }
+   std::string doubleToString(const double &d,const long &precision=19){
+     return eraseTrailingZeros(double_to_string_withPrecision(d,precision));
+   }
+   double round(const double & f, const double & d){
+     if(f< -GLOBAL_EPSILON){
+       return -round(-f,d);
+     }
+     double result;
+     if(d<-GLOBAL_EPSILON){
+       return f;//cannot round to negative number of digits
+     }
+     long dL= static_cast<long>(d+GLOBAL_EPSILON);
+     double multiplier=0.1;
+     double shiftedF=f;
+     ++dL;
+     for(long i=0;i<dL;++i){
+       multiplier *= 10.0;
+       shiftedF *= 10.0;
+     }
+     long fForNextDigitInt = static_cast<long>(shiftedF+GLOBAL_EPSILON);
+     long nextDigit=fForNextDigitInt % 10;
+     if(nextDigit>4){
+       fForNextDigitInt += 10;
+     }
+     fForNextDigitInt/=10;
+     return (static_cast<double>(fForNextDigitInt)/multiplier);
+   }
+   double calculateTax(const std::vector<double>& b, const std::vector<double>& r, double x){
+     long len=b.size();
+     double tax=0.0;
+     long counter=0;
+     double prevBarrier=0.0;
+     while((x>=prevBarrier)&&(counter<len)){
+       if((counter==len-1)||(x<=b[counter])){
+         tax+=(x-prevBarrier)*r[counter];
+       }
+       else{
+         tax+=(b[counter]-prevBarrier)*r[counter];
+       }
+       prevBarrier=b[counter];
+       ++counter;
+     }
+     return tax;
+   }
+
+ double calculateTaxTable(const std::vector<double>& b, const std::vector<double>& r, double x){
+   long k=static_cast<long>(x/50.0+0.0000001);
+   double lb=k*50.0;
+   double ub=(k+1)*50.0;
+   return 0.5*(calculateTax(b,r,lb)+calculateTax(b,r,ub));
+ }
+   std::string summaryRow(const std::string& form, const std::string& line, const std::string& desc, const std::string& stValue){
+     return "<tr><td>"+form+"</td><td>"+line+"</td><td>"+desc+"</td><td class=\"text-end\">"+stValue+"</td></tr>\n";
+   }
+   std::string summaryRow(const std::string& form, const std::string& line, const std::string& desc, const double& dValue){
+     return summaryRow(form,line,desc,dValue);
+   }
+ }
+ namespace LALG{
+   template<typename TTT>
+   int rowOperationSwitch(std::vector<std::vector <TTT> >& leftM, std::vector <std::vector <TTT> >& rightM, long i, long j){
+       TTT temp;
+       long k;
+       for(k=0;k<(leftM).size();++k){
+           temp=(leftM)[i][k];
+           (leftM)[i][k]=(leftM)[j][k];
+           (leftM)[j][k]=temp;
+           temp=(rightM)[i][k];
+           (rightM)[i][k]=(rightM)[j][k];
+           (rightM)[j][k]=temp;
+       }
+       return 1;
+   }
+   template<typename TTT>
+   int rowOperationDivide(std::vector<std::vector <TTT> >& leftM, std::vector <std::vector <TTT> >& rightM, long i,TTT divNum){
+       for(long k=0;k<(leftM).size();++k){
+           (leftM)[i][k] =  ((leftM)[i][k])/divNum;
+           (rightM)[i][k] =   ((rightM)[i][k])/divNum;
+       }
+       return 1;
+   }
+   template<typename TTT>
+   int rowOperation3(std::vector<std::vector <TTT> >& leftM, std::vector <std::vector <TTT> >& rightM,
+                     long i, long j, TTT multNum){
+                   //i-th row becomes: old ith- multNum *j-th row
+       for(long k=0;k<(leftM).size();++k){
+           (leftM)[i][k] -=  (leftM)[j][k] * multNum;
+           (rightM)[i][k] -= (rightM)[j][k] * multNum;
+       }
+       return 1;
+   }
+   template<typename TTT>
+   std::vector<std::vector <TTT> > inverse(std::vector <std::vector <TTT> > mat){
+       long dim=mat.size();
+       std::vector<std::vector <TTT> > inv;
+       std::vector<std::vector <TTT> >zeroMatrix;
+       std::vector<TTT> tempZero;
+       long i,j;
+       tempZero.resize(dim);
+       for(long i=0;i<dim;++i){tempZero[i]=0;}
+       zeroMatrix.resize(dim);inv.resize(dim);
+       for(long i=0;i<dim;++i){
+         zeroMatrix[i]=tempZero;
+         tempZero[i]=1;
+         inv[i]=tempZero;
+         tempZero[i]=0;
+       }
+       for(i=0;i<dim;++i){
+           j=i;
+           while((j<dim) &&(mat[j][i]==0)){++j;}
+           if (j==dim){
+               return zeroMatrix;
+           }
+           if(i!=j){
+               rowOperationSwitch(mat, inv, i,  j);
+           }
+           rowOperationDivide(mat,inv,i,mat[i][i]);
+           for(j=0;j<dim;++j){
+               if(j!=i){
+                   rowOperation3(mat,inv,j,i,mat[j][i]);
+               }
+           }
+       }
+       return inv;
+   }
+   template<typename TTT>
+   int rowOperationSwitchSys(std::vector<std::vector <TTT> >& leftM, std::vector <TTT>& rightCol, long i, long j){
+       TTT temp;
+       long k;
+       for(k=0;k<(leftM).size();++k){
+           temp=(leftM)[i][k];
+           (leftM)[i][k]=(leftM)[j][k];
+           (leftM)[j][k]=temp;
+       }
+       temp=(rightCol)[i];
+       (rightCol)[i]=(rightCol)[j];
+       (rightCol)[j]=temp;
+       return 1;
+   }
+   template<typename TTT>
+   int rowOperationDivideSys(std::vector<std::vector <TTT> >& leftM, std::vector <TTT>& rightCol, long i,TTT divNum){
+       for(long k=0;k<(leftM).size();++k){
+           (leftM)[i][k] =  ((leftM)[i][k])/divNum;
+       }
+       (rightCol)[i] =   ((rightCol)[i])/divNum;
+       return 1;
+   }
+   template<typename TTT>
+   int rowOperation3Sys(std::vector<std::vector <TTT> >& leftM, std::vector  <TTT>& rightCol,
+                     long i, long j, TTT multNum){
+       //i-th row becomes: old ith- multNum *j-th row
+       for(long k=0;k<(leftM).size();++k){
+           (leftM)[i][k] -=  (leftM)[j][k] * multNum;
+       }
+       (rightCol)[i]  -= (rightCol)[j] * multNum;
+       return 1;
+   }
+   template<typename TTT>
+   std::vector<std::vector<TTT> > subMatrix(const std::vector<std::vector<TTT> >& M,
+                                            const long& tl_row, const long& tl_col,
+                                            const long& numRows,
+                                            const long& _numCols=-1){
+     std::vector<std::vector<TTT> > res;
+     long numCols=_numCols;
+     if(numCols<0){numCols=numRows;}
+     if(numRows<1){return res;}
+     long maxR=M.size();
+     if(maxR<1){return res;}
+     long maxC=M[0].size();
+     if(maxC<1){return res;}
+     std::vector<TTT> row;
+     row.resize(numCols);res.resize(numRows);
+     long m_r,m_c;
+     for(long c=0;c<numCols;++c){row[c]=0;}
+     for(long r=0;r<numRows;++r){res[r]=row;}
+     for(long r=0;r<numRows;++r){
+       for(long c=0;c<numCols;++c){
+         m_r=tl_row+r;
+         m_c=tl_col+c;
+         if( (m_r>-1)&&(m_r<maxR) ){
+           if((m_c>-1)&&(m_c<maxC)){
+             res[r][c]=M[m_r][m_c];
+           }
+         }
+       }
+     }
+     return res;
+   }
+
+   template<typename TTT>
+   int copySubMatrix(std::vector<std::vector<TTT> >& M, const std::vector<std::vector<TTT> >& S,
+                     const long& tl_row=0, const long& tl_col=0){
+     long maxR=M.size();
+     if(maxR<1){return 0;}
+     long maxC=M[0].size();
+     long s_numR=S.size();
+     if(s_numR<1){return 0;}
+     long s_numC=S[0].size();
+     if(s_numC<1){return 0;}
+     if(tl_row+s_numR>maxR){return 0;}
+     if(tl_col+s_numC>maxC){return 0;}
+     for(long r=0;r<s_numR;++r){
+       for(long c=0;c<s_numC;++c){
+         M[tl_row+r][tl_col+c]=S[r][c];
+       }
+     }
+     return 1;
+   }
+   template<typename TTT>
+   int solve(std::vector <std::vector <TTT> >  Mat, std::vector <TTT> b, std::vector <TTT> &sol){
+       //return 0 if no solutions or infinitely many solutions
+       long n=Mat.size();
+       long i,j;
+       TTT helpNum;
+       for(i=0;i<n;++i){
+           j=i;
+           while((j<n) &&(Mat[j][i]==0)){++j;}
+           if (j==n){return 0;}
+           if(i!=j){
+               rowOperationSwitchSys(Mat, b, i,  j);
+           }
+           rowOperationDivideSys(Mat,b,i,Mat[i][i]);
+           for(j=0;j<n;++j){
+               if(i!=j){
+                   helpNum=Mat[j][i];
+                   rowOperation3Sys(Mat,b,j,i,helpNum);
+               }
+           }
+       }
+       sol=b;
+       return 1;
+   }
+ }
+ #endif </pre>
+
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000135_/n*!!***!_
+_n*!!***!_mortgage_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_formTemplate_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+   <p></p>
+<h1>Mortgage Calculations</h1>
+
+<pre>
+[include]
+[p]mortgageFillOut[/p]
+[p]mortgageCalc[/p]
+[p]mortgageProgram[/p]
+[/include]
+</pre>
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000136_/n*!!***!_
+_n*!!***!_mortgageLatexSrc_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_latexSource_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+  \begin{document}
+
+\end{document}
+
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000137_/n*!!***!_
+_n*!!***!_mortgagehtmlSrc_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+
+ _textData!!_
+
+<p></p>
+<h1>Mortgage Calculations</h1>
+
+
+ <table class="table table-striped">
+<thead class="table-dark">
+<tr>
+<th>Loan</th>
+<th>Interest rate</th>
+<th>Loan length</th>
+<th>Total interest</th>
+<th>Monthly payment</th>
+<th>Interest first month</th>
+<th>Interest first 12 months</th>
+</tr>
+ </thead><tbody>
+<tr>
+<td>[k]loanTotal01[/k]</td>
+<td>[k]interestRate01[/k]</td>
+<td>[k]length01[/k]</td>
+<td>[k]totalInt01[/k]</td>
+<td>[k]monthly01[/k]</td>
+<td>[k]firstMonthI01[/k]</td>
+<td>[k]firstYearI01[/k]</td>
+</tr>
+<tr>
+<td>[k]loanTotal02[/k]</td>
+<td>[k]interestRate02[/k]</td>
+<td>[k]length02[/k]</td>
+<td>[k]totalInt02[/k]</td>
+<td>[k]monthly02[/k]</td>
+<td>[k]firstMonthI02[/k]</td>
+<td>[k]firstYearI02[/k]</td>
+</tr>
+
+
+<tr>
+<td>[k]loanTotal03[/k]</td>
+<td>[k]interestRate03[/k]</td>
+<td>[k]length03[/k]</td>
+<td>[k]totalInt03[/k]</td>
+<td>[k]monthly03[/k]</td>
+<td>[k]firstMonthI03[/k]</td>
+<td>[k]firstYearI03[/k]</td>
+</tr>
+
+
+<tr>
+<td>[k]loanTotal04[/k]</td>
+<td>[k]interestRate04[/k]</td>
+<td>[k]length04[/k]</td>
+<td>[k]totalInt04[/k]</td>
+<td>[k]monthly04[/k]</td>
+<td>[k]firstMonthI04[/k]</td>
+<td>[k]firstYearI04[/k]</td>
+</tr>
+
+
+<tr>
+<td>[k]loanTotal05[/k]</td>
+<td>[k]interestRate05[/k]</td>
+<td>[k]length05[/k]</td>
+<td>[k]totalInt05[/k]</td>
+<td>[k]monthly05[/k]</td>
+<td>[k]firstMonthI05[/k]</td>
+<td>[k]firstYearI05[/k]</td>
+</tr>
+</tbody>
+</table>
+
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000138_/n*!!***!_
+_n*!!***!_mortgageFillOut_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+  <p></p>
+<h1>Mortgage rates</h1>
+
+<pre>
+[p]
+   [k]maxNumberOfFiles[/k]
+   [v]10[/v]
+[/p]
+[p]
+   [k]fillOut[/k]
+   [v]
+
+
+        [p]
+           [k]loanTotal01[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Total loan amount<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]quickLink[/k]
+                    [v]Input data[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]0[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]0[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+        [p]
+           [k]interestRate01[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Interest rate (in $\%$)<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]3[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]0[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]1[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+
+        [p]
+           [k]length01[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Length (in months)<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]0[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+        [p]
+           [k]loanTotal02[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Total loan amount<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]quickLink[/k]
+                    [v]Input data[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]1[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]0[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+        [p]
+           [k]interestRate02[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Interest rate (in $\%$)<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]3[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]1[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]1[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+
+        [p]
+           [k]length02[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Length (in months)<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]1[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+        [p]
+           [k]loanTotal03[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Total loan amount<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]quickLink[/k]
+                    [v]Input data[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]0[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+        [p]
+           [k]interestRate03[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Interest rate (in $\%$)<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]3[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]1[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+
+        [p]
+           [k]length03[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Length (in months)<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+        [p]
+           [k]loanTotal04[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Total loan amount<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]quickLink[/k]
+                    [v]Input data[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]3[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]0[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+        [p]
+           [k]interestRate04[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Interest rate (in $\%$)<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]3[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]3[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]1[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+
+        [p]
+           [k]length04[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Length (in months)<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]3[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+        [p]
+           [k]loanTotal05[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Total loan amount<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]quickLink[/k]
+                    [v]Input data[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]4[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]0[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+        [p]
+           [k]interestRate05[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Interest rate (in $\%$)<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]3[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]4[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]1[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+
+
+
+        [p]
+           [k]length05[/k]
+           [v]
+              [p]
+                    [k]description[/k]
+                    [v]Length (in months)<br> [/v]
+              [/p]
+              [p]
+                    [k]variableType[/k]
+                    [v]double[/v]
+              [/p]
+
+              [p]
+                    [k]numberOfDecimals[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]matrixName[/k]
+                    [v]mData[/v]
+              [/p]
+              [p]
+                    [k]rowPosition[/k]
+                    [v]4[/v]
+              [/p]
+              [p]
+                    [k]colPosition[/k]
+                    [v]2[/v]
+              [/p]
+              [p]
+                    [k]displayWidth[/k]
+                    [v]20[/v]
+              [/p]
+           [/v]
+        [/p]
+
+
+   [/v]
+[/p]
+[p]
+   [k]calcResult[/k]
+   [v]
+</pre>
+
+
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000139_/n*!!***!_
+_n*!!***!_mortgageCalc_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+     <p></p>
+<h1>Mortgage Calculated Variables</h1>
+
+<pre>
+</pre>
+
+
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000140_/n*!!***!_
+_n*!!***!_mortgageProgram_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+ <p></p>
+<h1>Program for Mortgage calculations</h1>
+<pre>
+   [/v]
+[/p]
+[p]
+   [k]program[/k]
+   [v]
+           [p][k]language[/k][v]cpp[/v][/p]
+           [p]
+           [k]includes[/k]
+           [v]
+              [p]iostream[/p]
+              [p]set[/p]
+              [p]map[/p]
+              [p]cmath[/p]
+              [p]vector[/p]
+              [p]string[/p]
+              [p]iomanip[/p]
+              [p]fstream[/p]
+              [p]sstream[/p]
+              [p]streambuf[/p]
+           [/v]
+           [/p]
+           [p]
+           [k]compilerFlags[/k]
+           [v]-std=c++11[/v]
+           [/p]
+           [p]
+           [k]dbIncludes[/k]
+           [v]
+              [p]cppNotesStatSequenceForIncludingInCode[/p]
+              [p]cppNotesNumbersWorkForIncludingInCode[/p]
+           [/v]
+           [/p]
+           [p]
+           [k]source[/k]
+           [v]
+template <typename TTT> TTT minimum(const TTT&a, const TTT& b){
+   if(a<b){return a;}
+   return b;
+}
+template <typename TTT> TTT square(const TTT&a){
+   return a*a;
+}
+std::string removeNonNumeric(const std::string& in){
+  std::string out;
+  long sz=in.length();
+  long i=0;
+  while(i<sz){
+    if( (in[i]>='0') && (in[i]<='9') ){
+      out += in[i];
+    }
+    ++i;
+  }
+  return out;
+}
+std::string substring(const std::string& in, const long& st, const long& en){
+  std::string out;
+  long sz=in.length();
+  long i=st;
+  while((i<sz)&&(i<en)){
+    out+=in[i];
+    ++i;
+  }
+  return out;
+}
+[#]IOStructures[/#]
+double power(double a, double b){
+  return std::exp(b*std::log(a));
+}
+double totalInterest(const double& t, const double& iR, const double& C, const double& nMonths){
+  double rhoP=(iR/12.0)+1.0;
+  double res=t*(power(rhoP,nMonths)-1.0);
+  res-= C*rhoP*( power(rhoP,nMonths-1.0)-1.0)/(iR/12.0);
+  res+=C*(nMonths-1.0);
+  return res;
+}
+void calcPayments(const double& t, const double& iRP, const double& len,
+                                     double& totalInt, double& monthly, double& firstMonthInt, double& firstYearInt){
+  if(t<0.001){return ;}
+  double iR=iRP/100.0;
+  if(iR<0.0001){return ;}
+  if(len<1.001){return ;}
+  double mI=iR/12.0;
+  firstMonthInt=t*mI;
+  double rhoPN=power(1.0+mI,len);
+  monthly=t*rhoPN*mI/(rhoPN-1.0);
+  totalInt=monthly*len-t;
+  firstYearInt=totalInterest(t,iR,monthly,12);
+}
+int main(){
+  [var]totalInt01;double;2[/var]  [var]monthly01;double;2[/var]  [var]firstMonthI01;double;2[/var]  [var]firstYearI01;double;2[/var]
+  [var]totalInt02;double;2[/var]  [var]monthly02;double;2[/var]  [var]firstMonthI02;double;2[/var]  [var]firstYearI02;double;2[/var]
+  [var]totalInt03;double;2[/var]  [var]monthly03;double;2[/var]  [var]firstMonthI03;double;2[/var]  [var]firstYearI03;double;2[/var]
+  [var]totalInt04;double;2[/var]  [var]monthly04;double;2[/var]  [var]firstMonthI04;double;2[/var]  [var]firstYearI04;double;2[/var]
+  [var]totalInt05;double;2[/var]  [var]monthly05;double;2[/var]  [var]firstMonthI05;double;2[/var]  [var]firstYearI05;double;2[/var]
+  calcPayments(GLOBAL_input._loanTotal01,
+                              GLOBAL_input._interestRate01,
+                              GLOBAL_input._length01,
+                              GLOBAL_output._totalInt01,
+                              GLOBAL_output._monthly01,
+                              GLOBAL_output._firstMonthI01,
+                              GLOBAL_output._firstYearI01);
+  calcPayments(GLOBAL_input._loanTotal02,
+                              GLOBAL_input._interestRate02,
+                              GLOBAL_input._length02,
+                              GLOBAL_output._totalInt02,
+                              GLOBAL_output._monthly02,
+                              GLOBAL_output._firstMonthI02,
+                              GLOBAL_output._firstYearI02);
+  calcPayments(GLOBAL_input._loanTotal03,
+                              GLOBAL_input._interestRate03,
+                              GLOBAL_input._length03,
+                              GLOBAL_output._totalInt03,
+                              GLOBAL_output._monthly03,
+                              GLOBAL_output._firstMonthI03,
+                              GLOBAL_output._firstYearI03);
+  calcPayments(GLOBAL_input._loanTotal04,
+                              GLOBAL_input._interestRate04,
+                              GLOBAL_input._length04,
+                              GLOBAL_output._totalInt04,
+                              GLOBAL_output._monthly04,
+                              GLOBAL_output._firstMonthI04,
+                              GLOBAL_output._firstYearI04);
+  calcPayments(GLOBAL_input._loanTotal05,
+                              GLOBAL_input._interestRate05,
+                              GLOBAL_input._length05,
+                              GLOBAL_output._totalInt05,
+                              GLOBAL_output._monthly05,
+                              GLOBAL_output._firstMonthI05,
+                              GLOBAL_output._firstYearI05);
+  [#]printOutput[/#]
+  return 0;
+}
+           [/v]
+           [/p]
+   [/v]
+[/p]
+[p][k]htmlSource[/k][v]mortgagehtmlSrc[/v][/p]
+</pre>
+
+
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000141_/n*!!***!_
+_n*!!***!_tables_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_everyone_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+
+
+ _textData!!_
+
+                     <p></p>
+ <h1>Tables and Calculations</h1>
+
+
+
+
+ <div class="row">
+ <div class="col-md-4">
+ \begin{box}
+ <h4>
+ <a href="index.cgi?page=mFileForm&ev0=fTmpl&el0=sheets10&ev1=fl01&el1=s001">C++ Spreadsheets</a>
+ </h4> Sheets on surface. C++ beneath.
+ \end{box}
+
+ </div>
+ <div class="col-md-4">
+
+
+ \begin{box}
+ <h4>
+ <a href="index.cgi?page=mFileForm&ev0=fTmpl&el0=mortgage&ev1=fl01&el1=m001">Mortgage</a>
+ </h4> Mortgage and interest rates.
+ \end{box}
+
+   </div>
+ <div class="col-md-4">
+
+
+ </div>
+
+ </div>
 _/textData!!_
 
 
