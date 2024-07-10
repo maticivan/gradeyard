@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -97,29 +97,29 @@ namespace TWDVF{
     res.second=SF::getEverythingBefore(a,pos,"/=").first;
     return res;
   }
-  std::pair<std::string,std::string> findVarThatEvaluates(const std::map<std::string,std::string> & _m){
+  std::pair<std::string,std::string> findVarThatEvaluates(const std::map<SF::LSPair,std::string> & _m){
     std::pair<std::string,std::string> next;
     next.first="";next.second="";
-    std::map<std::string,std::string>::const_iterator it=_m.begin(),itE=_m.end();
+    std::map<SF::LSPair,std::string>::const_iterator it=_m.begin(),itE=_m.end();
     std::pair<double,int> tempEval;
     while((next.first=="")&&(it!=itE)){
       tempEval=FF::evFormula(it->second);
       if(tempEval.second==1){
-        next.first=it->first;
+        next.first=(it->first).s;
         next.second=BF::doubleToString(tempEval.first);
       }
       ++it;
     }
     return next;
   }
-  int isIndependent(const std::map<std::string,std::string> & _m, const std::string & _x){
+  int isIndependent(const std::map<SF::LSPair,std::string> & _m, const std::string & _x){
     int ind=1;
-    std::map<std::string,std::string>::const_iterator it=_m.begin(),itE=_m.end();
+    std::map<SF::LSPair,std::string>::const_iterator it=_m.begin(),itE=_m.end();
     long pos;
     std::pair<std::string,int> allD;
     while((ind==1)&&(it!=itE)){
       pos=0;
-      allD=SF::getEverythingBefore(_x,pos,it->first);
+      allD=SF::getEverythingBefore(_x,pos,(it->first).s);
       if(allD.second==1){
         ind=0;
       }
@@ -127,28 +127,27 @@ namespace TWDVF{
     }
     return ind;
   }
-  std::pair<std::string,std::string> findIndependentVariable(const std::map<std::string,std::string> &_m){
+  std::pair<std::string,std::string> findIndependentVariable(const std::map<SF::LSPair,std::string> &_m){
     std::pair<std::string,std::string> next;
     next.first="";next.second="";
-    std::map<std::string,std::string>::const_iterator it=_m.begin(),itE=_m.end();
+    std::map<SF::LSPair,std::string>::const_iterator it=_m.begin(),itE=_m.end();
     while((next.first=="")&&(it!=itE)){
       if(isIndependent(_m,it->second)){
-        next.first=it->first;
+        next.first=(it->first).s;
         next.second=it->second;
       }
       ++it;
     }
     return next;
   }
-  void performSearchReplace(std::map<std::string,std::string> & _m, std::string & _o,
+  void performSearchReplace(std::map<SF::LSPair,std::string> & _m,
                             const std::string & searchFor, const std::string &replaceWith){
-    _m.erase(searchFor);
-    std::map<std::string,std::string>::iterator it=_m.begin(),itE=_m.end();
+    _m.erase(SF::toLSPair(searchFor));
+    std::map<SF::LSPair,std::string>::iterator it=_m.begin(),itE=_m.end();
     while(it!=itE){
       it->second= SF::findAndReplace(it->second,searchFor, replaceWith);
       ++it;
     }
-    _o=SF::findAndReplace(_o,searchFor, replaceWith);
   }
   std::vector<std::string> getAssignmentVector(const std::string & manyLinesSeparatedBySeparators){
     std::vector<std::string> fR;
@@ -238,7 +237,7 @@ namespace TWDVF{
     srAllVersions=SF::stringToVector(searchReplace,s_Bi,s_Ei);
     s_Bi="v*"+std::to_string(v)+"_";s_Ei="_/"+s_Bi;s_Bi="_"+s_Bi;
     srMyVersion=SF::stringToVector(searchReplace,s_Bi,s_Ei);
-    std::map<std::string,std::string> allSearchReplacements;
+    std::map<SF::LSPair,std::string> allSearchReplacements;
     long sz,szv;
     std::pair<std::string,std::string> assignment;
     sz=srAllVersions.size();
@@ -248,7 +247,7 @@ namespace TWDVF{
       szv=assignmentVect.size();
       for(long j=0;j<szv;++j){
         assignment=getSidesOfTheAssignment(assignmentVect[j]);
-        allSearchReplacements[assignment.first]=assignment.second;
+        allSearchReplacements[SF::toLSPair(assignment.first)]=assignment.second;
       }
     }
     sz=srMyVersion.size();
@@ -257,7 +256,7 @@ namespace TWDVF{
       szv=assignmentVect.size();
       for(long j=0;j<szv;++j){
         assignment=getSidesOfTheAssignment(assignmentVect[j]);
-        allSearchReplacements[assignment.first]=assignment.second;
+        allSearchReplacements[SF::toLSPair(assignment.first)]=assignment.second;
       }
     }
     allD=SF::eraseStuffBetween(_input,s_B,s_E);
@@ -265,10 +264,12 @@ namespace TWDVF{
     // STEP 1: Formulas that can be evaluated
     std::pair<std::string,std::string> nextVar;
     nextVar.first=".";
+    std::map<std::string,std::string> finalKRMap;
     while(nextVar.first!="") {
       nextVar=findVarThatEvaluates(allSearchReplacements);
       if(nextVar.first!=""){
-        performSearchReplace(allSearchReplacements,output,nextVar.first,nextVar.second);
+        performSearchReplace(allSearchReplacements,nextVar.first,nextVar.second);
+        finalKRMap[nextVar.first]=nextVar.second;
       }
     }
     // STEP 2: Formulas that cannot be evaluated
@@ -276,9 +277,11 @@ namespace TWDVF{
     while(nextVar.first!=""){
       nextVar=findIndependentVariable(allSearchReplacements);
       if(nextVar.first!=""){
-        performSearchReplace(allSearchReplacements,output,nextVar.first,nextVar.second);
+        performSearchReplace(allSearchReplacements,nextVar.first,nextVar.second);
+        finalKRMap[nextVar.first]=nextVar.second;
       }
     }
+    output=MFRF::findAndReplace(output,finalKRMap);
     return output;
   }
   std::string prepareProblemForTest(const std::string & _input, const long & _v){
