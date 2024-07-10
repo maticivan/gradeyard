@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -21,22 +21,8 @@
 
 namespace APTI{
   std::string GL_studentsAllowedToExecuteCodeOnPublicTestCases="yes";
-  class AbstractText{
-  protected:
-    std::set<std::string> permitRead;
-    std::set<std::string> permitWrite;
-    std::string initText;
-    std::string rawText;
-    std::string tName;
-    std::string tExternalId;
-    std::string tCreated;
-    std::string createdBy;
-    std::string tModified;
-    std::string modifiedBy;
-    std::string documentType;
-    std::string sysDataRequested;
-    std::string myUserName;
-    std::string sysDataRaw;
+  struct SyntaxStrings{
+  public:
     std::string s_sysDataB="_systemData!!_";
     std::string s_sysDataE="_/systemData!!_";
     std::string s_tDataB="_textData!!_";
@@ -89,8 +75,8 @@ namespace APTI{
     std::string s_userPermits="userPermits";
     std::string s_itemTable="itemTable";
     std::string s_answerToQuery="answerToTheQuery";
+    std::string s_fileForm="fileForm";
     std::string v_regularText="regularText";
-    std::map<std::string, FHI::InputForm> allForms;
     std::string s_root="root";
     std::string s_everyone="everyone";
     std::string s_notFound="notFound";
@@ -98,6 +84,108 @@ namespace APTI{
     std::string e_redirectToForward="rdf";
     std::string val_sysDataReq_YES="yes";
     std::string val_sysDataReq_RAW="raw";
+    std::string s_gradeLinkInResp_QRTB="_grd*|_";
+    std::string s_gradeLinkInResp_QRTE="_/grd*|_";
+    std::string s_respLinkInGrade_QRTB="_rsp*|_";
+    std::string s_respLinkInGrade_QRTE="_/rsp*|_";
+    std::string s_nextQ_QRTB="_in*|_";
+    std::string s_nextQ_QRTE="_/in*|_";
+    std::string s_tFormulation_QRTB="_tx*|_";
+    std::string s_tFormulation_QRTE="_/tx*|_";
+    std::string s_solution_QRTB="_sl*|_";
+    std::string s_solution_QRTE="_/sl*|_";
+    std::string s_answer_QRTB="_aw*|_";
+    std::string s_answer_QRTE="_/aw*|_";
+    std::string s_points_QRTB="_pt*|_";
+    std::string s_points_QRTE="_/pt*|_";
+    std::string s_certificateDescCodeB="_cdCode*|_";
+    std::string s_certificateDescCodeE="_/cdCode*|_";
+    std::string s_certificateIdCodeB="_cidCode*|_";
+    std::string s_certificateIdCodeE="_/cidCode*|_";
+    std::string s_requestType_QRTB="_rq*|_";
+    std::string s_requestType_QRTE="_/rq*|_";
+    std::string s_radioButtons_QRTB="_rbAll*|_";
+    std::string s_radioButtons_QRTE="_/rbAll*|_";
+    std::string s_fileAllowed_QRTB="_fa*|_";
+    std::string s_fileAllowed_QRTE="_/fa*|_";
+    std::string s_autograderInfo_QRTB="_agr*|_";
+    std::string s_autograderInfo_QRTE="_/agr*|_";
+    std::string s_latexPrintingInstructions_QRTB="_lpi*|_";
+    std::string s_latexPrintingInstructions_QRTE="_/lpi*|_";
+    std::string s_gradingRules_QRTB="_gru*_";
+    std::string s_gradingRules_QRTE="_/gru*_";
+    std::string s_cAllowedTime_QRTB="_cAllT*|_";
+    std::string s_cAllowedTime_QRTE="_/cAllT*|_";
+    std::string s_cAbsEnd_QRTB="_cAbsEnd*|_";
+    std::string s_cAbsEnd_QRTE="_/cAbsEnd*|_";
+    std::string s_cTVersion_QRTB="_cTVers*|_";
+    std::string s_cTVersion_QRTE="_/cTVers*|_";
+    std::string s_iEnd_QRTB="_iEnd*|_";
+    std::string s_iEnd_QRTE="_/iEnd*|_";
+    std::string s_iTVersion_QRTB="_iTVers*|_";
+    std::string s_iTVersion_QRTE="_/iTVers*|_";
+    std::string s_label_QRTB="_lb*|_";
+    std::string s_label_QRTE="_/lb*|_";
+    std::string s_buttonLabel_QRTB="_blb*|_";
+    std::string s_buttonLabel_QRTE="_/blb*|_";
+    std::string s_importantInfo_QRTB="_iinf*|_";
+    std::string s_importantInfo_QRTE="_/iinf*|_";
+    std::string s_notStartedYet_QRTB="_notOpen*|_";
+    std::string s_notStartedYet_QRTE="_/notOpen*|_";
+    std::string s_notReadyForGrading_QRTB="_noGrading*|_";
+    std::string s_notReadyForGrading_QRTE="_/noGrading*|_";
+    std::string s_needsActivation_QRTB="_startMessage*|_";
+    std::string s_needsActivation_QRTE="_/startMessage*|_";
+    std::string s_statusOfTheForm_ARTB="_sf*|_";
+    std::string s_statusOfTheForm_ARTE="_/sf*|_";
+    std::string s_statusOfTheGrading_ARTB="_sgr*|_";
+    std::string s_statusOfTheGrading_ARTE="_/sgr*|_";
+    std::string s_formulRespRec_ARTB="_f*|_";
+    std::string s_formulRespRec_ARTE="_/f*|_";
+    std::string s_masterStatus_ARTB="_ms*|_";
+    std::string s_masterStatus_ARTE="_/ms*|_";
+    std::string s_deadlineRespRec_ARTB="_dl*|_";
+    std::string s_deadlineRespRec_ARTE="_/dl*|_";
+    std::string s_idInfo_ARTB="_iI*|_";
+    std::string s_idInfo_ARTE="_/iI*|_";
+    std::string s_solverUName_ARTB="_userName*|_";
+    std::string s_solverUName_ARTE="_/userName*|_";
+    std::string s_comment_ARTB="_gc*|_";
+    std::string s_comment_ARTE="_/gc*|_";
+    std::string s_numFilesAllowed_ARTB="_nf*|_";
+    std::string s_numFilesAllowed_ARTE="_/nf*|_";
+    std::string s_verSepBB="_v";
+    std::string s_verSepEB="_/v";
+    std::string s_verSepE="*|_";
+    std::string s_indFileSep_ARTBB="_f";
+    std::string s_indFileSep_ARTEB="_/f";
+    std::string s_infFileSep_ARTBEE="*|_";
+    std::string s_accessLogs_ARTB="_alo*|_";
+    std::string s_accessLogs_ARTE="_/alo*|_";
+    std::string s_accessLogsInnerSep_ARTB="_alIn*|_";
+    std::string s_accessLogsInnerSep_ARTE="_/alIn*|_";
+    std::string s_accessLogsNumDevs_ARTB="_alND*|_";
+    std::string s_accessLogsNumDevs_ARTE="_/alND*|_";
+    std::string s_timerRepl="_|*timer*|_";
+    std::string s_tmSecRepl="_|*tmSeconds*|_";
+  } GL_syntax;
+  class AbstractText{
+  protected:
+    std::set<std::string> permitRead;
+    std::set<std::string> permitWrite;
+    std::string initText;
+    std::string rawText;
+    std::string tName;
+    std::string tExternalId;
+    std::string tCreated;
+    std::string createdBy;
+    std::string tModified;
+    std::string modifiedBy;
+    std::string documentType;
+    std::string sysDataRequested;
+    std::string myUserName;
+    std::string sysDataRaw;
+    std::map<std::string, FHI::InputForm> allForms;
     std::map<std::string,std::string> translationVarToVal;
     long subTextRecursionDepth=0;
     long maxRecursionDepth=10;
@@ -191,6 +279,7 @@ namespace APTI{
     std::string convertVariablesToValues(const PSDI::SessionData  & ,const std::string &) const;
     std::string prepare(const PSDI::SessionData &, const std::string & , const std::string & = "mainTextPosition");
     std::string createListFromDB(const PSDI::SessionData &, const std::string &,  const std::string &, const std::string &) const;
+    std::string displayFileForm(const PSDI::SessionData &, const std::string &,  const std::string &, const std::string & = "na", const std::string & = "na");
     int allowedToModifyText(const PSDI::SessionData &, const std::string &, const std::string &, const std::string &) const;
     int allowedToDisplayText(const PSDI::SessionData &, const std::string &, const std::string & ="mainTextPosition") const;
     int allowedToMakePDFForCertificate(const PSDI::SessionData &, const std::string&) const;
