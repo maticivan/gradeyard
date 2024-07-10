@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -31,7 +31,6 @@ namespace RNDF{
     }
     return rc;
   }
-
   std::vector<long> genRandPermutation(const long & l){
   // returns a random permutation of {0,1,...,l-1}
     std::vector<long> fR;
@@ -47,7 +46,6 @@ namespace RNDF{
     }
     long i=l;long j=0;
     while(i>0){
-
       rN=randNum(i);
       --i;
       fR[j]=v[rN];
@@ -56,13 +54,10 @@ namespace RNDF{
       }
       ++j;
     }
-
     return fR;
   }
-
   std::vector<long> genRandPermutation(const long & min, const long & max){
   // returns a random permutation of {min,min+1,...,max}
-
     if(max<min){
       return genRandPermutation(max);
     }
@@ -71,10 +66,8 @@ namespace RNDF{
     for(long i=0;i<sz;++i){
       fR[i]+=min;
     }
-
     return fR;
   }
-
   std::vector<long> genRandCombination(const long & numOnes,const long & numZeros){
     //returns a random ordering of numZeros zeros and numOnes ones.
     std::vector<long> fR,fRR;
@@ -90,12 +83,7 @@ namespace RNDF{
     for(long i=0;i<l;++i){
       fRR[i]=fR[pm[i]];
     }
-
     return fRR;
   }
 }
-
-
-
-
 #endif
