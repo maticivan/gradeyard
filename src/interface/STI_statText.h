@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -26,25 +26,17 @@ namespace STI{
 
     int ind_initSuccess;
     SD::Stat meSM;
-
-
     std::string myDocType;//can be pageStat, userStat, or rawStat
-
     std::string st_pageStat="pageStat";
     std::string st_userStat="userStat";
     std::string st_rawStat="rawStat";
-
     std::string modifyMe() const;
-
-
   public:
     StatText(const std::string & = "mainTextFirstPage", const std::string & = "no1117", const std::string & = "everyone");
     int initialize(const std::string & = "mainTextFirstPage", const std::string & = "no211", const std::string & = "everyone");
-
     int isInitialized() const;
   };
   std::string statAnalysis(const std::string & );
   long getTotalVisits(const std::string & , const std::string & );
 }
-
 #endif
