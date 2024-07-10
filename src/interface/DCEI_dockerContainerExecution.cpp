@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -62,6 +62,18 @@ namespace DCEI{
     std::string bashExecFileName;
     long myLinuxUserId;
   };
+  std::string lastCode(const std::string & _input){
+    std::map<std::string,std::string> replMap;
+    replMap["_code_"]="<pre>";
+    replMap["_/code_"]="</pre>";
+    std::string input=MFRF::findAndReplace(_input,replMap);
+    std::vector<std::string> allCodes= SF::stringToVector(input,"<pre>","</pre>");
+    long sz=allCodes.size();
+    if(sz<1){
+      return _input;
+    }
+    return allCodes[sz-1];
+  }
   std::string myMountFolder(const std::string & myUserName){
     return DD::GL_DBS.getMountFolder()+"/un_"+myUserName;
   }
@@ -211,6 +223,7 @@ namespace DCEI{
     return bRes;
   }
   std::string createBashForExecution(const ContainerExecutionData& ced,
+                                     const long & maxOutputSize,
                                      const long & timeOutTime=3,
                                      const std::string & folderKnownToSource="/home7"
                                      ){
@@ -260,7 +273,7 @@ namespace DCEI{
         );
       }
     }
-    bRes+=overwriteBigOutputs(ced.outDataFNBase,ced.inputData,1025);
+    bRes+=overwriteBigOutputs(ced.outDataFNBase,ced.inputData,maxOutputSize);
     long numOuts=ced.inputData.size();
     long numOutsI;
     for(long i=0;i<numOuts;++i){
@@ -272,14 +285,14 @@ namespace DCEI{
     }
     return bRes;
   }
-  int executeInContainerAndWriteFiles(const PSDI::SessionData & _psd, const ContainerExecutionData& ced){
+  int executeInContainerAndWriteFiles(const PSDI::SessionData & _psd, const ContainerExecutionData& ced, const long& maxOutputSize){
     putTextsIntoFiles(myMountFolder(_psd.my_un),ced.sourceCode,ced.sourceFNBase,".",ced.language);
     long numFiles=ced.inputData.size();
     for(long i=0;i<numFiles;++i){
       putTextsIntoFiles(myMountFolder(_psd.my_un),ced.inputData[i],fileFullName(ced.inDataFNBase,GL_DCEI_const.separatorBetweenBigNumbersInNames,i),".txt");
     }
     std::string bExecFileFullPath=myMountFolder(_psd.my_un)+"/"+ced.bashExecFileName;
-    IOF::toFile(bExecFileFullPath,createBashForExecution(ced));
+    IOF::toFile(bExecFileFullPath,createBashForExecution(ced,maxOutputSize));
     IOF::sys_changePermissions(bExecFileFullPath,"775");
     IOF::sys_executeCommandThatDoesNotPrint(ced.dockerCommand);
     return 1;
@@ -411,8 +424,8 @@ namespace DCEI{
       res[i]=makeSourceSafe(_src[i],_lang[i],_incl[i],_custIncl[i]);
     }
     return res;
-  }
-  std::pair<std::vector<std::vector<std::string> >,int> executePrograms(const PSDI::SessionData & _psd, const std::vector<std::string> & _sources, const std::vector<std::string> & _languages, const std::vector<std::string> & _cFlags, const std::vector<std::vector<std::string> > & includes, const std::vector<std::vector<std::string> > & customIncludes, const std::vector<std::vector<std::string> > & _inputData){
+  } 
+  std::pair<std::vector<std::vector<std::string> >,int> executePrograms(const PSDI::SessionData & _psd, const std::vector<std::string> & _sources, const std::vector<std::string> & _languages, const std::vector<std::string> & _cFlags, const std::vector<std::vector<std::string> > & includes, const std::vector<std::vector<std::string> > & customIncludes, const std::vector<std::vector<std::string> > & _inputData, const long& maxOutputSize){
     std::pair<std::vector<std::vector<std::string> >,int> res;
     res.second=0;
     createTempFolderForMounting(_psd.my_un);
@@ -446,7 +459,7 @@ namespace DCEI{
     mainCED.dockerCommand+=myMountFolder(_psd.my_un)+":";
     mainCED.dockerCommand+=mainCED.folderInContainer+" -u "+std::to_string(mainCED.myLinuxUserId)+" ";
     mainCED.dockerCommand+=DD::GL_DBS.getImageName()+" /bin/bash "+mainCED.folderInContainer+"/"+mainCED.bashExecFileName;
-    res.second= executeInContainerAndWriteFiles(_psd,mainCED);
+    res.second= executeInContainerAndWriteFiles(_psd,mainCED,maxOutputSize);
     res.first=collectOutputAndDeleteFiles(_psd,mainCED);
     return res;
   }
