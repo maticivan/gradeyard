@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -45,7 +45,6 @@ namespace SII{
     }
     return debRes;
   }
-
   MPTI::MainText SessionInformation::getHeader() const{return header;}
   MPTI::MainText SessionInformation::getFooter() const{return footer;}
   MPTI::MainText SessionInformation::getMainText() const{return mainText;}
@@ -200,7 +199,7 @@ namespace SII{
     }
     afterFormRepl=LANGF::changeAlphabet(afterFormRepl,MWII::GL_WI.getAlphabet());
     afterFormRepl=INCII::treatInCommandInsert(afterFormRepl);
-    GF::GL_DEB_MESSAGES.addMessage("Time to generate page is "+ BF::doubleToString(timeToGenerateWebsite.getTime()));
+    GF::GL_DEB_MESSAGES.addMessage("Time to generate page is "+ BF::doubleToString(timeToGenerateWebsite.getTime())); 
     afterFormRepl+=GF::GL_DEB_MESSAGES.prepareAllMessages(MWII::GL_WI.getDebuggingOptions());
     return afterFormRepl;
   }
@@ -688,6 +687,8 @@ namespace SII{
         SF::assignValueFromMap(mParameters,"maxNumForSimpson",FF::MAXIMAL_NUMBER_OF_INTERVALS_FOR_SIMPSON);
         SF::assignValueFromMap(mParameters,"allowPDFForCertificates",CERD::GL_CertificatesOptions.pdfsAllowed);
         SF::assignValueFromMap(mParameters,"timeInSecondsToKeepCertificatePDF",CERD::GL_CertificatesOptions.maxTimeToKeepPDF);
+        SF::assignValueFromMap(mParameters,"allowPDFForForms",FFI::GL_PDFFormOptions.pdfsAllowed);
+        SF::assignValueFromMap(mParameters,"timeInSecondsToKeepFormPDF",FFI::GL_PDFFormOptions.maxTimeToKeepPDF);
         itMP=mParameters.find("defaultTexts");
         if(itMP!=mParameters.end()){
           MWII::GL_WI.updateDefaultWebTexts(itMP->second);
@@ -1152,10 +1153,7 @@ namespace SII{
     // Step 2.2: There is a single request
     //           We delete the single file
     return deleteSingleFile(_extFileCode);
-  }
-  std::string SessionInformation::prepareTextForTextTable(const std::string & _nd, const std::string & _od) const{
-    return TDI::prepareTextForTextTableRaw(psd,_nd,_od);
-  }
+  } 
   int SessionInformation::allowedToModifyFile(const std::string &_userName, const std::string & _extCode) const{
     if(_userName=="root"){
       return 1;
@@ -1278,7 +1276,7 @@ namespace SII{
       return "!failed!: Something may be bad with the database. The text name did not exist when checked but could not create text.";
     }
     psd.pageRequested=sf.getTextName();
-    std::string textData=prepareTextForTextTable(_tData,"!noOldData!");
+    std::string textData=TDI::prepareTextForTextTableRaw(psd,_tData,"!noOldData!");
     std::map<std::string,std::string> replMap;
     if(_readPermitOverwrite!="!*!"){
       replMap["_permission__name_read_/name__userOrGroup_everyone_/userOrGroup__/permission_"]="_permission__name_read_/name__userOrGroup_"+_readPermitOverwrite+"_/userOrGroup__/permission_";
@@ -1306,7 +1304,7 @@ namespace SII{
     std::string oldData=sf.getTextData();
     psd.recoveryOperationNames.push("mainText");
     psd.recoveryOperationCommands.push(BMD::recoveryTextWithCustomData(_tName,oldData,"modifyText"));
-    sf.setTextData(prepareTextForTextTable(_tData,oldData));
+    sf.setTextData(TDI::prepareTextForTextTableRaw(psd,_tData,oldData));
     sf.putInDB();
     return "!success!";
   }
@@ -1429,7 +1427,7 @@ namespace SII{
     mDataProcessed+="_messText!*_";
     mDataProcessed+=_mData;
     mDataProcessed+="_/messText!*_";
-    bm.setTextData(prepareTextForTextTable(mDataProcessed,"!noOldData!"));
+    bm.setTextData(TDI::prepareTextForTextTableRaw(psd,mDataProcessed,"!noOldData!"));
     bm.putInDB();
     return bm.getExternalCodeFromInternalId();
   }
@@ -1707,7 +1705,7 @@ namespace SII{
     else{
       mDataProcessed=_mData;
     }
-    bm.setTextData(prepareTextForTextTable(mDataProcessed,oldData));
+    bm.setTextData(TDI::prepareTextForTextTableRaw(psd,mDataProcessed,oldData));
     bm.putInDB();
     return "!success!";
   }
@@ -1742,7 +1740,7 @@ namespace SII{
     }
     TMF::Timer tm;
     std::string mDataProcessed=TDI::couasTextString(tm.timeString(),uNM, uFN,uLN,_couasData);
-    myCouas.setTextData(prepareTextForTextTable(mDataProcessed,"!noOldData!"));
+    myCouas.setTextData(TDI::prepareTextForTextTableRaw(psd,mDataProcessed,"!noOldData!"));
     myCouas.putInDB();
     return "!success!: "+myCouas.getExternalCodeFromInternalId();
   }
@@ -1819,89 +1817,8 @@ namespace SII{
     if(psd.my_un=="visitor"){
       return "!failed!: Visitors cannot create courses or assignments";
     }
-    std::string uNM=psd.my_un;
-    std::string uFN=psd.myFirstName;
-    std::string uLN=psd.myLastName;
-    std::string nSt="";
-    std::string intUserId=(psd.myWU).getInternalId();;
-    std::vector<std::string> cToCreate=SF::stringToVector(_couasData,"_couas!*_","_/couas!*_");
-    std::vector<std::string> undeclaredVarsV; long uvsz;
-    long sz=cToCreate.size();
-    if(sz<1){
-      return "!failed! No individual couas items.";
-    }
-    std::map<std::string,std::string> variableToContent,variableToCode;
-    std::set<std::string> undeclaredVariables;
-    std::string currentVar,currentContent;
-    long pos;std::pair<std::string,int> allD;
-    for(long i=0;i<sz;++i){
-      pos=0;allD=SF::extract(cToCreate[i],pos,LI::GL_LN.st_sepCNmTextB,LI::GL_LN.st_sepCNmTextE);
-      if(allD.second==1){
-        currentVar=allD.first;
-        pos=0;allD=SF::extract(cToCreate[i],pos,LI::GL_LN.st_sepCTextB,LI::GL_LN.st_sepCTextE);
-        if(allD.second==1){
-          currentContent=allD.first;
-          variableToContent[currentVar]=currentContent;
-          undeclaredVarsV=SF::stringToVector(currentContent,LI::GL_LN.st_sepGetFromB,LI::GL_LN.st_sepGetFromE);
-          uvsz=undeclaredVarsV.size();
-          for(long j=0;j<uvsz;++j){
-            undeclaredVariables.insert(undeclaredVarsV[j]);
-          }
-        }
-      }
-    }
-    std::map<std::string,std::string>::const_iterator it,itE;
-    it=variableToContent.begin();itE=variableToContent.end();
-    while(it!=itE){
-      undeclaredVariables.erase(it->first);
-      ++it;
-    }
-    if(undeclaredVariables.size()>0){
-      return "!failed! There are variables that are not declared.";
-    }
-    int succ;
-    it=variableToContent.begin();
-    std::map<std::string,CAD::CouAs> mCM;
-    while(it!=itE){
-      CAD::CouAs myCouas;
-      succ=myCouas.createCouAs(intUserId);
-      if(succ==0){
-        return "!failed!: Something may be bad with the database. The userId did exist when checked but could not create course / assignment.";
-      }
-      mCM[it->first]=myCouas;
-      variableToCode[it->first]=myCouas.getExternalCodeFromInternalId();
-      ++it;
-    }
-    it=variableToContent.begin();
-    while(it!=itE){
-      variableToContent[it->first]=SF::updateVarsWithVals(it->second,variableToCode,"","");
-      ++it;
-    }
-    TMF::Timer tm;
-    std::string mDataProcessed;
-    it=variableToContent.begin();
-    std::string succList="";
-    std::string mainCourseCode="";
-    std::string cCode,bossCode;
-    while(it!=itE){
-      mDataProcessed=TDI::couasTextString(tm.timeString(),uNM, uFN,uLN,it->second);
-      (mCM[it->first]).setTextData(prepareTextForTextTable(mDataProcessed,"!noOldData!"));
-      (mCM[it->first]).putInDB();
-      cCode=(mCM[it->first]).getExternalCodeFromInternalId();
-      succList+=" "+cCode;
-      if(it->first=="{mainCouas}"){
-        mainCourseCode="_mainCouas_"+cCode+"_/mainCouas_ ";
-      }
-      bossCode="notFound";
-      pos=0;allD=SF::extract(mDataProcessed,pos,"_bossC!*_","_/bossC!*_");
-      if(allD.second==1){
-        bossCode=allD.first;
-      }
-      psd.recoveryOperationNames.push("courseCreation");
-      psd.recoveryOperationCommands.push(BMD::deleteCouasOrMessage("deleteCourseAssignment",cCode,bossCode));
-      ++it;
-    }
-    return "!success!:"+succList+mainCourseCode;
+    std::pair<std::map<std::string,std::string>, std::map<std::string,std::string> > bijectionCouasRR;
+    return CMTI::createGradingForCourse(psd,_couasData,psd.recoveryOperationNames,psd.recoveryOperationCommands,bijectionCouasRR);
   }
   std::string SessionInformation::createRespRec(const std::string & _tName, const std::string & _tData){
     //WARNING: not implemented properly yet: permission checking is too restrictive
@@ -1918,7 +1835,7 @@ namespace SII{
       return "!failed!: Something may be bad with the database. The text name did not exist when checked but could not create text.";
     }
     respRecRequested=sf.getTextName();
-    sf.setTextData(prepareTextForTextTable(_tData,"!noOldData!"));
+    sf.setTextData(TDI::prepareTextForTextTableRaw(psd,_tData,"!noOldData!"));
     sf.putInDB();
     return "!success!: "+sf.getTextName();
   }
@@ -1933,7 +1850,7 @@ namespace SII{
       return "!failed!: Text name does not exist";
     }
     std::string oldData=sf.getTextData();
-    sf.setTextData(prepareTextForTextTable(_tData,oldData));
+    sf.setTextData(TDI::prepareTextForTextTableRaw(psd,_tData,oldData));
     sf.putInDB();
     respRecRequested=_tName;
     return "!success!";
@@ -2062,7 +1979,7 @@ namespace SII{
           }
           if( rmPermits.createText(msDAttempt)==1){
             fR.msDoc=msDAttempt;
-            rmPermits.setTextData(prepareTextForTextTable(permitsText,"!noOldData!"));
+            rmPermits.setTextData(TDI::prepareTextForTextTableRaw(psd,permitsText,"!noOldData!"));
             rmPermits.putInDB();
             psd.recoveryOperationNames.push("assignmentCreation");
             psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",msDAttempt));
@@ -2164,7 +2081,7 @@ namespace SII{
           gradeText+="_rsp*|_"+exResp.getTextName()+"_/rsp*|_ \n";
           gradeText+="Formulations and solutions: _f*|_"+docName+ "_/f*|_\n";
           gradeText+="Master status: _ms*|_"+ea.msDoc+"_/ms*|_\n";
-          exGrade.setTextData(prepareTextForTextTable(gradeText,"!noOldData!"));
+          exGrade.setTextData(TDI::prepareTextForTextTableRaw(psd,gradeText,"!noOldData!"));
           exGrade.putInDB();
           //Step 2: Create the testing document
           respText="This is a response to test.\nThe solver will solve the test and answers will be listed below.\n";
@@ -2185,7 +2102,7 @@ namespace SII{
             sep_B="_"+sep_B;
             respText+=sep_B+std::to_string((ea.possibleVersions)[j][studentRandomizer % (ea.possibleVersions)[j].size() ])+sep_E+ "\n";
           }
-          exResp.setTextData(prepareTextForTextTable(respText,"!noOldData!"));
+          exResp.setTextData(TDI::prepareTextForTextTableRaw(psd,respText,"!noOldData!"));
           exResp.putInDB();
           // Step 3: Create the reference to Student in the main document
           fR+="_st*|_\n_n*|_"+exResp.getTextName()+"_/n*|_\n_n*|_";
@@ -2228,7 +2145,7 @@ namespace SII{
     if(allD.second==0){
       return "!failed!: Broken response receiver";
     }
-    sf.setTextData(prepareTextForTextTable(updateExamDocument(allD.first,_dToAddFrom,_eName),"!noOldData!"));
+    sf.setTextData(TDI::prepareTextForTextTableRaw(psd,updateExamDocument(allD.first,_dToAddFrom,_eName),"!noOldData!"));
     sf.putInDB();
     return "!success!: "+sf.getTextName();
   }
@@ -2259,7 +2176,7 @@ namespace SII{
       return "!failed!: Something may be bad with the database. The text name did not exist when checked but could not create text.";
     }
     respRecRequested=sf.getTextName();
-    sf.setTextData(prepareTextForTextTable(genExamTemplate(dToGenerateFrom,pairProblemsCert,_eName),"!noOldData!"));
+    sf.setTextData(TDI::prepareTextForTextTableRaw(psd,genExamTemplate(dToGenerateFrom,pairProblemsCert,_eName),"!noOldData!"));
     sf.putInDB();
     psd.recoveryOperationNames.push("assignmentCreation");
     psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",respRecRequested));
