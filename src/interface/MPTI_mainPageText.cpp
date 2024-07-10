@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -30,8 +30,8 @@ namespace MPTI{
     int s=m.setFromTextName(_nameInDB);
     permitRead.clear();
     permitWrite.clear();
-    permitRead.insert(s_root);
-    permitWrite.insert(s_root);
+    permitRead.insert(APTI::GL_syntax.s_root);
+    permitWrite.insert(APTI::GL_syntax.s_root);
     tCreated="unknown";
     createdBy="unknown";
     tModified="unknown";
@@ -44,16 +44,16 @@ namespace MPTI{
     if(s==1){
       initText=m.getTextData();
       long pos=0;
-      std::pair<std::string,int> allSD=SF::extract(initText,pos,s_sysDataB,s_sysDataE);
+      std::pair<std::string,int> allSD=SF::extract(initText,pos,APTI::GL_syntax.s_sysDataB,APTI::GL_syntax.s_sysDataE);
       pos=0;
-      std::pair<std::string,int> allTD=SF::extract(initText,pos,s_tDataB,s_tDataE);
+      std::pair<std::string,int> allTD=SF::extract(initText,pos,APTI::GL_syntax.s_tDataB,APTI::GL_syntax.s_tDataE);
       if(allSD.second==1){
         sysDataRaw=allSD.first;
-        std::string pText=s_notFound;
+        std::string pText=APTI::GL_syntax.s_notFound;
         HSF::parametersFromString(allSD.first,tCreated,createdBy,tModified,modifiedBy,pText,documentType);
-        if(pText!=s_notFound){
-          PBD::createPermitSet(permitRead, pText,s_individualPermissionB, s_individualPermissionE, "read");
-          PBD::createPermitSet(permitWrite, pText,s_individualPermissionB, s_individualPermissionE, "write");
+        if(pText!=APTI::GL_syntax.s_notFound){
+          PBD::createPermitSet(permitRead, pText,APTI::GL_syntax.s_individualPermissionB, APTI::GL_syntax.s_individualPermissionE, "read");
+          PBD::createPermitSet(permitWrite, pText,APTI::GL_syntax.s_individualPermissionB, APTI::GL_syntax.s_individualPermissionE, "write");
         }
       }
       tName=m.getTextName();
@@ -119,5 +119,12 @@ namespace MPTI{
       }
     }
   }
+  std::string getTextIfAllowed(const PSDI::SessionData& _psd, const std::string& uName, const std::string& tName, const std::string& position){
+    MPTI::MainText t(tName,"no1117",uName);
+    if(t.allowedToDisplayText(_psd,uName,position)){
+      return t.getRawText();
+    }
+    return "";
+  } 
 }
 #endif
