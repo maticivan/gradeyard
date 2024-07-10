@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -26,5 +26,6 @@ namespace MPTI{
     int initialize(const std::string & = "mainTextFirstPage", const std::string & = "no211", const std::string & = "everyone");
     void selectVersionForListOfFiles(const std::string & = "", const std::string & = "0");
   };
+  std::string getTextIfAllowed(const PSDI::SessionData&, const std::string& , const std::string& , const std::string& = "regularText");
 }
 #endif
