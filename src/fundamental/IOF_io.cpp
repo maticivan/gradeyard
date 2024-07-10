@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -19,15 +19,68 @@
 #ifndef _INCL_IF_IO_CPP
 #define _INCL_IF_IO_CPP
 
-
 namespace IOF{
+  struct ImportantFolders{
+  public:
+    std::set<std::string> s;
+    std::set<std::string> badStrings;
+    std::string safeNameOfFolderThatDoesNotExist;
+    ImportantFolders();
+  } GL_folders;
+  ImportantFolders::ImportantFolders(){
+    badStrings.insert("/");
+    badStrings.insert(".");
+    badStrings.insert("\"");
+    badStrings.insert("\n");
+    badStrings.insert("\t");
+    badStrings.insert("\'");
+    badStrings.insert("@");
+    badStrings.insert("!");
+    badStrings.insert("~");
+    badStrings.insert("`");
+    badStrings.insert("$");
+    badStrings.insert("%");
+    badStrings.insert("^");
+    badStrings.insert("\\");
+    badStrings.insert("+");
+    badStrings.insert(",");
+    badStrings.insert(";");
+    badStrings.insert(":");
+    badStrings.insert("?");
+    badStrings.insert("<");
+    badStrings.insert(">");
+  }
+  int danger(const std::string & folderName){
+    if(folderName==""){return 1;}
+    if((GL_folders.s).find(folderName)!=(GL_folders.s).end()){
+      return 1;
+    }
+    return 0;
+  }
+  std::string improveName(const std::string& _fName){
+    std::string fName=BF::cleanAllSpaces(_fName);
+    long len=fName.length();
+    if((len>0)&&(fName[len-1]=='/')){
+      std::string fNameOld=fName;
+      --len;
+      fName="";
+      for(long i=0;i<len;++i){
+        fName+=fNameOld[i];
+      }
+    }
+    if(danger(fName)){
+      fName=GL_folders.safeNameOfFolderThatDoesNotExist;
+    }
+    return fName;
+  }
 
-  int sys_deleteFolderAndSubfolders(const std::string &folderName){
+  int sys_deleteFolderAndSubfolders(const std::string &_folderName){
+    std::string folderName=improveName(_folderName);
     std::string command="rm -rf "+folderName;
     system(command.c_str());
     return 1;
   }
-  int sys_deleteFile(const std::string &nameOfFile){
+  int sys_deleteFile(const std::string & nameOfFile){
     std::map<std::string,std::string>::iterator it,itE;
     itE=GF::GL_OPENED_FILES.end();
     it=GF::GL_OPENED_FILES.find(nameOfFile);
@@ -221,29 +274,7 @@ namespace IOF{
       return nF;
   }
   int legalFileName(const std::string & in){
-    std::set<std::string> badStrings;
-    badStrings.insert("/");
-    badStrings.insert(".");
-    badStrings.insert("\"");
-    badStrings.insert("\n");
-    badStrings.insert("\t");
-    badStrings.insert("\'");
-    badStrings.insert("@");
-    badStrings.insert("!");
-    badStrings.insert("~");
-    badStrings.insert("`");
-    badStrings.insert("$");
-    badStrings.insert("%");
-    badStrings.insert("^");
-    badStrings.insert("\\");
-    badStrings.insert("+");
-    badStrings.insert(",");
-    badStrings.insert(";");
-    badStrings.insert(":");
-    badStrings.insert("?");
-    badStrings.insert("<");
-    badStrings.insert(">");
-    if(MFRF::find(in,badStrings).second==-1){
+    if(MFRF::find(in,GL_folders.badStrings).second==-1){
       return 1;
     }
     return 0;
@@ -340,12 +371,12 @@ namespace IOF{
     return 0;
   }
   int sys_mkdir(const std::string &folderName){
-      if(folderName==""){
-        return 0;
-      }
-      if(sys_folderExists(folderName)){
-        return 0;
-      }
+    if(folderName==""){
+      return 0;
+    }
+    if(sys_folderExists(folderName)){
+      return 0;
+    }
     std::string systemCommand="mkdir "+folderName;
     system(systemCommand.c_str());
     systemCommand="chgrp wadmins " +folderName;
