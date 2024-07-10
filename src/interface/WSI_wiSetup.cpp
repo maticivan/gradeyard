@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -26,6 +26,7 @@ namespace WSI{
     std::string default_fileUploadLoc="f001";
     std::string default_publicSystemFileLoc="fs001";
     std::string default_publicPDFCertLoc="pc001";
+    std::string default_publicPDFFormLoc="pf001";
     std::string default_guestClonesRelLoc="si001";
     std::string default_wsName="websiteName";
     std::string default_wsURL="websiteURL";
@@ -50,6 +51,7 @@ namespace WSI{
     std::string fileUploadLoc=default_fileUploadLoc;
     std::string publicSystemFileLoc=default_publicSystemFileLoc;
     std::string publicPDFCertLoc=default_publicPDFCertLoc;
+    std::string publicPDFFormLoc=default_publicPDFFormLoc;
     std::string guestClonesRelLoc=default_guestClonesRelLoc;
     std::string cookiePath;
     std::string cookieName=default_cookieName;
@@ -87,6 +89,7 @@ namespace WSI{
     std::string getUploadLoc() const;
     std::string getPublicSystemFileLoc() const;
     std::string getPublicPDFCertLoc() const;
+    std::string getPublicPDFFormLoc() const;
     std::string getWSURL() const;
     std::string getDebuggingOptions() const;
     std::string getVersionStopOptions() const;
@@ -136,6 +139,7 @@ namespace WSI{
   std::string Setup::getUploadLoc() const{    return fileUploadLoc; }
   std::string Setup::getPublicSystemFileLoc() const{ return publicSystemFileLoc;}
   std::string Setup::getPublicPDFCertLoc() const{ return publicPDFCertLoc;}
+  std::string Setup::getPublicPDFFormLoc() const{ return publicPDFFormLoc;}
   std::string Setup::getCookiePath() const{return cookiePath;}
   std::string Setup::getCookieName() const{return cookieName;}
   std::string Setup::get_e_parPage() const{return e_parPage;}
@@ -218,6 +222,9 @@ namespace WSI{
     publicPDFCertLoc=DD::GL_DBS.getPublicPDFCertStorage();
     redirectInfo="?rF="+publicPDFCertLoc;
     IOF::sys_createFolderIfDoesNotExist(publicPDFCertLoc,"index.html",HSF::redirectIndexHTML_F(redirectInfo,wsURL));
+    publicPDFFormLoc=DD::GL_DBS.getPublicPDFFormStorage();
+    redirectInfo="?rF="+publicPDFFormLoc;
+    IOF::sys_createFolderIfDoesNotExist(publicPDFFormLoc,"index.html",HSF::redirectIndexHTML_F(redirectInfo,wsURL));
     guestClonesRelLoc=DD::GL_DBS.getGuestClonesRelLoc();
     redirectInfo="?rF="+guestClonesRelLoc;
     if(guestClonesRelLoc!="/"){
