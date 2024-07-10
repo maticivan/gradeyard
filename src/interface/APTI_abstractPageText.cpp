@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -118,13 +118,13 @@ namespace APTI{
   }
   std::string AbstractText::sysDataIfNeededAndAllowed(const PSDI::SessionData  & _psd) const{
     std::string fR="";
-    if(sysDataRequested==val_sysDataReq_RAW){
+    if(sysDataRequested==GL_syntax.val_sysDataReq_RAW){
       if(rawSysDataAllowed(_psd)!=1){
         return fR;
       }
       fR = "<P>" + sysDataRaw+"</P>";
     }
-    if(sysDataRequested==val_sysDataReq_YES){
+    if(sysDataRequested==GL_syntax.val_sysDataReq_YES){
       if(sysDataAllowed(_psd)!=1){
         return fR;
       }
@@ -138,7 +138,7 @@ namespace APTI{
   }
   std::string AbstractText::createTextAreaField(const PSDI::SessionData & _psd, const std::string & formName, const std::string & fieldName, const std::string & _textBefore, const std::string & _textInTheField, const std::string & _nRow, const std::string & _nColl){
     std::string fR="";
-    if(fieldName==s_commands){
+    if(fieldName==GL_syntax.s_commands){
       if(allowedToInputCommands(_psd)!=1){
         return "";
       }
@@ -150,13 +150,13 @@ namespace APTI{
       FHI::FormField fFF;
       std::string textBefore="";
       std::string textInTheField="";
-      if(_textInTheField!=s_notFound){
+      if(_textInTheField!=GL_syntax.s_notFound){
         textInTheField=_textInTheField;
       }
-      if(_textBefore!=s_notFound){
+      if(_textBefore!=GL_syntax.s_notFound){
         textBefore=_textBefore;
       }
-      if((_nColl=="notFound")||(_nRow=="notFound")){
+      if((_nColl==GL_syntax.s_notFound)||(_nRow==GL_syntax.s_notFound)){
         fFF.convertToTextArea(fieldName,textBefore,textInTheField);
       }
       else{
@@ -178,7 +178,7 @@ namespace APTI{
     if(it!=itE){
       FHI::FormField fFF;
       std::string textBefore="";
-      if(_textBefore!=s_notFound){
+      if(_textBefore!=GL_syntax.s_notFound){
         textBefore=_textBefore;
       }
       fFF.convertToRadioButtons(fieldName,textBefore,_textAfter, _allChoices,_preSelection);
@@ -196,13 +196,13 @@ namespace APTI{
       std::string textBefore="";
       std::string textInTheField="";
       std::string dim="15";
-      if(_textInTheField!=s_notFound){
+      if(_textInTheField!=GL_syntax.s_notFound){
         textInTheField=_textInTheField;
       }
-      if(_textBefore!=s_notFound){
+      if(_textBefore!=GL_syntax.s_notFound){
         textBefore=_textBefore;
       }
-      if(_dim!=s_notFound){
+      if(_dim!=GL_syntax.s_notFound){
         dim=_dim;
       }
       long d=BF::stringToInteger(dim);
@@ -222,10 +222,10 @@ namespace APTI{
       std::string textBefore="";
       std::string textInTheField="";
       std::string dim="10";
-      if(_textBefore!=s_notFound){
+      if(_textBefore!=GL_syntax.s_notFound){
         textBefore=_textBefore;
       }
-      if(_dim!=s_notFound){
+      if(_dim!=GL_syntax.s_notFound){
         dim=_dim;
       }
       long d=BF::stringToInteger(dim);
@@ -245,7 +245,7 @@ namespace APTI{
     if(it!=itE){
       FHI::FormField fFF;
       std::string textBefore="";
-      if(_textBefore!=s_notFound){
+      if(_textBefore!=GL_syntax.s_notFound){
         textBefore=_textBefore;
       }
       fFF.convertToFileInput(fieldName,textBefore);
@@ -260,7 +260,7 @@ namespace APTI{
     it=allForms.find(formName);
     if(it==itE){
       std::string link="index.cgi?fSubmit=su";
-      if(_link!=s_notFound){
+      if(_link!=GL_syntax.s_notFound){
         link=_link;
       }
       FHI::InputForm inpF(link);
@@ -309,7 +309,12 @@ namespace APTI{
         return 1;
       }
     }
-    if(documentType!=v_regularText){
+    if(_position=="fileFormTemplate"){
+      if(documentType=="formTemplate"){
+        return 1;
+      }
+    }
+    if(documentType!=GL_syntax.v_regularText){
       if(_position=="mainTextPosition"){
         return 0;
       }
@@ -1107,6 +1112,28 @@ namespace APTI{
     }
     return "";
   }
+  std::string AbstractText::displayFileForm(const PSDI::SessionData & _psd, const std::string & requestType, const std::string & templateName, const std::string & parameter01, const std::string& parameter02){
+    if(requestType.length()<1){return "";}
+    if(requestType=="userList"){
+      return FFI::listOfFormsDisplay(_psd,requestType,templateName,parameter01,parameter02);
+    }
+    MPTI::MainText templateText;
+    int initSucc=templateText.initialize(templateName,"no",_psd.my_un);
+    if(initSucc==0){return "";}
+    int displAllow=1;
+    if(_psd.isRoot!="yes"){
+      if((requestType[0]=='a')||(requestType[0]=='A')){
+        displAllow=0;
+      }
+      else{
+        displAllow=templateText.allowedToDisplayText(_psd,_psd.my_un,"fileFormTemplate");
+      }
+    }
+    if(displAllow==0){
+      return "";
+    }
+    return treatInserts(_psd,FFI::formDisplay(_psd,templateText.getRawText(), requestType,templateName, parameter01, parameter02 ),GL_syntax.s_insertB,GL_syntax.s_insertE);
+  }
   std::pair<std::string,std::string> AbstractText::createLinkPair(const std::vector<std::string> & parameters, const std::vector<std::string> &values,const std::string &label) const{
     std::pair<std::string,std::string> fR;
     fR.first=MWII::GL_WI.getWSURL()+"/index.cgi";
@@ -1130,10 +1157,10 @@ namespace APTI{
     if((MWII::GL_WI.getFailedLogIn()=="no")&&(MWII::GL_WI.getMainPageExternalCode()!="notFound")){
       std::string randCd=RNDF::genRandCode(7);
       std::string redirectCode=SF::combineTwoWords(MWII::GL_WI.getMainPageExternalCode(),randCd);
-      fR.first+="&"+e_redirectToForward+"="+redirectCode;
+      fR.first+="&"+GL_syntax.e_redirectToForward+"="+redirectCode;
     }
     if((MWII::GL_WI.getFailedLogIn()=="yes")&&(MWII::GL_WI.getRedirectOverwrite()!="notFound")){
-      fR.first+="&"+e_redirectToForward+"="+MWII::GL_WI.getRedirectOverwrite();
+      fR.first+="&"+GL_syntax.e_redirectToForward+"="+MWII::GL_WI.getRedirectOverwrite();
     }
     fR.second=label;
     return fR;
@@ -1155,7 +1182,7 @@ namespace APTI{
       return "";
     }
     std::string fR="_insert__n*_text_/n*__n*_invitationToCreateClone_/n*__/insert_";
-    return treatInserts(_psd,fR,s_insertB,s_insertE);
+    return treatInserts(_psd,fR,GL_syntax.s_insertB,GL_syntax.s_insertE);
   }
   std::string AbstractText::createRestoreCommand(const PSDI::SessionData & _psd, const std::string & _backupName){
     MTF::Table& backupT=DD::GL_MAIN_DB.dbsM["backupDatabase"];
@@ -1171,14 +1198,14 @@ namespace APTI{
     fR+="_insert_ _n*_textAreaField_/n*_ _n*_reqCommand_/n*_ _n*_commands_/n*_ ";
     fR+="_n*_ _/n*_\n";
     fR+="_n*_"+allD.first+"_/n*_ _/insert_ _insert_ _n*_formPlacement_/n*_ _n*_reqCommand_/n*_ _/insert_ ";
-    return treatInserts(_psd,fR,s_insertB,s_insertE);
+    return treatInserts(_psd,fR,GL_syntax.s_insertB,GL_syntax.s_insertE);
   }
   std::pair<std::string,std::string> AbstractText::createLogOutPair(const std::string &label) const{
     std::string fR=MWII::GL_WI.getWSURL()+"/index.cgi?userLogIn=no";
     if(MWII::GL_WI.getMainPageExternalCode()!="notFound"){
       std::string randCd=RNDF::genRandCode(7);
       std::string redirectCode=SF::combineTwoWords(MWII::GL_WI.getMainPageExternalCode(),randCd);
-      fR+="&"+e_redirectToForward+"="+redirectCode;
+      fR+="&"+GL_syntax.e_redirectToForward+"="+redirectCode;
     }
 
     return std::pair<std::string,std::string>(fR,label);
@@ -1355,7 +1382,7 @@ namespace APTI{
       message="Wrong anti-spam code";
     }
     displStr=executeAGCodeTest(_psd,formulation,officialSolution,agrParameters,userAnswer,displStr,allowedSolution,message);
-    displStr=treatInserts(_psd,displStr,s_insertB,s_insertE);
+    displStr=treatInserts(_psd,displStr,GL_syntax.s_insertB,GL_syntax.s_insertE);
     if(displStr=="***!ERROR!***"){
       displStr="<div>Error: No public test cases available</div>";
     }
@@ -1635,53 +1662,53 @@ namespace APTI{
   }
   std::string AbstractText::evaluateInsert(const PSDI::SessionData & _psd, const std::string & _insText, const std::string & _iB, const std::string & _iE){
     std::string fR="";
-    if(_iB==s_insertB){
-      std::vector<std::string> allArgs=SF::stringToVector(_insText,s_insSepInB,s_insSepInE);
+    if(_iB==GL_syntax.s_insertB){
+      std::vector<std::string> allArgs=SF::stringToVector(_insText,GL_syntax.s_insSepInB,GL_syntax.s_insSepInE);
       long sz=allArgs.size();
       if(sz>0){
-        if((allArgs[0]==s_subText)&&(sz==2)){
+        if((allArgs[0]==GL_syntax.s_subText)&&(sz==2)){
           return createSubText(_psd,allArgs[1]);
         }
-        if((allArgs[0]==s_codeTest) && (sz==4)){
+        if((allArgs[0]==GL_syntax.s_codeTest) && (sz==4)){
           return createCodeTest(_psd,allArgs[1],allArgs[2], allArgs[3]);
         }
-        if((allArgs[0]==s_codeTestInNotes) && (sz==4)){
+        if((allArgs[0]==GL_syntax.s_codeTestInNotes) && (sz==4)){
           return createCodeTestInNotes(_psd,allArgs[1],allArgs[2],allArgs[3]);
         }
-        if((allArgs[0]==s_message)&&(sz==2)){
+        if((allArgs[0]==GL_syntax.s_message)&&(sz==2)){
           return createMessageDisplay(_psd,allArgs[1]);
         }
-        if((allArgs[0]==s_invitationToSolve)&&(sz==4)){
+        if((allArgs[0]==GL_syntax.s_invitationToSolve)&&(sz==4)){
           return createSolvingInvitation(_psd,allArgs[1],allArgs[2],allArgs[3]);
         }
-        if((allArgs[0]==s_couas)&&(sz==2)){
+        if((allArgs[0]==GL_syntax.s_couas)&&(sz==2)){
           return createCouasDisplay(_psd,allArgs[1]);
         }
-        if((allArgs[0]==s_cert)&&(sz==2)){
+        if((allArgs[0]==GL_syntax.s_cert)&&(sz==2)){
           return createCertDisplay(_psd,allArgs[1]);
         }
-        if((allArgs[0]==s_respRecStatus)&&(sz==2)){
+        if((allArgs[0]==GL_syntax.s_respRecStatus)&&(sz==2)){
           return createRespRecStatusDisplay(_psd,allArgs[1]);
         }
-        if((allArgs[0]==s_internalLink)&&(sz==3)){
+        if((allArgs[0]==GL_syntax.s_internalLink)&&(sz==3)){
           return createInternalLink(_psd,allArgs[1],allArgs[2]);
         }
-        if((allArgs[0]==s_buttonLink)&&(sz==3)){
+        if((allArgs[0]==GL_syntax.s_buttonLink)&&(sz==3)){
           return HSF::createButtonLink(allArgs[2],allArgs[1]);
         }
-        if((allArgs[0]==s_svgAdd)&&(sz==4)){
+        if((allArgs[0]==GL_syntax.s_svgAdd)&&(sz==4)){
           return SVGF::addAllSVGs(allArgs[3],BF::stringToDouble(allArgs[1]),BF::stringToDouble(allArgs[2]));
         }
-        if((allArgs[0]==s_itemTable)&&(sz==2)){
+        if((allArgs[0]==GL_syntax.s_itemTable)&&(sz==2)){
           return createItemTable(_psd,allArgs[1]);
         }
-        if((allArgs[0]==s_textAreaReqField)&&(sz==5)){
+        if((allArgs[0]==GL_syntax.s_textAreaReqField)&&(sz==5)){
           return createTextAreaField(_psd,allArgs[1],allArgs[2],allArgs[3],allArgs[4]);
         }
-        if((allArgs[0]==s_textAreaReqField)&&(sz==7)){
+        if((allArgs[0]==GL_syntax.s_textAreaReqField)&&(sz==7)){
           return createTextAreaField(_psd,allArgs[1],allArgs[2],allArgs[3],allArgs[4],allArgs[5],allArgs[6]);
         }
-        if((allArgs[0]==s_textInputReqField)&&(sz==6)){
+        if((allArgs[0]==GL_syntax.s_textInputReqField)&&(sz==6)){
           if( (allArgs[1]=="reqBC") && (allArgs[2]=="question") ){
             std::string possibleReplacement=SF::getElFromMapOrNotFoundMessage(_psd.respMap,"question","notFound");
             if(possibleReplacement!="notFound"){
@@ -1690,10 +1717,10 @@ namespace APTI{
           }
           return createTextInputField(allArgs[1],allArgs[2],allArgs[3],allArgs[4],allArgs[5]);
         }
-        if((allArgs[0]==s_radioButtonsField)&&(sz==7)){
+        if((allArgs[0]==GL_syntax.s_radioButtonsField)&&(sz==7)){
           return createRadioButtonsField(allArgs[1],allArgs[2],allArgs[3],allArgs[4],allArgs[5],allArgs[6]);
         }
-        if((allArgs[0]==s_antiSpamChallengeField)&&((sz==5)||(sz==6))){
+        if((allArgs[0]==GL_syntax.s_antiSpamChallengeField)&&((sz==5)||(sz==6))){
           if(_psd.my_un!="visitor"){return "";}
           std::string _ln="8";
           if(sz==6){
@@ -1701,42 +1728,53 @@ namespace APTI{
           }
           return createAntiSpamField(allArgs[1],allArgs[2],allArgs[3],allArgs[4],_ln);
         }
-        if((allArgs[0]==s_fileReqField)&&(sz==4)){
+        if((allArgs[0]==GL_syntax.s_fileReqField)&&(sz==4)){
           return createFileRequestField(allArgs[1],allArgs[2],allArgs[3]);
         }
-        if((allArgs[0]==s_formInitialization)&&(sz==3)){
+        if((allArgs[0]==GL_syntax.s_formInitialization)&&(sz==3)){
           return initializeForm(allArgs[1],allArgs[2]);
         }
-        if((allArgs[0]==s_formPlacement)&&(sz==2)){
+        if((allArgs[0]==GL_syntax.s_formPlacement)&&(sz==2)){
           return placeFormInText(allArgs[1]);
         }
-        if((allArgs[0]==s_formPlacement)&&(sz==4)){
+        if((allArgs[0]==GL_syntax.s_formPlacement)&&(sz==4)){
           return placeFormInText(allArgs[1],allArgs[2],allArgs[3]);
         }
-        if((allArgs[0]==s_userPermits)&&(sz==2)){
+        if((allArgs[0]==GL_syntax.s_userPermits)&&(sz==2)){
           return createUserPermitInfo(_psd,allArgs[1]);
         }
-        if((allArgs[0]==s_formInsertRedirect)&&(sz==2)){
+        if((allArgs[0]==GL_syntax.s_formInsertRedirect)&&(sz==2)){
           return setRedirectInfo(allArgs[1]);
         }
-        if((allArgs[0]==s_statAnalysis)&&(sz==2)){
+        if((allArgs[0]==GL_syntax.s_statAnalysis)&&(sz==2)){
           return createStatAnalysisPage(_psd,allArgs[1]);
         }
-        if((allArgs[0]==s_logInLink)&&(sz==1)){
+        if((allArgs[0]==GL_syntax.s_logInLink)&&(sz==1)){
           return createLogInLink();
         }
-        if((allArgs[0]==s_cloneInvitation)&&(sz==1)){
+        if((allArgs[0]==GL_syntax.s_cloneInvitation)&&(sz==1)){
           return createCloneInvitation(_psd);
         }
-        if((allArgs[0]==s_cRestore) && (sz==2)){
+        if((allArgs[0]==GL_syntax.s_cRestore) && (sz==2)){
           return createRestoreCommand(_psd,allArgs[1]);
         }
-        if((allArgs[0]==s_listFromDB)&&(sz==4)){
+        if((allArgs[0]==GL_syntax.s_listFromDB)&&(sz==4)){
           return createListFromDB(_psd,allArgs[1],allArgs[2],allArgs[3]);
         }
-        if((allArgs[0]==s_answerToQuery)&&(sz==1)){
+        if((allArgs[0]==GL_syntax.s_answerToQuery)&&(sz==1)){
           SF::assignToConst(_psd.queryAnswRequired,1);
           return _psd.queryAnswPlaceHolder;
+        }
+        if(allArgs[0]==GL_syntax.s_fileForm){
+          if(sz==3){
+            return displayFileForm(_psd,allArgs[1],allArgs[2]);
+          }
+          if(sz==4){
+            return displayFileForm(_psd,allArgs[1],allArgs[2],allArgs[3]);
+          }
+          if(sz==5){
+            return displayFileForm(_psd,allArgs[1],allArgs[2],allArgs[3],allArgs[4]);
+          }
         }
       }
     }
@@ -1927,15 +1965,15 @@ namespace APTI{
       apmf.linkForm+="=";
       apmf.linkForm+=tName;
       if(_psd.pEditReq=="w"){
-        return treatInserts(_psd,CCFI::createSimpleFormForTextEdit(apmf),s_insertB,s_insertE);
+        return treatInserts(_psd,CCFI::createSimpleFormForTextEdit(apmf),GL_syntax.s_insertB,GL_syntax.s_insertE);
       }
-      return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),s_insertB,s_insertE);
+      return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),GL_syntax.s_insertB,GL_syntax.s_insertE);
     }
     std::string raw=convertVariablesToValues(_psd,_raw);
     if(documentType=="problem"){
-      return treatInserts(_psd, prepareProblem(_psd,raw),s_insertB,s_insertE);
+      return treatInserts(_psd, prepareProblem(_psd,raw),GL_syntax.s_insertB,GL_syntax.s_insertE);
     }
-    return treatInserts(_psd, raw,s_insertB,s_insertE);
+    return treatInserts(_psd, raw,GL_syntax.s_insertB,GL_syntax.s_insertE);
   }
   std::string AbstractText::getRawText() const{ return rawText; }
   std::string AbstractText::displayText(const PSDI::SessionData  & _psd, const std::string & _position ){
@@ -1995,7 +2033,7 @@ namespace APTI{
     apmf.modifyMe="modifyMessage";
     apmf.dbName=_mC;
     apmf.textNameLabel=MWII::GL_WI.getDefaultWebText("Message code:")+" ";
-    return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),s_insertB,s_insertE);
+    return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),GL_syntax.s_insertB,GL_syntax.s_insertE);
   }
   std::string AbstractText::createPowerCouasEdit(const PSDI::SessionData & _psd, const std::string & _cC){
     CEI::CouasElement cEl(_psd);
@@ -2011,7 +2049,7 @@ namespace APTI{
     apmf.modifyMe="modifyCourseAssignment";
     apmf.dbName=_cC;
     apmf.textNameLabel=MWII::GL_WI.getDefaultWebText("Course/assignment code:");
-    return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),s_insertB,s_insertE);
+    return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),GL_syntax.s_insertB,GL_syntax.s_insertE);
   }
   std::string AbstractText::createPowerCertEdit(const PSDI::SessionData & _psd, const std::string & _cC){
     CERD::Certificate myCert;
@@ -2026,7 +2064,7 @@ namespace APTI{
     apmf.modifyMe="modifyCertificate";
     apmf.dbName=_cC;
     apmf.textNameLabel=MWII::GL_WI.getDefaultWebText("Certificate code/name:");
-    return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),s_insertB,s_insertE);
+    return treatInserts(_psd,CCFI::createCustomCommandForm(apmf),GL_syntax.s_insertB,GL_syntax.s_insertE);
   }
   std::string AbstractText::createMessageDisplay(const PSDI::SessionData & _psd, const std::string & _mC){
     long numMessScroller=10;
@@ -2096,7 +2134,7 @@ namespace APTI{
       }
       fR+="</div></div>\n";
     }
-    return treatInserts(_psd,fR,s_insertB,s_insertE);
+    return treatInserts(_psd,fR,GL_syntax.s_insertB,GL_syntax.s_insertE);
   }
   std::string AbstractText::createCouasDisplay(const PSDI::SessionData & _psd, const std::string & _cC){
     std::string numMessScroller="10";
@@ -2113,7 +2151,10 @@ namespace APTI{
     }
     CEI::CouasElement cEl(_psd);
     if(ICEI::initFromCode(_psd,cEl,couasCode)=="failed"){
-      return "";
+      std::string cma=CMTI::analysisAndMigrationWhenCouasDoesntExist(_psd,cEl);
+      if(cma!="continue"){
+        return cma;
+      }
     }
     cEl.sortGradeData(_psd.sortCriterion);
     allowedToGrade=cEl.allowedToExecuteAutomaticGrading(_psd);
@@ -2196,14 +2237,6 @@ namespace APTI{
     return res;
   }
   int AbstractText::allowedToMakePDFForCertificate(const PSDI::SessionData & _psd, const std::string& usernameWhoIsAllowedToMakeCertificate) const{
-    //NOT DONE YET, BUT MUST BE DONE:
-    //     - check whether users other than administrators are allowed to make pdfs
-    //        - The website owners should be provided with a switch that can turn off
-    //          pdf making. PDF making consumes resources: Calling latex is CPU intensive
-    //          In addition, the PDF consume hard disk space. The website owner may want
-    //          to prohibit the PDF generation.
-    //          At the moment, there is nothing in place that prohibits regular users to
-    //          make requests for pdfs.
     if(_psd.isRoot=="yes"){return 1;}
     if(_psd.my_un=="visitor"){return 0;}
     if(CERD::GL_CertificatesOptions.pdfsAllowed.length()>0){
@@ -2227,8 +2260,8 @@ namespace APTI{
     lStart=MWII::GL_WI.getDefaultWebText("certPreambleLatexTemplate");
     if(lStart=="certPreambleLatexTemplate"){
       lStart=MWII::GL_WI.getDefaultWebText("examPreambleLatexTemplate");
-      if(lStart=="certPreambleLatexTemplate"){
-        lStart==MWII::GL_WI.getDefaultWebText("notesPreambleLatexTemplate");
+      if(lStart=="examPreambleLatexTemplate"){
+        lStart=MWII::GL_WI.getDefaultWebText("notesPreambleLatexTemplate");
       }
     }
     long pos; std::pair<std::string,int> allD;
@@ -2245,12 +2278,12 @@ namespace APTI{
     latexSource+=lStart+"\n\n \\begin{document}\n";
     latexSource+=txts;
     latexSource+="\n\n\\end{document} \n";
-    std::string pdfNameForCertificate=MWII::GL_WI.getPublicPDFCertLoc()+"/cIC"+_code;
+    std::string pdfName=MWII::GL_WI.getPublicPDFCertLoc()+"/cIC"+_code;
     IOF::deleteOldFiles(MWII::GL_WI.getPublicPDFCertLoc(),"pdf",CERD::GL_CertificatesOptions.maxTimeToKeepPDF);
-    LMF::createPdfFromTex(latexSource,pdfNameForCertificate,MWII::GL_WI.getPublicPDFCertLoc());
-    pdfNameForCertificate+=".pdf";
+    LMF::createPdfFromTex(latexSource,pdfName,MWII::GL_WI.getPublicPDFCertLoc());
+    pdfName+=".pdf";
     std::string fR="<p></p><p>\n";
-    fR+=HSF::createButtonLink(pdfNameForCertificate,"Download PDF");
+    fR+=HSF::createButtonLink(pdfName,"Download PDF");
     fR+="</p>\n";
     return fR;
   }
