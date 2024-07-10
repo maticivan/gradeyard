@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -46,10 +46,10 @@ namespace RTI{
     return ind_initSuccess;
   }
   std::string Response::indFileSepB(const long & i) const{
-    return s_indFileSep_ARTBB+BF::padded(i,100,"0")+s_infFileSep_ARTBEE;
+    return APTI::GL_syntax.s_indFileSep_ARTBB+BF::padded(i,100,"0")+APTI::GL_syntax.s_infFileSep_ARTBEE;
   }
   std::string Response::indFileSepE(const long & i) const{
-    return s_indFileSep_ARTEB +BF::padded(i,100,"0")+s_infFileSep_ARTBEE;
+    return APTI::GL_syntax.s_indFileSep_ARTEB +BF::padded(i,100,"0")+APTI::GL_syntax.s_infFileSep_ARTBEE;
   }
   std::string Response::fileLabelForHTML(const long & i) const{
     return "fi"+BF::padded(i,100,"0");
@@ -65,8 +65,8 @@ namespace RTI{
     int s=meRM.setFromTextName(_nameInDB);
     permitRead.clear();
     permitWrite.clear();
-    permitRead.insert(s_root);
-    permitWrite.insert(s_root);
+    permitRead.insert(APTI::GL_syntax.s_root);
+    permitWrite.insert(APTI::GL_syntax.s_root);
     tCreated="unknown";
     createdBy="unknown";
     tModified="unknown";
@@ -79,16 +79,16 @@ namespace RTI{
     if(s==1){
       initText=meRM.getTextData();
       long pos=0;
-      std::pair<std::string,int> allSD=SF::extract(initText,pos,s_sysDataB,s_sysDataE);
+      std::pair<std::string,int> allSD=SF::extract(initText,pos,APTI::GL_syntax.s_sysDataB,APTI::GL_syntax.s_sysDataE);
       pos=0;
-      std::pair<std::string,int> allTD=SF::extract(initText,pos,s_tDataB,s_tDataE);
+      std::pair<std::string,int> allTD=SF::extract(initText,pos,APTI::GL_syntax.s_tDataB,APTI::GL_syntax.s_tDataE);
       if(allSD.second==1){
         sysDataRaw=allSD.first;
-        std::string pText=s_notFound;
+        std::string pText=APTI::GL_syntax.s_notFound;
         HSF::parametersFromString(allSD.first,tCreated,createdBy,tModified,modifiedBy,pText,documentType);
-        if(pText!=s_notFound){
-          std::vector<std::string> rawPermisssionsRead= SF::stringToVector(pText,s_individualPermissionB, s_individualPermissionE,"_name_read_/name_");
-          std::vector<std::string> rawPermisssionsWrite= SF::stringToVector(pText,s_individualPermissionB, s_individualPermissionE,"_name_write_/name_");
+        if(pText!=APTI::GL_syntax.s_notFound){
+          std::vector<std::string> rawPermisssionsRead= SF::stringToVector(pText,APTI::GL_syntax.s_individualPermissionB, APTI::GL_syntax.s_individualPermissionE,"_name_read_/name_");
+          std::vector<std::string> rawPermisssionsWrite= SF::stringToVector(pText,APTI::GL_syntax.s_individualPermissionB, APTI::GL_syntax.s_individualPermissionE,"_name_write_/name_");
           std::vector<std::string> pReadV=PBD::getPermitsFromRaw_N(rawPermisssionsRead);
           std::vector<std::string> pWriteV=PBD::getPermitsFromRaw_N(rawPermisssionsWrite);
           long sz=pReadV.size();
@@ -187,70 +187,70 @@ namespace RTI{
     OfficialProblemData secondComp;
     std::pair<std::string,int> allD;
     long pos;
-    pos=0;allD=SF::extract(_s,pos,s_label_QRTB,s_label_QRTE);
+    pos=0;allD=SF::extract(_s,pos,APTI::GL_syntax.s_label_QRTB,APTI::GL_syntax.s_label_QRTE);
     if(allD.second==0){
       fR.first="notFound";
       fR.second=secondComp;
       return fR;
     }
     fR.first=allD.first;
-    pos=0;allD=SF::extract(_s,pos,s_tFormulation_QRTB,s_tFormulation_QRTE);
+    pos=0;allD=SF::extract(_s,pos,APTI::GL_syntax.s_tFormulation_QRTB,APTI::GL_syntax.s_tFormulation_QRTE);
     if(allD.second==1){
       secondComp.formulation=allD.first;
     }
-    allD=SF::extract(_s,pos, s_solution_QRTB, s_solution_QRTE);
+    allD=SF::extract(_s,pos, APTI::GL_syntax.s_solution_QRTB, APTI::GL_syntax.s_solution_QRTE);
     if(allD.second==1){
       secondComp.solution=allD.first;
     }
-    allD=SF::extract(_s,pos, s_answer_QRTB, s_answer_QRTE);
+    allD=SF::extract(_s,pos, APTI::GL_syntax.s_answer_QRTB, APTI::GL_syntax.s_answer_QRTE);
     if(allD.second==1){
       secondComp.answer=SF::answerToStandardForm(allD.first);
     }
-    allD=SF::extract(_s,pos, s_requestType_QRTB, s_requestType_QRTE);
+    allD=SF::extract(_s,pos, APTI::GL_syntax.s_requestType_QRTB, APTI::GL_syntax.s_requestType_QRTE);
     if(allD.second==1){
       secondComp.displayType=allD.first;
     }
     else{
-      pos=0;allD=SF::extract(_s,pos, s_requestType_QRTB, s_requestType_QRTE);
+      pos=0;allD=SF::extract(_s,pos, APTI::GL_syntax.s_requestType_QRTB, APTI::GL_syntax.s_requestType_QRTE);
       if(allD.second==1){
         secondComp.displayType=allD.first;
       }
     }
-    allD=SF::extract(_s,pos, s_radioButtons_QRTB, s_radioButtons_QRTE);
+    allD=SF::extract(_s,pos, APTI::GL_syntax.s_radioButtons_QRTB, APTI::GL_syntax.s_radioButtons_QRTE);
     if(allD.second==1){
       secondComp.choices=allD.first;
     }
-    allD=SF::extract(_s,pos, s_autograderInfo_QRTB, s_autograderInfo_QRTE);
+    allD=SF::extract(_s,pos, APTI::GL_syntax.s_autograderInfo_QRTB, APTI::GL_syntax.s_autograderInfo_QRTE);
     if(allD.second==1){
       secondComp.autoGraderInfo=allD.first;
     }
     else{
-      pos=0;allD=SF::extract(_s,pos, s_autograderInfo_QRTB, s_autograderInfo_QRTE);
+      pos=0;allD=SF::extract(_s,pos, APTI::GL_syntax.s_autograderInfo_QRTB, APTI::GL_syntax.s_autograderInfo_QRTE);
       if(allD.second==1){
         secondComp.autoGraderInfo=allD.first;
       }
     }
-    allD=SF::extract(_s,pos, s_latexPrintingInstructions_QRTB, s_latexPrintingInstructions_QRTE);
+    allD=SF::extract(_s,pos, APTI::GL_syntax.s_latexPrintingInstructions_QRTB, APTI::GL_syntax.s_latexPrintingInstructions_QRTE);
     if(allD.second==1){
       secondComp.latexPrintingInstructions=allD.first;
     }
     else{
-      pos=0;allD=SF::extract(_s,pos, s_latexPrintingInstructions_QRTB, s_latexPrintingInstructions_QRTE);
+      pos=0;allD=SF::extract(_s,pos, APTI::GL_syntax.s_latexPrintingInstructions_QRTB, APTI::GL_syntax.s_latexPrintingInstructions_QRTE);
       if(allD.second==1){
         secondComp.latexPrintingInstructions=allD.first;
       }
     }
-    allD=SF::extract(_s,pos, s_points_QRTB, s_points_QRTE);
+    allD=SF::extract(_s,pos, APTI::GL_syntax.s_points_QRTB, APTI::GL_syntax.s_points_QRTE);
     if(allD.second==1){
       secondComp.points=allD.first;
     }
     else{
-      pos=0;allD=SF::extract(_s,pos, s_points_QRTB, s_points_QRTE);
+      pos=0;allD=SF::extract(_s,pos, APTI::GL_syntax.s_points_QRTB, APTI::GL_syntax.s_points_QRTE);
       if(allD.second==1){
         secondComp.points=allD.first;
       }
     }
-    allD=SF::extract(_s,pos,s_gradingRules_QRTB,s_gradingRules_QRTE);
+    allD=SF::extract(_s,pos,APTI::GL_syntax.s_gradingRules_QRTB,APTI::GL_syntax.s_gradingRules_QRTE);
     if(allD.second==1){
       secondComp.gRules=GRI::gradingRulesMapFromRaw(allD.first);
     }
@@ -264,7 +264,7 @@ namespace RTI{
     long pos=0;
     long ssz=4;
     secondComp.resize(ssz);
-    allD=SF::extract(_s,pos,s_label_QRTB,s_label_QRTE);
+    allD=SF::extract(_s,pos,APTI::GL_syntax.s_label_QRTB,APTI::GL_syntax.s_label_QRTE);
     if(allD.second==0){
       fR.first="notFound";
       fR.second=secondComp;
@@ -273,22 +273,22 @@ namespace RTI{
     fR.first=allD.first;
     for(long i=0;i<ssz;++i){secondComp[i]="notFound";}
     pos=0;
-    allD=SF::extract(_s,pos,s_solution_QRTB,s_solution_QRTE);
+    allD=SF::extract(_s,pos,APTI::GL_syntax.s_solution_QRTB,APTI::GL_syntax.s_solution_QRTE);
     if(allD.second==1){
       secondComp[0]=allD.first;
     }
     pos=0;
-    allD=SF::extract(_s,pos, s_answer_QRTB, s_answer_QRTE);
+    allD=SF::extract(_s,pos, APTI::GL_syntax.s_answer_QRTB, APTI::GL_syntax.s_answer_QRTE);
     if(allD.second==1){
       secondComp[1]=allD.first;
     }
     pos=0;
-    allD=SF::extract(_s,pos, s_points_QRTB, s_points_QRTE);
+    allD=SF::extract(_s,pos, APTI::GL_syntax.s_points_QRTB, APTI::GL_syntax.s_points_QRTE);
     if(allD.second==1){
       secondComp[2]=allD.first;
     }
     pos=0;
-    allD=SF::extract(_s,pos, s_comment_ARTB, s_comment_ARTE);
+    allD=SF::extract(_s,pos, APTI::GL_syntax.s_comment_ARTB, APTI::GL_syntax.s_comment_ARTE);
     if(allD.second==1){
       secondComp[3]=allD.first;
     }
@@ -416,11 +416,11 @@ namespace RTI{
     std::string displUserAnswer=MWII::GL_WI.getDefaultWebText("(No submission)");
     if((sqi.userAnswer!="notFound")&&(sqi.userAnswer!="")){
       displUserAnswer=prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(sqi);
-      if(sqi.displType==s_textInputReqField){
+      if(sqi.displType==APTI::GL_syntax.s_textInputReqField){
         displUserAnswer=DISPPF::prepareForHTMLDisplayTextInputField(displUserAnswer);
       }
       else{
-        if(sqi.displType==s_textAreaReqField){
+        if(sqi.displType==APTI::GL_syntax.s_textAreaReqField){
           displUserAnswer=DISPPF::prepareForHTMLDisplay(displUserAnswer);
         }
         else{
@@ -443,11 +443,11 @@ namespace RTI{
       if((sqi.userAnswer!="notFound")&&(sqi.userAnswer!="")){
         fR+="<B>"+MWII::GL_WI.getDefaultWebText("Answer submitted")+": </B> ";
         std::string displUserAnswer=prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(sqi);
-        if(sqi.displType==s_textInputReqField){
+        if(sqi.displType==APTI::GL_syntax.s_textInputReqField){
           fR+=DISPPF::prepareForHTMLDisplayTextInputField(displUserAnswer);
         }
         else{
-          if(sqi.displType==s_textAreaReqField){
+          if(sqi.displType==APTI::GL_syntax.s_textAreaReqField){
             fR+="<BR>"+DISPPF::prepareForHTMLDisplay(displUserAnswer);
           }
           else{
@@ -528,11 +528,11 @@ namespace RTI{
           linkCodeAutograderTest+=" class=\"btn btn-outline-dark btn-sm\">Check</button></b></a>\n";
         }
       }
-      if(sqi.displType==s_textAreaReqField){
+      if(sqi.displType==APTI::GL_syntax.s_textAreaReqField){
         diffText1_Label="textAreaField";
         diffText2_Label="_/n*__n*_10_/n*__n*_90_/n*_\n_/insert_\n";
       }
-      if(sqi.displType==s_radioButtonsField){
+      if(sqi.displType==APTI::GL_syntax.s_radioButtonsField){
         diffText1_Label="radioButtonsField";
         answSubmittedForTopBar="<B>"+MWII::GL_WI.getDefaultWebText("Current submission")+": ";
         answSubmittedForTopBar+=sqi.userAnswer+"</B>\n";
@@ -545,11 +545,11 @@ namespace RTI{
       }
       fR+=problemCardOpeningTags(sqi,answBarLastComponent,1,"");
       fR+="</div>\n</div>";
-      if((sqi.displType==s_textInputReqField)||(sqi.displType==s_textAreaReqField)){
+      if((sqi.displType==APTI::GL_syntax.s_textInputReqField)||(sqi.displType==APTI::GL_syntax.s_textAreaReqField)){
          if((sqi.userAnswer!="notFound")&&(sqi.userAnswer!="")){
            fR+=submissionOpeningTags(sqi,MWII::GL_WI.getDefaultWebText("Current submission"),linkCodeAutograderTest);
            std::string displUserAnswer=prepareUserAnswerForDisplayIfCodeIsNotWrittenNicely(sqi);
-           if(sqi.displType==s_textInputReqField){
+           if(sqi.displType==APTI::GL_syntax.s_textInputReqField){
              fR+=DISPPF::prepareForHTMLDisplayTextInputField(displUserAnswer);
            }
            else{
@@ -563,7 +563,7 @@ namespace RTI{
         }
         fR+= diffText2_Label;
       }
-      if(sqi.displType==s_radioButtonsField){
+      if(sqi.displType==APTI::GL_syntax.s_radioButtonsField){
         fR+="_/n*__n*_";
         fR+="_/n*__n*_"+sqi.allChoicesSt;
         fR+="_/n*__n*_"+sqi.userAnswer;
@@ -583,7 +583,7 @@ namespace RTI{
         topBarScore="";
       }
       fR+=problemCardOpeningTags(sqi,"",1,topBarScore);
-      if(sqi.displType==s_radioButtonsField){
+      if(sqi.displType==APTI::GL_syntax.s_radioButtonsField){
         std::vector<std::string> pairsOfValDescriptions=SF::stringToVector(sqi.allChoicesSt,"_rb*_","_/rb*_");
         std::vector<std::string> smallSt;
         std::string openB,closeB;
@@ -710,7 +710,7 @@ namespace RTI{
       fR.first+="_insert__n*_textAreaField_/n*__n*_"+e_formNameRT+"_/n*_\n_n*_";
       fR.first+=sqi.QNum+"_/n*__n*_"; ;
       fR.first+=problemCardOpeningTags(sqi,pointsEarnedForDisplay,fR.second,"");
-      if(sqi.displType==s_radioButtonsField){
+      if(sqi.displType==APTI::GL_syntax.s_radioButtonsField){
         std::vector<std::string> pairsOfValDescriptions=SF::stringToVector(sqi.allChoicesSt,"_rb*_","_/rb*_");
         std::vector<std::string> smallSt;
         std::string openB,closeB;
@@ -871,30 +871,30 @@ namespace RTI{
       rInf.certificateIdCode="notFound";
       long pos;
       std::pair<std::string,int> allD;
-      pos=0;allD=SF::extract(rawText,pos,s_iEnd_QRTB,s_iEnd_QRTE);
+      pos=0;allD=SF::extract(rawText,pos,APTI::GL_syntax.s_iEnd_QRTB,APTI::GL_syntax.s_iEnd_QRTE);
       if(allD.second==1){
         rInf.indEndingTime=allD.first;
       }
-      pos=0;allD=SF::extract(rawText,pos,s_iTVersion_QRTB,s_iTVersion_QRTE);
+      pos=0;allD=SF::extract(rawText,pos,APTI::GL_syntax.s_iTVersion_QRTB,APTI::GL_syntax.s_iTVersion_QRTE);
       if(allD.second==1){
         long tmpLong=BF::stringToInteger(allD.first);
         if(tmpLong>-1){
           rInf.indTimerVersion=tmpLong;
         }
       }
-      pos=0;allD=SF::extract(rawText,pos,s_statusOfTheForm_ARTB,s_statusOfTheForm_ARTE);
+      pos=0;allD=SF::extract(rawText,pos,APTI::GL_syntax.s_statusOfTheForm_ARTB,APTI::GL_syntax.s_statusOfTheForm_ARTE);
       rInf.statusOfTheForm="nyo";
       if(allD.second==1){
         rInf.statusOfTheForm=allD.first;
       }
       rInf.gradingStatus="nyo";
-      pos=0;allD=SF::extract(rawText,pos,s_statusOfTheGrading_ARTB,s_statusOfTheGrading_ARTE);
+      pos=0;allD=SF::extract(rawText,pos,APTI::GL_syntax.s_statusOfTheGrading_ARTB,APTI::GL_syntax.s_statusOfTheGrading_ARTE);
       if(allD.second==1){
         rInf.gradingStatus=allD.first;
       }
       rInf.documentType=st_responseToTest;
       rawTextOfResponseVisibleToGrader="";
-      pos=0; allD=SF::extract(rawText,pos,s_respLinkInGrade_QRTB,s_respLinkInGrade_QRTE);
+      pos=0; allD=SF::extract(rawText,pos,APTI::GL_syntax.s_respLinkInGrade_QRTB,APTI::GL_syntax.s_respLinkInGrade_QRTE);
       std::string responseDocument;
       if(allD.second==1){
         rInf.documentType=st_gradeOfResponse;
@@ -902,9 +902,9 @@ namespace RTI{
         rawTextOfResponseVisibleToGrader=responseDocumentForGrader.getTextData();
       }
       std::pair<std::string,OfficialProblemData > tmpForm;
-      pos=0; allD=SF::extract(rawText,pos,s_formulRespRec_ARTB,s_formulRespRec_ARTE);
+      pos=0; allD=SF::extract(rawText,pos,APTI::GL_syntax.s_formulRespRec_ARTB,APTI::GL_syntax.s_formulRespRec_ARTE);
       if(allD.second==0){
-        std::vector<std::string> questions=SF::stringToVector(rawText,s_nextQ_QRTB,s_nextQ_QRTE);
+        std::vector<std::string> questions=SF::stringToVector(rawText,APTI::GL_syntax.s_nextQ_QRTB,APTI::GL_syntax.s_nextQ_QRTE);
         long qSz=questions.size();
         for(long i=0;i<qSz;++i){
           tmpForm=getFormQData(questions[i]);
@@ -923,7 +923,7 @@ namespace RTI{
       std::string masterStatusRawData="";
       std::string locationOfCertificateInfo=rawText;
       if(optimizationParameter==0){
-        pos=0; allD=SF::extract(rawText,pos,s_masterStatus_ARTB,s_masterStatus_ARTE);
+        pos=0; allD=SF::extract(rawText,pos,APTI::GL_syntax.s_masterStatus_ARTB,APTI::GL_syntax.s_masterStatus_ARTE);
         if(allD.second==1){
           masterStatusDoc=allD.first;
           RMD::Response mSD;
@@ -932,45 +932,45 @@ namespace RTI{
             return rInf;
           }
           masterStatusRawData=mSD.getTextData();
-          pos=0;allD=SF::extract(masterStatusRawData,pos,s_statusOfTheForm_ARTB,s_statusOfTheForm_ARTE);
+          pos=0;allD=SF::extract(masterStatusRawData,pos,APTI::GL_syntax.s_statusOfTheForm_ARTB,APTI::GL_syntax.s_statusOfTheForm_ARTE);
           if(allD.second==0){
             return rInf;
           }
           masterStatus=allD.first;
-          pos=0;allD=SF::extract(masterStatusRawData,pos,s_statusOfTheGrading_ARTB,s_statusOfTheGrading_ARTE);
+          pos=0;allD=SF::extract(masterStatusRawData,pos,APTI::GL_syntax.s_statusOfTheGrading_ARTB,APTI::GL_syntax.s_statusOfTheGrading_ARTE);
           if(allD.second==1){
             rInf.gradingStatus=allD.first;
           }
-          pos=0; allD=SF::extract(masterStatusRawData,pos,s_buttonLabel_QRTB,s_buttonLabel_QRTE);
+          pos=0; allD=SF::extract(masterStatusRawData,pos,APTI::GL_syntax.s_buttonLabel_QRTB,APTI::GL_syntax.s_buttonLabel_QRTE);
           if(allD.second==1){
             labelOnTheSubmitButton=allD.first;
           }
-          pos=0; allD=SF::extract(masterStatusRawData,pos,s_importantInfo_QRTB,s_importantInfo_QRTE);
+          pos=0; allD=SF::extract(masterStatusRawData,pos,APTI::GL_syntax.s_importantInfo_QRTB,APTI::GL_syntax.s_importantInfo_QRTE);
           if(allD.second==1){
             instructionsOnTopOfTheForm=allD.first;
           }
-          pos=0; allD=SF::extract(masterStatusRawData,pos,s_notStartedYet_QRTB,s_notStartedYet_QRTE);
+          pos=0; allD=SF::extract(masterStatusRawData,pos,APTI::GL_syntax.s_notStartedYet_QRTB,APTI::GL_syntax.s_notStartedYet_QRTE);
           if(allD.second==1){
             messageUnavailableYet=allD.first;
           }
-          pos=0; allD=SF::extract(masterStatusRawData,pos,s_notReadyForGrading_QRTB,s_notReadyForGrading_QRTE);
+          pos=0; allD=SF::extract(masterStatusRawData,pos,APTI::GL_syntax.s_notReadyForGrading_QRTB,APTI::GL_syntax.s_notReadyForGrading_QRTE);
           if(allD.second==1){
             messageNoGradingYet=allD.first;
           }
-          pos=0; allD=SF::extract(masterStatusRawData,pos,s_needsActivation_QRTB,s_needsActivation_QRTE);
+          pos=0; allD=SF::extract(masterStatusRawData,pos,APTI::GL_syntax.s_needsActivation_QRTB,APTI::GL_syntax.s_needsActivation_QRTE);
           if(allD.second==1){
             messageStartExam=allD.first;
           }
           rInf.statusOfTheForm=masterStatus;
-          pos=0;allD=SF::extract(masterStatusRawData,pos,s_cAllowedTime_QRTB,s_cAllowedTime_QRTE);
+          pos=0;allD=SF::extract(masterStatusRawData,pos,APTI::GL_syntax.s_cAllowedTime_QRTB,APTI::GL_syntax.s_cAllowedTime_QRTE);
           if(allD.second==1){
             rInf.commAllowedTime=allD.first;
           }
-          pos=0;allD=SF::extract(masterStatusRawData,pos,s_cAbsEnd_QRTB,s_cAbsEnd_QRTE);
+          pos=0;allD=SF::extract(masterStatusRawData,pos,APTI::GL_syntax.s_cAbsEnd_QRTB,APTI::GL_syntax.s_cAbsEnd_QRTE);
           if(allD.second==1){
             rInf.commAbsoluteEnd=allD.first;
           }
-          pos=0;allD=SF::extract(masterStatusRawData,pos,s_cTVersion_QRTB,s_cTVersion_QRTE);
+          pos=0;allD=SF::extract(masterStatusRawData,pos,APTI::GL_syntax.s_cTVersion_QRTB,APTI::GL_syntax.s_cTVersion_QRTE);
           if(allD.second==1){
             long tmpLong=BF::stringToInteger(allD.first);
             if(tmpLong>-1){
@@ -1006,14 +1006,14 @@ namespace RTI{
         }
       }
       if((rInf.documentType==st_responseToTest)&&((rInf.statusOfTheForm=="sc")||(rInf.statusOfTheForm=="cs")||(rInf.statusOfTheForm=="c")||   (rInf.statusOfTheForm=="sp")||(rInf.statusOfTheForm=="ps")||(rInf.statusOfTheForm=="p"))){
-        pos=0; allD=SF::extract(rawText,pos,s_gradeLinkInResp_QRTB,s_gradeLinkInResp_QRTE);
+        pos=0; allD=SF::extract(rawText,pos,APTI::GL_syntax.s_gradeLinkInResp_QRTB,APTI::GL_syntax.s_gradeLinkInResp_QRTE);
         if(allD.second==0){
           return rInf;
         }
         indGradingDocForRespCorrectlySet=gradingDocumentForReponse.setFromTextName(allD.first);
         if(indGradingDocForRespCorrectlySet==1){
           locationOfCertificateInfo=gradingDocumentForReponse.getTextData();
-          std::vector<std::string> vecAllGCs=SF::stringToVector(gradingDocumentForReponse.getTextData(), s_nextQ_QRTB, s_nextQ_QRTE);
+          std::vector<std::string> vecAllGCs=SF::stringToVector(gradingDocumentForReponse.getTextData(), APTI::GL_syntax.s_nextQ_QRTB, APTI::GL_syntax.s_nextQ_QRTE);
           long sz=vecAllGCs.size();
           std::pair<std::string,std::vector<std::string> > tmpGr;
           for(long i=0;i<sz;++i){
@@ -1026,7 +1026,7 @@ namespace RTI{
       }
       if( ((rInf.documentType==st_gradeOfResponse)&&(rInf.gradingStatus=="a")) || (optimizationParameter==1)){
         rInf.acceptGrade=1;
-        std::vector<std::string> vecAllGCs=SF::stringToVector(rawText, s_nextQ_QRTB, s_nextQ_QRTE);
+        std::vector<std::string> vecAllGCs=SF::stringToVector(rawText, APTI::GL_syntax.s_nextQ_QRTB, APTI::GL_syntax.s_nextQ_QRTE);
         long sz=vecAllGCs.size();
         std::pair<std::string,std::vector<std::string> > tmpGr;
         for(long i=0;i<sz;++i){
@@ -1039,11 +1039,11 @@ namespace RTI{
         }
       }
       if((rInf.documentType==st_gradeOfResponse)||(rInf.documentType==st_responseToTest)){
-        pos=0; allD=SF::extract(locationOfCertificateInfo,pos,s_certificateDescCodeB,s_certificateDescCodeE);
+        pos=0; allD=SF::extract(locationOfCertificateInfo,pos,APTI::GL_syntax.s_certificateDescCodeB,APTI::GL_syntax.s_certificateDescCodeE);
         if(allD.second==1){
             rInf.certificateDescriptionCode=allD.first;
         }
-        pos=0; allD=SF::extract(locationOfCertificateInfo,pos,s_certificateIdCodeB,s_certificateIdCodeE);
+        pos=0; allD=SF::extract(locationOfCertificateInfo,pos,APTI::GL_syntax.s_certificateIdCodeB,APTI::GL_syntax.s_certificateIdCodeE);
         if(allD.second==1){
             rInf.certificateIdCode=allD.first;
         }
@@ -1051,19 +1051,19 @@ namespace RTI{
       rInf.idInfoData="notFound";
       rInf.solverUserName="notFound";
       if(rInf.documentType==st_responseToTest){
-        pos=0; allD=SF::extract(rawText,pos,s_idInfo_ARTB,s_idInfo_ARTE);
+        pos=0; allD=SF::extract(rawText,pos,APTI::GL_syntax.s_idInfo_ARTB,APTI::GL_syntax.s_idInfo_ARTE);
       }
       else{
-        pos=0; allD=SF::extract(rawTextOfResponseVisibleToGrader,pos,s_idInfo_ARTB,s_idInfo_ARTE);
+        pos=0; allD=SF::extract(rawTextOfResponseVisibleToGrader,pos,APTI::GL_syntax.s_idInfo_ARTB,APTI::GL_syntax.s_idInfo_ARTE);
       }
       if(allD.second==1){
         rInf.idInfoData=allD.first;
       }
       if(rInf.documentType==st_responseToTest){
-        pos=0; allD=SF::extract(rawText,pos,s_solverUName_ARTB,s_solverUName_ARTE);
+        pos=0; allD=SF::extract(rawText,pos,APTI::GL_syntax.s_solverUName_ARTB,APTI::GL_syntax.s_solverUName_ARTE);
       }
       else{
-        pos=0; allD=SF::extract(rawTextOfResponseVisibleToGrader,pos,s_solverUName_ARTB,s_solverUName_ARTE);
+        pos=0; allD=SF::extract(rawTextOfResponseVisibleToGrader,pos,APTI::GL_syntax.s_solverUName_ARTB,APTI::GL_syntax.s_solverUName_ARTE);
       }
       if(allD.second==1){
         rInf.solverUserName=allD.first;
@@ -1071,10 +1071,10 @@ namespace RTI{
       rInf.fileInfoV.resize(0);
       numFilesAllowed=0;
       if(rInf.documentType==st_responseToTest){
-        pos=0; allD=SF::extract(rawText,pos,s_numFilesAllowed_ARTB,s_numFilesAllowed_ARTE);
+        pos=0; allD=SF::extract(rawText,pos,APTI::GL_syntax.s_numFilesAllowed_ARTB,APTI::GL_syntax.s_numFilesAllowed_ARTE);
       }
       else{
-        pos=0; allD=SF::extract(rawTextOfResponseVisibleToGrader,pos,s_numFilesAllowed_ARTB,s_numFilesAllowed_ARTE);
+        pos=0; allD=SF::extract(rawTextOfResponseVisibleToGrader,pos,APTI::GL_syntax.s_numFilesAllowed_ARTB,APTI::GL_syntax.s_numFilesAllowed_ARTE);
       }
       if(allD.second==1){
         numFilesAllowed=BF::stringToInteger(allD.first);
@@ -1123,25 +1123,25 @@ namespace RTI{
       }
       std::vector<std::string> userAsV;
       if(rInf.documentType==st_responseToTest){
-        userAsV=SF::stringToVector(rawText,s_nextQ_QRTB,s_nextQ_QRTE);
+        userAsV=SF::stringToVector(rawText,APTI::GL_syntax.s_nextQ_QRTB,APTI::GL_syntax.s_nextQ_QRTE);
       }
       else{
-        userAsV=SF::stringToVector(rawTextOfResponseVisibleToGrader,s_nextQ_QRTB,s_nextQ_QRTE);
+        userAsV=SF::stringToVector(rawTextOfResponseVisibleToGrader,APTI::GL_syntax.s_nextQ_QRTB,APTI::GL_syntax.s_nextQ_QRTE);
       }
       long uaSz=userAsV.size();
       std::pair<std::string,std::vector<std::string> > tmpUsr;
       std::string qLabel,sep_version_B,sep_version_E,versionQ,problemDoc;
       if(optimizationParameter==0){
-        std::vector<std::string> formQsV=SF::stringToVector(formulationDocumentData,s_nextQ_QRTB,s_nextQ_QRTE);
+        std::vector<std::string> formQsV=SF::stringToVector(formulationDocumentData,APTI::GL_syntax.s_nextQ_QRTB,APTI::GL_syntax.s_nextQ_QRTE);
         long qSz=formQsV.size();
         for(long i=0;i<qSz;++i){
-          pos=0;allD=SF::extract(formQsV[i],pos,s_label_QRTB,s_label_QRTE);
+          pos=0;allD=SF::extract(formQsV[i],pos,APTI::GL_syntax.s_label_QRTB,APTI::GL_syntax.s_label_QRTE);
             versionQ="notFound";
             if(allD.second==1){
               qLabel=allD.first;
               (rInf.questionLabels).insert(qLabel);
-              sep_version_B=s_verSepBB+qLabel+s_verSepE;
-              sep_version_E=s_verSepEB+qLabel+s_verSepE;
+              sep_version_B=APTI::GL_syntax.s_verSepBB+qLabel+APTI::GL_syntax.s_verSepE;
+              sep_version_E=APTI::GL_syntax.s_verSepEB+qLabel+APTI::GL_syntax.s_verSepE;
               if(rInf.documentType==st_responseToTest){
                 if(_psd.indChangeRespRecToPrintVersionOfCommonInClassExam==1){
                   pos=0;allD=SF::extract(_psd.probVersionsOfChangedRespRec,pos,sep_version_B,sep_version_E);
@@ -1201,21 +1201,21 @@ namespace RTI{
         }
         else{
           rInf.acceptResp=1;rInf.displayQs=1;rInf.displaySol=0;rInf.displayPoints=0;rInf.displayComments=0;
-          pos=0;allD=SF::extractAndReplace(rawText,pos,s_iEnd_QRTB,s_iEnd_QRTE,0,s_iEnd_QRTB+rInf.potentialEndingTimeIfExamStartsNow+s_iEnd_QRTE);
+          pos=0;allD=SF::extractAndReplace(rawText,pos,APTI::GL_syntax.s_iEnd_QRTB,APTI::GL_syntax.s_iEnd_QRTE,0,APTI::GL_syntax.s_iEnd_QRTB+rInf.potentialEndingTimeIfExamStartsNow+APTI::GL_syntax.s_iEnd_QRTE);
           if(allD.second==1){
             rawText=allD.first;
           }
           else{
-            rawText = s_iEnd_QRTB+rInf.potentialEndingTimeIfExamStartsNow+s_iEnd_QRTE+rawText;
+            rawText = APTI::GL_syntax.s_iEnd_QRTB+rInf.potentialEndingTimeIfExamStartsNow+APTI::GL_syntax.s_iEnd_QRTE+rawText;
           }
-          pos=0;allD=SF::extractAndReplace(rawText,pos,s_iTVersion_QRTB,s_iTVersion_QRTE,0,s_iTVersion_QRTB+std::to_string(rInf.commTimerVersion)+s_iTVersion_QRTE);
+          pos=0;allD=SF::extractAndReplace(rawText,pos,APTI::GL_syntax.s_iTVersion_QRTB,APTI::GL_syntax.s_iTVersion_QRTE,0,APTI::GL_syntax.s_iTVersion_QRTB+std::to_string(rInf.commTimerVersion)+APTI::GL_syntax.s_iTVersion_QRTE);
           if(allD.second==1){
             rawText=allD.first;
           }
           else{
-            rawText = s_iTVersion_QRTB+std::to_string(rInf.commTimerVersion)+s_iTVersion_QRTE+rawText;
+            rawText = APTI::GL_syntax.s_iTVersion_QRTB+std::to_string(rInf.commTimerVersion)+APTI::GL_syntax.s_iTVersion_QRTE+rawText;
           }
-          pos=0;allD=SF::extractAndReplace(initText,pos,s_tDataB,s_tDataE,0,s_tDataB+rawText+s_tDataE);
+          pos=0;allD=SF::extractAndReplace(initText,pos,APTI::GL_syntax.s_tDataB,APTI::GL_syntax.s_tDataE,0,APTI::GL_syntax.s_tDataB+rawText+APTI::GL_syntax.s_tDataE);
           if( allD.second==1 ){
             initText=allD.first;
             meRM.setTextData(initText);
@@ -1635,12 +1635,12 @@ namespace RTI{
       return fR;
     }
     std::pair<std::string,int> allD;long pos;
-    pos=0;allD=SF::extract(rawText,pos,s_statusOfTheForm_ARTB,s_statusOfTheForm_ARTE);
+    pos=0;allD=SF::extract(rawText,pos,APTI::GL_syntax.s_statusOfTheForm_ARTB,APTI::GL_syntax.s_statusOfTheForm_ARTE);
     if(allD.second==0){
       return fR;
     }
     fR.first=allD.first;
-    pos=0;allD=SF::extract(rawText,pos,s_statusOfTheGrading_ARTB,s_statusOfTheGrading_ARTE);
+    pos=0;allD=SF::extract(rawText,pos,APTI::GL_syntax.s_statusOfTheGrading_ARTB,APTI::GL_syntax.s_statusOfTheGrading_ARTE);
     if(allD.second==0){
       return fR;
     }
@@ -1689,18 +1689,18 @@ namespace RTI{
     }
     else{
       std::pair<std::string,int> allD;
-      exStN=s_statusOfTheForm_ARTB+exStN+s_statusOfTheForm_ARTE;
-      grStN=s_statusOfTheGrading_ARTB+grStN+s_statusOfTheGrading_ARTE;
+      exStN=APTI::GL_syntax.s_statusOfTheForm_ARTB+exStN+APTI::GL_syntax.s_statusOfTheForm_ARTE;
+      grStN=APTI::GL_syntax.s_statusOfTheGrading_ARTB+grStN+APTI::GL_syntax.s_statusOfTheGrading_ARTE;
       long pos;
-      pos=0;allD=SF::extractAndReplace(rawText, pos,s_statusOfTheForm_ARTB,s_statusOfTheForm_ARTE, 0,exStN );
+      pos=0;allD=SF::extractAndReplace(rawText, pos,APTI::GL_syntax.s_statusOfTheForm_ARTB,APTI::GL_syntax.s_statusOfTheForm_ARTE, 0,exStN );
       if(allD.second==1){
         rawText=allD.first;
       }
-      pos=0;allD=SF::extractAndReplace(rawText, pos,s_statusOfTheGrading_ARTB,s_statusOfTheGrading_ARTE, 0,grStN );
+      pos=0;allD=SF::extractAndReplace(rawText, pos,APTI::GL_syntax.s_statusOfTheGrading_ARTB,APTI::GL_syntax.s_statusOfTheGrading_ARTE, 0,grStN );
       if(allD.second==1){
         rawText=allD.first;
       }
-      pos=0;allD=SF::extractAndReplace(initText,pos,s_tDataB,s_tDataE,0,s_tDataB+rawText+s_tDataE);
+      pos=0;allD=SF::extractAndReplace(initText,pos,APTI::GL_syntax.s_tDataB,APTI::GL_syntax.s_tDataE,0,APTI::GL_syntax.s_tDataB+rawText+APTI::GL_syntax.s_tDataE);
       if( allD.second==1 ){
         initText=allD.first;
         meRM.setTextData(initText);
@@ -1748,10 +1748,10 @@ namespace RTI{
         timerCode="";
       }
       else{
-        timerCode=SF::findAndReplace(timerCode,s_tmSecRepl,std::to_string(res.remainingSeconds));
+        timerCode=SF::findAndReplace(timerCode,APTI::GL_syntax.s_tmSecRepl,std::to_string(res.remainingSeconds));
       }
     }
-    instructionsOnTopOfTheForm=SF::findAndReplace(instructionsOnTopOfTheForm,s_timerRepl,timerCode);
+    instructionsOnTopOfTheForm=SF::findAndReplace(instructionsOnTopOfTheForm,APTI::GL_syntax.s_timerRepl,timerCode);
     std::string editV01;
     std::string hd="",ft="",md="";
     lD_ep.studentName=res.idInfoData;
@@ -1969,7 +1969,7 @@ namespace RTI{
       backLink+="</a>\n</div>\n";
       hd=backLink+hd;
     }
-    editV01=treatInserts(_psd, hd+statusAndProgressLine+md+ft,s_insertB,s_insertE);
+    editV01=treatInserts(_psd, hd+statusAndProgressLine+md+ft,APTI::GL_syntax.s_insertB,APTI::GL_syntax.s_insertE);
     return prepare(_psd,editV01);
   }
   int Response::analyzeAccessAndReportSuspiciousBehavior(const PSDI::SessionData & _psd){
@@ -1977,13 +1977,13 @@ namespace RTI{
     if((numberOfDifferentDevicesThatAccessedTheForm==-1)&&(_psd.isRoot!="yes") ){
       numberOfDifferentDevicesThatAccessedTheForm=0;
       std::string currentAccessLog;
-      currentAccessLog =s_accessLogsInnerSep_ARTB+_psd.usrAgent+ s_accessLogsInnerSep_ARTE;
-      currentAccessLog+=s_accessLogsInnerSep_ARTB+_psd.remAddr+s_accessLogsInnerSep_ARTE;
-      currentAccessLog+=s_accessLogsInnerSep_ARTB+_psd.reqMethod+s_accessLogsInnerSep_ARTE;
+      currentAccessLog =APTI::GL_syntax.s_accessLogsInnerSep_ARTB+_psd.usrAgent+ APTI::GL_syntax.s_accessLogsInnerSep_ARTE;
+      currentAccessLog+=APTI::GL_syntax.s_accessLogsInnerSep_ARTB+_psd.remAddr+APTI::GL_syntax.s_accessLogsInnerSep_ARTE;
+      currentAccessLog+=APTI::GL_syntax.s_accessLogsInnerSep_ARTB+_psd.reqMethod+APTI::GL_syntax.s_accessLogsInnerSep_ARTE;
       pos=0;allD=SF::getEverythingBefore(rawText,pos,currentAccessLog);
       if(allD.second==1){
         // Nothing new - accessing the form in the same way as before
-        pos=0;allD=SF::extract(rawText,pos,s_accessLogsNumDevs_ARTB,s_accessLogsNumDevs_ARTE);
+        pos=0;allD=SF::extract(rawText,pos,APTI::GL_syntax.s_accessLogsNumDevs_ARTB,APTI::GL_syntax.s_accessLogsNumDevs_ARTE);
         if(allD.second==1){
           numberOfDifferentDevicesThatAccessedTheForm=BF::stringToInteger(allD.first);
           if(numberOfDifferentDevicesThatAccessedTheForm<0){numberOfDifferentDevicesThatAccessedTheForm=0;}
@@ -1992,23 +1992,23 @@ namespace RTI{
       else{
         // The form is accessed in a new way
         std::string oldDataText="";
-        pos=0;allD=SF::extract(rawText,pos,s_accessLogs_ARTB,s_accessLogs_ARTE);
+        pos=0;allD=SF::extract(rawText,pos,APTI::GL_syntax.s_accessLogs_ARTB,APTI::GL_syntax.s_accessLogs_ARTE);
         if(allD.second==1){
           oldDataText=allD.first;
-          allD=SF::eraseStuffBetween(rawText,s_accessLogs_ARTB,s_accessLogs_ARTE);
+          allD=SF::eraseStuffBetween(rawText,APTI::GL_syntax.s_accessLogs_ARTB,APTI::GL_syntax.s_accessLogs_ARTE);
           if(allD.second==1){rawText=allD.first;}
-          pos=0;allD=SF::extract(oldDataText,pos,s_accessLogsNumDevs_ARTB,s_accessLogsNumDevs_ARTE);
+          pos=0;allD=SF::extract(oldDataText,pos,APTI::GL_syntax.s_accessLogsNumDevs_ARTB,APTI::GL_syntax.s_accessLogsNumDevs_ARTE);
           if(allD.second==1){
             numberOfDifferentDevicesThatAccessedTheForm=BF::stringToInteger(allD.first);
             if(numberOfDifferentDevicesThatAccessedTheForm<0){numberOfDifferentDevicesThatAccessedTheForm=0;}
-            allD=SF::eraseStuffBetween(oldDataText,s_accessLogsNumDevs_ARTB,s_accessLogsNumDevs_ARTE);
+            allD=SF::eraseStuffBetween(oldDataText,APTI::GL_syntax.s_accessLogsNumDevs_ARTB,APTI::GL_syntax.s_accessLogsNumDevs_ARTE);
             if(allD.second==1){oldDataText=allD.first;}
           }
         }
         ++numberOfDifferentDevicesThatAccessedTheForm;
-        oldDataText+=currentAccessLog+s_accessLogsNumDevs_ARTB+std::to_string(numberOfDifferentDevicesThatAccessedTheForm)+s_accessLogsNumDevs_ARTE;
-        rawText+=s_accessLogs_ARTB+oldDataText+s_accessLogs_ARTE;
-        pos=0;allD=SF::extractAndReplace(initText,pos,s_tDataB,s_tDataE,0,s_tDataB+rawText+s_tDataE);
+        oldDataText+=currentAccessLog+APTI::GL_syntax.s_accessLogsNumDevs_ARTB+std::to_string(numberOfDifferentDevicesThatAccessedTheForm)+APTI::GL_syntax.s_accessLogsNumDevs_ARTE;
+        rawText+=APTI::GL_syntax.s_accessLogs_ARTB+oldDataText+APTI::GL_syntax.s_accessLogs_ARTE;
+        pos=0;allD=SF::extractAndReplace(initText,pos,APTI::GL_syntax.s_tDataB,APTI::GL_syntax.s_tDataE,0,APTI::GL_syntax.s_tDataB+rawText+APTI::GL_syntax.s_tDataE);
         if( allD.second==1 ){
           initText=allD.first;
           meRM.setTextData(initText);
@@ -2112,7 +2112,7 @@ namespace RTI{
       newRawT+="_/st*|_\n";
     }
     rawText=newRawT;
-    pos=0;allD=SF::extractAndReplace(initText,pos,s_tDataB,s_tDataE,0,s_tDataB+rawText+s_tDataE);
+    pos=0;allD=SF::extractAndReplace(initText,pos,APTI::GL_syntax.s_tDataB,APTI::GL_syntax.s_tDataE,0,APTI::GL_syntax.s_tDataB+rawText+APTI::GL_syntax.s_tDataE);
     if( allD.second==1 ){
       initText=allD.first;
       meRM.setTextData(initText);
@@ -2126,40 +2126,40 @@ namespace RTI{
     std::string absEnd="Wed, 29 Apr 3333 19:00:00 GMT";
     std::string timerVersion="0";
     std::pair<std::string,int> allD;long pos;
-    pos=0;allD=SF::extract(_options,pos,s_cAllowedTime_QRTB,s_cAllowedTime_QRTE);
+    pos=0;allD=SF::extract(_options,pos,APTI::GL_syntax.s_cAllowedTime_QRTB,APTI::GL_syntax.s_cAllowedTime_QRTE);
     if(allD.second==1){
       allTime=allD.first;
     }
-    pos=0;allD=SF::extract(_options,pos,s_cAbsEnd_QRTB,s_cAbsEnd_QRTE);
+    pos=0;allD=SF::extract(_options,pos,APTI::GL_syntax.s_cAbsEnd_QRTB,APTI::GL_syntax.s_cAbsEnd_QRTE);
     if(allD.second==1){
       absEnd=allD.first;
     }
-    pos=0;allD=SF::extract(_options,pos,s_cTVersion_QRTB,s_cTVersion_QRTE);
+    pos=0;allD=SF::extract(_options,pos,APTI::GL_syntax.s_cTVersion_QRTB,APTI::GL_syntax.s_cTVersion_QRTE);
     if(allD.second==1){
       timerVersion=allD.first;
     }
-    pos=0;allD=SF::extractAndReplace(rawText,pos,s_cAllowedTime_QRTB,s_cAllowedTime_QRTE,0,s_cAllowedTime_QRTB+allTime+s_cAllowedTime_QRTE);
+    pos=0;allD=SF::extractAndReplace(rawText,pos,APTI::GL_syntax.s_cAllowedTime_QRTB,APTI::GL_syntax.s_cAllowedTime_QRTE,0,APTI::GL_syntax.s_cAllowedTime_QRTB+allTime+APTI::GL_syntax.s_cAllowedTime_QRTE);
     if(allD.second==1){
       rawText=allD.first;
     }
     else{
-      rawText=s_cAllowedTime_QRTB+allTime+s_cAllowedTime_QRTE+rawText;
+      rawText=APTI::GL_syntax.s_cAllowedTime_QRTB+allTime+APTI::GL_syntax.s_cAllowedTime_QRTE+rawText;
     }
-    pos=0;allD=SF::extractAndReplace(rawText,pos,s_cAbsEnd_QRTB,s_cAbsEnd_QRTE,0,s_cAbsEnd_QRTB+absEnd+s_cAbsEnd_QRTE);
+    pos=0;allD=SF::extractAndReplace(rawText,pos,APTI::GL_syntax.s_cAbsEnd_QRTB,APTI::GL_syntax.s_cAbsEnd_QRTE,0,APTI::GL_syntax.s_cAbsEnd_QRTB+absEnd+APTI::GL_syntax.s_cAbsEnd_QRTE);
     if(allD.second==1){
       rawText=allD.first;
     }
     else{
-      rawText=s_cAbsEnd_QRTB+absEnd+s_cAbsEnd_QRTE+rawText;
+      rawText=APTI::GL_syntax.s_cAbsEnd_QRTB+absEnd+APTI::GL_syntax.s_cAbsEnd_QRTE+rawText;
     }
-    pos=0;allD=SF::extractAndReplace(rawText,pos,s_cTVersion_QRTB,s_cTVersion_QRTE,0,s_cTVersion_QRTB+timerVersion+s_cTVersion_QRTE);
+    pos=0;allD=SF::extractAndReplace(rawText,pos,APTI::GL_syntax.s_cTVersion_QRTB,APTI::GL_syntax.s_cTVersion_QRTE,0,APTI::GL_syntax.s_cTVersion_QRTB+timerVersion+APTI::GL_syntax.s_cTVersion_QRTE);
     if(allD.second==1){
       rawText=allD.first;
     }
     else{
-      rawText=s_cTVersion_QRTB+timerVersion+s_cTVersion_QRTE+rawText;
+      rawText=APTI::GL_syntax.s_cTVersion_QRTB+timerVersion+APTI::GL_syntax.s_cTVersion_QRTE+rawText;
     }
-    pos=0;allD=SF::extractAndReplace(initText,pos,s_tDataB,s_tDataE,0,s_tDataB+rawText+s_tDataE);
+    pos=0;allD=SF::extractAndReplace(initText,pos,APTI::GL_syntax.s_tDataB,APTI::GL_syntax.s_tDataE,0,APTI::GL_syntax.s_tDataB+rawText+APTI::GL_syntax.s_tDataE);
     if( allD.second==1 ){
       initText=allD.first;
       meRM.setTextData(initText);
