@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -26,6 +26,7 @@ namespace CCFI{
     std::string linkForm;
     std::string modifyMe;
     std::string dbName;
+    std::string fieldName="commands";
     std::string textDoNotEdit="DO NOT EDIT THIS LINE";
     std::string textStartEdit="START EDITING AFTER THIS LINE";
     std::string editMessage=MWII::GL_WI.getDefaultWebText("Edit text by editing the command below");
@@ -39,7 +40,7 @@ namespace CCFI{
     fR+="_n*_";
     fR+=apmf.linkForm+"&ccu=y";
     fR+="_/n*_\n";
-    fR+="_/insert__insert__n*_textAreaField_/n*__n*_reqCommand_/n*__n*_commands_/n*_\n";
+    fR+="_/insert__insert__n*_textAreaField_/n*__n*_reqCommand_/n*__n*_"+apmf.fieldName+"_/n*_\n";
     fR+="_n*_"+apmf.editMessage+"_/n*_\n";
     fR+="_n*_\n";
     fR+=apmf.textToModify;
@@ -66,7 +67,7 @@ namespace CCFI{
     fR+="_n*_";
     fR+=apmf.linkForm;
     fR+="_/n*_\n";
-    fR+="_/insert__insert__n*_textAreaField_/n*__n*_reqCommand_/n*__n*_commands_/n*_\n";
+    fR+="_/insert__insert__n*_textAreaField_/n*__n*_reqCommand_/n*__n*_"+apmf.fieldName+"_/n*_\n";
     fR+="_n*_"+apmf.editMessage+"_/n*_\n";
     fR+="_n*_\n";
     fR+=apmf.textDoNotEdit;
@@ -81,6 +82,25 @@ namespace CCFI{
     fR+="_/nc***_\n";
     fR+=apmf.textDoNotEdit;
     fR+="_/command_";
+    fR+="_/n*__/insert_";
+    fR+="_insert_";
+    fR+="_n*_formPlacement_/n*_";
+    fR+="_n*_reqCommand_/n*_";
+    fR+="_/insert_ \n";
+    fR=SF::findAndReplace(fR,"!verbSave!","*fjkl3"+GL_MAIN_SETUP_FILE_NAME+"2!3211");
+    return fR;
+  }
+  std::string createSimpleForm(const ArgsPowerModifyForm & apmf){
+    std::string fR="_insert_\n";
+    fR+="_n*_formInitialization_/n*_\n";
+    fR+="_n*_reqCommand_/n*_\n";
+    fR+="_n*_";
+    fR+=apmf.linkForm;
+    fR+="_/n*_\n";
+    fR+="_/insert__insert__n*_textAreaField_/n*__n*_reqCommand_/n*__n*_"+apmf.fieldName+"_/n*_\n";
+    fR+="_n*_"+apmf.editMessage+"_/n*_\n";
+    fR+="_n*_\n";
+    fR+=apmf.textToModify;
     fR+="_/n*__/insert_";
     fR+="_insert_";
     fR+="_n*_formPlacement_/n*_";
