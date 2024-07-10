@@ -12,6 +12,7 @@ _vVPair__vr_backupMaxSZ*!_/vr__vl_1000_/vl__/vVPair_
 _vVPair__vr_mainText*!_/vr__vl_mTxt_/vl__/vVPair_
 _vVPair__vr_responseDB*!_/vr__vl_rspT_/vl__/vVPair_
 _vVPair__vr_statDB*!_/vr__vl_statT_/vl__/vVPair_
+_vVPair__vr_fileForms*!_/vr__vl_fileForms_/vl__/vVPair_
 _vVPair__vr_fstDB*!_/vr__vl_fstT_/vl__/vVPair_
 _vVPair__vr_hierarchyCache*!_/vr__vl_hBossCache_/vl__/vVPair_
 _vVPair__vr_dcMountingFolder*!_/vr__vl_dmountF_/vl__/vVPair_
@@ -23,6 +24,7 @@ _vVPair__vr_initializerExtension*!_/vr__vl__start_/vl__/vVPair_
 _vVPair__vr_publicSubFolderToStoreFiles*!_/vr__vl_qq_/vl__/vVPair_
 _vVPair__vr_publicSubFolderForSystemFiles*!_/vr__vl_qs_/vl__/vVPair_
 _vVPair__vr_publicSubFolderForPdfCertificates*!_/vr__vl_cert_/vl__/vVPair_
+_vVPair__vr_publicSubFolderForPdfForms*!_/vr__vl_form_/vl__/vVPair_
 _vVPair__vr_subFolderForGuestClones*!_/vr__vl_sites_/vl__/vVPair_
 
 _vVPair__vr_numStorageSubFoldersInFolder*!_/vr__vl_1000_/vl__/vVPair_
@@ -270,11 +272,36 @@ _vVPair__vr_certPreambleLatexTemplate_/vr__vl_
 \usepackage{amsmath}
 \newcommand{\vect}[1]{\mathbf{#1}}
 
- 
+
 
 \pagestyle{empty}
 _/vl__/vVPair_
 
+_vVPair__vr_formPreambleLatexTemplate_/vr__vl_
+\documentclass[10pt]{article}
+
+
+\usepackage{oldgerm}
+\usepackage[final]{pdfpages}
+
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{times}
+\usepackage{mathptmx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+ \usepackage{multicol}
+
+\pagestyle{empty}
+\setlength{\textwidth}{6.55in}
+\addtolength{\textheight}{100pt}
+\setlength{\topmargin}{-.5in}
+\setlength{\oddsidemargin}{+.325in}
+\setlength{\evensidemargin}{.325in}
+
+_/vl__/vVPair_
 
 _vVPair__vr_answerBoxLatexTemplate_/vr__vl_
 
