@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -70,7 +70,7 @@ namespace PSDI{
     std::string respRecBackupText;
     int passedAntiSpam;
     std::vector<std::string> displayDaysInWeek;
-    std::vector<std::string> displayMonthsInYear;
+    std::vector<std::string> displayMonthsInYear; 
   };
 }
 #endif
