@@ -62,8 +62,8 @@ namespace FFI{
     tdDarkCell="<td class=\"text-white bg-dark\" align=\"center\">";
     tableEnd="</tbody></table></div>\n";
   }
-  std::string GL_openingSeparatorInFileName="o@";
-  std::string GL_closingSeparatorInFileName="@c";
+  std::string GL_openingSeparatorInFileName="o1@2";
+  std::string GL_closingSeparatorInFileName="5@6c";
   std::string GL_filePrefixRegularFile="rf";
   std::string GL_filePrefixUsersList="ul";
   std::string GL_respVariableName="fFSbm";
