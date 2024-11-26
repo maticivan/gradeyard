@@ -52,13 +52,14 @@ namespace SII{
     return SF::getElFromMapOrNotFoundMessage(psd.respMap,_q,s_notFound);
   }
   std::vector<std::vector<std::string> > SessionInformation::getRespInOrder() const{return respInOrder;}
+ 
   SPREPF::StatData SessionInformation::prepareStatData() const{
     SPREPF::StatData forSt;
     forSt.userName=psd.my_un;
     TMF::Timer tm;
     forSt.timeString=tm.timeString();
-    forSt.ipAddr=envVariables[11];
-    forSt.att_page=psd.pageRequested;
+    forSt.ipAddr=envVariables[11]; 
+    forSt.att_page= psd.pageRequested;
     if(loginActionIndicator==1){
       forSt.att_page="!*LOGIN*ATTEMPT*!";
       forSt.userName=getResponse("username");
@@ -76,7 +77,7 @@ namespace SII{
     if(fastUpdatingStat=="yes"){
       long timeSinceLastVisit=STI::secondsSinceLastVisit(st_D,psd.pageRequested);
       if(timeSinceLastVisit>3){
-        STI::updateFastUpdatingStatDB(psd.pageRequested);
+        STI::updateFastUpdatingStatDB(psd.pageRequested); 
       }
     }
     if(preqN!=psd.pageRequested){
@@ -91,8 +92,8 @@ namespace SII{
       changeMainText(psd.createStandardCourseMainDocName);
       psd.pageRequested=psd.createStandardCourseMainDocName;
     }
-    header.updateLogInAndMenuBars(psd, psd.pageRequested,respRecRequested);
-    footer.updateFooterBar(psd, psd.pageRequested,respRecRequested, psd.my_un);
+    header.updateLogInAndMenuBars(psd,psd.pageRequested,respRecRequested);
+    footer.updateFooterBar(psd,psd.pageRequested,respRecRequested, psd.my_un);
     std::string savedPER=psd.pEditReq;
     psd.pEditReq="no";
     std::string fR=header.displayText(psd,"header");
@@ -199,6 +200,7 @@ namespace SII{
     }
     afterFormRepl=LANGF::changeAlphabet(afterFormRepl,MWII::GL_WI.getAlphabet());
     afterFormRepl=INCII::treatInCommandInsert(afterFormRepl);
+    GF::GL_DEB_MESSAGES.addMessage("Version "+GL_VERSION);
     GF::GL_DEB_MESSAGES.addMessage("Time to generate page is "+ BF::doubleToString(timeToGenerateWebsite.getTime())); 
     afterFormRepl+=GF::GL_DEB_MESSAGES.prepareAllMessages(MWII::GL_WI.getDebuggingOptions());
     return afterFormRepl;
@@ -723,10 +725,10 @@ namespace SII{
           if(initSucc==0){
             psd.pageRequested="pageDoesNotExist";
             mainText.initialize(psd.pageRequested,sysDataRequested,psd.my_un);
-          }
+          } 
           MWII::GL_WI.setMainPageName(psd.pageRequested);
         }
-        else{
+        else{ 
           mainText.initialize(dfPage,"no",psd.my_un);
           MWII::GL_WI.setMainPageName(dfPage);
           psd.pageRequested=dfPage;
@@ -980,7 +982,7 @@ namespace SII{
     return CCFI::enhanceTheCommandDueToComfUserEdit(psd,s);
   }
   void SessionInformation::changeMainText(const std::string &_t){
-    if((_t=="")&&(psd.pageRequested!="")){
+    if((_t=="")&&(psd.pageRequested!="")){ 
       mainText.initialize(psd.pageRequested,sysDataRequested,psd.my_un);
     }
     else{
