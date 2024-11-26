@@ -307,9 +307,9 @@ _vVPair__vr_answerBoxLatexTemplate_/vr__vl_
 
 
 \vspace{0.3cm}
-\noindent $\begin{array}{cc|ccccc|}\cline{3-7} &&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ } \\
-\mbox{Answer:} &&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ } \\
-\cline{3-7}\end{array}$
+\noindent $\begin{array}{cc|ccccccccccccccc|}\cline{3-17} &&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ } \\
+\mbox{Answer:} &&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ }&{ }^{ } \\
+\cline{3-17}\end{array}$
 \vfill
 
 _/vl__/vVPair_
