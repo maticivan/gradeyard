@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -18,40 +18,29 @@
 #ifndef _INCL_FASTUPDATINGTABLE_CPP
 #define _INCL_FASTUPDATINGTABLE_CPP
 
-
-
 // Table (atomic table) may have multiple keys but the only search allowed
 // is when the entire key is submitted. This structure cannot do any searches with partial keys
 
-
-namespace FUTF{
+namespace FUTF{ 
   long timeToWaitBeforeDecidingThatPreviousProcessIsStuckAndNeedsToBeKilled=100;
   std::string xTableName="xTable";
   std::string sigmaTableName="sigmaTable";
-
   std::string futableSt1B="_";
   std::string futableSt1E="_/";
   std::string futableSt2="fut*";
   std::string futableSt3="!*_";
-
   std::string stTNB="_tName*_";
   std::string stTNE="_/tName*_";
   std::string stStFNB="_stFN*_";
   std::string stStFNE="_/stFN*_";
-
   std::string flagFileName="writingFlag.txt";
-
   std::string stfn;
-
   long timeToSleepBeforeAttemptingToClearTheQueueAgain=50000000;
-
   std::string tInitFName="tableInit.txt";
   std::string tCKIFName="tCKIInit.txt";
-
   std::string folderInstQueue="instQueue";
   std::string extForCommandsInQueue="cmq";
   std::string extForFlag="flg";
-
    class FastUpdatingTable{
    private:
        std::string stFN;
@@ -62,16 +51,13 @@ namespace FUTF{
        ATF::Table x_table;
        ATF::Table sigma_table;
        std::vector<std::string> keyNames;
-
        int insertUnsafe(const std::string &, const long &);
        int repairUnsafe(const std::string &,const std::string &);
        int incrementUnsafe(const std::string &);
        int deleteUnsafe(const std::string &);
-
        long setFlag();
        long clearFlag();
        long checkForFlag() const;
-
    public:
        FastUpdatingTable(const std::string & ="notSet!***!", const std::string & ="defaultTable");
        std::string getTableName() const;
@@ -85,23 +71,17 @@ namespace FUTF{
        //    and will save time by not performing the verifications
        std::string updateDBInitStr(const std::string &) const;
        int initTableFromStr(const std::string &);
-
-
-
        std::pair<FUDSF::Sigma,long> searchX(const std::string &) const;
        std::pair<FUDSF::X,long> searchSigma(const std::string &) const;
        std::pair<FUDSF::X,long> searchXByIndex(const long & ) const;
        std::pair<FUDSF::Sigma,long> searchSigmaByIndex(const long &) const;
-
        long lowerBoundX(const std::string & ) const;
-
        int insertSafe(const std::string &, const long &);
        int incrementSafe(const std::string &);
        int deleteSafe(const std::string &);
        long size() const;
        std::string statusReportForDebugging() const;
     };
-
     FastUpdatingTable::FastUpdatingTable(const std::string & _sfn,const std::string &_tn){
         keyNames.resize(1);
         keyNames[0]="dfKey";
@@ -140,8 +120,6 @@ namespace FUTF{
         if((_trust=="yes")||(IOF::sys_createFolderIfDoesNotExist(tableFolder,tInitFName,"Do not edit this folder.")==0)){
           // table existed from before
           // or we just created one
-
-
           std::string initData=IOF::fileToString(tableFolder+"/"+tCKIFName);
           int succ_x=x_table.initTableFromStr(initData);
           if(succ_x==0){
@@ -161,55 +139,41 @@ namespace FUTF{
           }
           if(succ_x*succ_s==0){
             IOF::toFile(tableFolder+"/"+tCKIFName,initData);
-
           }
         }
-
         if((_trust=="yes")||(IOF::sys_createFolderIfDoesNotExist(tFolderX,tInitFName,"Do not edit this folder.")==0)){
           // table existed from before
           // The call to the function inside if statement accomplished this:
           //  std::string initData=IOF::fileToString(tFolderX+"/"+tInitFName);
           //  x_table.initTableFromStr(initData);
         }
-
         if((_trust=="yes")||(IOF::sys_createFolderIfDoesNotExist(tFolderSigma,tInitFName,"Do not edit this folder.")==0)){
           // table existed from before
           // The call to the function inside if statement accomplished this:
           //std::string initData=IOF::fileToString(tFolderSigma+"/"+tInitFName);
           //sigma_table.initTableFromStr(initData);
         }
-
-
-
       if(_trust!="yes"){
         initFileInFolder(tableFolder,tCKIFName," ");
         initFileInFolder(tFolderX,tCKIFName," ");
         initFileInFolder(tFolderSigma,tCKIFName," ");
       }
-
       return 0;
     }
-
-
     std::string FastUpdatingTable::updateDBInitStr(const std::string & tableDBInitStr) const{
         std::string st1=x_table.updateDBInitStr(tableDBInitStr);
         st1=sigma_table.updateDBInitStr(st1);
-
         std::pair<std::string,int> allData;
         long pos;
         std::string stB=futableSt1B+futableSt2+tableName+futableSt3;
         std::string stE=futableSt1E+futableSt2+tableName+futableSt3;
         pos=0;
         std::string newTableDBInitStr=SF::eraseStuffBetween(st1,stB,stE,pos).first;
-
         return stB+stStFNB+stFN+stStFNE+stE+newTableDBInitStr;
-
     }
-
     int FastUpdatingTable::initTableFromStr(const std::string &stToInitFrom){
       int fRX= x_table.initTableFromStr(stToInitFrom);
       int fRSigma = sigma_table.initTableFromStr(stToInitFrom);
-
       std::pair<std::string,int> allData;
       long pos;
       std::string stB=futableSt1B+futableSt2+tableName+futableSt3;
@@ -220,23 +184,17 @@ namespace FUTF{
         pos=0;allData=SF::extract(nms,pos,stStFNB,stStFNE);
         if(allData.second==1){
           stFN=allData.first;
-
           tableFolder=stFN+"/"+tableName;
           tFolderX=tableFolder+"/"+xTableName;
           tFolderSigma=tableFolder+"/"+sigmaTableName;
-
-
         }
         x_table.initTableFromStr(stToInitFrom);
         sigma_table.initTableFromStr(stToInitFrom);
         return 1;
       }
       return 0;
-
     }
     int FastUpdatingTable::repairUnsafe(const std::string& _x, const std::string & xRes){
-
-
       std::vector<std::string> w;
       w.resize(1);w[0]=xRes;
       std::string sigmaRes=sigma_table.select(w);
@@ -248,7 +206,6 @@ namespace FUTF{
       FUDSF::Sigma sigmaPlInfinity;
       sigmaPlInfinity.sigma=sigmaT.sigma;
       sigmaPlInfinity.infinityIndicator=1;
-
       HDDBRF::Record rKeyTemp;
       std::vector<std::string> keysTemp;
       keysTemp.resize(1);
@@ -267,7 +224,6 @@ namespace FUTF{
       long index;
       long found=0;
       while( ((up<sz) || (down>-1)) &&(found==0) ) {
-
         if(next>0){
           index=up;
           ++up;
@@ -277,7 +233,6 @@ namespace FUTF{
           --down;
         }
         psSearch=FastUpdatingTable::searchSigmaByIndex(index);
-
         if(psSearch.second==1){
           if(psSearch.first.x==_x){
             std::string ststring=psSearch.first.putSigmaTToString();
@@ -290,7 +245,6 @@ namespace FUTF{
         }
         next*=-1;
       }
-
       return found;
     }
     int FastUpdatingTable::insertUnsafe(const std::string & _x, const long & _sigma){
@@ -321,7 +275,6 @@ namespace FUTF{
       std::string ststring=stemp.putSigmaTToString();
       int insReport=x_table.insertOrUpdateAndGiveReport(keysTemp,ststring);
       if(insReport==1){
-
         // Update table initialization - the root may have changed
         std::string t2Init=tableFolder;
         t2Init+="/"+tCKIFName;
@@ -344,35 +297,31 @@ namespace FUTF{
       clearFlag();
       return insReport;
     }
-
-    int FastUpdatingTable::incrementUnsafe(const std::string & _x){
+    int FastUpdatingTable::incrementUnsafe(const std::string & _tName){
       std::vector<std::string> v;
-      v.resize(1);v[0]=_x;
+      v.resize(1);v[0]=_tName;
       std::string xRes=x_table.select(v);
       if(xRes=="notFound"){
         return 0;
       }
-      repairUnsafe(_x,xRes);
+      repairUnsafe( _tName,xRes);
       FUDSF::Sigma sigmaT;
       sigmaT.loadSigmaTFromString(xRes);
-
       FUDSF::Sigma sigmaPlInfinity;
       sigmaPlInfinity.sigma=sigmaT.sigma;
       sigmaPlInfinity.infinityIndicator=1;
-
       HDDBRF::Record rKeyTemp;
       std::vector<std::string> keysTemp;
       keysTemp.resize(1);
       keysTemp[0]=sigmaPlInfinity.putSigmaTToString();
       rKeyTemp.setKeys(keysTemp);
-      rKeyTemp.setMainDataRTD(_x);
+      rKeyTemp.setMainDataRTD(_tName);
       IRFNF::IndRecFName<HDDBRF::Record> irfn=sigma_table.lowerBoundIndexRecordFileName(rKeyTemp,1);
       FUDSF::Sigma sigmaMaxS;
       if(irfn.index>-1){
         long maximalS=sigmaT.t;
         sigmaMaxS.loadSigmaTFromString(irfn.record.getKeys()[0]);
         if(sigmaMaxS.sigma==sigmaT.sigma){
-
           if(sigmaMaxS.t>sigmaT.t){
             maximalS=sigmaMaxS.t;
             std::string xPrime;
@@ -384,23 +333,14 @@ namespace FUTF{
             std::vector<std::string> keys1,keys2;
             keys1.resize(1);keys2.resize(1);
             keys1[0]=xPrime;
-            keys2[0]=_x;
-
-
-
+            keys2[0]=_tName;
             x_table.insertOrUpdateAndGiveReport(keys1,sigmaT.putSigmaTToString());
-
             x_table.insertOrUpdateAndGiveReport(keys2,sigmaMaxS.putSigmaTToString());
-
             keys1[0]=sigmaMaxS.putSigmaTToString();
             keys2[0]=sigmaT.putSigmaTToString();
-
             sigma_table.insertOrUpdateAndGiveReport(keys2,xPrime);
-            sigma_table.insertOrUpdateAndGiveReport(keys1,_x);
-
-
+            sigma_table.insertOrUpdateAndGiveReport(keys1,_tName);
           }
-
           FUDSF::Sigma nextSigmaMinInfinity;
           nextSigmaMinInfinity.sigma=sigmaT.sigma+1;
           nextSigmaMinInfinity.infinityIndicator=-1;
@@ -408,9 +348,7 @@ namespace FUTF{
           rKeyTemp.setKeys(keysTemp);
           irfn=sigma_table.lowerBoundIndexRecordFileName(rKeyTemp,1);
           long indicatorNextSigmaExistsInTable=0;
-
           FUDSF::Sigma smallestWithSigmaPl1;
-
           std::pair<FUDSF::Sigma,long> tempSearchForNextSigma;
           if(irfn.index+1 < sigma_table.size()){
             tempSearchForNextSigma = searchSigmaByIndex(irfn.index+1);
@@ -420,18 +358,15 @@ namespace FUTF{
               }
             }
           }
-
           std::vector<std::string> keysX,keysSigma,keysSigmaNew;
           keysX.resize(1);keysSigma.resize(1);keysSigmaNew.resize(1);
-          keysX[0]=_x;
+          keysX[0]=_tName;
           FUDSF::Sigma sigmaImproved;
           sigmaImproved.sigma=sigmaT.sigma+1;
-
           FUDSF::Sigma sigmaForKeys;
           sigmaForKeys.sigma=sigmaT.sigma;
           sigmaForKeys.t=maximalS;
           keysSigma[0]=sigmaForKeys.putSigmaTToString();
-
           if(indicatorNextSigmaExistsInTable==1){
             sigmaImproved.t=tempSearchForNextSigma.first.t-1;
           }
@@ -440,12 +375,10 @@ namespace FUTF{
           }
           keysSigmaNew[0]=sigmaImproved.putSigmaTToString();
           x_table.insertOrUpdateAndGiveReport(keysX,sigmaImproved.putSigmaTToString());
-          sigma_table.inPlaceKeyDataModification(keysSigma,keysSigmaNew,_x,0,0);
+          sigma_table.inPlaceKeyDataModification(keysSigma,keysSigmaNew,_tName,0,0);
           return 1;
         }
-
         return 0;
-
       }
       return 0;
     }
@@ -483,7 +416,6 @@ namespace FUTF{
         IOF::toFile(t2Init,inSt);
         return 1;
       }
-
       return 0;
     }
     int FastUpdatingTable::deleteSafe(const std::string & _x){
@@ -514,7 +446,6 @@ namespace FUTF{
       std::vector<std::string> v;
       v.resize(1);v[0]=s;
       std::string sRes=sigma_table.select(v);
-
       if(sRes=="notFound"){
         return res;
       }
@@ -544,26 +475,19 @@ namespace FUTF{
       if(xRecoveryHelp.second==1){
         res.first.x=xRecoveryHelp.first.x;
       }
-
       return res;
     }
-
-
     long FastUpdatingTable::lowerBoundX(const std::string & s) const{
       std::vector<std::string> v;
       v.resize(1);v[0]=s;
       return x_table.findLowerBound(v);
     }
-
     long FastUpdatingTable::size() const{
       return x_table.size();
     }
-
-
     std::string FastUpdatingTable::statusReportForDebugging() const{
       std::string fR;
       fR="starting folder name: "+  stFN;
-
       fR+="\nTable name: "+tableName;
       fR+="<BR>\nSTATUS REPORT FOR X_TABLE BEGIN<BR>\n";
       fR+=x_table.statusReportForDebugging();
@@ -571,13 +495,10 @@ namespace FUTF{
       fR+="<BR>\nSTATUS REPORT FOR SIGMA_TABLE BEGIN<BR>\n";
       fR+=sigma_table.statusReportForDebugging();
       fR+="<BR>\nSTATUS REPORT FOR SIGMA_TABLE END<BR>\n";
-
       return fR;
     }
-
     long FastUpdatingTable::checkForFlag() const{
       long res=0;
-
       std::string fullFlagFName=tableFolder+"/"+flagFileName;
       std::string fRes=IOF::fileToString(fullFlagFName);
       if(fRes!="fileNotFound"){
