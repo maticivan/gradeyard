@@ -295,7 +295,7 @@ namespace STI{
     rawT=updateRawSt(rawT,cYear,yyyy,GF::GLOBAL_MAX_YEARS_ST);
     rawT=updateRawSt(rawT,cAll,"all",GF::GLOBAL_MAX_YEARS_ST);
     statTb.insertMTF(name,rawT);
-  }
+  } 
   void updateFastUpdatingStatDB(const std::string & pageName){
     FUTF::FastUpdatingTable& fustatTb = DD::GL_MAIN_DB.fu_dbsM["fStat"];
     std::pair<FUDSF::Sigma,long> sRes=fustatTb.searchX(pageName);
