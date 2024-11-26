@@ -281,7 +281,7 @@ namespace WSI{
     redirectForward=_r;
   }
   void Setup::setMainPageName(const std::string & _n){
-    TMD::MText sf;
+    TMD::MText sf; 
     int succ=sf.setFromTextName(_n);
     if(succ==1){
       mainPageName=_n;
