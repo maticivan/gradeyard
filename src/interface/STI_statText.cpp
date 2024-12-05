@@ -18,66 +18,7 @@
 
 #ifndef _INCL_WI_StatText_CPP
 #define _INCL_WI_StatText_CPP
-namespace STI{
-  int StatText::isInitialized() const{
-    return ind_initSuccess;
-  }
-  StatText::StatText(const std::string & _nameInDB, const std::string & _sysR, const std::string & _u){
-    initialize(_nameInDB,_sysR,_u);
-  }
-  std::string StatText::modifyMe() const{
-    return "modifyResponseReceiver";
-  }
-  int StatText::initialize(const std::string & _nameInDB, const std::string & _sysReq, const std:: string & _uName){
-    ind_initSuccess=0;
-    int s=meSM.setFromTextName(_nameInDB);
-    permitRead.clear();
-    permitWrite.clear();
-    permitRead.insert(APTI::GL_syntax.s_root);
-    permitWrite.insert(APTI::GL_syntax.s_root);
-    tCreated="unknown";
-    createdBy="unknown";
-    tModified="unknown";
-    modifiedBy="unknown";
-    documentType="unknown";
-    sysDataRequested="no111";
-    myUserName=_uName;
-    sysDataRequested=_sysReq;
-    if(s==1){
-      initText=meSM.getTextData();
-      long pos=0;
-      std::pair<std::string,int> allSD=SF::extract(initText,pos,APTI::GL_syntax.s_sysDataB,APTI::GL_syntax.s_sysDataE);
-      pos=0;
-      std::pair<std::string,int> allTD=SF::extract(initText,pos,APTI::GL_syntax.s_tDataB,APTI::GL_syntax.s_tDataE);
-      if(allSD.second==1){
-        sysDataRaw=allSD.first;
-        std::string pText=APTI::GL_syntax.s_notFound;
-        HSF::parametersFromString(allSD.first,tCreated,createdBy,tModified,modifiedBy,pText,documentType);
-        if(pText!=APTI::GL_syntax.s_notFound){
-          std::vector<std::string> rawPermisssionsRead= SF::stringToVector(pText,APTI::GL_syntax.s_individualPermissionB, APTI::GL_syntax.s_individualPermissionE,"_name_read_/name_");
-          std::vector<std::string> rawPermisssionsWrite= SF::stringToVector(pText,APTI::GL_syntax.s_individualPermissionB, APTI::GL_syntax.s_individualPermissionE,"_name_write_/name_");
-          std::vector<std::string> pReadV=PBD::getPermitsFromRaw_N(rawPermisssionsRead);
-          std::vector<std::string> pWriteV=PBD::getPermitsFromRaw_N(rawPermisssionsWrite);
-          long sz=pReadV.size();
-          for(long i=0;i<sz;++i){
-            permitRead.insert(pReadV[i]);
-          }
-          sz=pWriteV.size();
-          for(long i=0;i<sz;++i){
-            permitWrite.insert(pWriteV[i]);
-          }
-        }
-      }
-      tName=meSM.getTextName();
-      tExternalId=meSM.getExternalCodeFromInternalNumber();
-      if(allTD.second==1){
-        rawText=allTD.first;
-      }
-      ind_initSuccess=1;
-      return 1;
-    }
-    return 0;
-  }
+namespace STI{ 
   std::string rawStatFolder(){
     return DD::GL_DBS.getStatTable()+"/rawSt";
   }
@@ -152,6 +93,7 @@ namespace STI{
     return "success";
   }
   std::string addDataToStat(const SPREPF::StatData &st){
+    SDIRF::updateStatDataForRam(st,DD::GL_DBS.getStatTable()); 
     std::string fR=addRawDataToStat(st);
     return fR;
   }
@@ -268,50 +210,7 @@ namespace STI{
     sp.increaseCounter();
     sp.updateRawString();
     return sp.getRawString();
-  }
-  void updateStatDB(const std::string & userName, const std::string &att_page){
-    std::string cDay,cMonth,cYear,cAll;
-    cDay="dM";cMonth="mM";cYear="yM";cAll="aM";
-    if(userName=="visitor"){
-      cDay="dV";cMonth="mV";cYear="yV";cAll="aV";
-    }
-    TMF::Timer tm;
-    std::vector<long>  v=tm.timeNowVector();
-    std::string yyyymmdd=tm.timeYYYYMMDD(v);
-    std::string yyyymm=tm.timeYYYYMM(v);
-    std::string yyyy=tm.timeYYYY(v);
-    MTF::Table& statTb= DD::GL_MAIN_DB.dbsM["stat"];
-    std::vector<std::string> name;
-    name.resize(1);
-    name[0]="p"+att_page;
-    std::vector< std::pair<std::vector<std::string>, std::string> > searchRes;
-    searchRes=statTb.search(name);
-    std::string rawT="";
-    if(searchRes.size()>0){
-      rawT=searchRes[0].second;
-    }
-    rawT=updateRawSt(rawT,cDay,yyyymmdd,GF::GLOBAL_MAX_DAYS_ST);
-    rawT=updateRawSt(rawT,cMonth,yyyymm,GF::GLOBAL_MAX_MONTHS_ST);
-    rawT=updateRawSt(rawT,cYear,yyyy,GF::GLOBAL_MAX_YEARS_ST);
-    rawT=updateRawSt(rawT,cAll,"all",GF::GLOBAL_MAX_YEARS_ST);
-    statTb.insertMTF(name,rawT);
   } 
-  void updateFastUpdatingStatDB(const std::string & pageName){
-    FUTF::FastUpdatingTable& fustatTb = DD::GL_MAIN_DB.fu_dbsM["fStat"];
-    std::pair<FUDSF::Sigma,long> sRes=fustatTb.searchX(pageName);
-    if(sRes.second==0){
-      fustatTb.insertSafe(pageName,0);
-    }
-    fustatTb.incrementSafe(pageName);
-  }
-  void delFromFastUpdatingStatDB(const std::string & pageName){
-    FUTF::FastUpdatingTable& fustatTb = DD::GL_MAIN_DB.fu_dbsM["fStat"];
-    fustatTb.deleteSafe(pageName);
-  }
-  void updateStatDB(const SPREPF::StatData & ist_D){
-    updateStatDB(ist_D.userName,ist_D.att_page);
-    updateStatDB(ist_D.userName,"allPages");
-  }
   std::map<std::string,long> addMaps(const std::map<std::string, long> & m1, const std::map<std::string,long> &m2){
     std::map<std::string,long> m3=m1;
     std::map<std::string,long>::iterator itM,itME;
@@ -387,40 +286,6 @@ namespace STI{
       vML=stData[0].visits;
     }
     return vML;
-  }
-  std::string statAnalysis(const std::string & sN){
-    std::string sA;
-    MTF::Table& statTb= DD::GL_MAIN_DB.dbsM["stat"];
-    std::vector<std::string> name;
-    name.resize(1);
-    name[0]=sN;
-    std::vector< std::pair<std::vector<std::string>, std::string> > searchRes;
-    searchRes=statTb.search(name);
-    std::string tabDay,tabMonth,tabYear;
-    if(searchRes.size()>0){
-      std::string rawT=searchRes[0].second;
-      long vML=STI::getTotalVisits(rawT,"aM");
-      long vVL=STI::getTotalVisits(rawT,"aV");
-      tabDay=mapsIntoTable(catToMap(rawT,"dM",GF::GLOBAL_MAX_DAYS_ST),catToMap(rawT,"dV",GF::GLOBAL_MAX_DAYS_ST));
-      tabMonth=mapsIntoTable(catToMap(rawT,"mM",GF::GLOBAL_MAX_MONTHS_ST),catToMap(rawT,"mV",GF::GLOBAL_MAX_MONTHS_ST));
-      tabYear=mapsIntoTable(catToMap(rawT,"yM",GF::GLOBAL_MAX_YEARS_ST),catToMap(rawT,"yV",GF::GLOBAL_MAX_YEARS_ST));
-      sA+="<div class=\"container\"><div class=\"row\"><div class=\"col-sm\">";
-      sA+=tabYear;
-      sA+="</div><div class=\"col-sm\">";
-      sA+=tabMonth;
-      sA+="</div><div class=\"col-sm\">";
-      sA+=tabDay;
-      sA+="</div></div></div>";
-      sA+="<h3>Summary</h3>\n";
-      sA+="<div class=\"container\"><div class=\"row\"><div class=\"col-sm\">";
-      sA+="Members: "+std::to_string(vML);
-      sA+="</div><div class=\"col-sm\">";
-      sA+="Visitors: "+std::to_string(vVL);
-      sA+="</div><div class=\"col-sm\">";
-      sA+="Total: "+std::to_string(vML+vVL);
-      sA+="</div></div></div>";
-    }
-    return sA;
   }
 }
 
