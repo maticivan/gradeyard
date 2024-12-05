@@ -52,14 +52,20 @@ namespace SII{
     return SF::getElFromMapOrNotFoundMessage(psd.respMap,_q,s_notFound);
   }
   std::vector<std::vector<std::string> > SessionInformation::getRespInOrder() const{return respInOrder;}
- 
-  SPREPF::StatData SessionInformation::prepareStatData() const{
+  SPREPF::StatData createStatDataDocument(const std::string& un, const std::string& tReq){
     SPREPF::StatData forSt;
-    forSt.userName=psd.my_un;
+    forSt.userName=un;
     TMF::Timer tm;
     forSt.timeString=tm.timeString();
+    forSt.att_page= tReq;
+    TMD::MText deb_mt;
+    deb_mt.setFromTextName(tReq);
+    forSt.att_pageID=deb_mt.getInternalIdFromInternalNumber();
+    return forSt;
+  }
+  SPREPF::StatData SessionInformation::prepareStatData() const{
+    SPREPF::StatData forSt=createStatDataDocument(psd.my_un,psd.pageRequested);
     forSt.ipAddr=envVariables[11]; 
-    forSt.att_page= psd.pageRequested;
     if(loginActionIndicator==1){
       forSt.att_page="!*LOGIN*ATTEMPT*!";
       forSt.userName=getResponse("username");
@@ -73,13 +79,6 @@ namespace SII{
   std::string SessionInformation::preparePage(const std::string & queryAnswer){
     SPREPF::StatData st_D=prepareStatData();
     std::string preqN=STI::hidePageFromThoseWhoAreTryingToGuessPasswords(psd.pageRequested,st_D);
-    STI::updateStatDB(st_D);
-    if(fastUpdatingStat=="yes"){
-      long timeSinceLastVisit=STI::secondsSinceLastVisit(st_D,psd.pageRequested);
-      if(timeSinceLastVisit>3){
-        STI::updateFastUpdatingStatDB(psd.pageRequested); 
-      }
-    }
     if(preqN!=psd.pageRequested){
       psd.pageRequested=preqN;
       changeMainText(psd.pageRequested);
@@ -190,16 +189,8 @@ namespace SII{
       afterFormRepl=SF::findAndReplace(afterFormRepl,"*fjkl3"+GL_MAIN_SETUP_FILE_NAME+"2!3211","!verbSave!");
       afterFormRepl=SF::findAndReplace(afterFormRepl, psd.queryAnswPlaceHolder,queryAnswer);
     }
-    if(fastUpdatingStat=="yes"){
-      std::map<std::string,std::string>::const_iterator it=psd.respMap.find("delFStat");
-      if(it!=psd.respMap.end()){
-        if(it->second=="yes"){
-          STI::delFromFastUpdatingStatDB(psd.pageRequested);
-        }
-      }
-    }
     afterFormRepl=LANGF::changeAlphabet(afterFormRepl,MWII::GL_WI.getAlphabet());
-    afterFormRepl=INCII::treatInCommandInsert(afterFormRepl);
+    afterFormRepl=INCII::treatInCommandInsert(afterFormRepl); 
     GF::GL_DEB_MESSAGES.addMessage("Version "+GL_VERSION);
     GF::GL_DEB_MESSAGES.addMessage("Time to generate page is "+ BF::doubleToString(timeToGenerateWebsite.getTime())); 
     afterFormRepl+=GF::GL_DEB_MESSAGES.prepareAllMessages(MWII::GL_WI.getDebuggingOptions());
@@ -553,7 +544,6 @@ namespace SII{
       psd.myFirstName="";
       psd.myLastName="";
       showLogInLink="yes";
-      fastUpdatingStat="yes";
       psd.passwordChangeRequested="no";
       psd.passwordChangeStatus="";
       psd.allowRespRecDisplayToOthers="no";
@@ -700,12 +690,6 @@ namespace SII{
           showLogInLink=itMP->second;
           MWII::GL_WI.setLoginLink(showLogInLink);
         }
-        itMP=mParameters.find("fastUpdatingStat");
-        if(itMP!=mParameters.end()){
-          fastUpdatingStat=itMP->second;
-          MWII::GL_WI.setFastUpdatingStat(fastUpdatingStat);
-        }
-
         if(MWII::GL_WI.getRedirectOverwrite()!="notFound"){
           std::pair<std::string,std::string> twoCodes=SF::oneWordToTwoWords(MWII::GL_WI.getRedirectOverwrite());
           TMD::MText sf;
@@ -1320,10 +1304,14 @@ namespace SII{
     if(textExists==0){
       return "!failed!: Text name does not exist";
     }
+    SPREPF::StatData forSt;
+    forSt.att_page=_tName; 
+    forSt.att_pageID=sf.getInternalIdFromInternalNumber(); 
     int succ=sf.deleteRecord();
     if(succ==0){
       return "!failed!: Something may be bad with the database. The text name did exist when checked but could not delete.";
     }
+    SDIRF::deleteTextFromStatData(forSt,DD::GL_DBS.getStatTable()); 
     return "!success!";
   }
   int SessionInformation::allowedToCreateMessage(const std::string & idOfCollector) const{
