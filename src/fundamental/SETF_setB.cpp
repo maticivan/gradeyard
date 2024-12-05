@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -20,9 +20,8 @@
 #define _INCL_SetB_CPP
 
 #include "SETBF_setB.cpp"
+#include "HDDBRF_HdDBRecord.cpp" 
 
-#include "HDDBRF_HdDBRecord.cpp"
-#include "FUDSF_DBRecordFUDS.cpp"
 namespace SETF{
   template<typename TTT> struct MapSavedSearch{
   public:
@@ -71,7 +70,6 @@ namespace SETF{
       itE=sS.m.end();
       it=sS.m.find(tableId);
     }
-
     for(long i=0;i<sz;++i){
       (it->second)[v[i].record]=v[i];
     }
@@ -79,7 +77,6 @@ namespace SETF{
   template<typename TTT> class Set : public SETBF::BasicSet<TTT>{
   private:
     void operator=(const Set &);
-
   public:
     Set():SETBF::BasicSet<TTT>(){}
     Set(const Set & _s):SETBF::BasicSet<TTT>(_s){}
@@ -88,7 +85,6 @@ namespace SETF{
     IRFNF::IndRecFName<TTT> findIndexRecordFileNameQuick(MapSavedSearch<TTT>& ,
                                                         const std::string & ,
                                                         const TTT & ) const;
-
     long inPlaceModificationQuick(MapSavedSearch<TTT>&, const std::string & ,const TTT&, const TTT&, const long & = 1);
   };
   template<typename TTT> void Set<TTT>::operator=(Set<TTT>&& _moveFrom){
@@ -106,7 +102,6 @@ namespace SETF{
     long indexLowerBound;
     long ilbp1;
     long discardedLeft=0,discLeftTemp;
-
     typename std::map<std::string,std::map<TTT,IRFNF::IndRecFName<TTT> > >::iterator iM,iME;
     typename std::map<std::string,std::map<std::string,HBF::Node<TTT> > >::iterator iD,iDE;
     typename std::map<std::string,HBF::Node<TTT> >::iterator iDR,iDRE;
@@ -133,9 +128,7 @@ namespace SETF{
         starRes=researcher.deRefRead();
         (iD->second)[resStr]=starRes;
         iDRE=(iD->second).end();
-
         discLeftTemp=discardedLeft;
-
         tempJ.fileName=researcher.getNameOfFile();
         tempJ.aRecord=researcher;
         for(long j=0;j<starRes.num;++j){
@@ -145,7 +138,6 @@ namespace SETF{
           tempJ.positionInNode=j;
           (iM->second)[tempJ.record]=tempJ;
         }
-
       }
       else{
         starRes=iDR->second;
@@ -175,7 +167,6 @@ namespace SETF{
                                                                 const TTT & _oldVal,
                                                                 const TTT & _newVal,
                                                                 const long & _safeMode){
-
     IRFNF::IndRecFName<TTT> irfnOld = findIndexRecordFileNameQuick(sS,tableId,_oldVal);
     if(irfnOld.index<0){
       return 0;
@@ -193,20 +184,13 @@ namespace SETF{
           return 0;
         }
       }
-    }
-
-    // We are allowed to do in-place modification from _oldVal to _newVal
-
+    } 
     HBF::Node<TTT> currentNode = irfnOld.aRecord.deRefRead();
     currentNode.values[irfnOld.positionInNode]=_newVal;
     irfnOld.aRecord.deRefWrite(currentNode);
     sS.modifyKey(tableId,_oldVal,_newVal,irfnOld,currentNode);
     return 1;
-
   }
 
 }
-
-
-
 #endif
