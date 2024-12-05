@@ -897,62 +897,30 @@ namespace APTI{
       SF::flipTheStack(allLines);
       allLines.push(topLine);
       return BI::createScroller(start,end,nT,numb,"!*!",_numOnEachSide)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
-    }
-    std::string AbstractText::createListOfFStatItems(const std::string & _numInList, const std::string & _numOnEachSide) const{
-      long nT=DD::GL_MAIN_DB.numStats();
-      long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
-      if((start<0)||(start>nT-1)){start=0;}
-      long numb=BF::stringToInteger(_numInList);
-      if(numb<0){numb=0;}
-      long end=start+numb;
-      if((end<0)||(end>nT)){
-        end=nT;
-      }
-      std::pair<std::string,int> allD;
-      std::string name;
-      long vVL,vML;
-      int res;
-      long lsz=4;
-      std::vector<std::string> topLine,mLine;
-      topLine.resize(lsz);mLine.resize(lsz);
-      std::stack<std::vector<std::string> > allLines;
-      topLine[0]=MWII::GL_WI.getDefaultWebText("Name");
-      topLine[1]=MWII::GL_WI.getDefaultWebText("M");
-      topLine[2]=MWII::GL_WI.getDefaultWebText("V");
-      topLine[3]=MWII::GL_WI.getDefaultWebText("T");
-      for(long i=start;i<end;++i){
-        std::pair<std::vector<std::string>, std::string> sR=(DD::GL_MAIN_DB.dbsM["stat"])[i];
-        name=sR.first[0];
-        vML=STI::getTotalVisits(sR.second,"aM");
-        vVL=STI::getTotalVisits(sR.second,"aV");
-        mLine[0]=createLinkToExpandStat(name);
-        mLine[1]=std::to_string(vML);
-        mLine[2]=std::to_string(vVL);
-        mLine[3]=std::to_string(vML+vVL);
-        allLines.push(mLine);
-      }
-      SF::flipTheStack(allLines);
-      allLines.push(topLine);
-      return BI::createScroller(start,end,nT,numb,"!*!",_numOnEachSide)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
-    }
+    } 
     std::string AbstractText::createListOfStatItems(const PSDI::SessionData & _psd, const std::string & _numInList, const std::string & _numOnEachSide) const{
       std::string sc=MWII::GL_WI.getSortCriterion();
-      long nT=DD::GL_MAIN_DB.numStatsAdv();
-      long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
-      if((start<0)||(start>nT-1)){start=0;}
       long numb=BF::stringToInteger(_numInList);
       if(numb<0){numb=0;}
+        SDIRF::CompleteStats stats=SDIRF::getCompleteStats(DD::GL_DBS.getStatTable());
+        long nT=(stats.sortedAccordingToName).size();
+        long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
+        if((start<0)||(start>nT-1)){start=0;}
       std::pair<std::string,int> allD;
       std::string name;
       long vVL,vML;
       int res;
-      long lsz=2;
+      long lsz=3;
       std::vector<std::string> topLine,mLine;
       topLine.resize(lsz);mLine.resize(lsz);
       std::stack<std::vector<std::string> > allLines;
       std::string searchBeginString=SF::getElFromMapOrNotFoundMessage(_psd.respMap,"sBg","!!notFound");
       if(searchBeginString!="!!notFound"){
-        long indLow=(DD::GL_MAIN_DB.fu_dbsM["fStat"]).lowerBoundX(searchBeginString);
+          SDIRF::TextScorePair sBeginStruct;
+          sBeginStruct.text=searchBeginString;
+          sBeginStruct.score=0;
+          long indLow=(stats.sortedAccordingToName).upperBound(sBeginStruct);
+          --indLow;
         if(indLow<0){indLow=0;}
         if(indLow<nT){
           start=indLow;sc="0";
@@ -965,21 +933,22 @@ namespace APTI{
       std::string scSw="0";
       if(sc=="0"){scSw="1";}
       topLine[0]=createLinkToSwitchSortCriterion(MWII::GL_WI.getDefaultWebText("Name"),"listStat","0",MWII::GL_WI.getStartOfList());
-      topLine[1]=createLinkToSwitchSortCriterion(MWII::GL_WI.getDefaultWebText("Visits"),"listStat","1",MWII::GL_WI.getStartOfList());
+      topLine[1]=createLinkToSwitchSortCriterion(MWII::GL_WI.getDefaultWebText("Ranking"),"listStat","1",MWII::GL_WI.getStartOfList());
+        topLine[2]="Visitors";
       for(long i=start;i<end;++i){
         if(sc=="0"){
-          std::pair<FUDSF::X,long> sR=(DD::GL_MAIN_DB.fu_dbsM["fStat"]).searchXByIndex(i);
-          mLine[0]=sR.first.x;
-          std::pair<FUDSF::Sigma,long> rs=(DD::GL_MAIN_DB.fu_dbsM["fStat"]).searchX(mLine[0]);
-          mLine[1]=std::to_string(rs.first.sigma);
+            SDIRF::TextScorePair res=(stats.sortedAccordingToName)[i];
+          mLine[0]=res.text;
+          mLine[1]=std::to_string(res.score);
+            mLine[2]=std::to_string(res.totalVisits);
         }
         else{
-          std::pair<FUDSF::Sigma,long> sR=(DD::GL_MAIN_DB.fu_dbsM["fStat"]).searchSigmaByIndex(nT-i-1);
-          mLine[1]=std::to_string(sR.first.sigma);
-          std::pair<FUDSF::X,long> rs=(DD::GL_MAIN_DB.fu_dbsM["fStat"]).searchSigma(sR.first.putSigmaTToString());
-          mLine[0]=rs.first.x;
+            SDIRF::ScoreTextPair res=(stats.sortedAccordingToScore)[nT-i-1];
+          mLine[0]=res.text;
+          mLine[1]=std::to_string(res.score);
+            mLine[2]=std::to_string(res.totalVisits);
         }
-        mLine[0]=createLinkToExpandStat("p"+mLine[0]);
+        mLine[0]=createLinkToExpandStat(mLine[0]);
         allLines.push(mLine);
       }
       SF::flipTheStack(allLines);
@@ -1106,10 +1075,7 @@ namespace APTI{
     }
     if(_db=="statDB"){
       return createListOfStatItems(_psd,_numInList, _numOnEachSide);
-    }
-    if(_db=="fStatDB"){
-      return createListOfFStatItems(_numInList, _numOnEachSide);
-    }
+    } 
     return "";
   }
   std::string AbstractText::displayFileForm(const PSDI::SessionData & _psd, const std::string & requestType, const std::string & templateName, const std::string & parameter01, const std::string& parameter02){
@@ -1172,7 +1138,13 @@ namespace APTI{
     if( _psd.isRoot!="yes"){
       return "";
     }
-    return STI::statAnalysis(_stA);
+      SPREPF::StatData forSt;
+      forSt.userName=_psd.my_un;
+      forSt.att_page= _stA;
+      TMD::MText deb_mt;
+      deb_mt.setFromTextName(_stA);
+      forSt.att_pageID=deb_mt.getInternalIdFromInternalNumber();
+    return SDIRF::statAnalysis(forSt,DD::GL_DBS.getStatTable(),MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
   }
   std::string AbstractText::createCloneInvitation(const PSDI::SessionData & _psd){
     if(DD::GL_IND_ALLOW_WEBSITE_CLONES==0){
