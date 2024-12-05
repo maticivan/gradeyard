@@ -23,8 +23,7 @@ namespace MWID{
   public:
     std::set<std::string> tablesJustCreated;
     std::set<std::string> fut_tablesJustCreated;
-    std::map<std::string,MTF::Table> dbsM;
-    std::map<std::string,FUTF::FastUpdatingTable> fu_dbsM;
+    std::map<std::string,MTF::Table> dbsM; 
     void initialize();
     void executeQueues();
     long numUsers() const;
@@ -33,15 +32,12 @@ namespace MWID{
     long numCoursesAssignments() const;
     long numCertificates() const;
     long numTexts() const;
-    long numResponses() const;
-    long numStats() const;
-    long numStatsAdv() const;
+    long numResponses() const; 
     long numBackups() const;
     long saveForRecovery(const std::string &, const long & , const long & , const std::string & ) const;
     void putInitialDataInTable(const std::string &);
     MTF::Table createTableWithOneKey(const std::string &, const std::string &, const std::string &, const std::string &, const std::string &);
     MTF::Table createTableWithTwoKeys(const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string &);
-    FUTF::FastUpdatingTable createFastUpdatingTable(const std::string &,const std::string &,const std::string &);
     std::string statusReportForDebugging() const;
   };
   std::string MainDB::statusReportForDebugging() const{
@@ -102,16 +98,6 @@ namespace MWID{
     it=dbsM.find("response");
     return (it->second).size();
   }
-  long MainDB::numStats() const{
-    std::map<std::string,MTF::Table>::const_iterator it;
-    it=dbsM.find("stat");
-    return (it->second).size();
-  }
-  long MainDB::numStatsAdv() const{
-    std::map<std::string,FUTF::FastUpdatingTable>::const_iterator it;
-    it=fu_dbsM.find("fStat");
-    return (it->second).size();
-  }
   MTF::Table MainDB::createTableWithOneKey(const std::string & _internalTableNickName,
                                                  const std::string & _folderName,
                                                  const std::string & _tabName,
@@ -156,18 +142,6 @@ namespace MWID{
       tablesJustCreated.insert(_internalTableNickName);
     }
     return tb;
-  }
-
-  FUTF::FastUpdatingTable MainDB::createFastUpdatingTable(const std::string & _internalTableNickName,
-                                                    const std::string & _folderName,
-                                                    const std::string & _tabName){
-      FUTF::FastUpdatingTable tb;
-      int tbCreated=tb.setFolderName(_folderName);
-      tb.setTableName(_tabName);
-      if(tbCreated==1){
-        fut_tablesJustCreated.insert(_internalTableNickName);
-      }
-      return tb;
   }
   std::string newItemFormatted(const std::pair<std::vector<std::string>, std::string> & item, const std::string & sB, const std::string &sE, const std::string &ssB, const std::string &ssE){
     std::string formattedItem;
@@ -277,12 +251,11 @@ namespace MWID{
     dbsM["mainText"]=createTableWithTwoKeys("mainText", DD::GL_DBS.getMainText(),"mainText","id","name","tData");
     // responses initialization
     dbsM["response"]=createTableWithTwoKeys("response", DD::GL_DBS.getResponseTable(),"response","id","name","tData");
-    // stat initialization
-    dbsM["stat"]=createTableWithOneKey("stat", DD::GL_DBS.getStatTable(),"stat","name","tData");
+    // stat folder initialization
+    IOF::sys_createFolderIfDoesNotExist(DD::GL_DBS.getStatTable(),"readme.txt","Do not edit this folder"); 
     // file forms folder initialization
     IOF::sys_createFolderIfDoesNotExist(DD::GL_DBS.getFileFormsFolder(),"readme.txt","Do not edit this folder");
-    // fast updating stat saveInitialization
-    fu_dbsM["fStat"]=createFastUpdatingTable("fStat",DD::GL_DBS.getFastUpdatingStatTable(),"fStat");
+    // fast updating stat saveInitialization 
     executeQueues();
     if(!tablesJustCreated.empty()){
       std::set<std::string>::iterator it,itE;
