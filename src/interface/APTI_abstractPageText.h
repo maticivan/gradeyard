@@ -232,7 +232,7 @@ namespace APTI{
     std::string createLinkToCouas(const std::string &, const std::string & ,const std::string &) const;
     std::string createLinkToCertificate(const std::string &, const std::string & ,const std::string &, const std::string& = "") const;
     std::string createLinkToExecuteBackup(const std::string &, const std::string &) const;
-    std::string createLinkToExpandStat(const std::string &, const long & = 1) const;
+    std::string createLinkToExpandStat(const std::string &, const long & = 0) const;
     std::string createLinkToFile(const std::string &, const std::string &, const std::string &, const std::string &) const;
     std::string createLinkToResponseReceiver(const std::string &, const std::string &) const;
     std::string createLinkToSwitchSortCriterion(const std::string & , const std::string & , const std::string & , const std::string &) const;
@@ -244,7 +244,7 @@ namespace APTI{
     std::string createListOfCertificates(const PSDI::SessionData & , const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfBackups(const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfStatItems(const PSDI::SessionData &, const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
-    std::string createListOfFStatItems(const std::string & , const std::string & ) const;//WARNING: not fully implemented - works only for root
+    //std::string createListOfFStatItems(const std::string & , const std::string & ) const;//WARNING: not fully implemented - works only for root
     std::string createListOfResponses(const PSDI::SessionData &, const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string forumScroller(const PSDI::SessionData & , long & , long & , const long & , const long & , const std::string &) const;
     std::string pageAttributesForForumScroller(const PSDI::SessionData &) const;
