@@ -84,8 +84,7 @@ namespace SII{
     std::string dfPage;
     std::string sName;
     std::string sURL;
-    std::string showLogInLink;
-    std::string fastUpdatingStat;
+    std::string showLogInLink; 
     long cntrEIdI0=51;
     long cntrEIdI1=79;
     long cntrEIdIZ=3;
