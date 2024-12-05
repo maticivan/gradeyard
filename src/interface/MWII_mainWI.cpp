@@ -45,7 +45,6 @@ namespace MWII{
 #include "APTI_abstractPageText.h"
 #include "MPTI_mainPageText.h"
 #include "RTI_responseText.h"
-#include "STI_statText.h"
 #include "SII_sessionInformation.h"
 #include "CCI_commandCenter.h"
 #include "FFI_fileFormCenter.h"
