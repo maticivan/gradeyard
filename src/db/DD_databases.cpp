@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -23,7 +23,7 @@
 #include "DSD_dbSetup.cpp"
 namespace DD{
   DSD::Setup GL_DBS;
-  const long GL_IND_ALLOW_WEBSITE_CLONES=0;
+  const long GL_IND_ALLOW_WEBSITE_CLONES=1;
 }
 #include "MWID_mainWebsiteInit.cpp"
 
@@ -41,8 +41,7 @@ namespace DD{
 #include "ATMD_abstractTextManagement.cpp"
 #include "TMD_textManagement.cpp"
 #include "CERD_certificates.cpp"
-#include "RMD_responseManagement.cpp"
-#include "SD_stat.cpp"
+#include "RMD_responseManagement.cpp" 
 #include "AICD_abstractInsertCenter.cpp"
 #include "BMD_backupManager.cpp"
 #endif
