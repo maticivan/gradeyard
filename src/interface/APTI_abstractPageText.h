@@ -244,7 +244,6 @@ namespace APTI{
     std::string createListOfCertificates(const PSDI::SessionData & , const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfBackups(const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfStatItems(const PSDI::SessionData &, const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
-    //std::string createListOfFStatItems(const std::string & , const std::string & ) const;//WARNING: not fully implemented - works only for root
     std::string createListOfResponses(const PSDI::SessionData &, const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string forumScroller(const PSDI::SessionData & , long & , long & , const long & , const long & , const std::string &) const;
     std::string pageAttributesForForumScroller(const PSDI::SessionData &) const;
