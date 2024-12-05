@@ -254,8 +254,7 @@ namespace MWID{
     // stat folder initialization
     IOF::sys_createFolderIfDoesNotExist(DD::GL_DBS.getStatTable(),"readme.txt","Do not edit this folder"); 
     // file forms folder initialization
-    IOF::sys_createFolderIfDoesNotExist(DD::GL_DBS.getFileFormsFolder(),"readme.txt","Do not edit this folder");
-    // fast updating stat saveInitialization 
+    IOF::sys_createFolderIfDoesNotExist(DD::GL_DBS.getFileFormsFolder(),"readme.txt","Do not edit this folder"); 
     executeQueues();
     if(!tablesJustCreated.empty()){
       std::set<std::string>::iterator it,itE;
