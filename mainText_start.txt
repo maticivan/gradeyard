@@ -55,6 +55,7 @@ _vVPair__vr_allowRespRecToOthers_/vr__vl_yes_/vl__/vVPair_
 _vVPair__vr_allowPDFForCertificates_/vr__vl_yes_/vl__/vVPair_
 _vVPair__vr_timeInSecondsToKeepCertificatePDF_/vr__vl_120_/vl__/vVPair_
 _vVPair__vr_allowPDFForForms_/vr__vl_yes_/vl__/vVPair_
+_vVPair__vr_encryptIP_/vr__vl_yes_/vl__/vVPair_
 _vVPair__vr_timeInSecondsToKeepFormPDF_/vr__vl_120_/vl__/vVPair_
 
 _vVPair__vr_defaultTexts_/vr__vl_
@@ -10453,6 +10454,13 @@ _insert_
 _n*_formPlacement_/n*_
 _n*_searchForStItem_/n*_
 _/insert_
+\end{box}
+
+\begin{box}    _insert_
+            _n*_buttonLink_/n*_
+            _n*_Raw statistics_/n*_
+            _n*_?page=listStat&st=0&sc=raw_/n*_
+           _/insert_
 \end{box}
 _/textData!!_
 
