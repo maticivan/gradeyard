@@ -902,10 +902,13 @@ namespace APTI{
       std::string sc=MWII::GL_WI.getSortCriterion();
       long numb=BF::stringToInteger(_numInList);
       if(numb<0){numb=0;}
-        SDIRF::CompleteStats stats=SDIRF::getCompleteStats(DD::GL_DBS.getStatTable());
-        long nT=(stats.sortedAccordingToName).size();
-        long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
-        if((start<0)||(start>nT-1)){start=0;}
+      long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
+      if(sc=="raw"){
+        return SDIRF::getRawStats(DD::GL_DBS.getStatTable(),3*SPREPF::STAT_CONSTS.maxItemsInFile,start);
+      }
+      SDIRF::CompleteStats stats=SDIRF::getCompleteStats(DD::GL_DBS.getStatTable());
+      long nT=(stats.sortedAccordingToName).size();
+      if((start<0)||(start>nT-1)){start=0;}
       std::pair<std::string,int> allD;
       std::string name;
       long vVL,vML;
