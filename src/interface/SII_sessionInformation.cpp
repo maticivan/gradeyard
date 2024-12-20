@@ -66,8 +66,11 @@ namespace SII{
   SPREPF::StatData SessionInformation::prepareStatData() const{
     SPREPF::StatData forSt=createStatDataDocument(psd.my_un,psd.pageRequested);
     forSt.ipAddr=envVariables[11]; 
+    if(indicator_encryptIP=="yes"){
+      forSt.ipAddr=BI::encryptIP(forSt.ipAddr);
+    }
     if(loginActionIndicator==1){
-      forSt.att_page="!*LOGIN*ATTEMPT*!";
+      forSt.att_page="mainTextInitializer";
       forSt.userName=getResponse("username");
     }
     forSt.att_rr=respRecRequested;
@@ -589,52 +592,11 @@ namespace SII{
         IOF::deleteOldFiles(DD::GL_DBS.getChallengeAnswStorage(),(psd.myWU).getUsername(),0);
         loginStatusIndicator=0;
       }
-      if((loginActionIndicator==1)&&(loginStatusIndicator==0)){
-        SPREPF::StatData st_DLogin=prepareStatData();
-        if(STI::checkIfSpammerIsTryingToGuessPasswords(st_DLogin)=="spammer"){
-          loginActionIndicator=0;
-          psd.pageRequested="tooManyAttemptsInShortTime";
-          changeMainText(psd.pageRequested);
-        }
-        else{
-          int succ=(psd.myWU).setFromUsername(getResponse("username"));
-          loginFailedIndicator=1;
-          if(succ==1){
-            succ=(psd.myWU).checkPasswordAndSetLevel1(getResponse("pass1"));
-            if(succ==1){
-              loginStatusIndicator=1;
-              std::string newCookie=(psd.myWU).logIn();
-              IOF::deleteOldFiles(DD::GL_DBS.getChallengeAnswStorage(),(psd.myWU).getUsername(),0);
-              IOF::deleteOldFiles(DD::GL_DBS.getChallengeAnswStorage(),"txt",10800,1);
-              std::cout<<cookieText(MWII::GL_WI.getCookieName(),newCookie);
-              loginFailedIndicator=0;
-            }
-            else{
-              //failed log in - we should propagate the desired redirect page
-              MWII::GL_WI.setFailedLogIn();
-            }
-          }
-          else{
-            MWII::GL_WI.setFailedLogIn();
-          }
-        }
-      }
-      if(loginStatusIndicator==1){
-        if(loginActionIndicator==0){//renew cookie
-          std::cout<<cookieText(MWII::GL_WI.getCookieName(),currentCookie);
-        }
-        psd.my_un=(psd.myWU).getUsername();
-        psd.myFirstName=(psd.myWU).getFirstName();
-        psd.myLastName=(psd.myWU).getLastName();
-        psd.isRoot=(psd.myWU).isRoot();
-        psd.allowedToExecuteAll=(psd.myWU).isAllowedToExecuteCommands();
-        psd.masterKey=(psd.myWU).getMasterKeyFromRAM("sigmaM");
-      }
-      GF::GL_DEB_MESSAGES.addMessage("The current cookie is |"+currentCookie+"|\n");
       TMD::MText m;
       int s=m.setFromTextName("mainTextInitializer");
+      std::string initText;
       if(s==1){
-        std::string initText=m.getTextData();
+        initText=m.getTextData();
         std::map<std::string,std::string> mParameters;
         std::map<std::string,std::string>::const_iterator itMP;
         SF::varValPairs(initText,"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_",mParameters);
@@ -681,6 +643,8 @@ namespace SII{
         SF::assignValueFromMap(mParameters,"timeInSecondsToKeepCertificatePDF",CERD::GL_CertificatesOptions.maxTimeToKeepPDF);
         SF::assignValueFromMap(mParameters,"allowPDFForForms",FFI::GL_PDFFormOptions.pdfsAllowed);
         SF::assignValueFromMap(mParameters,"timeInSecondsToKeepFormPDF",FFI::GL_PDFFormOptions.maxTimeToKeepPDF);
+        indicator_encryptIP="yes";
+        SF::assignValueFromMap(mParameters,"encryptIP",indicator_encryptIP);
         itMP=mParameters.find("defaultTexts");
         if(itMP!=mParameters.end()){
           MWII::GL_WI.updateDefaultWebTexts(itMP->second);
@@ -698,6 +662,50 @@ namespace SII{
             psd.pageRequested=sf.getTextName();
           }
         }
+      }
+      if((loginActionIndicator==1)&&(loginStatusIndicator==0)){
+        SPREPF::StatData st_DLogin=prepareStatData();
+        if(STI::checkIfSpammerIsTryingToGuessPasswords(st_DLogin)=="spammer"){
+          loginActionIndicator=0;
+          psd.pageRequested="tooManyAttemptsInShortTime";
+          changeMainText(psd.pageRequested);
+        }
+        else{
+          int succ=(psd.myWU).setFromUsername(getResponse("username"));
+          loginFailedIndicator=1;
+          if(succ==1){
+            succ=(psd.myWU).checkPasswordAndSetLevel1(getResponse("pass1"));
+            if(succ==1){
+              loginStatusIndicator=1;
+              std::string newCookie=(psd.myWU).logIn();
+              IOF::deleteOldFiles(DD::GL_DBS.getChallengeAnswStorage(),(psd.myWU).getUsername(),0);
+              IOF::deleteOldFiles(DD::GL_DBS.getChallengeAnswStorage(),"txt",10800,1);
+              std::cout<<cookieText(MWII::GL_WI.getCookieName(),newCookie);
+              loginFailedIndicator=0;
+            }
+            else{
+              //failed log in - we should propagate the desired redirect page
+              MWII::GL_WI.setFailedLogIn();
+            }
+          }
+          else{
+            MWII::GL_WI.setFailedLogIn();
+          }
+        }
+      }
+      if(loginStatusIndicator==1){
+        if(loginActionIndicator==0){//renew cookie
+          std::cout<<cookieText(MWII::GL_WI.getCookieName(),currentCookie);
+        }
+        psd.my_un=(psd.myWU).getUsername();
+        psd.myFirstName=(psd.myWU).getFirstName();
+        psd.myLastName=(psd.myWU).getLastName();
+        psd.isRoot=(psd.myWU).isRoot();
+        psd.allowedToExecuteAll=(psd.myWU).isAllowedToExecuteCommands();
+        psd.masterKey=(psd.myWU).getMasterKeyFromRAM("sigmaM");
+      }
+      GF::GL_DEB_MESSAGES.addMessage("The current cookie is |"+currentCookie+"|\n");
+      if(s==1){ 
         if(loginFailedIndicator==1){
           psd.pageRequested="wrongUserNameOrPassword";
         }
