@@ -22,7 +22,7 @@ namespace SDIRF{
   struct ScoreDataConstants{
   public:
     long numTextsInFile=100;
-    std::string stFolderName="statSDIRF";
+    std::string stFolderName="statSDIRF"; 
   } GL_CONSTANTS;
   std::vector<long> GL_scoreCoefficients={50,30,25,20,20,15,15,1};
   class ScoreData{
@@ -258,6 +258,49 @@ namespace SDIRF{
       (cs.sortedAccordingToName).insert(tmpTSP);
       ++it;
     }
+  }
+  std::pair<long,long> getTwoCounters(const std::string &fName){
+    std::string countersSt=IOF::fileToString(fName);
+    std::vector<std::string> cv=SF::stringToVector(countersSt,"_n*_","_/n*_");
+    long counterF=1,counterI=0;
+    if(cv.size()>1){
+      counterF=BF::stringToInteger(cv[0]);counterI=BF::stringToInteger(cv[1]);
+    }
+    return std::pair<long,long>(counterF,counterI);
+  }
+  void addStatLines(std::stack<std::string>& allLines, const std::string& fileName, long& lineCounter){
+    std::vector<std::string> linesFromFile=SF::stringToVector(IOF::fileToString(fileName),"_nD*_","_/nD*_");
+    long numLines=linesFromFile.size();
+    lineCounter+=numLines; 
+    long i=numLines;
+    while(i>0){
+      --i;
+      allLines.push(linesFromFile[i]);
+    }
+  }
+  std::string getRawStats(const std::string& hiddenPathFolder,long numToShow, long start){
+    std::string folder_path=hiddenPathFolder+"/rawSt";
+    std::pair<long,long> cPair=getTwoCounters(folder_path+"/counters.txt"); 
+    std::stack<std::string> allLines;
+    long fileCounter=0;
+    long lineCounter=0;
+    while((fileCounter<SPREPF::STAT_CONSTS.maxNumFiles) && ( (numToShow<1) || (lineCounter < numToShow) )){
+      long newCF=cPair.first-start-fileCounter;
+      while(newCF<1){
+        newCF+=SPREPF::STAT_CONSTS.maxNumFiles;
+      }
+      std::string fileToWork=folder_path+"/df"+BF::padded(newCF,SPREPF::STAT_CONSTS.paddingConst,"0")+".txt"; 
+      addStatLines(allLines,fileToWork,lineCounter);
+      ++fileCounter;
+    }
+    std::vector<std::string> resV=SF::stackToVector(allLines);
+    std::string res;
+    long i=0; 
+    while((i<resV.size())&&((i<numToShow)||(numToShow<1))){
+      res+=resV[i]+"\n";
+      ++i;
+    }
+    return "<pre>"+res+"</pre>\n";
   }
   CompleteStats getCompleteStats(const std::string& hiddenPathFolder){
     CompleteStats res;
