@@ -48,7 +48,6 @@ namespace SII{
     std::string fUCE="_/user_";
     std::string fTB="_created_";
     std::string fTE="_/created_";
-
     long initialized;
     int initializeNewFile(const std::string &, const std::string &, const std::string &, const std::string &);
     int initializeExistingFile(const std::string &);
@@ -85,6 +84,7 @@ namespace SII{
     std::string sName;
     std::string sURL;
     std::string showLogInLink; 
+    std::string indicator_encryptIP;
     long cntrEIdI0=51;
     long cntrEIdI1=79;
     long cntrEIdIZ=3;
