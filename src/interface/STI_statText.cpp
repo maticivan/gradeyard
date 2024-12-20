@@ -27,15 +27,6 @@ namespace STI{
     IOF::sys_createFolderIfDoesNotExist(rawStatDataFolder,"readme.txt","Do not edit this folder.","counters.txt","_n*_1_/n*_ _n*_0_/n*_ ");
     return rawStatDataFolder+"/counters.txt";
   }
-  std::pair<long,long> getTwoCounters(const std::string &fName){
-    std::string countersSt=IOF::fileToString(fName);
-    std::vector<std::string> cv=SF::stringToVector(countersSt,"_n*_","_/n*_");
-    long counterF=1,counterI=0;
-    if(cv.size()>1){
-      counterF=BF::stringToInteger(cv[0]);counterI=BF::stringToInteger(cv[1]);
-    }
-    return std::pair<long,long>(counterF,counterI);
-  }
   std::vector<std::string> statFileNames(const long &num){
     std::vector<std::string> fR;
     if(num<1){
@@ -43,7 +34,7 @@ namespace STI{
     }
     fR.resize(num);
     std::string cntrfn=countersFName();
-    std::pair<long,long> twoCntrs=getTwoCounters(cntrfn);
+    std::pair<long,long> twoCntrs=SDIRF::getTwoCounters(cntrfn);
     long counterF=twoCntrs.first;
     std::string fnStart=rawStatFolder()+"/df";
     for(long i=0;i<num;++i){
@@ -75,7 +66,7 @@ namespace STI{
   std::string getStatDataFileName(const long & updateCounters=0){
     std::string cFName =countersFName();
     long newCF,newCI;
-    std::pair<long,long> cfi=getTwoCounters(cFName);
+    std::pair<long,long> cfi=SDIRF::getTwoCounters(cFName);
     newCF=cfi.first;newCI=cfi.second;
     if(updateCounters==1){
       return updateStatCountersAndGetDataFName(cFName,newCF,newCI,1);
