@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -720,7 +720,7 @@ namespace SF{
     return stringToStackAndRemoveItems(_allItems,_nextB,_nextE,0,_attMustHave).first;
   }
   std::vector<std::string> stringToVectorSimpleSeparator(const std::string& _nAnswers,const std::string& separator=";"){
-    std::string saB="_n*_", saE="_/n*_";
+    std::string saB="_n!-!*_", saE="_/n!-!*_";
     std::string nAnsw=findAndReplace(_nAnswers,separator,saE+saB);
     nAnsw=saB+nAnsw;
     nAnsw+=saE;
