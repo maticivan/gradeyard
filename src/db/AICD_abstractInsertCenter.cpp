@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -151,6 +151,16 @@ namespace AICD{
     }
     return MFRF::findAndReplace(in,replMap);
   }
+  std::string h1Tag(const std::string& _in){
+    std::vector<std::string> v=SF::stringToVector(_in,"<h1>","</h1>");
+    if(v.size()<1){return "";}
+    return "<h1>"+v[0]+"</h1>";
+  }
+  std::string treatHRTag(const std::string& _in){
+    std::vector<std::string> v=SF::stringToVectorSimpleSeparator(_in,"<hr>");
+    if(v.size()!=3){return _in;}
+    return v[0]+h1Tag(v[1])+v[2];
+  }
   std::string prepareLatexTextRec(const std::string& _in, const long& insertRemainingDepth ){
     std::string res=_in;
     long pos; std::pair<std::string,int> allD;
@@ -160,6 +170,7 @@ namespace AICD{
     }
     res=removeTag(res,"_title*_","_/title*_");
     res=removeTag(res,"_metaDesc*_","_/metaDesc*_");
+    res=treatHRTag(res);
     pos=0; allD=SF::extract(res,pos,"<div class=\"col-md-9\">", "</div>");
     if(allD.second==1){
       res=allD.first;
