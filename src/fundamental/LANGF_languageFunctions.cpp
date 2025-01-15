@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -217,7 +217,7 @@ namespace LANGF{
       long indSafety;
       TMF::Timer t1,t2,t3;
       t1.start();
-      long numTags=9;
+      long numTags=11;
       long cntr;
       std::vector<std::string> openTags;
       std::vector<std::string> closeTags;
@@ -239,6 +239,10 @@ namespace LANGF{
       openTags[cntr]="\\begin{eqnarray}"; closeTags[cntr]="\\end{eqnarray}";
       ++cntr;
       openTags[cntr]="\\begin{equation}"; closeTags[cntr]="\\end{equation}";
+      ++cntr;
+      openTags[cntr]="\\begin{align*}"; closeTags[cntr]="\\end{align*}";
+      ++cntr;
+      openTags[cntr]="\\begin{align}"; closeTags[cntr]="\\end{align}";
       ++cntr;
       openTags[cntr]="<"; closeTags[cntr]=">";
       PTKF::PlainTextKeeper textAreaKeeper("textA");
