@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -93,7 +93,7 @@ namespace DISPPF{
     for(long i=0;i<sz;++i){
       alakazams[i]=azm+std::to_string(i)+"e|";
     }
-    toEliminateFromSimpleTexts.resize(17);
+    toEliminateFromSimpleTexts.resize(21);
     i=-1;
     ++i;toEliminateFromSimpleTexts[i]="<div>";
     ++i;toEliminateFromSimpleTexts[i]="</div>";
@@ -112,6 +112,10 @@ namespace DISPPF{
     ++i;toEliminateFromSimpleTexts[i]="begin{eqnarray*}";
     ++i;toEliminateFromSimpleTexts[i]="end{eqnarray}";
     ++i;toEliminateFromSimpleTexts[i]="end{eqnarray*}";
+    ++i;toEliminateFromSimpleTexts[i]="begin{align}";
+    ++i;toEliminateFromSimpleTexts[i]="begin{align*}";
+    ++i;toEliminateFromSimpleTexts[i]="end{align}";
+    ++i;toEliminateFromSimpleTexts[i]="end{align*}";
     for(long j=0;j<formattingTags.size();++j){
       tagRemovalMap[formattingTags[j]]="";
     }
@@ -273,6 +277,18 @@ namespace DISPPF{
     if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
       return unsafe+"8";
     }
+    PTKF::PlainTextKeeper mth6("m06");
+    indicatorSafety=PTKF::removeToSafety(mth6,t,"\\begin{align*}","\\end{align*}");
+    if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
+      return unsafe+"9";
+    }
+    PTKF::PlainTextKeeper mth7("m07");
+    indicatorSafety=PTKF::removeToSafety(mth7,t,"\\begin{align}","\\end{align}");
+    if((1-indicatorSafety)*(rs.exitWithErrorIfUnsafe)==1){
+      return unsafe+"10";
+    }
+    mth7.treatMath();
+    mth6.treatMath();
     mth5.treatMath();
     mth4.treatMath();
     mth3.treatMath();
@@ -290,6 +306,8 @@ namespace DISPPF{
         t=MFRF::findAndReplace(t,GL_HTML_Tags.alakazams,GL_HTML_Tags.formattingTags);
       }
     }
+    t=mth7.recover(t);
+    t=mth6.recover(t);
     t=mth5.recover(t);
     t=mth4.recover(t);
     t=mth3.recover(t);
