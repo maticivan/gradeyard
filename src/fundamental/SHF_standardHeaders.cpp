@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -34,13 +34,11 @@
 #include <iomanip>
 #include <memory>
 #include <limits>
-
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <experimental/filesystem>
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-
+#include <curl/curl.h>
 #endif
