@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -98,6 +98,8 @@ namespace SII{
     footer.updateFooterBar(psd,psd.pageRequested,respRecRequested, psd.my_un);
     std::string savedPER=psd.pEditReq;
     psd.pEditReq="no";
+    std::string advWebsiteRequest=WSCI::websiteRequest(psd,approvedGuests,mainText);
+    std::string prefixAdv,suffixAdv;
     std::string fR=header.displayText(psd,"header");
     fR+="\n<div  class=\"container\">\n";
     std::string footerFR=footer.displayText(psd,"footer");
@@ -147,7 +149,24 @@ namespace SII{
       if(allD.second==1){
         fR=allD.first;
       }
-      fR+=mTextInMainPosition;
+        if(advWebsiteRequest!=""){
+            prefixAdv+="<pre>_ADVWSCHEADER_\n";
+            prefixAdv+="_n_"+psd.remAddr+"_/n_\n";
+            prefixAdv+="_n_"+titleInterior+"_/n_";
+            prefixAdv+="_n_"+descInterior+"_/n_";
+            prefixAdv+="_n_"+psd.usrAgent+"_/n_\n";
+            prefixAdv+="_n_"+psd.reqMethod+"_/n_\n";
+            prefixAdv+="_/ADVWSCHEADER_</pre>";
+            prefixAdv+="<pre>ADVWSC</pre>";
+            suffixAdv="<pre>/ADVWSC</pre>";
+            if(advWebsiteRequest=="no"){
+                mTextInMainPosition="Denied";
+            }
+            else{
+                mTextInMainPosition=WSCI::prepareForGuests(MWII::GL_WI.getWSURL(),mTextInMainPosition);
+            }
+        }
+      fR+=prefixAdv+ mTextInMainPosition+suffixAdv;
       if(str_backups_IfCalledFor!=""){
         fR+=BI::textAreaField("probText",str_backups_IfCalledFor,15,100);
       }
@@ -645,6 +664,7 @@ namespace SII{
         SF::assignValueFromMap(mParameters,"timeInSecondsToKeepFormPDF",FFI::GL_PDFFormOptions.maxTimeToKeepPDF);
         indicator_encryptIP="yes";
         SF::assignValueFromMap(mParameters,"encryptIP",indicator_encryptIP);
+        SF::assignValueFromMap(mParameters,"approvedGuests",approvedGuests);
         itMP=mParameters.find("defaultTexts");
         if(itMP!=mParameters.end()){
           MWII::GL_WI.updateDefaultWebTexts(itMP->second);
