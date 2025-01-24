@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -65,6 +65,7 @@ namespace MWII{
 #include "CAGI_codeAutoGrader.cpp"
 #include "CMTI_couasMigrationTools.h"
 #include "CMTI_couasMigrationTools.cpp"
+#include "WSCI_websiteCommunications.cpp"
 #include "APTI_abstractPageText.cpp"
 #include "MPTI_mainPageText.cpp"
 #include "TFTI_timerForTests.cpp"
@@ -72,6 +73,7 @@ namespace MWII{
 #include "STI_statText.cpp"
 #include "CEVI_customizeExamVersions.cpp"
 #include "INCII_inCommandInsert.cpp"
+//#include "WSCI_websiteCommunications.cpp"
 #include "SII_sessionInformation.cpp"
 #include "CCI_commandCenter.cpp"
 #endif
