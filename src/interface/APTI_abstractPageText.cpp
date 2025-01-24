@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -1579,6 +1579,21 @@ namespace APTI{
     link+=url+"\">";
     return link+lN+"</A>";
   }
+  std::string AbstractText::createExternalURL(const PSDI::SessionData & _psd, const std::string & url, const std::string & documentWithPassword) const{
+      std::string expandedURL=url;
+      if(documentWithPassword!=""){
+          TMD::MText pDocument;
+          int scc=pDocument.setFromTextName(documentWithPassword);
+          if(scc!=0){
+              std::vector<std::string> tV=SF::stringToVector(pDocument.getTextData(),"_urlAdd_","_/urlAdd_");
+              if(tV.size()>0){
+                  expandedURL+=tV[0];
+              }
+          }
+      }
+      std::string htmlText=WSCI::readExternalWebsite(expandedURL);
+      return htmlText;
+  }
   std::string AbstractText::createRespRecStatusDisplay(const PSDI::SessionData &_psd, const std::string & respRecN) const{
     RTI::Response respT(respRecN,"no",_psd.my_un);
     std::stack<std::vector<std::string> > stS;
@@ -1667,6 +1682,9 @@ namespace APTI{
         }
         if((allArgs[0]==GL_syntax.s_internalLink)&&(sz==3)){
           return createInternalLink(_psd,allArgs[1],allArgs[2]);
+        }
+        if((allArgs[0]==GL_syntax.s_externalURL)&&(sz==3)){
+          return createExternalURL(_psd,allArgs[1],allArgs[2]);
         }
         if((allArgs[0]==GL_syntax.s_buttonLink)&&(sz==3)){
           return HSF::createButtonLink(allArgs[2],allArgs[1]);
