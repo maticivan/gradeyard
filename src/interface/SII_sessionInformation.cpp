@@ -235,6 +235,7 @@ namespace SII{
     timeToGenerateWebsite.start();
     psd.my_un="visitor";
     psd.isRoot="no";
+    psd.isGradingAdmin="no";
     psd.allowedToExecuteAll="no";
     psd.pEditReq="no";
     psd.respRecMode="df";
@@ -721,6 +722,16 @@ namespace SII{
         psd.myFirstName=(psd.myWU).getFirstName();
         psd.myLastName=(psd.myWU).getLastName();
         psd.isRoot=(psd.myWU).isRoot();
+          if(psd.isRoot=="yes"){
+              psd.isGradingAdmin="yes";
+          }
+          else{
+              if((psd.myWU).existsPath("gradingAdmin")){
+                  if(psd.my_un!="gradingAdmin"){
+                      psd.isGradingAdmin="yes";
+                  }
+              }
+          }
         psd.allowedToExecuteAll=(psd.myWU).isAllowedToExecuteCommands();
         psd.masterKey=(psd.myWU).getMasterKeyFromRAM("sigmaM");
       }
