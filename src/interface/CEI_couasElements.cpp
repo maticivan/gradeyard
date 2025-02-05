@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -97,7 +97,6 @@ namespace CEI{
     if(compactStringIndicator==50){
       // put spaces always because the grade should be evaluated using formula
       grStr="";
-
     }
     fR+=LI::GL_LN.st_clea_sepGradeB+grStr+LI::GL_LN.st_clea_sepGradeE;
     return fR;
@@ -354,21 +353,21 @@ namespace CEI{
   std::string CouasElement::text() const{return coaa.mText;}
   int CouasElement::allowedToSeeAllGrades(const PSDI::SessionData & _psd) const{
     // WARNING: too restrictive
-    if(_psd.isRoot=="yes"){
+    if(_psd.isGradingAdmin=="yes"){
       return 1;
     }
     return 0;
   }
   int CouasElement::allowedToExecuteAutomaticGrading(const PSDI::SessionData & _psd) const{
     // WARNING: too restrictive
-    if(_psd.isRoot=="yes"){
+    if(_psd.isGradingAdmin=="yes"){
       return 1;
     }
     return 0;
   }
   int CouasElement::allowedToGrade(const PSDI::SessionData & _psd) const{
     // WARNING: to restrictive
-    if(_psd.isRoot=="yes"){
+    if(_psd.isGradingAdmin=="yes"){
       return 1;
     }
     return 0;
