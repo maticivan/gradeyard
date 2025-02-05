@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -30,6 +30,7 @@ namespace PSDI{
     WUD::User myWU;
     std::string my_un;
     std::string isRoot;
+    std::string isGradingAdmin;
     std::string allowedToExecuteAll;
     std::string pEditReq;
     std::string respRecMode;
