@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -1734,7 +1734,7 @@ namespace RTI{
       }
     }
     ResponderInfo res=infoFromResponseText(_psd,_req);
-    if((_psd.isRoot=="no")&&(_psd.allowRespRecDisplayToOthers=="no")){
+    if((_psd.isGradingAdmin=="no")&&(_psd.allowRespRecDisplayToOthers=="no")){
       if((res.documentType==st_responseToTest)&&(res.solverUserName!=_psd.my_un)){
         return "";
       }
@@ -1802,7 +1802,7 @@ namespace RTI{
       if(res.documentType==st_gradeOfResponse){hd=messageNoGradingYet;}
     }
     std::string parametersForBackToGradeRoom="";
-    if(_psd.isRoot=="yes"){
+    if(_psd.isGradingAdmin=="yes"){
       parametersForBackToGradeRoom=SF::forwardValVarPairs(_psd.respMap,LI::GL_LN.st_envVName_Variable,LI::GL_LN.st_envVName_Value,10);
     }
     if((res.acceptResp==1)||(res.acceptGrade==1)){
