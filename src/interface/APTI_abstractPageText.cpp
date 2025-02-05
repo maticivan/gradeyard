@@ -1407,7 +1407,7 @@ namespace APTI{
     return out;
   }
   std::string AbstractText::checkIfTheUserIsTA(const PSDI::SessionData & _psd, const std::string& rName) const{
-    if(_psd.isRoot=="yes"){
+    if(_psd.isGradingAdmin=="yes"){
       return "yes";
     }
     if(_psd.my_un=="visitor"){
@@ -1436,7 +1436,7 @@ namespace APTI{
     std::map<std::string,std::pair<std::vector<std::string>,std::string> >::const_iterator itRGM,itRGME;
     CEI::CouasAttributes cIrrelevant;
     std::string csvInd="no";
-    std::string isTA=_psd.isRoot;
+    std::string isTA=_psd.isGradingAdmin;
     std::string inv=_inv;
     if(inv=="summaryTA"){
       // The call to the method checkIfTheUserIsTA is somewhat expensive. In particular,
