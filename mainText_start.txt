@@ -5891,7 +5891,7 @@ _documentType!!_regularText_/documentType!!_
 _permissionString!!_
 _permission_
 _name_read_/name_
-_userOrGroup_contentAdministrator_/userOrGroup_
+_userOrGroup_gradingAdmin_/userOrGroup_
 _/permission_
 
 _permission_
@@ -5918,160 +5918,13 @@ _/insert_
 
 </div>
 
-
+ 
 <h2>_vr_aType_/vr_ _vr_aNum_/vr_  grading</h2>
 
-_insert_
-_n*_responseReceiverStatus_/n*_
-_n*__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p_/n*_
-_/insert_
 
 
 
-<h3>_vr_aType_/vr_ _vr_aNum_/vr_ Actions</h3>
-<div class="row">
-
-<div class="col-md-6">
-_insert_
-_n*_buttonLink_/n*_
-_n*_Off_/n*_
-_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0n0n&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
-_/insert_
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_E On_/n*_
-_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0a00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
-_/insert_
-
-
-
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_E Off_/n*_
-_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0n00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
-_/insert_
-
-
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_E QA_/n*_
-_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0q00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
-_/insert_
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_& Sol_/n*_
-_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0s00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
-_/insert_
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_& Pts_/n*_
-_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=chsp00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
-_/insert_
-_insert_
-_n*_buttonLink_/n*_
-_n*_& Comments_/n*_
-_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=chsc00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
-_/insert_
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_G On_/n*_
-_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch000a&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
-_/insert_
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_G Off_/n*_
-_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch000n&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
-_/insert_
-</div>
-
-<div class="col-md-5">
-_insert_
-_n*_buttonLink_/n*_
-_n*_Create_/n*_
-_n*_index.cgi?page=commandCreateExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
-_/insert_
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_Backup_/n*_
-_n*_index.cgi?page=backupForExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
-_/insert_
-
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_CSV_/n*_
-_n*_index.cgi?page=GrMain&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr_&csvD=yes_/n*_
-_/insert_
-
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_Custom Versions_/n*_
-_n*_index.cgi?page=commandUpdateVersionsForExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
-_/insert_
-
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_PDF_/n*_
-_n*_index.cgi?page=commandGenPdfsForExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
-_/insert_
-
-
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_Graders_/n*_
-_n*_index.cgi?page=commandAssignGraders&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
-_/insert_
-
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_Timer_/n*_
-_n*_index.cgi?page=commandEditTimer&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
-_/insert_
-
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_Enroll_/n*_
-_n*_index.cgi?page=commandEnrollGuests&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
-_/insert_
-
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_Auto-grade_/n*_
-_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_&rdd=gr&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
-_/insert_
-</div>
-<div class="col-md-1">
-
-_insert_
-_n*_buttonLink_/n*_
-_n*_Help_/n*_
-_n*_index.cgi?page=helpGradingRoom&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
-_/insert_
-
-
-
-</div>
-
-</div>
-<p></p>
-
-
-
-
+_insert__n*_text_/n*__n*_gradingActions_/n*__/insert_
 
 <h3>Grades</h3>
 
@@ -6081,7 +5934,7 @@ _n*_invitationToSolve_/n*_
 _n*__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr__/n*_
 _n*__vr_aType_/vr_  _vr_aNum_/vr__/n*_
 _n*_summary_/n*_
-_/insert_
+_/insert_ 
 
 _/textData!!_
 
@@ -15734,13 +15587,266 @@ _/systemData!!_
 <h1>This is the list of approved guests</h1>
 <pre>
 _websiteGuest_01.12.23.34_/websiteGuest_
-_websiteGuest_161.35.103.108_/websiteGuest_
+_websiteGuest_15.16.17.18_/websiteGuest_
 </pre>
 
 
 
 
  
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000143_/n*!!***!_
+_n*!!***!_rulesHelp_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_gradingAdmin_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+_textData!!_  
+
+
+<h4>Make grading easier with custom rules and policies</h4>
+_hideReveal__revealTitle_Show details_/revealTitle__hideTitle_Hide details_/hideTitle_
+<h5>Adding a rule</h5>
+<p>Let us show an example of a custom rule called <code>pineapple</code>. A rule can be added by inserting the command below into the comment
+section of a problem that is being graded.</p>
+<pre>[add]pineapple;
+-3;
+<p>Your solution contains a recipe that adds pineapple to a pizza.
+This is really bad.
+Three points will be deducted from your score.</p>
+[/add]</pre>
+<p>The rule will be added to a table. The command will disappear from the comment section. </p>
+<h5>Applying a rule</h5> <p>You can apply this rule for any of the students. Just write the following in the comment section: </p>
+<pre>[r]pineapple[/r]</pre>
+<p>The poor student will loose 3 points and receive the feedback specified with the rule.</p>
+<h5>Changing a rule</h5>
+<p>If you later change your mind, and decide that 5 points should be deducted instead of 3, then you need to add the command: </p>
+<pre>[add]pineapple;
+-5;
+<p>Your solution contains a recipe that adds pineapple to a pizza.
+This is really bad.
+Five points will be deducted from your score.</p>
+[/add]</pre>
+<p>All students who were subject to the rule will have their score and the feedback changed.</p>
+<h5>Deleting a rule</h5>
+<p>If you want to delete a rule, then type the command:</p>
+<pre>[delete]pineapple[/delete]</pre>
+_/hideReveal_
+<p></p>
+
+
+_/textData!!_
+
+
+_/n*!!***!_
+_/nextCommand!*!!_
+
+
+_nextCommand!*!!_
+
+_n*!!***!_insert_/n*!!***!_
+
+_n*!!***!_0000000000000144_/n*!!***!_
+_n*!!***!_gradingActions_/n*!!***!_
+
+_n*!!***!_
+_systemData!!_
+
+_created!!_BeforeTimeExisted_/created!!_
+_createdBy!!_SystemProgrammers_/createdBy!!_
+_documentType!!_regularText_/documentType!!_
+_permissionString!!_
+_permission_
+_name_read_/name_
+_userOrGroup_contentAdmin_/userOrGroup_
+_/permission_
+
+_permission_
+_name_write_/name_
+_userOrGroup_root_/userOrGroup_
+_/permission_
+
+_/permissionString!!_
+_/systemData!!_
+_textData!!_  
+
+                    _insert_
+_n*_responseReceiverStatus_/n*_
+_n*__vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p_/n*_
+_/insert_
+<h3>_vr_aType_/vr_ _vr_aNum_/vr_ Actions</h3>
+<div class="row">
+
+<div class="col-md-6">
+_insert_
+_n*_buttonLink_/n*_
+_n*_Off_/n*_
+_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0n0n&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_E On_/n*_
+_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0a00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
+_/insert_
+
+
+
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_E Off_/n*_
+_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0n00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
+_/insert_
+
+
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_E QA_/n*_
+_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0q00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_& Sol_/n*_
+_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0s00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
+_/insert_
+ 
+_insert_
+_n*_buttonLink_/n*_
+_n*_& Pts_/n*_
+_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=chsp00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
+_/insert_
+_insert_
+_n*_buttonLink_/n*_
+_n*_& Comments_/n*_
+_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=chsc00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_G On_/n*_
+_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch000a&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_G Off_/n*_
+_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch000n&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
+_/insert_
+</div>
+
+<div class="col-md-5">
+_insert_
+_n*_buttonLink_/n*_
+_n*_Create_/n*_
+_n*_index.cgi?page=commandCreateExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Backup_/n*_
+_n*_index.cgi?page=backupForExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_CSV_/n*_ 
+_n*_index.cgi?page=GrMain&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr_&csvD=yes_/n*_
+_/insert_
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Custom Versions_/n*_
+_n*_index.cgi?page=commandUpdateVersionsForExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_PDF_/n*_
+_n*_index.cgi?page=commandGenPdfsForExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Graders_/n*_
+_n*_index.cgi?page=commandAssignGraders&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Timer_/n*_
+_n*_index.cgi?page=commandEditTimer&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Enroll_/n*_
+_n*_index.cgi?page=commandEnrollGuests&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Auto-grade_/n*_
+_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_&rdd=gr&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
+_/insert_
+</div>
+<div class="col-md-1">
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_Help_/n*_
+_n*_index.cgi?page=helpGradingRoom&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
+_/insert_
+
+
+
+</div>
+
+</div>
+<p></p>
+
+
+
+
+
+
 _/textData!!_
 
 
