@@ -55,7 +55,10 @@ namespace APTI{
     if(tmp.first!="notFound"){fR.push(tmp);}
     tmp=createCommandLinkPair(_psd,_pR,_rRR,_uN,MWII::GL_WI.getDefaultWebText("commands"));
     if(tmp.first!="notFound"){fR.push(tmp);}
-    if(_psd.isRoot=="yes"){fR.push(createLinkPair("page","database",MWII::GL_WI.getDefaultWebText("DB")));}
+      if(_psd.isRoot=="yes"){
+          fR.push(createLinkPair("page","database",MWII::GL_WI.getDefaultWebText("DB")));
+          fR.push(createLinkPair("page","listTexts",MWII::GL_WI.getDefaultWebText("TX")));
+      }
     SF::flipTheStack(fR);
     return fR;
   }
