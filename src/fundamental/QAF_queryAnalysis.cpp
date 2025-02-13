@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -120,10 +120,10 @@ namespace QAF{
   double exponential(const double &lambda){
     double t=standardUniform();
     if(lambda<GL_EPSILON){return 0.0;}
-    return log(t)/(-lambda);
+    return std::log(t)/(-lambda);
   }
   double standardNormal(){
-    return std::sqrt(-2.0* log(GL_EPSILON + (1.0-GL_EPSILON)*standardUniform())) * std::cos(GL_TwoPi * standardUniform());
+    return std::sqrt(-2.0* std::log(GL_EPSILON + (1.0-GL_EPSILON)*standardUniform())) * std::cos(GL_TwoPi * standardUniform());
   }
   double normal(const double & mu, const double & sigma){
     return mu+sigma*standardNormal();
