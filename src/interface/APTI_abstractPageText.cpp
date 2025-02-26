@@ -544,6 +544,7 @@ namespace APTI{
     std::pair<std::vector<std::string>, std::string> sR;
     MTF::Table& textTable=DD::GL_MAIN_DB.dbsM["mainText"];
     TOSF::TSets indexTx=textTable.getIndTable("_i_1_ei_");
+      std::string savingIndicator="";
     long indSz=indexTx.size();
     std::string searchBeginString=SF::getElFromMapOrNotFoundMessage(_psd.respMap,"sBg","!!notFound");
     if(searchBeginString!="!!notFound"){
@@ -564,6 +565,7 @@ namespace APTI{
       std::map<std::string,std::string>::const_iterator it=_psd.respMap.find("save");
       if(it!=_psd.respMap.end()){
         DD::GL_MAIN_DB.saveForRecovery("mainText",start,end,it->second);
+          savingIndicator="savingIndicatorYes";
       }
     }
     std::string scSw="0";
@@ -611,7 +613,7 @@ namespace APTI{
     }
     SF::flipTheStack(allLines);
     allLines.push(topLine);
-    return BI::createScroller(start,end,nT,numb,"!*!",_numOnEachSide,sc)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
+    return BI::createScrollerWithExtraEnd(start,end,nT,numb,"!*!",_numOnEachSide,sc,0,savingIndicator)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
   }
   std::string AbstractText::createListOfFiles(const std::string & _numInList, const std::string & _numOnEachSide) const{
     long nT=DD::GL_MAIN_DB.numFiles();
