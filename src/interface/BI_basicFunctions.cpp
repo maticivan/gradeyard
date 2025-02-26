@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -42,7 +42,7 @@ namespace BI{
     fR+="</TABLE>\n";
     return fR;
   }
-  std::string privacyProtectionForIP(const std::string & i){
+  std::string encryptIP(const std::string & i){
     return HENCF::oneWayEncHENCF(i,"m1234567890123456789012345678901234567890123456789012345678901234",1);
   }
   std::vector<std::string> getEnvVars(){
@@ -57,7 +57,6 @@ namespace BI{
            fR[i]= "notFound";
         }
     }
-    fR[11]=privacyProtectionForIP(fR[11]);
     return fR;
   }
   std::string textAreaField(const std::string & name="mText", const std::string & defaultT="", const long & numR=20, const long &numC=120){
@@ -143,10 +142,18 @@ namespace BI{
   std::string oneLinkBarItem(const long & _stBox, const long & enBox, const long &_n,
                                                const long & _stCurrent, const std::string & _link_BC_start,
                                                const std::string & link_BC_middle, const std::string & link_BC_end,
-                                               const std::string &scBar, const long & displayShift ) {
+                                               std::string scBar, const long & displayShift ) {
     std::string linkPrep;
     long stBox=_stBox;
     if(stBox<0){stBox=0;}
+      if(scBar=="sc0Save"){
+          if(stBox==0){
+              scBar="&sc=0&save=init";
+          }
+          else{
+              scBar="&sc=0&save=text";
+          }
+      }
     std::string tText="["+std::to_string(stBox+displayShift)+","+std::to_string(enBox+displayShift)+")";
     std::string lBC_s=_link_BC_start;
     if(stBox==_stCurrent){
@@ -184,6 +191,9 @@ namespace BI{
     std::string spaceSt="";
     if((_sc=="0")||(_sc=="1")){
       scBar="&sc="+_sc;
+        if((_sc=="0")&&(extEnd=="savingIndicatorYes")){
+                scBar="sc0Save";
+        }
     }
     //Go LEFT
     long i=0;
@@ -209,7 +219,7 @@ namespace BI{
     if(cSt<_total){
       linkBar+=dots+spaceSt+oneLinkBarItem(_total-_n,_total,_n,_st,lBC_s,lBC_m,lBC_e,scBar,displayShift);
     }
-    if(extEnd!=""){
+    if((extEnd!="")&&(extEnd!="savingIndicatorYes")){
       linkBar+="<li>"+extEnd+"</li>";
     }
     return "<ul class=\"pagination\">\n"+ linkBar+"\n </ul>";
@@ -218,7 +228,7 @@ namespace BI{
                              const long &_total, const long & _n, const std::string & _page= "!*!",
                              const std::string & _numOnEachSide="2",
                              const std::string & _sc="-1", const long & displayShift =0) {
-     return createScrollerWithExtraEnd(_st,_en,_total,_n,_page,_numOnEachSide,_sc,displayShift);
+     return createScrollerWithExtraEnd(_st,_en,_total,_n,_page,_numOnEachSide,_sc,displayShift,"");
   }
   std::string updatedLinkNewEnvVars(const std::map<std::string,std::string> & _orig, const std::map<std::string,std::string> & update){
     std::map<std::string,std::string> orig=_orig;
