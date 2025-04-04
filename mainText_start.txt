@@ -9785,7 +9785,7 @@ _/permissionString!!_
 _/systemData!!_
 
 _textData!!_
-<div>
+ <div>
 _insert_
 _n*_buttonLink_/n*_
 _n*_Back to _vr_aType_/vr_ _vr_aNum_/vr__/n*_
@@ -9855,6 +9855,15 @@ _n*_E QA_/n*_
 _n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0q00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
 _/insert_
 
+
+_insert_
+_n*_buttonLink_/n*_
+_n*_QAPC_/n*_
+_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0c00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
+_/insert_
+
+
+
 _insert_
 _n*_buttonLink_/n*_
 _n*_& Sol_/n*_
@@ -9891,6 +9900,7 @@ _/insert_
 <li><b>E On:</b> Exam is turned on for solving. </li>
 <li><b>E Off:</b> Exam is turned off. No solving, and no display of question or solutions.</li>
 <li><b>E QA:</b> Exam is turned off. However, the following items are displayed: the exam questions, and the answers that the student submitted.</li>
+<li><b>QAPC:</b> Exam is turned off. The following items are displayed: the exam questions, the answers that the student submitted, points, and grader's comments.</li>
 <li><b>& Sol:</b> Exam is turned off. In addition to the exam questions and student's solutions, the student will also see the official solutions.</li>
 <li><b>& Pts:</b> Exam is turned off. The students will see the exam questions, their submissions, the official solutios, and the points they received, if the exam was graded.</li>
 <li><b>& Comments:</b> Exam is turned off. The students will see the exam questions, their submissions, the official solutios, the points they received, and the comments from the grader, if the exam was graded.</li>
@@ -15738,6 +15748,14 @@ _/insert_
 
 _insert_
 _n*_buttonLink_/n*_
+_n*_QAPC_/n*_
+_n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0c00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
+_/insert_
+
+
+
+_insert_
+_n*_buttonLink_/n*_
 _n*_& Sol_/n*_
 _n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=ch0s00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
 _/insert_
@@ -15747,6 +15765,7 @@ _n*_buttonLink_/n*_
 _n*_& Pts_/n*_
 _n*_index.cgi?r=_vr_docName_/vr__vr_grExt_/vr__vr_aNP_/vr_p&rdd=chsp00&fP=GrMain&fv0=docName&fl0=_vr_docName_/vr_&fv1=aType&fl1=_vr_aType_/vr_&fv2=aNum&fl2=_vr_aNum_/vr_&fv3=grExt&fl3=_vr_grExt_/vr_&fv4=aNP&fl4=_vr_aNP_/vr_&fv5=mRR&fl5=_vr_mRR_/vr__/n*_
 _/insert_
+
 _insert_
 _n*_buttonLink_/n*_
 _n*_& Comments_/n*_
