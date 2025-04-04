@@ -1,6 +1,6 @@
 all:
-	g++ -I /usr/local/include  -c mainFunction.cpp -std=c++17 -lstdc++fs -lcgicc -lcurl `libpng-config --cflags`
-	g++ -o index.cgi mainFunction.o -std=c++17 -lcrypto -lstdc++fs -lcgicc -lcurl `libpng-config --ldflags`
+	g++ -I /usr/local/include  -c mainFunction.cpp -std=c++23 -lstdc++fs -lcgicc -lcurl `libpng-config --cflags`
+	g++ -o index.cgi mainFunction.o -std=c++23 -lcrypto -lstdc++fs -lcgicc -lcurl `libpng-config --ldflags`
 	chgrp -R wadmins css
 	chgrp -R wadmins js
 	chgrp -R wadmins srcSecretCode
