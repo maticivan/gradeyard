@@ -1651,6 +1651,9 @@ namespace APTI{
     if(rst.first=="sc"){
       temp[1]=pillOn;temp[2]=pillOn;temp[3]=pillOn;temp[4]=pillOn;
     }
+    if(rst.first=="c"){
+      temp[1]=pillOn;temp[3]=pillOn;temp[4]=pillOn;
+    }
     stS.push(temp);
     stS.push(mainL);
     return HSF::tableFromStack(stS,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
