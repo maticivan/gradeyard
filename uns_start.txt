@@ -40,14 +40,14 @@ _nextCommand!*!!_
 _n*!!***!_insert_/n*!!***!_
 
 _n*!!***!_0000000000000004_/n*!!***!_
-_n*!!***!_superuser_/n*!!***!_
+_n*!!***!_gradingAdmin_/n*!!***!_
 
 _n*!!***!_
 
 _/n*!!***!_
 _/nextCommand!*!!_  
 
-
+ 
 
 _nextCommand!*!!_ 
 
@@ -58,18 +58,5 @@ _n*!!***!_mainAdmin_/n*!!***!_
 
 _n*!!***!_
 _password!*_0ad160c85f30734fd31b50ad92a7d82d88fa60ab8276c51f3ffd2b6723a284292b2bcb793355a9a1e364_/password!*__firstName!*_Adm01_/firstName!*__lastName!*_Adm01_/lastName!*__email!*_adm_/email!*__isRoot!*_yes_/isRoot!*__aEC!*_yes_/aEC!*_
-_/n*!!***!_
-_/nextCommand!*!!_  
-
-
-_nextCommand!*!!_ 
-
-_n*!!***!_insert_/n*!!***!_
-
-_n*!!***!_0000000000000006_/n*!!***!_
-_n*!!***!_gradingAdmin_/n*!!***!_
-
-_n*!!***!_
-
 _/n*!!***!_
 _/nextCommand!*!!_  
