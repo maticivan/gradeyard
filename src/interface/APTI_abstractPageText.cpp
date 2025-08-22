@@ -1658,6 +1658,78 @@ namespace APTI{
     stS.push(mainL);
     return HSF::tableFromStack(stS,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
   }
+std::vector< std::vector<std::string> > extractVariables(const std::string& rawT,
+                                                         long numberOfTermsInLine){
+    std::vector< std::vector<std::string> > res;
+    std::map<std::string,std::string> replMap;
+    std::string randCd=RNDF::genRandCode(3);
+    std::string nSepB="*ns"+randCd+"_";
+    std::string nSepE="_/"+nSepB;
+    nSepB="_"+nSepB;
+    std::string sTogether=nSepE+nSepB;
+    replMap["<h1>"]=sTogether;
+    replMap["</h1>"]=sTogether;
+    replMap["<h2>"]=sTogether;
+    replMap["</h2>"]=sTogether;
+    replMap["<h3>"]=sTogether;
+    replMap["</h3>"]=sTogether;
+    replMap["<br>"]=sTogether;
+    replMap["\\n"]=sTogether;
+    std::string rawText=MFRF::findAndReplace(rawT,replMap);
+    rawText=nSepB+rawText+nSepE;
+    std::vector<std::string> lines=SF::stringToVector(rawText,nSepB,nSepE);
+    std::map<long, std::vector<std::string> > selectedLines;
+    long j=0;
+    std::vector<std::string> vLine;
+    for(long i=0;i<lines.size();++i){
+        vLine=SF::stringToVectorSimpleSeparator(lines[i],",");
+        if(vLine.size()==numberOfTermsInLine){
+            selectedLines[j]=vLine;
+            ++j;
+        }
+    }
+    res.resize(j);
+    std::map<long, std::vector<std::string> >::const_iterator it;
+    it=selectedLines.begin();
+    for(long i=0;i<selectedLines.size();++i){
+        res[i]=it->second;
+        ++it;
+    }
+    return res;
+}
+std::string AbstractText::createRepetitiveText(const PSDI::SessionData & _psd,
+                                               const std::string& valuesForVariables,
+                                               long numberOfTermsInLine,
+                                               const std::string& textTemplate){
+    if((_psd.isRoot!="yes")&&(_psd.isGradingAdmin!="yes")){
+      return "";
+    }
+    TMD::MText m;
+    if(m.setFromTextName(valuesForVariables)!=1){
+        return "";
+    }
+    std::string res;
+    initText=m.getTextData();
+    std::pair<std::string,int> allD; long pos=0;
+    allD=SF::extract(initText,pos,GL_syntax.s_tDataB, GL_syntax.s_tDataE);
+    if(allD.second==1){
+        initText=allD.first;
+    }
+    std::vector<std::string> keys;
+    keys.resize(numberOfTermsInLine);
+    for(long i=0;i<numberOfTermsInLine;++i){
+        keys[i]="[term]"+std::to_string(i)+"[/term]";
+    }
+    std::vector< std::vector<std::string> >
+    variables=extractVariables(initText,numberOfTermsInLine);
+    res+="<textarea name=\"probText\" rows=\"15\"";
+    res+=" cols=\"100\">";
+    for(long i=0;i<variables.size();++i){
+        res+=MFRF::findAndReplace(textTemplate,keys,variables[i]);
+    }
+    res+="</textarea>\n";
+    return res;
+}
   std::string AbstractText::evaluateInsert(const PSDI::SessionData & _psd, const std::string & _insText, const std::string & _iB, const std::string & _iE){
     std::string fR="";
     if(_iB==GL_syntax.s_insertB){
@@ -1696,6 +1768,12 @@ namespace APTI{
         }
         if((allArgs[0]==GL_syntax.s_buttonLink)&&(sz==3)){
           return HSF::createButtonLink(allArgs[2],allArgs[1]);
+        }
+        if((allArgs[0]==GL_syntax.s_repetitiveText)&&(sz==4)){
+            return createRepetitiveText(_psd,
+                                        allArgs[1],
+                                        BF::stringToInteger(allArgs[2]),
+                                        allArgs[3]);
         }
         if((allArgs[0]==GL_syntax.s_svgAdd)&&(sz==4)){
           return SVGF::addAllSVGs(allArgs[3],BF::stringToDouble(allArgs[1]),BF::stringToDouble(allArgs[2]));
