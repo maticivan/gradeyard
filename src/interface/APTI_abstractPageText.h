@@ -71,6 +71,7 @@ namespace APTI{
     std::string s_internalLink="internalLink";
     std::string s_externalURL="externalURL";
     std::string s_buttonLink="buttonLink";
+    std::string s_repetitiveText="repetitiveText";
     std::string s_svgAdd="svgAdd";
     std::string s_invitationToSolve="invitationToSolve";
     std::string s_userPermits="userPermits";
@@ -252,6 +253,10 @@ namespace APTI{
     std::string createPowerMessageEdit(const PSDI::SessionData & ,const std::string &);
     std::string createPowerCouasEdit(const PSDI::SessionData & ,const std::string &);
     std::string createPowerCertEdit(const PSDI::SessionData & ,const std::string &);
+      std::string createRepetitiveText(const PSDI::SessionData & ,
+                                       const std::string & ,
+                                       long,
+                                       const std::string &);
     virtual std::string modifyMe() const = 0;
     long allowedToInputCommands(const PSDI::SessionData &) const;//WARNING not implemented yet
   public:
