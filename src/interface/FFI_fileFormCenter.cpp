@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -496,7 +496,8 @@ namespace FFI{
     it=mMap.find("source");
     if(it==itE){return;}
     (fC.cep).languages[0]="cpp";
-    (fC.cep).sources[0]=updateCodeInsertionsAndOutputVariables(fC,it->second);
+    (fC.cep).sources[0]=updateCodeInsertionsAndOutputVariables(fC,
+                                                               SF::updateRepetitiveText(it->second));
     std::set<std::string> inclSet;
     it=mMap.find("includes");
     if(it!=itE){
@@ -652,7 +653,7 @@ namespace FFI{
     if(it!=itE){fC.maxNumberOfFiles=BF::stringToInteger(it->second);}
     it=mMap.find(GL_foSectionName);
     if(it!=itE){
-      std::string fillOutSection=preProcessCompactMatrixRequests(fC,it->second);
+      std::string fillOutSection=preProcessCompactMatrixRequests(fC,SF::updateRepetitiveText(it->second));
       loadVariablesFromString(fC.fillOutVariables,fillOutSection);
       fC.fillOutOrdering=getVariablesOrdering(fillOutSection);
       prepareMatrixDisplaysAndCodeInsertions(fC);
@@ -665,11 +666,13 @@ namespace FFI{
     if(it!=itE){
       fC.htmlSrcDoc=it->second;
       fC.htmlSrcCont=MPTI::getTextIfAllowed(_psd,_psd.my_un,fC.htmlSrcDoc);
+        fC.htmlSrcCont=SF::updateRepetitiveText(fC.htmlSrcCont);
     }
     it=mMap.find("latexSource");
     if(it!=itE){
       fC.latexSrcDoc=it->second;
       fC.latexSrcCont=MPTI::getTextIfAllowed(_psd,_psd.my_un,fC.latexSrcDoc);
+        fC.latexSrcCont=SF::updateRepetitiveText(fC.latexSrcCont);
     }
   }
   std::string determineSpecialRequest(const PSDI::SessionData& _psd){
