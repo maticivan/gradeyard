@@ -1310,5 +1310,38 @@ namespace SF{
     res.s=s;
     return res;
   }
+std::string unrollRepetitiveLoop(const std::string& _in,
+                                 const std::string& nonPaddingPrefix="!NP!"){
+    std::string out;
+    std::vector<std::string> comm=stringToVector(_in,"_n*_","_/n*_");
+    if(comm.size()<4){
+        return _in;
+    }
+    std::string textTemplate=comm[0];
+    std::string variable=comm[1];
+    long startValue=BF::stringToInteger(comm[2]);
+    long endValue=BF::stringToInteger(comm[3]);
+    long paddingNumber=10;
+    if(comm.size()>4){
+        paddingNumber=BF::stringToInteger(comm[4]);
+    }
+    std::string tmpText;
+    for(long i=startValue;i<endValue;++i){
+        tmpText=findAndReplace(textTemplate,nonPaddingPrefix+variable,std::to_string(i));
+        out+=findAndReplace(tmpText,variable,BF::padded(i,paddingNumber,"0"));
+    }
+    return out;
+}
+    std::string updateRepetitiveText(const std::string& text,
+                                     const std::string& _tO="[loop]",
+                                     const std::string& _tC="[/loop]"){
+        std::map<std::string,std::string> krMap;
+        std::vector<std::string> allLoops=stringToVector(text,_tO,_tC);
+        if(allLoops.size()<1){return text;}
+        for(long i=0;i<allLoops.size();++i){
+            krMap[_tO+allLoops[i]+_tC]=unrollRepetitiveLoop(allLoops[i]);
+        }
+        return MFRF::findAndReplace(text,krMap);
+    }
 }
 #endif
