@@ -673,6 +673,7 @@ namespace FFI{
       fC.latexSrcDoc=it->second;
       fC.latexSrcCont=MPTI::getTextIfAllowed(_psd,_psd.my_un,fC.latexSrcDoc);
         fC.latexSrcCont=SF::updateRepetitiveText(fC.latexSrcCont);
+        fC.latexSrcCont=AF::evaluateSimpleFunctions(fC.latexSrcCont);
     }
   }
   std::string determineSpecialRequest(const PSDI::SessionData& _psd){
