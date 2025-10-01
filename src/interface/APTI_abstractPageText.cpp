@@ -1730,6 +1730,11 @@ std::string AbstractText::createRepetitiveText(const PSDI::SessionData & _psd,
     res+="</textarea>\n";
     return res;
 }
+std::string AbstractText::createTextWithFunctions(const PSDI::SessionData & _psd,
+                                                  const std::string& raw){
+    return AF::evaluateSimpleFunctions(raw);
+}
+
   std::string AbstractText::evaluateInsert(const PSDI::SessionData & _psd, const std::string & _insText, const std::string & _iB, const std::string & _iE){
     std::string fR="";
     if(_iB==GL_syntax.s_insertB){
@@ -1775,6 +1780,9 @@ std::string AbstractText::createRepetitiveText(const PSDI::SessionData & _psd,
                                         BF::stringToInteger(allArgs[2]),
                                         allArgs[3]);
         }
+        if((allArgs[0]==GL_syntax.s_textWithFunctions)&&(sz==2)){
+            return createTextWithFunctions(_psd,allArgs[1]);
+          }
         if((allArgs[0]==GL_syntax.s_svgAdd)&&(sz==4)){
           return SVGF::addAllSVGs(allArgs[3],BF::stringToDouble(allArgs[1]),BF::stringToDouble(allArgs[2]));
         }
