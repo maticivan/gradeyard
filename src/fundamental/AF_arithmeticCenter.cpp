@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2022 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -19,6 +19,9 @@
 #ifndef _INCL_ARITHMETICCENTER_CPP
 #define _INCL_ARITHMETICCENTER_CPP
 namespace AF{
+std::string GL_functionCallOpen="[fCO**!]";
+std::string GL_functionCallClose="[/fCO**!]";
+std::string GL_functionCallTempClose="[/fCO*TMP*!]";
   struct ArithmeticOperations{
   public:
     long maxLength;
@@ -433,5 +436,127 @@ namespace AF{
   std::pair<double,int> evFDouble(const std::string & _raw){
     return numericalEvaluationOfPreparedFormula(prepareFormula(_raw));
   }
+struct SimpleArithmeticFunction{
+public:
+    std::string functionName;
+    std::string argument;
+    std::string formula;
+    long numDecimals;
+    void fromString(const std::string& );
+    SimpleArithmeticFunction(const std::string& ="");
+};
+void SimpleArithmeticFunction::fromString(const std::string& _in){
+    numDecimals=2;
+    std::pair<std::string,int> allD; long pos=0;
+    allD=SF::getEverythingBefore(_in,pos,"(");
+    if(allD.second==1){
+        functionName=BF::cleanAllSpaces(allD.first);
+    }
+    std::vector<std::string> tv=SF::stringToVector(_in,"(",")");
+    if(tv.size()>0){argument=BF::cleanAllSpaces(tv[0]);}
+    tv=SF::stringToVector(_in,"{","}");
+    if(tv.size()>0){
+        std::map<std::string,std::string> fMFR;
+        fMFR["return "]="";
+        fMFR[";"]="";
+        formula=MFRF::findAndReplace(tv[0],fMFR);
+        if(tv.size()>1){
+            numDecimals=BF::stringToInteger(tv[1]);
+            if((numDecimals<0)||(numDecimals>20)){
+                numDecimals=2;
+            }
+        }
+    }
+}
+SimpleArithmeticFunction::SimpleArithmeticFunction(const std::string &_in){
+    fromString(_in);
+}
+std::string evaluateArithmeticFunction(const std::vector<std::string>& _fp,
+                                       const std::map<std::string,SimpleArithmeticFunction>& _mF){
+    if(_fp.size()<2){return ""; }
+    std::string fName=_fp[0];
+    std::map<std::string,SimpleArithmeticFunction>::const_iterator it;
+    it=_mF.find(fName);
+    if(it==_mF.end()){return "";}
+    std::string arg=_fp[1];
+    SimpleArithmeticFunction af=it->second;
+    std::string expression=SF::findAndReplace(af.formula,af.argument,arg);
+    std::pair<double,int> rDP=evFDouble(expression);
+    if(rDP.second==0){return "";}
+    double rD=rDP.first;
+    std::string sgn="";
+    if(rD<-0.0000000001){sgn="-";rD*=-1.0;}
+    long divisor=1;
+    for(long i=0;i<af.numDecimals;++i){rD*=10.0;divisor*=10;}
+    long rL=static_cast<long>(rD);
+    std::string afterDecimal="";
+    if(af.numDecimals>0){
+        afterDecimal="."+BF::padded(rL%divisor,divisor/10,"0");
+    }
+    return sgn+std::to_string(rL/divisor)+afterDecimal;
+}
+std::string evSAFunFromFriendlyText(const std::string& _in, const std::vector<SimpleArithmeticFunction>& _vF){
+    std::map<std::string,SimpleArithmeticFunction> mF;
+    for(long i=0;i<_vF.size();++i){
+        mF[_vF[i].functionName]=_vF[i];
+    }
+    std::vector<std::string> fCalls=SF::stringToVector(_in,GL_functionCallOpen,GL_functionCallClose);
+    std::map<std::string,std::string> mFR;
+    for(long i=0;i<fCalls.size();++i){
+        mFR[GL_functionCallOpen+fCalls[i]+GL_functionCallClose]=evaluateArithmeticFunction(SF::stringToVector(fCalls[i],"_n*_","_/n*_"),mF);
+    }
+    return MFRF::findAndReplace(_in,mFR);
+}
+std::string preProcessingStep1(const std::string& _in, const std::vector<SimpleArithmeticFunction>& _vF){
+    std::map<std::string,std::string> mR;
+    for(long i=0;i<_vF.size();++i){
+        mR[_vF[i].functionName+"("]=GL_functionCallOpen+"_n*_"+_vF[i].functionName+"_/n*_"+GL_functionCallTempClose+"(";
+    }
+    return MFRF::findAndReplace(_in,mR);
+}
+std::string preProcessingStep2(const std::string& _in){
+    std::string out;
+    long oldPos=0,pos=0;
+    std::pair<std::string,int> allD;
+    std::string tmpClosingTag=GL_functionCallTempClose+"(";
+    allD=SF::getEverythingBefore(_in,pos,tmpClosingTag);
+    while((allD.second==1)&&(pos<_in.length())){
+        out+=allD.first;
+        out+="_n*_";
+        while((pos<_in.length())&&(_in[pos]!=')')){
+            out+=_in[pos];
+            ++pos;
+        }
+        out+="_/n*_\n";
+        out+=GL_functionCallClose;
+        ++pos;
+        oldPos=pos;
+        allD=SF::getEverythingBefore(_in,pos,tmpClosingTag);
+    }
+    pos=oldPos;
+    while(pos<_in.length()){
+        out+=_in[pos];++pos;
+    }
+    return out;
+}
+std::string evaluateSimpleFunctions(const std::string& _in, const std::vector<std::string>& _v){
+    std::vector<SimpleArithmeticFunction> vF;
+    vF.resize(_v.size());
+    for(long i=0;i<_v.size();++i){
+        vF[i].fromString(_v[i]);
+    }
+    std::string out=preProcessingStep2(preProcessingStep1(_in,vF));
+    return evSAFunFromFriendlyText(out,vF);
+}
+std::string evaluateSimpleFunctions(const std::string & _in, const std::string& _o="[simpleFunction]",const std::string& _c="[/simpleFunction]"){
+    std::vector<std::string> vF=SF::stringToVector(_in,_o,_c);
+    if(vF.size()<1){return _in;}
+    std::map<std::string,std::string> mR;
+    for(long i=0;i<vF.size();++i){
+        mR[_o+vF[i]+_c]="";
+    }
+    std::string out=MFRF::findAndReplace(_in,mR);
+    return evaluateSimpleFunctions(out,vF);
+}
 }
 #endif
