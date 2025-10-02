@@ -19,9 +19,18 @@
 #ifndef _INCL_ARITHMETICCENTER_CPP
 #define _INCL_ARITHMETICCENTER_CPP
 namespace AF{
-std::string GL_functionCallOpen="[fCO**!]";
-std::string GL_functionCallClose="[/fCO**!]";
-std::string GL_functionCallTempClose="[/fCO*TMP*!]";
+  struct GlobalConstants{
+  public:
+    std::string openTag="[fCO**!]";
+    std::string closeTag="[/fCO**!]";
+    std::string tempCloseTag="[/fCO*TMP*!]";
+    std::map<std::string,std::string> massFindReplaceMap;
+    GlobalConstants();
+  } GL_Consts;
+  GlobalConstants::GlobalConstants(){
+    massFindReplaceMap["return "]="";
+    massFindReplaceMap[";"]="";
+  }
   struct ArithmeticOperations{
   public:
     long maxLength;
@@ -456,10 +465,7 @@ void SimpleArithmeticFunction::fromString(const std::string& _in){
     if(tv.size()>0){argument=BF::cleanAllSpaces(tv[0]);}
     tv=SF::stringToVector(_in,"{","}");
     if(tv.size()>0){
-        std::map<std::string,std::string> fMFR;
-        fMFR["return "]="";
-        fMFR[";"]="";
-        formula=MFRF::findAndReplace(tv[0],fMFR);
+        formula=MFRF::findAndReplace(tv[0],GL_Consts.massFindReplaceMap);
         if(tv.size()>1){
             numDecimals=BF::stringToInteger(tv[1]);
             if((numDecimals<0)||(numDecimals>20)){
@@ -500,17 +506,17 @@ std::string evSAFunFromFriendlyText(const std::string& _in, const std::vector<Si
     for(long i=0;i<_vF.size();++i){
         mF[_vF[i].functionName]=_vF[i];
     }
-    std::vector<std::string> fCalls=SF::stringToVector(_in,GL_functionCallOpen,GL_functionCallClose);
+    std::vector<std::string> fCalls=SF::stringToVector(_in,GL_Consts.openTag,GL_Consts.closeTag);
     std::map<std::string,std::string> mFR;
     for(long i=0;i<fCalls.size();++i){
-        mFR[GL_functionCallOpen+fCalls[i]+GL_functionCallClose]=evaluateArithmeticFunction(SF::stringToVector(fCalls[i],"_n*_","_/n*_"),mF);
+        mFR[GL_Consts.openTag+fCalls[i]+GL_Consts.closeTag]=evaluateArithmeticFunction(SF::stringToVector(fCalls[i],"_n*_","_/n*_"),mF);
     }
     return MFRF::findAndReplace(_in,mFR);
 }
 std::string preProcessingStep1(const std::string& _in, const std::vector<SimpleArithmeticFunction>& _vF){
     std::map<std::string,std::string> mR;
     for(long i=0;i<_vF.size();++i){
-        mR[_vF[i].functionName+"("]=GL_functionCallOpen+"_n*_"+_vF[i].functionName+"_/n*_"+GL_functionCallTempClose+"(";
+        mR[_vF[i].functionName+"("]=GL_Consts.openTag+"_n*_"+_vF[i].functionName+"_/n*_"+GL_Consts.tempCloseTag+"(";
     }
     return MFRF::findAndReplace(_in,mR);
 }
@@ -518,7 +524,7 @@ std::string preProcessingStep2(const std::string& _in){
     std::string out;
     long oldPos=0,pos=0;
     std::pair<std::string,int> allD;
-    std::string tmpClosingTag=GL_functionCallTempClose+"(";
+    std::string tmpClosingTag=GL_Consts.tempCloseTag+"(";
     allD=SF::getEverythingBefore(_in,pos,tmpClosingTag);
     while((allD.second==1)&&(pos<_in.length())){
         out+=allD.first;
@@ -528,7 +534,7 @@ std::string preProcessingStep2(const std::string& _in){
             ++pos;
         }
         out+="_/n*_\n";
-        out+=GL_functionCallClose;
+        out+=GL_Consts.closeTag;
         ++pos;
         oldPos=pos;
         allD=SF::getEverythingBefore(_in,pos,tmpClosingTag);
