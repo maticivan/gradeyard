@@ -85,7 +85,8 @@ namespace RTI{
       if(allSD.second==1){
         sysDataRaw=allSD.first;
         std::string pText=APTI::GL_syntax.s_notFound;
-        HSF::parametersFromString(allSD.first,tCreated,createdBy,tModified,modifiedBy,pText,documentType);
+          std::string userMap_notNeededForRR;
+        HSF::parametersFromString(allSD.first,tCreated,createdBy,tModified,modifiedBy,pText,documentType,userMap_notNeededForRR);
         if(pText!=APTI::GL_syntax.s_notFound){
           std::vector<std::string> rawPermisssionsRead= SF::stringToVector(pText,APTI::GL_syntax.s_individualPermissionB, APTI::GL_syntax.s_individualPermissionE,"_name_read_/name_");
           std::vector<std::string> rawPermisssionsWrite= SF::stringToVector(pText,APTI::GL_syntax.s_individualPermissionB, APTI::GL_syntax.s_individualPermissionE,"_name_write_/name_");
