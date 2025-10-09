@@ -66,6 +66,7 @@ namespace MWII{
 #include "CMTI_couasMigrationTools.h"
 #include "CMTI_couasMigrationTools.cpp"
 #include "WSCI_websiteCommunications.cpp"
+#include "UMCI_userMapCenter.cpp"
 #include "APTI_abstractPageText.cpp"
 #include "MPTI_mainPageText.cpp"
 #include "TFTI_timerForTests.cpp"
