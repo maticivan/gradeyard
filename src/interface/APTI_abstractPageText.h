@@ -72,6 +72,8 @@ namespace APTI{
     std::string s_externalURL="externalURL";
     std::string s_buttonLink="buttonLink";
     std::string s_repetitiveText="repetitiveText";
+    std::string s_userMapEdit="userMapEdit";
+    std::string s_userMapDisplay="userMapDisplay";
     std::string s_textWithFunctions="textWithFunctions";
     std::string s_svgAdd="svgAdd";
     std::string s_invitationToSolve="invitationToSolve";
@@ -185,6 +187,7 @@ namespace APTI{
     std::string tModified;
     std::string modifiedBy;
     std::string documentType;
+    std::string userMapRaw;
     std::string sysDataRequested;
     std::string myUserName;
     std::string sysDataRaw;
