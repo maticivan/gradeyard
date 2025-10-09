@@ -50,7 +50,7 @@ namespace MPTI{
       if(allSD.second==1){
         sysDataRaw=allSD.first;
         std::string pText=APTI::GL_syntax.s_notFound;
-        HSF::parametersFromString(allSD.first,tCreated,createdBy,tModified,modifiedBy,pText,documentType);
+        HSF::parametersFromString(allSD.first,tCreated,createdBy,tModified,modifiedBy,pText,documentType,userMapRaw);
         if(pText!=APTI::GL_syntax.s_notFound){
           PBD::createPermitSet(permitRead, pText,APTI::GL_syntax.s_individualPermissionB, APTI::GL_syntax.s_individualPermissionE, "read");
           PBD::createPermitSet(permitWrite, pText,APTI::GL_syntax.s_individualPermissionB, APTI::GL_syntax.s_individualPermissionE, "write");
