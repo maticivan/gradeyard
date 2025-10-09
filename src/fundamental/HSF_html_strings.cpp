@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -39,7 +39,8 @@ namespace HSF{
                                   std::string & tModified,
                                   std::string & modifiedBy,
                                   std::string & perm,
-                                  std::string & dType){
+                                  std::string & dType,
+                                  std::string & userMapRaw){
     std::string s_createdB="_created!!_";
     std::string s_createdE="_/created!!_";
     std::string s_modifiedB="_modified!!_";
@@ -52,6 +53,8 @@ namespace HSF{
     std::string s_permissionStringE="_/permissionString!!_";
     std::string s_docTypeStringB="_documentType!!_";
     std::string s_docTypeStringE="_/documentType!!_";
+    std::string s_userMapB="_userMap!!_";
+    std::string s_userMapE="_/userMap!!_";
     long p1=0;
     std::pair<std::string,int> allSDInTemp=SF::extract(sysDataStr,p1,s_createdB,s_createdE);
     if(allSDInTemp.second==1){
@@ -81,6 +84,12 @@ namespace HSF{
     allSDInTemp=SF::extract(sysDataStr,p1,s_docTypeStringB,s_docTypeStringE);
     if(allSDInTemp.second==1){
       dType=allSDInTemp.first;
+    }
+    p1=0;
+    allSDInTemp=SF::extract(sysDataStr,p1,s_userMapB,s_userMapE);
+      userMapRaw="";
+    if(allSDInTemp.second==1){
+        userMapRaw=allSDInTemp.first;
     }
   }
   std::vector<std::string> trimVectorForAssignmentGradesSummaryCSV(const std::vector<std::string> &in){
