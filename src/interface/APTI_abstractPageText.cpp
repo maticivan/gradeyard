@@ -1783,6 +1783,13 @@ std::string AbstractText::createTextWithFunctions(const PSDI::SessionData & _psd
         if((allArgs[0]==GL_syntax.s_textWithFunctions)&&(sz==2)){
             return createTextWithFunctions(_psd,allArgs[1]);
           }
+        if((allArgs[0]==GL_syntax.s_userMapEdit)&&(sz==2)){
+            return UMCI::userMapEdit(_psd,userMapRaw,allArgs[1]);
+        }
+        if((allArgs[0]==GL_syntax.s_userMapDisplay)&&(sz==2)){
+            return UMCI::userMapDisplay(_psd,userMapRaw,allArgs[1]);
+        }
+
         if((allArgs[0]==GL_syntax.s_svgAdd)&&(sz==4)){
           return SVGF::addAllSVGs(allArgs[3],BF::stringToDouble(allArgs[1]),BF::stringToDouble(allArgs[2]));
         }
