@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -27,17 +27,21 @@ namespace TDI{
     return 0;
   }
   std::string prepareSystemData(const std::string & tCreated,
-                                                    const std::string & createdBy,
-                                                    const std::string & tModified,
-                                                    const std::string & modifiedBy,
-                                                    const std::string & perm,
-                                                    const std::string & dType){
+                                const std::string & createdBy,
+                                const std::string & tModified,
+                                const std::string & modifiedBy,
+                                const std::string & perm,
+                                const std::string & dType,
+                                const std::string & uMapRaw){
     std::string fR;
     fR=LI::GL_LN.s_createdB+tCreated+LI::GL_LN.s_createdE;
     fR+=LI::GL_LN.s_createdByB+createdBy+LI::GL_LN.s_createdByE;
     fR+=LI::GL_LN.s_modifiedB+tModified+LI::GL_LN.s_modifiedE;
     fR+=LI::GL_LN.s_modifiedByB+modifiedBy+LI::GL_LN.s_modifiedByE;
     fR+=LI::GL_LN.s_permissionStringB+perm+LI::GL_LN.s_permissionStringE;
+      if(uMapRaw!=""){
+          fR+=LI::GL_LN.s_userMapB+uMapRaw+LI::GL_LN.s_userMapE;
+      }
     fR+=LI::GL_LN.s_docTypeStringB+dType+LI::GL_LN.s_docTypeStringE;
     return fR;
   }
@@ -46,7 +50,7 @@ namespace TDI{
     std::string tmst=tm.timeString();
     std::string perm="_permission__name_read_/name__userOrGroup_"+read+"_/userOrGroup__/permission_";
     perm+="_permission__name_write_/name__userOrGroup_"+write+"_/userOrGroup__/permission_";
-    std::string sysT= prepareSystemData(tmst,"system",tmst,"system",perm,"infoText");
+    std::string sysT= prepareSystemData(tmst,"system",tmst,"system",perm,"infoText","");
     return LI::GL_LN.s_sysDataB+sysT+LI::GL_LN.s_sysDataE+LI::GL_LN.s_tDataB+""+LI::GL_LN.s_tDataE;
   }
   std::string prepareTextForTextTableRaw(const PSDI::SessionData& psd, const std::string &_nText, const std::string & _oText){
@@ -67,15 +71,16 @@ namespace TDI{
     std::string perm="_permission__name_read_/name__userOrGroup_everyone_/userOrGroup__/permission_\n";
     perm+="_permission__name_write_/name__userOrGroup_"+psd.my_un+"_/userOrGroup__/permission_\n";
     std::string dType="regularText";
+      std::string userMapRaw;
     if(allSD_o.second==1){
         std::string tModifiedThatWeDontCareAbout;
         std::string modifiedByThatWeDontCareAbout;
-        HSF::parametersFromString(allSD_o.first,tCreated,createdBy,tModifiedThatWeDontCareAbout,modifiedByThatWeDontCareAbout,perm,dType);
+        HSF::parametersFromString(allSD_o.first,tCreated,createdBy,tModifiedThatWeDontCareAbout,modifiedByThatWeDontCareAbout,perm,dType,userMapRaw);
     }
     if(allSD_n.second==1){
       indicatorNoviceUser=0;
       if(allowedToManuallyInputSystemData(psd,allSD_n.first,perm,dType)==1){
-        HSF::parametersFromString(allSD_n.first,tCreated,createdBy,tModified,modifiedBy,perm,dType);
+        HSF::parametersFromString(allSD_n.first,tCreated,createdBy,tModified,modifiedBy,perm,dType,userMapRaw);
       }
     }
     std::string textData="";
@@ -87,7 +92,7 @@ namespace TDI{
       textData=_nText;
     }
     std::string newSystemData;
-    newSystemData=prepareSystemData(tCreated,createdBy,tModified,modifiedBy,perm,dType);
+    newSystemData=prepareSystemData(tCreated,createdBy,tModified,modifiedBy,perm,dType,userMapRaw);
     fR=LI::GL_LN.s_sysDataB+newSystemData+LI::GL_LN.s_sysDataE+LI::GL_LN.s_tDataB+textData+LI::GL_LN.s_tDataE;
     return fR;
   }
