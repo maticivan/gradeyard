@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -34,34 +34,28 @@ namespace LI{
     std::string s_createdByE="_/createdBy!!_";
     std::string s_modifiedByB="_modifiedBy!!_";
     std::string s_modifiedByE="_/modifiedBy!!_";
-
     std::string s_permissionStringB="_permissionString!!_";
     std::string s_permissionStringE="_/permissionString!!_";
     std::string s_docTypeStringB="_documentType!!_";
     std::string s_docTypeStringE="_/documentType!!_";
-
-
+    std::string s_userMapB="_userMap!!_";
+    std::string s_userMapE="_/userMap!!_";
     std::string st_clea_sepUNameB="_u!_";
     std::string st_clea_sepUNameE="_/u!_";
     std::string st_clea_sepFNameB="_f!_";
     std::string st_clea_sepFNameE="_/f!_";
     std::string st_clea_sepLNameB="_l!_";
     std::string st_clea_sepLNameE="_/l!_";
-
     std::string st_clea_sepCodeB="_c!_";
     std::string st_clea_sepCodeE="_/c!_";
-
     std::string st_clea_sepGradeB="_g!_";
     std::string st_clea_sepGradeE="_/g!_";
-
-
     std::string st_sepUNameB="_user_";
     std::string st_sepUNameE="_/user_";
     std::string st_sepFNameB="_firstName_";
     std::string st_sepFNameE="_/firstName_";
     std::string st_sepLNameB="_lastName_";
     std::string st_sepLNameE="_/lastName_";
-
     std::string st_sepCreatedB="_created_";
     std::string st_sepCreatedE="_/created_";
     std::string st_sepCTextB="_couasText!*_";
@@ -82,61 +76,47 @@ namespace LI{
     std::string st_sepIndElE="_/n!_";
     std::string st_sepGradeFormulaB="_grFormulas!*_";
     std::string st_sepGradeFormulaE="_/grFormulas!*_";
-
     std::string st_sepGradeFSB="_fScope!*_";
     std::string st_sepGradeFSE="_/fScope!*_";
-
     std::string st_sepGradeFMB="_fmath!*_";
     std::string st_sepGradeFME="_/fmath!*_";
-
     std::string st_sepGetFromB="_getFrom_";
     std::string st_sepGetFromE="_/getFrom_";
-
     std::string st_sepGrDisplB="_grDisplay!*_";
     std::string st_sepGrDisplE="_/grDisplay!*_";
     std::string st_sepLabelB="_label!_";
     std::string st_sepLabelE="_/label!_";
     std::string st_sepValueB="_value!_";
     std::string st_sepValueE="_/value!_";
-
     std::string st_sepAbbrevDispB="_disp_";
     std::string st_sepAbbrevDispE="_/disp_";
-
     std::string st_sepCNmTextB="_couasName!*_";
     std::string st_sepCNmTextE="_/couasName!*_";
     std::string defaultGradeName="{result}";
-
     std::string st_createMPermitsB="_createMessagePermits!*_";
     std::string st_createMPermitsE="_/createMessagePermits!*_";
     std::string st_subForumB="_subForum!*_";
     std::string st_subForumE="_/subForum!*_";
-
-
     std::string st_sep_vVPairB="_vVPair_";
     std::string st_sep_vVPairE="_/vVPair_";
     std::string st_sep_vrB="_vr_";
     std::string st_sep_vrE="_/vr_";
     std::string st_sep_vlB="_vl_";
     std::string st_sep_vlE="_/vl_";
-
     std::string st_sep_tnB="_templateName_";
     std::string st_sep_tnE="_/templateName_";
     std::string st_sep_tcB="_templateContent_";
     std::string st_sep_tcE="_/templateContent_";
-
     std::string st_sep_kB="_key_";
     std::string st_sep_kE="_/key_";
     std::string st_sep_vB="_val_";
     std::string st_sep_vE="_/val_";
-
     std::string st_sep_keB="_examExt_";
     std::string st_sep_keE="_/examExt_";
     std::string st_sep_veB="_genCode_";
     std::string st_sep_veE="_/genCode_";
-
     std::string st_envVName_Variable="ev";
     std::string st_envVName_Value="el";
-
     std::string st_envVName_ForwardVariable="fv";
     std::string st_envVName_ForwardValue="fl";
   } GL_LN;
