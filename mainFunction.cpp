@@ -18,7 +18,7 @@
 #include "src/fundamental/SHF_standardHeaders.cpp"
 #include "src/fundamental/SAIOF_setupAndIO.cpp"
 std::string GL_MAIN_SETUP_FILE_NAME=SAIOF::get_GL_MAIN_SETUP_FILE_NAME();
-std::string GL_VERSION="2.10.5 (2025/10/09)";
+std::string GL_VERSION="2.11.1 (2025/10/18)";
 #include "src/fundamental/MTF_mainTable.cpp"
 #include "src/db/DD_databases.cpp"
 #include "src/graphs/MGG_mainGraphs.cpp"
