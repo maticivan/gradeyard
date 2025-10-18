@@ -156,7 +156,8 @@ std::string totp(const std::string& base32_secret, time_t t, int digits=6, int p
     if ((int)s.size()<digits) s = std::string(digits - s.size(),'0') + s;
     return s;
 }
-std::vector<std::string> totpV(const std::string& base32_secret, time_t t, int digits=6, int period=30, long n=1){
+std::vector<std::string> totpV(const std::string& base32_secret, time_t t,
+                               int digits=6, int period=30, long n=1){
     std::vector<uint8_t> key = base32_decode(base32_secret);
     uint64_t counter = static_cast<uint64_t>(t / period);
     std::vector<std::string> res;
@@ -171,14 +172,32 @@ std::vector<std::string> totpV(const std::string& base32_secret, time_t t, int d
     }
     return res;
 }
+std::string prepareJS(const std::vector<std::string>& _v, time_t now, long numD, long numS){
+    std::string res;
+    res+="<script>renderTotpSequence([";
+    for(long i=0;i<_v.size();++i){
+        if(i>0){
+            res+=",";
+        }
+        res+="\""+_v[i]+"\"";
+    }
+    res+="], "+std::to_string(numS)+", "+std::to_string(now%numS);
+    res+=");</script>\n";
+    return res;
+}
     std::string prepareOneTOTP(const std::string& label, const std::string& secret){
         std::string res="<h4>"+label+"</h4>\n";
         time_t now = time(nullptr);
         long numCodesToDisplay=3;
-        std::vector<std::string> nextFew=totpV(secret, now, 6, 30,numCodesToDisplay);
+        long numS=30;
+        long numD=6;
+        std::vector<std::string> nextFew=totpV(secret, now, numD, numS,numCodesToDisplay);
+        res+=prepareJS(nextFew,now,numD,numS);
+        res+="<p>\n";
         for(long i=0;i<nextFew.size();++i){
             res+=nextFew[i]+"\t";
         }
+        res+="</p>\n";
         return res;
     }
     std::string prepareTOTPDisplay(const std::string &_in){
