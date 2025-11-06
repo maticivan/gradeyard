@@ -1514,6 +1514,7 @@ namespace RTI{
     long pos;std::pair<std::string,int>allD;
     std::string placeHoldersForGrader="";
     std::map<std::string,CodeAutoGraderInfo> delayedCodeAutograding;
+    std::string extractedCr,extractedWr,extractedAlways,tmpAnsw;
     int grNeed;
     while(itf!=itfE){
       sqi.QNum=itf->first;
@@ -1532,7 +1533,9 @@ namespace RTI{
       }
       else{
         sqi.userSolution=(itu->second)[0];
-        sqi.userAnswer=SF::answerToStandardForm((itu->second)[1]);
+        tmpAnsw=(itu->second)[1];
+        SF::extractComments(tmpAnsw,extractedCr,extractedWr,extractedAlways);
+        sqi.userAnswer=SF::answerToStandardForm(tmpAnsw);
         sqi.userPointsEarned=(itu->second)[2];
       }
       sqi.autoGraderCodeData=CAGI::getAutoGraderCodeData((itf->second).autoGraderInfo,sqi.officialSolution,sqi.userAnswer,sqi.maxPoints);
@@ -1551,20 +1554,27 @@ namespace RTI{
           sqi.userAnswer=BF::doubleToString(AEF::getLastNumericalValue(sqi.userAnswer));
         }
       }
-      if( (sqi.userAnswer!="notFound")&&(sqi.userAnswer!=GF::GL_officialNA)&&(sqi.userAnswer==sqi.officialAnswer)){
+      if( (sqi.userAnswer!="notFound")
+         &&(sqi.userAnswer!=GF::GL_officialNA)
+         &&(sqi.userAnswer==sqi.officialAnswer) ) {
         CAGI::GradingResult tmpMaxPt;
         tmpMaxPt.score=sqi.maxPoints;
         tmpMaxPt.numericScore=BF::stringToDouble(sqi.maxPoints);
-        tmpMaxPt.comment="";
-        if(sqi.graderComment=="notFound"){
-          autoGradingMap[sqi.QNum]=tmpMaxPt;
-        }
-        else{
-          if(grNeed){
-            autoGradingMap[sqi.QNum]=tmpMaxPt;
+        tmpMaxPt.shorterComment=SF::prepareNewContent(sqi.graderComment,
+                                                      "_comment_","_/comment_",
+                                                      extractedCr+extractedAlways,
+                                                      "[r]","[/r]");
+        autoGradingMap[sqi.QNum]=tmpMaxPt;
+      }
+      else{
+          if(((extractedWr!="")||(extractedAlways!="")) ){
+            CAGI::GradingResult tmpRes; // default value is empty score, which is 0
+            tmpRes.shorterComment=SF::prepareNewContent(sqi.graderComment,
+                                                        "_comment_","_/comment_",
+                                                        extractedWr+extractedAlways,
+                                                        "[r]","[/r]");
+            autoGradingMap[sqi.QNum]=tmpRes;
           }
-        }
-
       }
       ++itf;
     }
