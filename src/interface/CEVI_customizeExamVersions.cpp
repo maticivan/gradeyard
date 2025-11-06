@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -26,6 +26,8 @@ namespace CEVI{
   std::string lVE="_/listVersions*|_";
   std::string stCB="_stCustomizations*|_";
   std::string stCE="_/stCustomizations*|_";
+  std::string eRAB="_eRFA*|_";
+  std::string eRAE="_/eRFA*|_";
   std::string vnmB="_vnm*_";
   std::string vnmE="_/vnm*_";
   std::string vtB="_vt*_";
@@ -34,6 +36,31 @@ namespace CEVI{
   std::string unE="_/un*_";
   std::string ansB="_ans*_";
   std::string ansE="_/ans*_";
+std::string eraseRules(const std::string& _in){
+    std::map<std::string,std::string> replMap;
+    replMap["[rc]"]="[r]";
+    replMap["[rw]"]="[r]";
+    replMap["[/rc]"]="[/r]";
+    replMap["[/rw]"]="[/r]";
+    std::string out=MFRF::findAndReplace(_in,replMap);
+    std::set<std::string> allRules=SF::stringToSet(out,"[r]","[/r]");
+    replMap.clear();
+    std::set<std::string>::const_iterator itS=allRules.begin();
+    while(itS!=allRules.end()){
+        replMap["[r]"+*itS+"[/r]"]="";
+        ++itS;
+    }
+    return MFRF::findAndReplace(out,replMap);
+}
+std::map<std::string,std::string> eraseRules(const std::map<std::string,std::string>& _in){
+    std::map<std::string,std::string> out;
+    std::map<std::string,std::string>::const_iterator it=_in.begin();
+    while(it!=_in.end()){
+        out[it->first]=eraseRules(it->second);
+        ++it;
+    }
+    return out;
+}
   struct StudentAnswRRUpdateData{
   public:
     std::map<std::string,std::string> uNamesToVersions;
@@ -143,9 +170,11 @@ namespace CEVI{
   StudentAnswRRUpdateData createFromString(const long& numProblems, const long& numStudents, const std::string & _raw){
       StudentAnswRRUpdateData res;
       long pos;
-      std::pair<std::string,long> allDV,allDS;
+      std::pair<std::string,long> allDV,allDS, allDERA;
+      int indEraseRules=0;
       pos=0;allDV=SF::extract(_raw,pos,lVB,lVE);
       pos=0;allDS=SF::extract(_raw,pos,stCB,stCE);
+      pos=0;allDERA=SF::extract(_raw,pos,eRAB,eRAE);
       if((allDV.second==0)||((allDV.first).length()<15)){
         allDV.first=trivialVersions(numStudents,numProblems);
         allDV.second=1;
@@ -153,19 +182,29 @@ namespace CEVI{
       if((allDV.second==0)||(allDS.second==0)){
         return res;
       }
+      if(allDERA.second==1){
+          if((allDERA.first).length()>0){
+              if( ((allDERA.first)[0]=='y') || ((allDERA.first)[0]=='Y') || ((allDERA.first)[0]=='1') ){
+                  indEraseRules=1;
+              }
+          }
+      }
       std::map<std::string,std::string> vRawMap=SF::stringToMap(allDV.first,vnmB,vnmE,vtB,vtE);
       std::map<std::string,std::string>::const_iterator it,itE;
       itE=vRawMap.end();
       it=vRawMap.begin();
       std::string rawStData=allDS.first;
       std::map<std::string,std::string> replMap;
-      while(it!=itE){ 
+      while(it!=itE){
         replMap[vnmB+it->first+vnmE]=vtB+it->second+vtE;
         ++it;
       }
       rawStData=MFRF::findAndReplace(rawStData,replMap);
       res.uNamesToVersions=SF::stringToMap(rawStData,unB,unE,vtB,vtE);
       res.uNamesToAnswers=SF::stringToMap(rawStData,unB,unE,ansB,ansE);
+      if(indEraseRules){
+          res.uNamesToAnswers=eraseRules(res.uNamesToAnswers);
+      }
       return res;
   }
   std::string updateVersionsForStudent(const std::string &input, const std::string &nVersions, const std::vector<std::string> &lb){
