@@ -362,6 +362,178 @@ function toggle(hidingDiv, linkDiv,revealName,hideName) {
  <script id="MathJax-script" async
           src="_THIS*WEBSITE*URL*_/mathjax/tex-mml-chtml.js">
   </script>
+
+<script>
+function renderTotpSequence(totp, sec, initial_lapse, options = {}) {
+  sec = Math.max(1, Number(sec)||30);
+  const k = Array.isArray(totp) ? totp.length : 0;
+  if (k === 0) return;
+
+  let elapsed0 = Math.max(0, Number(initial_lapse)||0);
+  const totalSpan = k * sec;
+  if (elapsed0 > totalSpan) elapsed0 = totalSpan;
+
+  const { mount = null, position = "append", injectStyles = true } = options;
+
+  // --- Styles (black text, centered, short bar) ---
+  if (injectStyles && !document.getElementById("totp-seq-styles")) {
+    const style = document.createElement("style");
+    style.id = "totp-seq-styles";
+    style.textContent = `
+      .totp-seq { 
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; 
+        max-width: 420px; 
+        text-align: center;
+        margin: 20px auto;
+      }
+      .totp-row { 
+        background: #fff; 
+        padding: 8px 10px; 
+        border-radius: 10px; 
+        box-shadow: 0 1px 3px rgba(0,0,0,.07); 
+        margin: 10px 0; 
+        display: inline-block;
+      }
+      .totp-code { 
+        font-size: 22px; 
+        letter-spacing: 2px; 
+        color: #000;
+        text-align: center;
+      }
+      .totp-bar { 
+        position: relative; 
+        height: 4px;
+        width: 70%;
+        background: #eee; 
+        border-radius: 999px; 
+        overflow: hidden; 
+        margin: 0 auto 8px auto;
+      }
+      .totp-fill { 
+        position: absolute; left: 0; top: 0; bottom: 0; 
+        width: 0%; background: #0a0;
+      }
+      .totp-bar.expired { background: #e53935; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // --- Container ---
+  const container = document.createElement("div");
+  container.className = "totp-seq";
+
+  // --- Build rows ---
+  const rows = totp.map(code => {
+    const row = document.createElement("div");
+    row.className = "totp-row";
+
+    const bar = document.createElement("div");
+    bar.className = "totp-bar";
+
+    const fill = document.createElement("div");
+    fill.className = "totp-fill";
+    bar.appendChild(fill);
+
+    const codeEl = document.createElement("div");
+    codeEl.className = "totp-code";
+    codeEl.textContent = code;
+
+    row.appendChild(bar);
+    row.appendChild(codeEl);
+    container.appendChild(row);
+
+    return { row, bar, fill, codeEl };
+  });
+
+  const markExpired = (i) => {
+    const { bar, fill } = rows[i];
+    fill.style.width = "100%";
+    bar.classList.add("expired");
+    fill.style.background = "#e53935";
+  };
+  const resetToIdle = (i) => {
+    const { bar, fill } = rows[i];
+    bar.classList.remove("expired");
+    bar.style.background = "";
+    fill.style.width = "0%";
+    fill.style.background = "#0a0";
+  };
+  const setActiveProgress = (i, frac) => {
+    const { bar, fill } = rows[i];
+    bar.classList.remove("expired");
+    fill.style.background = "#0a0";
+    fill.style.width = (Math.max(0, Math.min(1, frac)) * 100).toFixed(3) + "%";
+  };
+
+  let startIndex = Math.floor(elapsed0 / sec);
+  if (startIndex >= k) {
+    for (let i = 0; i < k; i++) markExpired(i);
+  } else {
+    const intra = elapsed0 - startIndex * sec;
+    for (let i = 0; i < startIndex; i++) markExpired(i);
+    for (let i = startIndex + 1; i < k; i++) resetToIdle(i);
+    setActiveProgress(startIndex, intra / sec);
+
+    let idx = startIndex;
+    let slotStartMs = performance.now() - intra * 1000;
+    let rafId = null;
+
+    const tick = (now) => {
+      if (idx >= k) return;
+      const elapsedMs = now - slotStartMs;
+      const frac = elapsedMs / (sec * 1000);
+      if (frac < 1) {
+        setActiveProgress(idx, frac);
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
+      setActiveProgress(idx, 1);
+      markExpired(idx);
+      idx += 1;
+      if (idx >= k) {
+        cancelAnimationFrame(rafId);
+        return;
+      }
+      slotStartMs = now;
+      resetToIdle(idx);
+      setActiveProgress(idx, 0);
+      rafId = requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  }
+
+  // --- Mount logic ---
+  let mountEl = null;
+  if (typeof mount === "string") {
+    mountEl = document.querySelector(mount);
+  } else if (mount instanceof Element) {
+    mountEl = mount;
+  }
+
+  if (mountEl) {
+    if (position === "replace") {
+      mountEl.replaceChildren(container);
+    } else if (position === "prepend") {
+      mountEl.prepend(container);
+    } else {
+      mountEl.appendChild(container);
+    }
+  } else {
+    // No mount provided: try to place before the current script tag if possible
+    const currScript = document.currentScript;
+    const parent = (currScript && currScript.parentElement) || document.body;
+    if (currScript && parent === document.body) {
+      parent.insertBefore(container, currScript);
+    } else {
+      parent.appendChild(container);
+    }
+  }
+
+  return container; // you can move/remove it later if needed
+}
+</script>
+
  <style>
       canvas {
         border: 1px solid black;
@@ -6540,17 +6712,37 @@ _/inCommandInsert_
 _/listVersions*|_
 
 _stCustomizations*|_
+Erase rules from answers: _eRFA*|_no_/eRFA*|_
+
+
+
 REPLACE this text with commands corresponding to those
 students whose assignments you want to customize. Replace the
-number 0 with an appropriate version number.
+number 0 with an appropriate version number. 
 
 You can add student's answers as well. After the version parameter,
-you can add
+you can add 
 
-_ans*_B;E;;A;A_/ans*_
+_ans*_B;E;;A;A_/ans*_ 
 
 This will set the answers to the questions
-1, 2, 4, and 5. The answers will be set to 1:B, 2:E, 4:A, 5:A
+1, 2, 4, and 5. The answers will be set to 1:B, 2:E, 4:A, 5:A 
+
+The answer submission program can handle default rules that can be added alongside the answers.
+For example:
+
+_ans*_B;[rc]penaltyExpl[/rc]205;[rw]partialProgress[/rw]702;[r]substantialProgress[/r]1900;A_/ans*_
+
+will set the answers to the following:
+1: B, 2: 205, 3: 702, 4: 1900, 5: A.
+
+However, if auto-grading is enabled, then the rules will also be included in the grading document.
+
+For question 2, the rule [r]penaltyExpl[/r] will be added if the answer 205 is correct.
+
+For question 3, the rule [r]partialProgress[/r] will be added if the answer 702 is incorrect.
+
+For question 4, the rule [r]substantialProgress[/r] will be added regardless of whether the answer 1900 is correct or not.
 _/stCustomizations*|_
 
 
