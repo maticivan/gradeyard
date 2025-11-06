@@ -1255,6 +1255,23 @@ namespace SF{
   void assignToConst(const T& receiver, const T& sender){
     *(T*)(&receiver)=sender;
   }
+std::string extractComments(std::string& answ, const std::string& oTI, const std::string& cTI,
+                            const std::string& oTO, const std::string& cTO){
+    std::vector<std::string> eV=stringToVector(answ,oTI,cTI);
+    std::string out;
+    std::map<std::string,std::string> kvMap;
+    for(long i=0;i<eV.size();++i){
+        out+=oTO+eV[i]+cTO+"\n";
+        kvMap[oTI+eV[i]+cTI]="";
+    }
+    answ=MFRF::findAndReplace(answ,kvMap);
+    return out;
+}
+void extractComments(std::string& answ, std::string& eC, std::string& eW, std::string& eAll){
+    eC=extractComments(answ,"[rc]","[/rc]","[r]","[/r]");
+    eW=extractComments(answ,"[rw]","[/rw]","[r]","[/r]");
+    eAll=extractComments(answ,"[r]","[/r]","[r]","[/r]");
+}
   std::string answerToStandardForm(const std::string& oldAnsw){
     if((oldAnsw=="na")||(oldAnsw=="NA")||(oldAnsw=="n/a")){
       return GF::GL_officialNA;
@@ -1331,6 +1348,31 @@ std::string unrollRepetitiveLoop(const std::string& _in,
         out+=findAndReplace(tmpText,variable,BF::padded(i,paddingNumber,"0"));
     }
     return out;
+}
+std::string addOnlyNewItems(const std::string& _in,
+                            const std::string& _n,
+                            const std::string& oT, const std::string& cT ){
+    std::string out=_in;
+    std::set<std::string> sAll=stringToSet(_in,oT,cT);
+    std::set<std::string> sNew=stringToSet(_n,oT,cT);
+    std::set<std::string>::const_iterator itN=sNew.begin();
+    while(itN!=sNew.end()){
+        if(sAll.find(*itN)==sAll.end()){
+            out+=oT+*itN+cT+"\n";
+            sAll.insert(*itN);
+        }
+        ++itN;
+    }
+    return out;
+}
+std::string prepareNewContent(const std::string& _in, const std::string& cOT, const std::string& cCT,
+                              const std::string& toAdd, const std::string& oT, const std::string& cT){
+    std::vector<std::string> ocV=SF::stringToVector(_in,cOT,cCT);
+    std::string oldContent;
+    if(ocV.size()>0){
+        oldContent=ocV[0];
+    }
+    return addOnlyNewItems(oldContent,toAdd,oT,cT);
 }
     std::string updateRepetitiveText(const std::string& text,
                                      const std::string& _tO="[loop]",
