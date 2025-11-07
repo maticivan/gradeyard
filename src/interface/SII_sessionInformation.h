@@ -186,6 +186,8 @@ namespace SII{
     SPREPF::StatData prepareStatData() const;
     std::map<std::string,std::string> mapNamesRawTexts(const std::set<std::string>& );
     std::string getOfflineAutograderData(const std::string& );
+    std::vector<std::string> getAvailableExams(const std::string& ) const;
+    std::string attemptToAddToExams(const std::string &, const std::string & );
     TMF::Timer timeToGenerateWebsite;
   public:
     SessionInformation();
