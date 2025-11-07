@@ -2645,6 +2645,62 @@ namespace SII{
     }
     return "!failed! Could not find the document.";
   }
+int isBeginning(const std::string& x, const std::string& bToTest){
+    if(bToTest.length()>x.length()){
+        return 0;
+    }
+    long i=0;
+    while(i<bToTest.length()){
+        if(x[i]!=bToTest[i]){return 0;}
+        ++i;
+    }
+    return 1;
+}
+  std::vector<std::string> SessionInformation::getAvailableExams(const std::string &_rName) const{
+      std::vector<std::string> res;
+      std::stack<std::string>  rsSt;
+      if(_rName.length()<2){return res;}
+      std::string courseName;
+      for(long i=0;i<_rName.length()-2;++i){
+          courseName+=_rName[i];
+      }
+      MTF::Table& textTable=DD::GL_MAIN_DB.dbsM["response"];
+      TOSF::TSets indexRes=textTable.getIndTable("_i_1_ei_");
+      long indSz=indexRes.size();
+      std::vector<std::string> sbstV;
+      sbstV.resize(1); sbstV[0]=courseName;
+      long i=indexRes.lowerBoundRowIndex(sbstV);
+      if(i<0){i=0;}
+      std::string tempTName;
+      if(i<indexRes.size()){tempTName=(indexRes.getKeysFromRow(i))[0];}
+      long bTolerance=2;
+      int iB=(isBeginning(tempTName,courseName));
+      while( (iB || (bTolerance>0)) && (i<indexRes.size()) ){
+          if(bTolerance>0){--bTolerance;}
+          if( iB ){
+              if(tempTName.length()>0){
+                  if(tempTName[tempTName.length()-1]!='p'){
+                      rsSt.push(tempTName);
+                  }
+              }
+          }
+          ++i;
+          if(i<indexRes.size()){
+              tempTName=(indexRes.getKeysFromRow(i))[0];
+              iB=(isBeginning(tempTName,courseName));
+          }
+      }
+      return SF::stackToVector(rsSt);
+  }
+  std::string SessionInformation::attemptToAddToExams(const std::string &_rName,
+                                                      const std::string &_stA){
+      std::string stDataToAdd=_stA+"\n _nf*|_0_/nf*|_\n";
+      std::vector<std::string> aE=getAvailableExams(_rName);
+      for(long i=0;i<aE.size();++i){
+          addStudentsToExam(aE[i],stDataToAdd);
+      }
+      return "";
+  }
   std::string SessionInformation::submitEnrollmentReport(const std::string &_rName,const std::string &_couas, const std::vector<PASF::StudentData> & students){
     TMD::MText m;
     int exists=m.setFromTextName(_rName);
@@ -2658,6 +2714,10 @@ namespace SII{
       pos=0;allD=SF::extract(oldTD,pos,s_tDataB,s_tDataE);
       if(allD.second==1){
         std::string mT=allD.first;
+        if(SF::stringToVector(mT,"<h3>","</h3>").size()<1){
+            mT+="<h1>System Text: List of Students</h1>\n";
+            mT+="<h2>Warning: Do not delete or edit this text. The system depends on it.</h2>\n";
+        }
         mT+="<h2>Couas: "+_couas+"</h2>";
         long numSt=students.size();
         mT+="<h3>For emails to students</h3>";
@@ -2665,9 +2725,12 @@ namespace SII{
           mT+="<BR>"+students[i].putIntoStringForEmail();
         }
         mT+="<h3>For mass enrollment in exams</h3>";
+        std::string mEnrollNow;
         for(long i=0;i<numSt;++i){
-          mT+="<BR>"+students[i].putIntoString(0);
+            mEnrollNow+="<BR>"+students[i].putIntoString(0);
         }
+        mT+=mEnrollNow;
+        attemptToAddToExams(_rName,mEnrollNow);
         modifyText(_rName,mT);
         return "!success!";
       }
@@ -2761,7 +2824,6 @@ namespace SII{
     std::string couasModSuccess=enrollStudentsInCouas(_couas,students);
     std::string er= submitEnrollmentReport(_reportName,_couas,students);
     return er;
-    return "!failed! Could not find the document.";
   }
   std::string SessionInformation::backupDBs(const std::string & _db, const std::string & _txts){
     //WARNING: not implemented properly yet: permission checking is too restrictive
