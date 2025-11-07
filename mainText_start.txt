@@ -10334,6 +10334,7 @@ _/systemData!!_
 
 _textData!!_
 <H2> Undo Student Enrollment </H2>
+<h3>Warning: Use this command only if you intend to delete the entire course later. This action will break encryption, and all existing grades and enrollment information will be permanently lost.</h3>
 _insert_
 _n*_commandRestoreFromBackup_/n*_
 _n*__vr_docName_/vr__/n*_
