@@ -10126,7 +10126,7 @@ _/insert_
 
 _insert_
 _n*_buttonLink_/n*_
-_n*_Custom Versions_/n*_
+_n*_Upload_/n*_
 _n*_index.cgi?page=commandUpdateVersionsForExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
 _/insert_
 
@@ -10170,7 +10170,7 @@ _/insert_
 <li><b>Create:</b> If the exam is not created yet, this button will take you to the page where you can insert the problems and customize the parameters. If the exam already exists, you need to first delete the exam from the <code>Response Receiver</code> database before creating it again.</li>
 <li><b>Backup:</b> Puts student answers in a form that can be used as a backup command and that can be used in offline grading tools.</li>
 <li><b>CSV:</b> Displays data in CSV format.</li>
-<li><b>Custom versions:</b> If there are multiple versions of problems, then the <code>Create</code> button would randomly assign the versions to students. The number of possible versions is unbounded. If you want to avoid that, then you should click on this button and adjust the settings to your liking.</li>
+<li><b>Upload:</b> Upload versions of exams and/or answers of students. If there are multiple versions of problems, then the <code>Create</code> button would randomly assign the versions to students. The number of possible versions is unbounded. You could click on this button and adjust the settings.</li>
 <li><b>PDF:</b> Create latex source file or pdf files with exam problems. </li>
 <li><b>Graders:</b> Assign students to grade each other, or to self-grade their own work.</li>
 <li><b>Timer:</b> Set up exam timers and deadlines.</li>
@@ -15999,7 +15999,7 @@ _/insert_
 
 _insert_
 _n*_buttonLink_/n*_
-_n*_Custom Versions_/n*_
+_n*_Upload_/n*_
 _n*_index.cgi?page=commandUpdateVersionsForExam&ev0=docName&el0=_vr_docName_/vr_&ev1=aType&el1=_vr_aType_/vr_&ev2=aNum&el2=_vr_aNum_/vr_&ev3=grExt&el3=_vr_grExt_/vr_&ev4=aNP&el4=_vr_aNP_/vr_&ev5=mRR&el5=_vr_mRR_/vr__/n*_
 _/insert_
 
