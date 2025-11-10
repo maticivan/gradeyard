@@ -37,6 +37,9 @@ namespace CEVI{
   std::string ansB="_ans*_";
   std::string ansE="_/ans*_";
 std::string eraseRules(const std::string& _in){
+    if(_in.size()<1){ 
+      return "";
+    } 
     std::map<std::string,std::string> replMap;
     replMap["[rc]"]="[r]";
     replMap["[rw]"]="[r]";
@@ -50,7 +53,18 @@ std::string eraseRules(const std::string& _in){
         replMap["[r]"+*itS+"[/r]"]="";
         ++itS;
     }
-    return MFRF::findAndReplace(out,replMap);
+    out=MFRF::findAndReplace(out,replMap);
+    if(out.size()<1){out="(no submission)";}
+    std::vector<std::string> ins=SF::stringToVectorSimpleSeparator(out,";");
+    out="";
+    for(long i=0;i<ins.size();++i){
+      if(i>0){
+        out+=";";
+      }
+      out+=ins[i];
+      if(ins[i].size()<1){out+=" ";}
+    } 
+    return out;
 }
 std::map<std::string,std::string> eraseRules(const std::map<std::string,std::string>& _in){
     std::map<std::string,std::string> out;
