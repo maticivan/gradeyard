@@ -1254,23 +1254,37 @@ namespace SF{
   template<typename T>
   void assignToConst(const T& receiver, const T& sender){
     *(T*)(&receiver)=sender;
+  } 
+std::string removeFirstCharacter(const std::string& _in){ 
+  std::string out;
+  for(long i=1;i<_in.length();++i){
+    out+=_in[i];
   }
-std::string extractComments(std::string& answ, const std::string& oTI, const std::string& cTI,
-                            const std::string& oTO, const std::string& cTO){
-    std::vector<std::string> eV=stringToVector(answ,oTI,cTI);
-    std::string out;
-    std::map<std::string,std::string> kvMap;
-    for(long i=0;i<eV.size();++i){
-        out+=oTO+eV[i]+cTO+"\n";
-        kvMap[oTI+eV[i]+cTI]="";
-    }
-    answ=MFRF::findAndReplace(answ,kvMap);
-    return out;
+  return out;
 }
 void extractComments(std::string& answ, std::string& eC, std::string& eW, std::string& eAll){
-    eC=extractComments(answ,"[rc]","[/rc]","[r]","[/r]");
-    eW=extractComments(answ,"[rw]","[/rw]","[r]","[/r]");
-    eAll=extractComments(answ,"[r]","[/r]","[r]","[/r]");
+    std::map<std::string,std::string> kvMap;
+    kvMap["[rc]"]="[r]c";
+    kvMap["[rw]"]="[r]w";
+    kvMap["[r]"]="[r]a";
+    std::string a2=MFRF::findAndReplace(answ,kvMap);
+    std::vector<std::string> allC=SF::stringToVector(a2,"[r]","[/r]");
+    kvMap.clear();
+    for(long i=0;i<allC.size();++i){
+      kvMap["[r]"+allC[i]+"[/r]"]="";
+      if(allC[i].length()>1){
+        if(allC[i][0]=='c'){
+          eC+="[r]"+removeFirstCharacter(allC[i])+"[/r]";
+        }
+        if(allC[i][0]=='w'){
+          eW+="[r]"+removeFirstCharacter(allC[i])+"[/r]";
+        }
+        if(allC[i][0]=='a'){
+          eAll+="[r]"+removeFirstCharacter(allC[i])+"[/r]";
+        }
+      }
+    }
+    answ=MFRF::findAndReplace(a2,kvMap);
 }
   std::string answerToStandardForm(const std::string& oldAnsw){
     if((oldAnsw=="na")||(oldAnsw=="NA")||(oldAnsw=="n/a")){
