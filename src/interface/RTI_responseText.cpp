@@ -1514,9 +1514,9 @@ namespace RTI{
     long pos;std::pair<std::string,int>allD;
     std::string placeHoldersForGrader="";
     std::map<std::string,CodeAutoGraderInfo> delayedCodeAutograding;
-    std::string extractedCr,extractedWr,extractedAlways,tmpAnsw;
     int grNeed;
     while(itf!=itfE){
+      std::string extractedCr,extractedWr,extractedAlways,tmpAnsw;
       sqi.QNum=itf->first;
       placeHoldersForGrader+="_in*|_ _gc*|__/gc*|_ _lb*|_"+sqi.QNum+"_/lb*|_ _/in*|_";
       copyOfficialQuestionComponents(sqi,itf->second);
