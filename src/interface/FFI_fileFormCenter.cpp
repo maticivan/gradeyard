@@ -1191,7 +1191,7 @@ namespace FFI{
   std::string addLinkBar(const std::string&in, const std::string& lB){
     std::string res="<div class=\"row\">\n";
     res+="<div class=\"col-md-3\">\n";
-    res+="<table class=\"table table-striped\">";
+    res+="<table class=\"table table-striped\" aria-label=\"link bar table\">";
     res+="<tbody>\n";
     res+=lB;
     res+="</tbody>\n</table>\n</div>\n<div class=\"col-md-9\">\n";
