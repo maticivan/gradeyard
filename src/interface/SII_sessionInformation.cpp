@@ -108,6 +108,9 @@ namespace SII{
     if((respRecRequested!="")&&(indicatorRespRecInitialized==0)){
       mainRespRec.initialize(respRecRequested,sysDataRequested,psd.my_un);
     }
+    long pos; std::pair<std::string,int> allD;
+    std::string openT,closeT;
+    openT="<title>"; closeT="</title>";
     if(respRecRequested==""){
       if((psd.pEditReq=="no")&&(psd.pageRequested=="listFiles")){
         mainText.selectVersionForListOfFiles(addModFileCodeReq,startOfList);
@@ -115,8 +118,6 @@ namespace SII{
       if(psd.createStandardCourseSuccess=="yes"){
         fR+=SF::findAndReplace(MWII::GL_WI.getDefaultWebText("standardCourseCreated"),"_*PAGE*NAME*_",psd.createStandardCourseMainDocName);
       }
-      long pos; std::pair<std::string,int> allD;
-      std::string openT,closeT;
       std::string mTextInMainPosition=mainText.displayText(psd,"mainTextPosition");
       std::string titleInterior=SF::getTagInteriorAndRemoveTag(mTextInMainPosition,"_title*_","_/title*_");
       std::string descInterior=SF::getTagInteriorAndRemoveTag(mTextInMainPosition,"_metaDesc*_","_/metaDesc*_");
@@ -131,7 +132,6 @@ namespace SII{
           titleInterior=SF::findAndReplace(titleInterior,HTII::GL_title.codewordThatTitleGenerationIsNeeded,HTII::GL_title.tSuggestion);
         }
       }
-      openT="<title>"; closeT="</title>";
       pos=0; allD=SF::extractAndReplace(fR,pos,openT,closeT,0,openT+titleInterior+closeT);
       if(allD.second==1){
         fR=allD.first;
@@ -174,6 +174,10 @@ namespace SII{
       fR+=HDDBRF::GL_DBREC_DEB;
     }
     else{
+      pos=0; allD=SF::extractAndReplace(fR,pos,openT,closeT,0,openT+"Assignment/Exam"+closeT);
+      if(allD.second==1){
+        fR=allD.first;
+      }
       fR+=mainRespRec.displayRespRec(psd);
       if(psd.respRecBackupText!=""){
         fR+=BI::textAreaField("probText",psd.respRecBackupText,15,100);
