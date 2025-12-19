@@ -124,7 +124,7 @@ namespace HSF{
     if(separator=="table"){
       fR+="<tr>\n";
       for(long i=0;i<lsz;++i){
-        fR+="<th>"+cR[i]+"</th>\n";
+        fR+="<th scope=\"col\">"+cR[i]+"</th>\n";
       }
       fR+="</tr>\n";
       fR+=" </thead><tbody>";
