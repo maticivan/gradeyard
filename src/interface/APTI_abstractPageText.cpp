@@ -107,7 +107,7 @@ namespace APTI{
     return fR;
   }
   std::string AbstractText::nicelyFormattedSystemData(const PSDI::SessionData & _psd) const{
-    std::string fR="<TABLE BORDER=0>\n";
+    std::string fR="<TABLE BORDER=0 aria-label=\"formatted system data\">\n";
     fR+="<TR><TD> Username: </TD><TD>"+myUserName+"</TD></TR>";
     fR+="<TR><TD> Read permissions: </TD><TD>" +groupsInPermission(permitRead)+"</TD></TR>";
     fR+="<TR><TD> Write permissions: </TD><TD>" +groupsInPermission(permitWrite)+"</TD></TR>";
@@ -1624,7 +1624,7 @@ namespace APTI{
       temp[0]="<span class=\"badge badge-pill bg-warning\">"+MWII::GL_WI.getDefaultWebText("Exam does not exist")+"</span>";
       stS.push(temp);
       stS.push(mainL);
-      return HSF::tableFromStack(stS,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
+      return HSF::tableFromStack(stS,"<table class=\"table table-striped table-responsive table-hover\" aria-label=\"status\">",MWII::GL_WI.getTheadOpenTag());
     }
     std::pair<std::string,std::string> rst=respT.getRespRecStatus(_psd);
     for(long i=0;i<totalL;++i){
@@ -1656,7 +1656,7 @@ namespace APTI{
     }
     stS.push(temp);
     stS.push(mainL);
-    return HSF::tableFromStack(stS,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
+    return HSF::tableFromStack(stS,"<table class=\"table table-striped table-responsive table-hover\" aria-label=\"status\">",MWII::GL_WI.getTheadOpenTag());
   }
 std::vector< std::vector<std::string> > extractVariables(const std::string& rawT,
                                                          long numberOfTermsInLine){
@@ -1723,7 +1723,7 @@ std::string AbstractText::createRepetitiveText(const PSDI::SessionData & _psd,
     std::vector< std::vector<std::string> >
     variables=extractVariables(initText,numberOfTermsInLine);
     res+="<textarea name=\"probText\" rows=\"15\"";
-    res+=" cols=\"100\">";
+    res+=" cols=\"100\" aria-label=\"text area with repetitive content\">"; 
     for(long i=0;i<variables.size();++i){
         res+=MFRF::findAndReplace(textTemplate,keys,variables[i]);
     }
