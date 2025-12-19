@@ -160,7 +160,8 @@ namespace DISPPF{
       counterSt=std::to_string(counter);
       nt="<div id=\"someText3"+counterSt+"\">\n";
       nt+="<a id=\"headerL3"+counterSt+"\" href=\"javascript:toggle(&#39;mCont3"+counterSt+"&#39;, ";
-      nt+="&#39;hDiv3"+counterSt+"&#39;, &#39;"+revT+"&#39;, &#39;"+hideT+"&#39; ) ;\" >";
+        nt+="&#39;hDiv3"+counterSt+"&#39;, &#39;"+revT+"&#39;, &#39;"+hideT+"&#39; ) ;\" aria-label=\"Show hidden content ";
+      nt+=counterSt+"\">";
       nt+="<button type=\"button\" class=\"btn btn-outline-dark btn-sm\">";
       nt+="<span id=\"hDiv3";
       nt+=counterSt+"\">"+revT+"</span></button></a>\n";
