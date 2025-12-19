@@ -1266,6 +1266,8 @@ void extractComments(std::string& answ, std::string& eC, std::string& eW, std::s
     std::map<std::string,std::string> kvMap;
     kvMap["[rc]"]="[r]c";
     kvMap["[rw]"]="[r]w";
+    kvMap["[/rc]"]="[/r]";
+    kvMap["[/rw]"]="[/r]";
     kvMap["[r]"]="[r]a";
     std::string a2=MFRF::findAndReplace(answ,kvMap);
     std::vector<std::string> allC=SF::stringToVector(a2,"[r]","[/r]");
@@ -1399,5 +1401,19 @@ std::string prepareNewContent(const std::string& _in, const std::string& cOT, co
         }
         return MFRF::findAndReplace(text,krMap);
     }
+std::pair<std::string,std::string> parameterExtraction(const std::string& _in,
+                                                       const std::string& openTag,
+                                                       const std::string& closeTag,
+                                                       const std::string& _default=""){
+    long pos; std::pair<std::string,int> allD;
+    std::pair<std::string,std::string> res;
+    res.first=_default;res.second=_in;
+    pos=0;allD=extract(_in,pos,openTag,closeTag);
+    if(allD.second==1){
+        res.first=allD.first;
+        res.second=findAndReplace(res.second,openTag+allD.first+closeTag,"");
+    }
+    return res;
+}
 }
 #endif
