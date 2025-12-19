@@ -89,7 +89,8 @@ namespace UMCI{
             formInit+="\" ENCTYPE=\"multipart/form-data";
             formInit+="\" METHOD=\"POST\">\n";
             formMiddle+="<div class=\"messageBox\">\n<P></P>\n<P>";
-            formMiddle+="<textarea class=\"form-control\" name=\"uMAnsw\" rows=\"20\">";
+            formMiddle+="<textarea class=\"form-control\" name=\"uMAnsw\" rows=\"20\" ";
+            formMiddle+="aria-label=\"text area for editing the content\">";
             formMiddle+=prepareContentForEdit(userMapRaw,_psd.my_un);
             formMiddle+="</textarea>\n</P>\n</div>\n";
             std::string bN=buttonName;
