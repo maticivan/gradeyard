@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -19,6 +19,127 @@
 #ifndef _INCL_SVGF_SVGMANIPULATION_CPP
 #define _INCL_SVGF_SVGMANIPULATION_CPP
 namespace SVGF{
+struct SVGCounters{
+private:
+    std::vector<std::string> titles;
+    std::vector<std::string> descs;
+    long counter;
+public:
+    SVGCounters();
+    long getCounter() const;
+    void increment(const std::string& ="");
+    std::string getTitle(const std::string& ="") const;
+    std::string getDesc(const std::string& ="") const;
+    std::string getTitleId(const std::string& ="") const;
+    std::string getDescId(const std::string& ="") const;
+} GL_SVGCntrs;
+SVGCounters::SVGCounters(){
+    counter=0;
+    long num = 20;
+    titles.resize(num);
+    descs.resize(num);
+
+    long i = 0;
+    titles[i] = "Graphic referenced in text";
+    descs[i]  = "This graphic is referenced and explained in the surrounding text.";
+
+    ++i;
+    titles[i] = "Illustrative graphic";
+    descs[i]  = "This image provides a visual illustration of content discussed nearby.";
+
+    ++i;
+    titles[i] = "Visual representation";
+    descs[i]  = "This visual representation corresponds to information described in the text.";
+
+    ++i;
+    titles[i] = "Supporting graphic";
+    descs[i]  = "This graphic supports and complements the surrounding written explanation.";
+
+    ++i;
+    titles[i] = "Diagram referenced in text";
+    descs[i]  = "This diagram is referenced in the nearby text and illustrates the described idea.";
+
+    ++i;
+    titles[i] = "Illustration";
+    descs[i]  = "This illustration accompanies the text and reflects the discussed content.";
+
+    ++i;
+    titles[i] = "Graphical element";
+    descs[i]  = "This graphical element corresponds to concepts explained in the text.";
+
+    ++i;
+    titles[i] = "Visual aid";
+    descs[i]  = "This visual aid is intended to assist understanding of the surrounding text.";
+
+    ++i;
+    titles[i] = "Conceptual diagram";
+    descs[i]  = "This diagram visually represents a concept explained in the text.";
+
+    ++i;
+    titles[i] = "Explanatory graphic";
+    descs[i]  = "This graphic provides a visual explanation related to nearby content.";
+
+    ++i;
+    titles[i] = "Illustrative diagram";
+    descs[i]  = "This diagram illustrates information that is described in the text.";
+
+    ++i;
+    titles[i] = "Accompanying graphic";
+    descs[i]  = "This image accompanies the text and visually reflects its subject.";
+
+    ++i;
+    titles[i] = "Reference graphic";
+    descs[i]  = "This graphic is referenced by and explained in the surrounding material.";
+
+    ++i;
+    titles[i] = "Visual diagram";
+    descs[i]  = "This visual diagram corresponds to the explanation provided in the text.";
+
+    ++i;
+    titles[i] = "Supporting illustration";
+    descs[i]  = "This illustration supports the written explanation nearby.";
+
+    ++i;
+    titles[i] = "Text-related graphic";
+    descs[i]  = "This graphic relates directly to information presented in the text.";
+
+    ++i;
+    titles[i] = "Graphical illustration";
+    descs[i]  = "This graphical illustration reflects concepts discussed in the text.";
+
+    ++i;
+    titles[i] = "Explanatory diagram";
+    descs[i]  = "This diagram visually explains content described in the surrounding text.";
+
+    ++i;
+    titles[i] = "Content-related graphic";
+    descs[i]  = "This image is related to and explained by the nearby written content.";
+
+    ++i;
+    titles[i] = "Illustrative visual";
+    descs[i]  = "This visual illustration corresponds to the discussion in the text.";
+
+}
+long SVGCounters::getCounter() const{return counter;}
+void SVGCounters::increment(const std::string& t){
+    if(t==""){++counter;}
+}
+std::string SVGCounters::getTitle(const std::string& t) const{
+    if(t==""){return titles[counter % (titles.size())];}
+    return t;
+}
+std::string SVGCounters::getDesc(const std::string& t) const{
+    if(t==""){return descs[counter % (descs.size())];}
+    return t;
+}
+std::string SVGCounters::getTitleId(const std::string& t) const{
+    if(t==""){return "svgt"+std::to_string(counter);}
+    return t;
+}
+std::string SVGCounters::getDescId(const std::string& t) const{
+    if(t==""){return "svgd"+std::to_string(counter);}
+    return t;
+}
   long getNextNonNegInteger(const std::string& st, long& pos){
     long num=0;
     long sz=st.length();
@@ -131,7 +252,25 @@ namespace SVGF{
   struct SVGDetails{
   public:
     long width, height;
+    std::string role, ariaLabel,title,desc,titleId,descId;
   };
+  void addToEraseMapOpenTag(std::map<std::string,std::string> & replMap, const std::string& mT,
+                            const std::string& open, const std::string& close){
+      std::pair<std::string,int> allD; long pos;
+      pos=0; allD=SF::extract(mT,pos,open,close);
+      if(allD.second==1){
+          replMap[open+allD.first+close]="";
+      }
+  }
+  void addToEraseMapEverything(std::map<std::string,std::string> & replMap,const std::string& _in, const std::string& kw){
+     std::pair<std::string,int> allD; long pos;
+     std::string open="<"+kw;
+     std::string close="</"+kw+">";
+     pos=0; allD=SF::extract(_in,pos,open,close);
+     if(allD.second==1){
+         replMap[open+allD.first+close]="";
+     }
+  }
   std::string removeSVGTags(const std::string& svgIn){
     std::string withoutTags=svgIn;
     std::pair<std::string,int> allD; long pos;
@@ -139,10 +278,28 @@ namespace SVGF{
     if(allD.second==0){
       return svgIn;
     }
-    withoutTags=SF::findAndReplace(withoutTags,"<svg"+allD.first+">","");
-    withoutTags=SF::findAndReplace(withoutTags,"</svg>","");
-    return withoutTags;
-  }
+      std::map<std::string,std::string> replMap;
+      addToEraseMapOpenTag(replMap,withoutTags,"<svg",">");
+      addToEraseMapEverything(replMap,withoutTags,"title");
+      addToEraseMapEverything(replMap,withoutTags,"desc");
+      replMap["</svg>"]="";
+      withoutTags=MFRF::findAndReplace(withoutTags,replMap);
+      return withoutTags;
+    }
+void getStringAndParameter(std::string& st, std::string& par,
+                           const std::string& _in,
+                           const std::string& tName,
+                           const std::string& pName){
+    st="";par="";
+    std::pair<std::string,int> allD; long pos;
+    pos=0; allD=SF::extract(_in,pos,"<"+tName,"</"+tName+">");
+    if(allD.second==0){return;}
+    std::string sNew=allD.first+"< ";
+    pos=0; allD=SF::extract(sNew,pos,">","<");
+    if(allD.second==1){st=allD.first;}
+    pos=0; allD=SF::extract(sNew,pos,pName+"=\"","\"");
+    if(allD.second==1){par=allD.first;}
+}
   SVGDetails getSVGDetails(const std::string& svgIn){
     SVGDetails res;
     res.width=0;res.height=0;
@@ -164,8 +321,35 @@ namespace SVGF{
     }
     pos=0;
     res.height=getNextNonNegInteger(allD.first,pos);
+    pos=0;allD=SF::extract(rawInfo,pos,"role=\"","\"");
+    res.role="img";
+    if(allD.second==1){
+        res.role=allD.first;
+    }
+    pos=0;allD=SF::extract(rawInfo,pos,"aria-labelledby=\"","\"");
+    res.ariaLabel="The picture is an illustration of the concept described in the text";
+    if(allD.second==1){
+        res.ariaLabel=allD.first;
+    }
+      getStringAndParameter(res.title,res.titleId,svgIn,"title","id");
+      getStringAndParameter(res.desc,res.descId,svgIn,"desc","id");
     return res;
   }
+std::string printTagForSVG(const std::string& tagName, const std::string& tagValue, const std::string& idVal){
+    return "<"+tagName+" id=\""+idVal+"\">"+tagValue+"</"+tagName+">";
+}
+std::string createOpenSVGTag(const SVGDetails& details){
+    std::string res;
+    res+="<svg width=\""+std::to_string(details.width)+"\" height=\""+std::to_string(details.height)+"\"";
+    res+=" class=\"bi bi-images\"";
+    res+=" role=\""+details.role+"\"";
+    res+=" aria-labelledby=\""+details.ariaLabel+"\"";
+    res+=">";
+    GL_SVGCntrs.increment(details.titleId);
+    res+=printTagForSVG("title",GL_SVGCntrs.getTitle(details.title),GL_SVGCntrs.getTitleId(details.titleId));
+    res+=printTagForSVG("desc",GL_SVGCntrs.getDesc(details.desc),GL_SVGCntrs.getDescId(details.descId));
+    return res;
+}
   std::string addTwoSVGs(const std::string& first, const std::string& second, const double& scaleX, const double& scaleY){
     SVGDetails details1=getSVGDetails(first);
     SVGDetails details2=getSVGDetails(second);
@@ -175,9 +359,12 @@ namespace SVGF{
     if(details2.height>details1.height){
       details1.height=details2.height;
     }
-    std::string result;
-    result+="<svg width=\""+std::to_string(details1.width)+"\" height=\""+std::to_string(details1.height)+"\"";
-    result+=" class=\"bi bi-images\">";
+    if(details1.titleId==""){
+        long wSave=details1.width;long hSave=details1.height;
+        details1=details2;
+        details1.width=wSave;details1.height=hSave;
+    }
+    std::string result=createOpenSVGTag(details1);
     result+=removeSVGTags(first);
     std::string afterPoints=scaleAndTranslate("points",removeSVGTags(second),scaleX,scaleY,static_cast<double>(addX),0.0);
     std::string afterLabels=scaleAndTranslate("labels",removeSVGTags(afterPoints),scaleX,scaleY,static_cast<double>(addX),0.0);
