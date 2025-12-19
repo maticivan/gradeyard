@@ -168,26 +168,21 @@ namespace LMF{
     }
     return entireText;
   }
-  std::string htmlToLatexPictures(const std::string & _input){
-    std::string input=_input;
-    input=SF::findAndReplace(input,"\"/>","\">");
-    long pos;
-    std::pair<std::string,int> allD;
-    pos=0;allD=SF::extract(input,pos,"<img ","\">");
-    std::string fName,oldText;
+  std::string htmlToLatexPictures(const std::string & input){
+    std::map<std::string,std::string> replMap;
+    long pos,posI;
+    std::pair<std::string,int> allD,allDI;
+    pos=0;allD=SF::extract(input,pos,"<img ",">");
     while(allD.second==1){
-      fName=allD.first;
-      oldText="<img "+fName+"\">";
-      fName+="_/n*_ end";
-      pos=0;allD=SF::extract(fName,pos,"src=\"","_/n*_");
-      if(allD.second==1){
-        fName=allD.first;
-        fName=SF::findAndReplace(fName,".gif",".png");
-        input=SF::findAndReplace(input,oldText,"\\includegraphics[scale=0.3]{"+fName+"}");
+      posI=0;allDI=SF::extract(allD.first,posI,"src=\"","\"");
+      if(allDI.second==1){
+        replMap["<img "+allD.first+">"] = "\\includegraphics[scale="+
+                        SF::parameterExtraction(allD.first,"data-lscale=\"","\"","0.3").first+"]{"
+                        +SF::findAndReplace(allDI.first,".gif",".png")+"}";
       }
-      pos=0;allD=SF::extract(input,pos,"<img ","\">");
+      allD=SF::extract(input,pos,"<img ",">");
     }
-    return input;
+    return MFRF::findAndReplace(input,replMap);
   }
   std::string htmlToLatexFormatting(const std::string &_input){
     std::map<std::string,std::string> replMap;
