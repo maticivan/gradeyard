@@ -500,7 +500,9 @@ namespace CEI{
         fR[i]+=linkStDf;
         fR[i]+=sortCrs[i];
         fR[i]+="\">";
-        fR[i]+="<button type=\"button\" class=\"btn btn-outline-dark btn-sm\">";
+        fR[i]+="<button type=\"button\" class=\"btn btn-outline-dark btn-sm\"  aria-label=\"sort by column ";
+        fR[i]+=std::to_string(i);
+        fR[i]+="\">";
         if(i>=base_lsz){
           fR[i]+="$\\downarrow$";
         }
