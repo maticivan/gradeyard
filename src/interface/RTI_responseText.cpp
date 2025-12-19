@@ -540,9 +540,9 @@ namespace RTI{
       }
       fR+="_insert__n*_"+diffText1_Label+"_/n*__n*_"+e_formNameRT+"_/n*_\n_n*_";
       fR+=sqi.QNum+"_/n*__n*_";
-      std::string answBarLastComponent="<span class=\"text-danger\"><B>"+MWII::GL_WI.getDefaultWebText("No answer yet")+"</B></span>";
+      std::string answBarLastComponent="<span class=\"text-danger-aa\"><B>"+MWII::GL_WI.getDefaultWebText("No answer yet")+"</B></span>";
       if(answerSubmitted=="yes"){
-        answBarLastComponent="<span class=\"text-success\">"+answSubmittedForTopBar+"</span>";
+        answBarLastComponent="<span class=\"text-success-aa\">"+answSubmittedForTopBar+"</span>";
       }
       fR+=problemCardOpeningTags(sqi,answBarLastComponent,1,"");
       fR+="</div>\n</div>";
@@ -671,8 +671,8 @@ namespace RTI{
     if(resM!=""){
       std::string oldRes=res;
       res="<div class=\"card\">\n<div class=\"card-body\">";
-      res+="<table class=\"table table-striped\"><thead class=\"table-secondary\"><tr>";
-      res+="<th>Name</th><th>Points</th><th>Display</th></tr></thead>\n<tbody>\n";
+      res+="<table class=\"table table-striped\" aria-label=\"progress\"><thead class=\"table-secondary\" aria-label=\"list of grading rules\"><tr>";
+      res+="<th scope=\"col\">Name</th><th scope=\"col\">Points</th><th scope=\"col\">Display</th></tr></thead>\n<tbody>\n";
       res+=resM;
       res+="\n</tbody></table><br>";
       res+="_hideReveal__revealTitle_Show source codes for rules_/revealTitle__hideTitle_Hide source codes for rules_/hideTitle_<pre>";
@@ -1272,7 +1272,7 @@ namespace RTI{
     std::string fR="";
     std::string scoreTop="",scoreBottom="";
     if( (res.documentType==st_gradeOfResponse)||((res.statusOfTheForm!="n")&&(res.statusOfTheForm!="a")&&(res.statusOfTheForm!="q"))) {
-      scoreTop="<th>"+MWII::GL_WI.getDefaultWebText("TOTAL")+"</th>";
+      scoreTop="<th scope=\"col\">"+MWII::GL_WI.getDefaultWebText("TOTAL")+"</th>";
       scoreBottom="<td></td>";
       if(totalScore>-999.0){
         scoreBottom="<td>"+BF::doubleToString(totalScore)+"</td>";
@@ -1298,9 +1298,9 @@ namespace RTI{
       ++i;++it;
     }
     fR+="<div class=\"table-responsive text-center\">\n";
-    fR+="<table class=\"table table-bordered\">\n <thead class=\"table-dark\">\n<tr>";
+    fR+="<table class=\"table table-bordered\" aria-label=\"status and progress line\">\n <thead class=\"table-dark\">\n<tr>";
     for(long j=0;j<i;++j){
-      fR+="<th>"+std::to_string(j+1)+"</th>";
+      fR+="<th scope=\"col\">"+std::to_string(j+1)+"</th>";
     }
     fR+=scoreTop;
     fR+="</tr></thead>\n<tbody><tr>";
@@ -1339,7 +1339,7 @@ namespace RTI{
     std::string scoreTop="",scoreBottom="";
     long displayScoreIndicator=0;
     if( (res.documentType==st_gradeOfResponse)||((res.statusOfTheForm!="n")&&(res.statusOfTheForm!="a")&&(res.statusOfTheForm!="q"))) {
-      scoreTop=" <th>"+MWII::GL_WI.getDefaultWebText("TOTAL")+"</th>";
+      scoreTop=" <th scope=\"col\">"+MWII::GL_WI.getDefaultWebText("TOTAL")+"</th>";
       displayScoreIndicator=1;
       scoreBottom=" ";
       if(totalScore>-999.0){
@@ -1380,9 +1380,9 @@ namespace RTI{
       ++it;
     }
     fR+="<div class=\"table-responsive text-center\">\n";
-    fR+="<table class=\"table table-bordered\">\n <thead class=\"table-dark\">\n<tr>";
+    fR+="<table class=\"table table-bordered\" aria-label=\"status and progress line\">\n <thead class=\"table-dark\">\n<tr>";
     for(long j=0;j<qOnPage;++j){
-      fR+="<th> </th>";
+      fR+="<th scope=\"col\"> </th>";
     }
     fR+=scoreTop;
     fR+="</tr></thead>\n<tbody>";
@@ -1769,7 +1769,11 @@ namespace RTI{
     lD_ep.examCode=tName;
     if(res.idInfoData!="notFound"){
       if(res.documentType==st_responseToTest){
-        hd+="<H1> "+res.idInfoData+"</H1>";
+        hd+="<H1>Assignment/Exam</H1>\n";
+        hd+="<H2> "+res.idInfoData+"</H2>";
+      }
+      if(res.documentType==st_gradeOfResponse){
+        hd+="<H1>Assignment/Exam</H1>\n<H2>Grading</H2>\n";
       }
     }
     if((res.documentType==st_gradeOfResponse)&&(res.gradingStatus=="a")){
