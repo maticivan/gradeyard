@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -58,7 +58,7 @@ namespace FFI{
     openingAreaInput1="<textarea class=\"form-control\" name=\"";
     openingAreaInput2="\" rows=\"10\">";
     closingArea="</textarea>";
-    tableBegin="<div class=\"table-responsive\"><table class=\"table table-bordered\"><tbody>";
+    tableBegin="<div class=\"table-responsive\"><table class=\"table table-bordered\" aria-label=\"main content\"><tbody>";
     tdDarkCell="<td class=\"text-white bg-dark\" align=\"center\">";
     tableEnd="</tbody></table></div>\n";
   }
