@@ -266,7 +266,7 @@ pre code {
 
 code {
   font-size: 0.875em;
-  color: #d63384;
+  color: #a61e5c;
   word-wrap: break-word;
 }
 a > code {
@@ -2185,7 +2185,7 @@ progress {
   color: #212529;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid #ced4da;
+  border: 1px solid #6c757d;
   appearance: none;
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -3365,6 +3365,31 @@ textarea.form-control-lg {
 .btn-outline-dark:disabled, .btn-outline-dark.disabled {
   color: #212529;
   background-color: transparent;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.skip-link:focus,
+.skip-link:active {
+  left: 12px;
+  top: 12px;
+  width: auto;
+  height: auto;
+  padding: 10px 14px;
+  background: #000;
+  color: #fff;
+  z-index: 10000;
+  border-radius: 8px;
+  outline: 3px solid #fff; /* keeps it clearly visible */
+  text-decoration: none;
 }
 
 .btn-link {
@@ -7594,6 +7619,12 @@ textarea.form-control-lg {
   color: rgba(var(--bs-danger-rgb), var(--bs-text-opacity)) !important;
 }
 
+.text-danger-aa {
+  color: #b02a37;  
+}
+.text-success-aa {
+  color: #146c43; /* contrast ≈ 5.3 : 1 on white */
+}
 .text-light {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-light-rgb), var(--bs-text-opacity)) !important;
