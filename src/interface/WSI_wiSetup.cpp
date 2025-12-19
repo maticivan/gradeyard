@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -37,7 +37,7 @@ namespace WSI{
     std::string default_e_formNameRT="respRec1";
     std::string default_e_respSubmitReqRT="respSubmit1";
     std::string default_e_respSubmitSuccRT="yes1";
-    std::string default_tableOpenTag="<table class=\"table table-striped table-responsive \">";
+    std::string default_tableOpenTag="<table class=\"table table-striped table-responsive \" aria-label=\"organized text\">";
     std::string default_theadOpenTag="<thead class=\"table-info\">";
     std::string default_e_conveniencePack="_vVPair__vr_Hw_/vr__vl_HW_/vl__/vVPair_ _vVPair__vr_Mt_/vr__vl_M_/vl__/vVPair_ _vVPair__vr_Fin_/vr__vl_F_/vl__/vVPair_";
     std::string default_e_wsTexts=" ";
