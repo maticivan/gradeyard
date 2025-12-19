@@ -33,7 +33,7 @@ namespace BI{
      "SERVER_SIGNATURE","SERVER_SOFTWARE", "HTTP_COOKIE", "CONTENT_TYPE", "CONTENT_LENGTH" };
   std::string envToHTML(const std::vector<std::string> &_e){
     std::string fR;
-    fR="<TABLE BORDER = \"0\">";
+    fR="<TABLE BORDER = \"0\" aria-label=\"environment variables\">";
     for(long i=0;i<GL_NUM_ENV;++i){
       fR+="<TR><TD>"+GL_ENV[i]+"</TD><TD>";
       fR+=_e[i];
@@ -61,8 +61,7 @@ namespace BI{
   }
   std::string textAreaField(const std::string & name="mText", const std::string & defaultT="", const long & numR=20, const long &numC=120){
     std::string fR="<textarea class=\"form-control\" name=\""+name+"\" rows=\""+std::to_string(numR);
-    fR+="\"";
-    fR+=">";
+    fR+="\" aria-label=\"text area with name "+name+"\">";
     fR+=PTKF::GL_PLAINTEXT_KEEPER.depositTxt(defaultT)+"</textarea>\n";
     return fR;
   }
@@ -75,8 +74,15 @@ namespace BI{
     bgColors[0]="bg-light";
     bgColors[1]="";
     long bgCInd=0;
+    fR+="\n<fieldset class=\"mb-0\">\n";
+    fR+="<legend class=\"visually-hidden\">Choices for question "+name+"</legend>\n";
     for(long i=0;i<sz;++i){
       fR+="<div class=\"form-check\"><input type=\"radio\" ";
+      //fR+="aria-label=\"radio button with name "+name+allChoicesValues[i];
+      //if (preSelection==allChoicesValues[i]){
+      //  fR+=" currently checked";
+     // }
+      fR+="\"";
       fR+=" class=\"form-check-input\" ";
       fR+="id=\""+name+allChoicesValues[i]+"\" ";
       fR+="name=\""+name;
@@ -92,6 +98,7 @@ namespace BI{
       fR+="</div>\n";
       ++bgCInd;bgCInd%=2;
     }
+    fR+="\n</fieldset>\n";
     fR+="</div>\n</div>\n";
     return fR;
   }
@@ -105,7 +112,9 @@ namespace BI{
       fR+=PTKF::GL_PLAINTEXT_KEEPER.depositTxt(defaultT);
       ty="text";
     }
-    fR+="\" type=\""+ty+"\">";
+    fR+="\" type=\""+ty+"\" ";
+    fR+="aria-label=\"input with name "+name; 
+    fR+=" and type "+ty+"\">";
     fR+="</div>";
     return fR;
   }
@@ -121,7 +130,9 @@ namespace BI{
       ty="text";
     }
     fR+="\" TYPE=\""+ty+"\" SIZE=\"";
-    fR+=std::to_string(sz)+"\">";
+    fR+=std::to_string(sz)+"\" ";
+    fR+="aria-label=\"input with name "+name; 
+    fR+=" and type "+ty+"\">";
     return fR;
   }
   std::string submButton(const std::string &aN,const std::string &bL){
@@ -264,7 +275,7 @@ namespace BI{
     if(navLabels.size()!=sz){
       navLabels=navLinks;
     }
-    fR+="<table class=\"table table-striped\"><tbody><tr>";
+    fR+="<table class=\"table table-striped\" aria-label=\"navigation bar\"><tbody><tr>";
     for(long i=0;i<sz;++i){
       fR+="<td>";
       fR+="<a href=\""+navLinks[i]+"\">"+navLabels[i]+"</a>";
