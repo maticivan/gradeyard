@@ -326,13 +326,13 @@ void getStringAndParameter(std::string& st, std::string& par,
     if(allD.second==1){
         res.role=allD.first;
     }
-    pos=0;allD=SF::extract(rawInfo,pos,"aria-labelledby=\"","\"");
-    res.ariaLabel="The picture is an illustration of the concept described in the text";
-    if(allD.second==1){
-        res.ariaLabel=allD.first;
-    }
       getStringAndParameter(res.title,res.titleId,svgIn,"title","id");
       getStringAndParameter(res.desc,res.descId,svgIn,"desc","id");
+      pos=0;allD=SF::extract(rawInfo,pos,"aria-labelledby=\"","\"");
+      res.ariaLabel=res.titleId+" "+res.descId;
+      if(allD.second==1){
+          res.ariaLabel=allD.first;
+      }
     return res;
   }
 std::string printTagForSVG(const std::string& tagName, const std::string& tagValue, const std::string& idVal){
