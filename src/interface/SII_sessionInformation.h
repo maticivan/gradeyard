@@ -86,6 +86,7 @@ namespace SII{
     std::string showLogInLink; 
     std::string indicator_encryptIP;
     std::string approvedGuests;
+    std::string needADAHelp;
     long cntrEIdI0=51;
     long cntrEIdI1=79;
     long cntrEIdIZ=3;
