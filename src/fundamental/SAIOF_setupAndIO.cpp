@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -28,6 +28,7 @@
 #include "GF_globalInits.cpp"
 #include "RNDF_randomCodesAndPermutations.cpp"
 #include "SF_strings.cpp"
+#include "TAF_tagAnalysis.cpp"
 #include "HSF_html_strings.cpp"
 #include "IOF_io.cpp"
 #include "ENCF_encryption.cpp"
