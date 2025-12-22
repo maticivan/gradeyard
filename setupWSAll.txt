@@ -45,7 +45,7 @@ _vVPair__vr_formName*!_/vr__vl_rec_/vl__/vVPair_
 _vVPair__vr_rSubmitR*!_/vr__vl_rsu_/vl__/vVPair_
 _vVPair__vr_respSbmYES!*_/vr__vl_y_/vl__/vVPair_
 
-_vVPair__vr_tableOpenTag*!_/vr__vl_<table class="table table-striped table-responsive table-hover">_/vl__/vVPair_
+_vVPair__vr_tableOpenTag*!_/vr__vl_<table class="table table-striped table-responsive table-hover" aria-label="main table">_/vl__/vVPair_
 _vVPair__vr_theadOpenTag*!_/vr__vl_<thead class="table-secondary">_/vl__/vVPair_
 
 _vVPair__vr_folderName*!_/vr__vl_dbSystem_/vl__/vVPair_
