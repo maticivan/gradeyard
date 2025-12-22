@@ -206,6 +206,9 @@ namespace SII{
       replMap["_GUEST*SITES*_"]=DD::GL_DBS.getGuestClonesRelLoc();
       replMap["_MY*USERNAME*_"]=psd.my_un;
     }
+      if(needADAHelp=="yes"){
+          afterFormRepl=HAI::improveADATags(afterFormRepl);
+      }
     if(replMap.size()>0){
       afterFormRepl=MFRF::findAndReplace(afterFormRepl,replMap);
     }
@@ -218,7 +221,7 @@ namespace SII{
     afterFormRepl=LANGF::changeAlphabet(afterFormRepl,MWII::GL_WI.getAlphabet());
     afterFormRepl=INCII::treatInCommandInsert(afterFormRepl); 
     GF::GL_DEB_MESSAGES.addMessage("Version "+GL_VERSION);
-    GF::GL_DEB_MESSAGES.addMessage("Time to generate page is "+ BF::doubleToString(timeToGenerateWebsite.getTime())); 
+    GF::GL_DEB_MESSAGES.addMessage("Time to generate page is "+ BF::doubleToString(timeToGenerateWebsite.getTime()));
     afterFormRepl+=GF::GL_DEB_MESSAGES.prepareAllMessages(MWII::GL_WI.getDebuggingOptions());
     return afterFormRepl;
   }
@@ -670,6 +673,7 @@ namespace SII{
         indicator_encryptIP="yes";
         SF::assignValueFromMap(mParameters,"encryptIP",indicator_encryptIP);
         SF::assignValueFromMap(mParameters,"approvedGuests",approvedGuests);
+        SF::assignValueFromMap(mParameters,"needADAHelp",needADAHelp);
         itMP=mParameters.find("defaultTexts");
         if(itMP!=mParameters.end()){
           MWII::GL_WI.updateDefaultWebTexts(itMP->second);
