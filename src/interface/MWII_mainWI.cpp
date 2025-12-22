@@ -75,6 +75,7 @@ namespace MWII{
 #include "CEVI_customizeExamVersions.cpp"
 #include "INCII_inCommandInsert.cpp"
 //#include "WSCI_websiteCommunications.cpp"
+#include "HAI_helpWithADA.cpp"
 #include "SII_sessionInformation.cpp"
 #include "CCI_commandCenter.cpp"
 #endif
