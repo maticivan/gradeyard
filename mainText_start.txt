@@ -52,6 +52,7 @@ _vVPair__vr_maxDescLength_/vr__vl_1000_/vl__/vVPair_
 _vVPair__vr_codeWordForAutoGenDesc_/vr__vl__*AGD*__/vl__/vVPair_
 _vVPair__vr_allowRespRecToOthers_/vr__vl_yes_/vl__/vVPair_
 
+_vVPair__vr_needADAHelp_/vr__vl_no_/vl__/vVPair_
 _vVPair__vr_allowPDFForCertificates_/vr__vl_yes_/vl__/vVPair_
 _vVPair__vr_timeInSecondsToKeepCertificatePDF_/vr__vl_120_/vl__/vVPair_
 _vVPair__vr_allowPDFForForms_/vr__vl_yes_/vl__/vVPair_
@@ -546,7 +547,7 @@ function renderTotpSequence(totp, sec, initial_lapse, options = {}) {
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 <div class="container">
   <a class="navbar-brand" href="index.cgi">
-<svg width="40" height="40" class="d-block">
+<svg width="40" height="40" class="d-block" role="none" aria-labelledby="logo">
 <polyline points="5,5 10,5 35,30 35,35 30,35 5,10 5,5 10,5" style="fill:none;stroke:currentColor;stroke-width:3"/>
 <polyline points="20,5 30,5 35,10 35,20 20,5 30,5" style="fill:none;stroke:currentColor;stroke-width:3"/>
 <polyline points="5,20 20,35 10,35 5,30 5,20 20,35" style="fill:none;stroke:currentColor;stroke-width:3"/>
@@ -582,7 +583,7 @@ _LOGIN*OUT*REGISTER*NAVBAR*_
 <div class="col-sm-4">
 </div>
 <div class="col-sm-8 text-right">
-_**LINKS*LINE2*_
+<nav aria-label="Page actions"> _**LINKS*LINE2*_ </nav>
 </div>
 
  </div>
@@ -591,14 +592,14 @@ _**LINKS*LINE2*_
 <div class="col-sm-4">
 </div>
 <div class="col-sm-8 text-right">
-_**LINKS*LINE3*_
+<nav aria-label="Page actions 2"> _**LINKS*LINE3*_ </nav>
 </div>
 
  </div>
 </div>
 
 
-
+ <main id="main-content" tabindex="-1">
 
 _/textData!!_
 
@@ -633,6 +634,7 @@ _/permission_
 _/permissionString!!_
 _/systemData!!_
 _textData!!_
+</main>
 
 <div class="container">
 <hr/>
@@ -12153,6 +12155,8 @@ _metaDesc*_Code autograder will test your solution to the following problem. _*A
   <p></p>
 
 
+
+ <h1>Code Autograder</h1>
 
 _insert_
 _n*_codeTestInNotes_/n*_
