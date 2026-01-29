@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -356,7 +356,8 @@ namespace FFI{
       ++it;
     }
   }
-  std::string updateCodeInsertionsAndOutputVariables(FormComponents& fC,const std::string& in){
+  std::string updateCodeInsertionsAndOutputVariables(FormComponents& fC,const std::string& _in){
+    std::string in=SF::updateRepetitiveText(_in);
     std::pair<std::stack<std::string>,std::string> updatedSource
          = SF::stringToStackAndRemoveItems(in,"[var]","[/var]");
     if((updatedSource.first).size()<1){return in;}
@@ -496,8 +497,7 @@ namespace FFI{
     it=mMap.find("source");
     if(it==itE){return;}
     (fC.cep).languages[0]="cpp";
-    (fC.cep).sources[0]=updateCodeInsertionsAndOutputVariables(fC,
-                                                               SF::updateRepetitiveText(it->second));
+    (fC.cep).sources[0]=updateCodeInsertionsAndOutputVariables(fC,it->second);
     std::set<std::string> inclSet;
     it=mMap.find("includes");
     if(it!=itE){
