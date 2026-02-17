@@ -56,6 +56,7 @@ _vVPair__vr_needADAHelp_/vr__vl_no_/vl__/vVPair_
 _vVPair__vr_allowPDFForCertificates_/vr__vl_yes_/vl__/vVPair_
 _vVPair__vr_timeInSecondsToKeepCertificatePDF_/vr__vl_120_/vl__/vVPair_
 _vVPair__vr_allowPDFForForms_/vr__vl_yes_/vl__/vVPair_
+_vVPair__vr_encryptID_/vr__vl_yes_/vl__/vVPair_
 _vVPair__vr_encryptIP_/vr__vl_yes_/vl__/vVPair_
 _vVPair__vr_approvedGuests_/vr__vl_listOfApprovedGuests_/vl__/vVPair_
 _vVPair__vr_timeInSecondsToKeepFormPDF_/vr__vl_120_/vl__/vVPair_
