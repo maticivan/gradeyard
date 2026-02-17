@@ -18,7 +18,7 @@
 #include "src/fundamental/SHF_standardHeaders.cpp"
 #include "src/fundamental/SAIOF_setupAndIO.cpp"
 std::string GL_MAIN_SETUP_FILE_NAME=SAIOF::get_GL_MAIN_SETUP_FILE_NAME();
-std::string GL_VERSION="2.17.3 (2026/01/27)";
+std::string GL_VERSION="2.18.0 (2026/02/17)";
 #include "src/fundamental/MTF_mainTable.cpp"
 #include "src/db/DD_databases.cpp"
 #include "src/graphs/MGG_mainGraphs.cpp"
@@ -34,12 +34,20 @@ int main() {
   SF::varValPairs(setups,"_vVPair_","_/vVPair_","_vr_","_/vr_","_vl_","_/vl_",mSetup);
   HDPF::GLOBAL_PS.getSetupFromMap(mSetup);
   DD::GL_DBS.getSetupFromMap(mSetup);
+  MWII::GL_WI.getSetupFromMap(mSetup);
+  std::vector<std::string> initialEnvVars=BI::getEnvVars();
+    std::string mSp=QSCI::messageForSpammer(ch,initialEnvVars);
+    if(mSp!=""){
+        std::cout<<mSp<<"\n";
+        timeToGeneratePage.end();
+        return 0;
+    }
   CAGI::GL_Code_Counter.remainingCodes=DD::GL_DBS.getMaxCodesToRun();
   DD::GL_MAIN_DB.initialize();
   ENCF::GL_SECRET_LOCATION.folder=DD::GL_DBS.getChallengeAnswStorage();
-  MWII::GL_WI.getSetupFromMap(mSetup);
+  MWII::GL_WI.updateSetupAfterUploadingDatabases();
   SII::SessionInformation mainSession;
-  mainSession.initSession(ch);
+  mainSession.initSession(ch,initialEnvVars);
   std::string queryAnswer="";
   if(mainSession.isFormResponded()==1){
     std::string commands=mainSession.getResponse("commands");
