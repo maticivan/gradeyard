@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -43,7 +43,7 @@ namespace BI{
     return fR;
   }
   std::string encryptIP(const std::string & i){
-    return HENCF::oneWayEncHENCF(i,"m1234567890123456789012345678901234567890123456789012345678901234",1);
+    return HENCF::oneWayEncHENCF(i,SAIOF::GL_salt,1);
   }
   std::vector<std::string> getEnvVars(){
     std::vector<std::string> fR;
