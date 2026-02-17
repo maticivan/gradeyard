@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -50,8 +50,7 @@ namespace SII{
   MPTI::MainText SessionInformation::getMainText() const{return mainText;}
   std::string SessionInformation::getResponse(const std::string & _q) const{
     return SF::getElFromMapOrNotFoundMessage(psd.respMap,_q,s_notFound);
-  }
-  std::vector<std::vector<std::string> > SessionInformation::getRespInOrder() const{return respInOrder;}
+  } 
   SPREPF::StatData createStatDataDocument(const std::string& un, const std::string& tReq){
     SPREPF::StatData forSt;
     forSt.userName=un;
@@ -63,19 +62,21 @@ namespace SII{
     forSt.att_pageID=deb_mt.getInternalIdFromInternalNumber();
     return forSt;
   }
-  SPREPF::StatData SessionInformation::prepareStatData() const{
+  SPREPF::StatData SessionInformation::prepareStatData(const long& addToRawStat) const{
     SPREPF::StatData forSt=createStatDataDocument(psd.my_un,psd.pageRequested);
     forSt.ipAddr=envVariables[11]; 
     if(indicator_encryptIP=="yes"){
       forSt.ipAddr=BI::encryptIP(forSt.ipAddr);
     }
-    if(loginActionIndicator==1){
+    if(psd.loginActionIndicator==1){
       forSt.att_page="mainTextInitializer";
       forSt.userName=getResponse("username");
     }
-    forSt.att_rr=respRecRequested;
+    forSt.att_rr=psd.respRecRequested;
     forSt.pass1=getResponse("pass1");
-    STI::addDataToStat(forSt);
+      if(addToRawStat){
+          STI::addDataToStat(forSt);
+      }
     return forSt;
   }
   void SessionInformation::addToMainText(const std::string &_a){mainText.addToText(_a);}
@@ -94,8 +95,8 @@ namespace SII{
       changeMainText(psd.createStandardCourseMainDocName);
       psd.pageRequested=psd.createStandardCourseMainDocName;
     }
-    header.updateLogInAndMenuBars(psd,psd.pageRequested,respRecRequested);
-    footer.updateFooterBar(psd,psd.pageRequested,respRecRequested, psd.my_un);
+    header.updateLogInAndMenuBars(psd,psd.pageRequested,psd.respRecRequested);
+    footer.updateFooterBar(psd,psd.pageRequested,psd.respRecRequested, psd.my_un);
     std::string savedPER=psd.pEditReq;
     psd.pEditReq="no";
     std::string advWebsiteRequest=WSCI::websiteRequest(psd,approvedGuests,mainText);
@@ -105,15 +106,15 @@ namespace SII{
     std::string footerFR=footer.displayText(psd,"footer");
     footerFR= SF::findAndReplace(footerFR,"_THIS*WEBSITE*URL*_",MWII::GL_WI.getWSURL());
     psd.pEditReq=savedPER;
-    if((respRecRequested!="")&&(indicatorRespRecInitialized==0)){
-      mainRespRec.initialize(respRecRequested,sysDataRequested,psd.my_un);
+    if((psd.respRecRequested!="")&&(indicatorRespRecInitialized==0)){
+      mainRespRec.initialize(psd.respRecRequested,psd.sysDataRequested,psd.my_un);
     }
     long pos; std::pair<std::string,int> allD;
     std::string openT,closeT;
     openT="<title>"; closeT="</title>";
-    if(respRecRequested==""){
+    if(psd.respRecRequested==""){
       if((psd.pEditReq=="no")&&(psd.pageRequested=="listFiles")){
-        mainText.selectVersionForListOfFiles(addModFileCodeReq,startOfList);
+        mainText.selectVersionForListOfFiles(psd.addModFileCodeReq,psd.startOfList);
       }
       if(psd.createStandardCourseSuccess=="yes"){
         fR+=SF::findAndReplace(MWII::GL_WI.getDefaultWebText("standardCourseCreated"),"_*PAGE*NAME*_",psd.createStandardCourseMainDocName);
@@ -192,7 +193,7 @@ namespace SII{
         fR+="</p>\n";
       }
     }
-    if(debuggingEnvVarRequest==s_deb_correctDebuggingEnvVarReq){
+    if(psd.debuggingEnvVarRequest==s_deb_correctDebuggingEnvVarReq){
       fR+= BI::envToHTML(envVariables);
     }
     std::string beforeFormRepl= DISPPF::finalizeForDisplay(MWII::GL_WI.getDefaultFindReplaceMap(), fR+psd.passwordChangeStatus+"</div>"+footerFR);
@@ -226,7 +227,7 @@ namespace SII{
     return afterFormRepl;
   }
   void SessionInformation::addDebuggingMessagesIfInDebuggingMode(){
-    if(debuggingModeRequest==s_deb_correctDebuggingModeReq){
+    if(psd.debuggingModeRequest==s_deb_correctDebuggingModeReq){
       addToMainText(GF::GL_DEB_MESSAGES.prepareAllMessages(MWII::GL_WI.getDebuggingOptions()));
     }
     if(MWII::GL_WI.getVersionStopOptions()!="stop"){
@@ -240,39 +241,11 @@ namespace SII{
   std::vector<std::string> SessionInformation::envVars() const{return envVariables;}
   SessionInformation::SessionInformation(){
     timeToGenerateWebsite.start();
-    psd.my_un="visitor";
-    psd.isRoot="no";
-    psd.isGradingAdmin="no";
-    psd.allowedToExecuteAll="no";
-    psd.pEditReq="no";
-    psd.respRecMode="df";
-    psd.respRecFlag="notReceived";
-    psd.versionToLatex="0";
-    psd.messEditReq="no";
-    psd.sortCriterion="0";
-    psd.couasEditReq="no";
-    psd.rrgrader="no";
-    psd.indChangeRespRecToPrintVersionOfCommonInClassExam=0;
-    psd.probVersionsOfChangedRespRec="";
-    psd.pdfNameForInclassExam="";
-    psd.masterKey="";
-    psd.queryAnswRequired=0;
-    psd.queryAnswPlaceHolder="_*"+RNDF::genRandCode(15)+"_*qAsnw_";
-    psd.displayDaysInWeek.resize(0);
-    psd.displayMonthsInYear.resize(0);
     indicatorInitialized=0;
     indicatorFormResponded=-1;
-    loginActionIndicator=0;
-    loginStatusIndicator=0;
     indicatorFileReceived=-1;
     indicatorFileCanBeAccepted=-1;
-    loginFailedIndicator=0;
     str_backups_IfCalledFor="";
-    psd.inFormSearch="";
-    psd.inFormReplace="";
-    psd.messEditCode="";
-    idOfMessageWhoseEditWasSubmitted="";
-    newTextOfMessage="";
   }
   std::string SessionInformation::cookieText(const std::string &cookieName , const std::string &cookieValue ) const{
     std::string fR="";
@@ -317,161 +290,18 @@ namespace SII{
   void SessionInformation::analyzeEnvVarsAndForms(const cgicc::Cgicc & ch){
     indicatorFormResponded=0;
     indicatorFileReceived=0;
-    psd.pEditReq="no";
-    startOfList="";
-    addModFileReq="nothing";
-    addModFileCodeReq="";
-    psd.pageRequested="";
-    psd.comfUserEdit="n";
-    respRecRequested="";
-    respSubmitted="no";
-    sysDataRequested="no17";
-    debuggingEnvVarRequest="no";
-    debuggingModeRequest="no";
-    addModFileModifyInfo="no";
+    if((envVariables[13]=="GET")||(envVariables[13]=="POST")){
+      if(envVariables[13]=="POST"){indicatorFormResponded=1;}
+      MWII::GL_WI.setRedirectOverwrite(s_notFound);
+      MWII::GL_WI.setRedirectForward(s_notFound);
+      psd=URLPI::getURLParameters(ch);
+      MWII::GL_WI.setStartOfList(psd.startOfList);
+      MWII::GL_WI.setSortCriterion(psd.sortCriterion);
+      GF::GL_DEB_MESSAGES.addMessage("The number of files received is "+std::to_string(countSubmittedFiles(ch)));
+    }
     psd.usrAgent=envVariables[8];//HTTP_USER_AGENT
     psd.remAddr=envVariables[11];//REMOTE_ADDR
     psd.reqMethod=envVariables[13];//REQUEST_METHOD
-    if((envVariables[13]=="GET")||(envVariables[13]=="POST")){
-      if(envVariables[13]=="POST"){indicatorFormResponded=1;}
-      long i=0;
-      MWII::GL_WI.setRedirectOverwrite(s_notFound);
-      MWII::GL_WI.setRedirectForward(s_notFound);
-      cgicc::const_form_iterator it, itE;
-      itE = ch.getElements().end();
-      it=ch.getElements().begin();
-      long sz=ch.getElements().size();
-      respInOrder.resize(sz);
-      long skipOtherIfs;
-      while(it!=itE){
-        respInOrder[i].resize(2);
-        respInOrder[i][0]=it->getName();
-        respInOrder[i][1]=it->getValue();
-        (psd.respMap)[respInOrder[i][0]]=respInOrder[i][1];
-        skipOtherIfs=0;
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_pageName)) {
-          skipOtherIfs=1;psd.pageRequested=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_respRecName)){
-          skipOtherIfs=1;respRecRequested=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_respSubmit)){
-          skipOtherIfs=1;
-          if(respInOrder[i][1]==m_respSubmit){
-            respSubmitted="yes";
-          }
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_searchFor)){
-          skipOtherIfs=1;
-          psd.inFormSearch=SACF::sanitizeInFormSearchFor(respInOrder[i][1]);
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_replaceWith)){
-          skipOtherIfs=1;
-          DISPPF::RequestsForSanitizer reqS;
-          psd.inFormReplace=DISPPF::sanitizeForDisplay(respInOrder[i][1],reqS);
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_messToEdit)){
-          skipOtherIfs=1;
-          psd.messEditCode=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_messEditSubmission)){
-          skipOtherIfs=1;
-          idOfMessageWhoseEditWasSubmitted=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_newTextWithMessage)){
-          skipOtherIfs=1;
-          newTextOfMessage=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_responseReceiverDisplayRequest)){
-          skipOtherIfs=1;
-          psd.respRecMode=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_verReq)){
-          skipOtherIfs=1;
-          psd.versionToLatex=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_startOfList)){
-          skipOtherIfs=1;
-          startOfList=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_sortCriterion)){
-          skipOtherIfs=1;
-          psd.sortCriterion=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_addModFileReq)){
-          skipOtherIfs=1;
-          addModFileReq=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_addModFileCodeReq)){
-          skipOtherIfs=1;
-          addModFileCodeReq=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_addModFileModifyInfo)){
-          skipOtherIfs=1;
-          addModFileModifyInfo=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_systemDataDisplayRequest)){
-          skipOtherIfs=1;
-          sysDataRequested=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_debEnvVarRequest)){
-          skipOtherIfs=1;
-          debuggingEnvVarRequest=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_debModeRequest)){
-          skipOtherIfs=1;
-          debuggingModeRequest=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_redirectOverwrite)){
-          skipOtherIfs=1;
-          MWII::GL_WI.setRedirectOverwrite(respInOrder[i][1]);
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_redirectToForward)){
-          skipOtherIfs=1;
-          MWII::GL_WI.setRedirectForward(respInOrder[i][1]);
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_editReq)){
-          skipOtherIfs=1;
-          if((respInOrder[i][1]==m_editReqY)||(respInOrder[i][1]==m_editReqR)||(respInOrder[i][1]==m_editReqW)){
-            psd.pEditReq=respInOrder[i][1];}
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_editMessReq)){
-          skipOtherIfs=1;
-          if((respInOrder[i][1]==m_editReqY)||(respInOrder[i][1]==m_editReqR)){
-            psd.messEditReq=respInOrder[i][1];
-          }
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_editCouasReq)){
-          skipOtherIfs=1;
-          psd.couasEditReq=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_confirmationOfComfortableUserEdit)){
-          skipOtherIfs=1;
-          psd.comfUserEdit=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_passwCh)){
-          skipOtherIfs=1;
-          psd.passwordChangeRequested=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_respRecThatWillGradeCouas)){
-          skipOtherIfs=1;
-          psd.rrgrader=respInOrder[i][1];
-        }
-        if((skipOtherIfs==0)&&(respInOrder[i][0]==e_userLogin)){
-          skipOtherIfs=1;
-          if(respInOrder[i][1]==m_logIn){
-            loginActionIndicator=1;
-          }
-          else{
-            loginActionIndicator=-1;
-          }
-        }
-        MWII::GL_WI.setStartOfList(startOfList);
-        MWII::GL_WI.setSortCriterion(psd.sortCriterion);
-        ++it;++i;
-      }
-      GF::GL_DEB_MESSAGES.addMessage("The number of files received is "+std::to_string(countSubmittedFiles(ch)));
-    }
   }
   std::string SessionInformation::placeNewFileToServer(const cgicc::Cgicc & ch, const std::string & username, const std::string & extension, const std::string & formFieldName,const std::string &additionalData){
     if(allowedToUploadNewFile(username)==0){
@@ -552,7 +382,7 @@ namespace SII{
     return "";
   }
   long SessionInformation::loggedIn(){
-    return loginStatusIndicator;
+    return psd.loginStatusIndicator;
   }
   int SessionInformation::passedAntiSpam() const{
     return psd.passedAntiSpam;
@@ -567,16 +397,11 @@ namespace SII{
     }
     return 0;
   }
-  void SessionInformation::initSession(const cgicc::Cgicc & ch){
+  void SessionInformation::initSession(const cgicc::Cgicc & ch,
+                                       const std::vector<std::string>& _initEnvVars){
     if(indicatorInitialized==0){
       indicatorRespRecInitialized=0;
-      psd.my_un="visitor";
-      psd.myFirstName="";
-      psd.myLastName="";
       showLogInLink="yes";
-      psd.passwordChangeRequested="no";
-      psd.passwordChangeStatus="";
-      psd.allowRespRecDisplayToOthers="no";
       CAGI::GL_Obf.uniqueRandomCode=RNDF::genRandCode(5);
       CAGI::GL_Obf.secretOpenTag="Bb"+CAGI::GL_Obf.uniqueRandomCode+"e";
       CAGI::GL_Obf.secretCloseTag="Eb"+CAGI::GL_Obf.uniqueRandomCode+"e";
@@ -588,8 +413,9 @@ namespace SII{
       HTII::GL_title.maxDescLength=300;
       HTII::GL_title.codewordThatTitleGenerationIsNeeded="_*autoTitle*_";
       HTII::GL_title.codewordThatDescGenerationIsNeeded="_*autoDesc*_";
-      envVariables=BI::getEnvVars();
+      envVariables=_initEnvVars;
       analyzeEnvVarsAndForms(ch);
+        GF::GL_DEB_MESSAGES.addMessage("(loginAction,loginStatus)=("+ std::to_string(psd.loginActionIndicator)+","+std::to_string(psd.loginStatusIndicator)+")");
       currentCookie=envVariables[24];
       if(currentCookie!=s_notFound){
         currentCookie+=";"+MWII::GL_WI.getCookieName()+"="+s_notFound;
@@ -608,16 +434,16 @@ namespace SII{
         int succ=(psd.myWU).setFromExternalId(uNRN.first);
         if(succ==1){
           if((psd.myWU).checkCookieCorrectness(currentCookie)){
-            loginStatusIndicator=1;
+            psd.loginStatusIndicator=1;
             (psd.myWU).updateEncryptionDataAfterCookieReading(currentCookie);
           }
         }
       }
-      if((loginActionIndicator==-1)&&(loginStatusIndicator==1)){
+      if((psd.loginActionIndicator==-1)&&(psd.loginStatusIndicator==1)){
         (psd.myWU).logOut();
         std::cout<<cookieText(MWII::GL_WI.getCookieName(),"deleted")<<"\n";
         IOF::deleteOldFiles(DD::GL_DBS.getChallengeAnswStorage(),(psd.myWU).getUsername(),0);
-        loginStatusIndicator=0;
+        psd.loginStatusIndicator=0;
       }
       TMD::MText m;
       int s=m.setFromTextName("mainTextInitializer");
@@ -672,6 +498,8 @@ namespace SII{
         SF::assignValueFromMap(mParameters,"timeInSecondsToKeepFormPDF",FFI::GL_PDFFormOptions.maxTimeToKeepPDF);
         indicator_encryptIP="yes";
         SF::assignValueFromMap(mParameters,"encryptIP",indicator_encryptIP);
+        psd.encryptID="yes";
+        SF::assignValueFromMap(mParameters,"encryptID",psd.encryptID);
         SF::assignValueFromMap(mParameters,"approvedGuests",approvedGuests);
         SF::assignValueFromMap(mParameters,"needADAHelp",needADAHelp);
         itMP=mParameters.find("defaultTexts");
@@ -692,25 +520,25 @@ namespace SII{
           }
         }
       }
-      if((loginActionIndicator==1)&&(loginStatusIndicator==0)){
-        SPREPF::StatData st_DLogin=prepareStatData();
+      if((psd.loginActionIndicator==1)&&(psd.loginStatusIndicator==0)){
+        SPREPF::StatData st_DLogin=prepareStatData(0);
         if(STI::checkIfSpammerIsTryingToGuessPasswords(st_DLogin)=="spammer"){
-          loginActionIndicator=0;
+          psd.loginActionIndicator=0;
           psd.pageRequested="tooManyAttemptsInShortTime";
           changeMainText(psd.pageRequested);
         }
         else{
           int succ=(psd.myWU).setFromUsername(getResponse("username"));
-          loginFailedIndicator=1;
+          psd.loginFailedIndicator=1;
           if(succ==1){
             succ=(psd.myWU).checkPasswordAndSetLevel1(getResponse("pass1"));
             if(succ==1){
-              loginStatusIndicator=1;
+              psd.loginStatusIndicator=1;
               std::string newCookie=(psd.myWU).logIn();
               IOF::deleteOldFiles(DD::GL_DBS.getChallengeAnswStorage(),(psd.myWU).getUsername(),0);
               IOF::deleteOldFiles(DD::GL_DBS.getChallengeAnswStorage(),"txt",10800,1);
               std::cout<<cookieText(MWII::GL_WI.getCookieName(),newCookie);
-              loginFailedIndicator=0;
+              psd.loginFailedIndicator=0;
             }
             else{
               //failed log in - we should propagate the desired redirect page
@@ -721,9 +549,10 @@ namespace SII{
             MWII::GL_WI.setFailedLogIn();
           }
         }
+        st_DLogin=prepareStatData(1);
       }
-      if(loginStatusIndicator==1){
-        if(loginActionIndicator==0){//renew cookie
+      if(psd.loginStatusIndicator==1){
+        if(psd.loginActionIndicator==0){//renew cookie
           std::cout<<cookieText(MWII::GL_WI.getCookieName(),currentCookie);
         }
         psd.my_un=(psd.myWU).getUsername();
@@ -745,18 +574,18 @@ namespace SII{
       }
       GF::GL_DEB_MESSAGES.addMessage("The current cookie is |"+currentCookie+"|\n");
       if(s==1){ 
-        if(loginFailedIndicator==1){
+        if(psd.loginFailedIndicator==1){
           psd.pageRequested="wrongUserNameOrPassword";
         }
         if(psd.pageRequested!=""){
           if((psd.pageRequested=="createWebsite")||(psd.pageRequested=="deleteWebsite")){
             createOrDeleteWebsiteOrChangeRequestedPage();
           }
-          int initSucc=mainText.initialize(psd.pageRequested,sysDataRequested,psd.my_un);
+          int initSucc=mainText.initialize(psd.pageRequested,psd.sysDataRequested,psd.my_un);
           if(initSucc==0){
             psd.pageRequested="pageDoesNotExist";
-            mainText.initialize(psd.pageRequested,sysDataRequested,psd.my_un);
-          } 
+            mainText.initialize(psd.pageRequested,psd.sysDataRequested,psd.my_un);
+          }
           MWII::GL_WI.setMainPageName(psd.pageRequested);
         }
         else{ 
@@ -764,12 +593,12 @@ namespace SII{
           MWII::GL_WI.setMainPageName(dfPage);
           psd.pageRequested=dfPage;
         }
-        if(addModFileReq==m_addModFileDelete){
+        if(psd.addModFileReq==m_addModFileDelete){
           if(allowedToCreateText()==1){//WARNING - allowedToDeleteFile is giving "yes" too easy to accommodate the following code
             //Step 1: Determine if the file is submitted by a form.
             //        and if it is, then tell the form that the file is deleted
             FMD::FileManager sf;
-            int scc=sf.setFromExternalCode(addModFileCodeReq);
+            int scc=sf.setFromExternalCode(psd.addModFileCodeReq);
             if(scc==1){
               std::string td=sf.getTextData();
               long pos; std::pair<std::string, int> allD;
@@ -792,7 +621,10 @@ namespace SII{
                     sep_B="_"+sep_B;
                     pos=0;allD=SF::extract(td,pos,sep_B,sep_E);
                     if(allD.second==1){
-                      if(allD.first!=SF::findAndReplace(allD.first,MWII::FILE_PREFIX+addModFileCodeReq+".","")){
+                      if(allD.first!=SF::findAndReplace(allD.first,
+                                                        MWII::FILE_PREFIX+
+                                                        psd.addModFileCodeReq+".",
+                                                        "")){
                         found=1;
                         pos=0;allD=SF::extractAndReplace(td,pos,sep_B,sep_E);
                         if(allD.second==1){
@@ -809,45 +641,47 @@ namespace SII{
 
               }
             }
-            deleteFile(addModFileCodeReq);
+            deleteFile(psd.addModFileCodeReq);
           }
         }
         if(envVariables[13]=="POST"){
           if(countSubmittedFiles(ch)>0){
             indicatorFileReceived=1;
-            if(addModFileReq==m_addModFileNew){
+            if(psd.addModFileReq==m_addModFileNew){
               //add new file and update the info with addModFileModifyInfo
               cgicc::const_file_iterator fileIt, fileItE;
               fileItE=ch.getFiles().end();
               fileIt=ch.getFile(e_addModFileFilePar);
               if(fileIt!=fileItE){
-                std::string additionalData="_fInfo*|_"+addModFileModifyInfo+"_/fInfo*|_";
+                std::string additionalData="_fInfo*|_"+psd.addModFileModifyInfo+"_/fInfo*|_";
                 additionalData+="_fileDataType_"+fileIt->getDataType()+"_/fileDataType_";
                 additionalData+="_fSize*|_"+std::to_string(fileIt->getDataLength())+"_/fSize*|_";
                 placeNewFileToServer(ch,psd.my_un,"findOutFromDataType",e_addModFileFilePar,additionalData);
               }
             }
           }
-          if(addModFileReq==m_addModFileEdit){
+          if(psd.addModFileReq==m_addModFileEdit){
             // update file info with addModFileModifyInfo.
             // If a new file is received, then replace the old file.
             cgicc::const_file_iterator fileIt, fileItE;
             fileItE=ch.getFiles().end();
             fileIt=ch.getFile(e_addModFileFilePar);
-            std::string additionalData="_fInfo*|_"+addModFileModifyInfo+"_/fInfo*|_";;
+            std::string additionalData="_fInfo*|_"+psd.addModFileModifyInfo+"_/fInfo*|_";;
             if(fileIt!=fileItE){
               additionalData+="_fileDataType_"+fileIt->getDataType()+"_/fileDataType_";
               additionalData+="_fSize*|_"+std::to_string(fileIt->getDataLength())+"_/fSize*|_";
             }
-            updateExistingFile(ch,psd.my_un,addModFileCodeReq,e_addModFileFilePar,additionalData);
+            updateExistingFile(ch,psd.my_un,
+                               psd.addModFileCodeReq,
+                               e_addModFileFilePar,additionalData);
           }
           if(psd.couasEditReq=="y"){
             updateGradesFromResponse();
           }
         }
-        if(respRecRequested!=""){
-          if(respSubmitted=="yes"){
-            RTI::Response tmpRT(respRecRequested,"no",psd.my_un);
+        if(psd.respRecRequested!=""){
+          if(psd.respSubmitted=="yes"){
+            RTI::Response tmpRT(psd.respRecRequested,"no",psd.my_un);
             if(tmpRT.isInitialized()==1){
               RTI::ResponderInfo res=tmpRT.infoFromResponseText(psd,"df");
               if(res.documentType=="gradeOfResponse"){
@@ -936,8 +770,9 @@ namespace SII{
                   dataToModify+=dataToAdd;
                   if(dangerousInputDetected==0){
                     psd.respRecFlag="accepted";
-                    dataToModify=uploadFilesFromResponseReceiver(ch,respRecRequested,dataToModify,res.fileInfoV,tmpRT,res.idInfoData);
-                    modifyRespRec(respRecRequested, dataToModify,"yes");
+                    dataToModify=uploadFilesFromResponseReceiver(ch,psd.respRecRequested,
+                                                                 dataToModify,res.fileInfoV,tmpRT,res.idInfoData);
+                    modifyRespRec(psd.respRecRequested, dataToModify,"yes");
                   }
                   else{
                     psd.respRecFlag="rejected";
@@ -946,22 +781,24 @@ namespace SII{
               }
             }
           }
-          indicatorRespRecInitialized=mainRespRec.initialize(respRecRequested,sysDataRequested,psd.my_un);
+          indicatorRespRecInitialized=mainRespRec.initialize(psd.respRecRequested,
+                                                             psd.sysDataRequested,
+                                                             psd.my_un);
           if(indicatorRespRecInitialized==0){
-            respRecRequested="";
+            psd.respRecRequested="";
           }
         }
       }
     }
-    if(idOfMessageWhoseEditWasSubmitted!=""){
-      if(idOfMessageWhoseEditWasSubmitted=="nm"){
-        createMessage("_!myself!_",newTextOfMessage,psd.inFormReplace);
+    if(psd.idOfMessageWhoseEditWasSubmitted!=""){
+      if(psd.idOfMessageWhoseEditWasSubmitted=="nm"){
+        createMessage("_!myself!_",psd.newTextOfMessage,psd.inFormReplace);
       }
       else{
-        modifyMessage(idOfMessageWhoseEditWasSubmitted,newTextOfMessage);
+        modifyMessage(psd.idOfMessageWhoseEditWasSubmitted,psd.newTextOfMessage);
       }
     }
-    if((psd.passwordChangeRequested=="yes")&&(loginStatusIndicator==1)) {
+    if((psd.passwordChangeRequested=="yes")&&(psd.loginStatusIndicator==1)) {
       psd.passwordChangeStatus="<P>"+analyzeRequestToChangePassword()+"</P>";
     }
     psd.passedAntiSpam=0;
@@ -1014,10 +851,10 @@ namespace SII{
   }
   void SessionInformation::changeMainText(const std::string &_t){
     if((_t=="")&&(psd.pageRequested!="")){ 
-      mainText.initialize(psd.pageRequested,sysDataRequested,psd.my_un);
+      mainText.initialize(psd.pageRequested,psd.sysDataRequested,psd.my_un);
     }
     else{
-      mainText.initialize(_t,sysDataRequested,psd.my_un);
+      mainText.initialize(_t,psd.sysDataRequested,psd.my_un);
     }
   }
   PublicFile::PublicFile(){
@@ -1871,7 +1708,7 @@ namespace SII{
     if(succ==0){
       return "!failed!: Something may be bad with the database. The text name did not exist when checked but could not create text.";
     }
-    respRecRequested=sf.getTextName();
+    psd.respRecRequested=sf.getTextName();
     sf.setTextData(TDI::prepareTextForTextTableRaw(psd,_tData,"!noOldData!"));
     sf.putInDB();
     return "!success!: "+sf.getTextName();
@@ -1889,7 +1726,7 @@ namespace SII{
     std::string oldData=sf.getTextData();
     sf.setTextData(TDI::prepareTextForTextTableRaw(psd,_tData,oldData));
     sf.putInDB();
-    respRecRequested=_tName;
+    psd.respRecRequested=_tName;
     return "!success!";
   }
   ExamAttributes SessionInformation::attributesFromRespRec(const std::string &d,const std::string &docName) const{
@@ -2175,7 +2012,7 @@ namespace SII{
     if(textExists==0){
       return "!failed!: Text name does not exist";
     }
-    respRecRequested=sf.getTextName();
+    psd.respRecRequested=sf.getTextName();
     std::string oldTD=sf.getTextData();
     long pos;std::pair<std::string,int> allD;
     pos=0;allD=SF::extract(oldTD,pos,s_tDataB,s_tDataE);
@@ -2212,11 +2049,12 @@ namespace SII{
     if(succ==0){
       return "!failed!: Something may be bad with the database. The text name did not exist when checked but could not create text.";
     }
-    respRecRequested=sf.getTextName();
+    psd.respRecRequested=sf.getTextName();
     sf.setTextData(TDI::prepareTextForTextTableRaw(psd,genExamTemplate(dToGenerateFrom,pairProblemsCert,_eName),"!noOldData!"));
     sf.putInDB();
     psd.recoveryOperationNames.push("assignmentCreation");
-    psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",respRecRequested));
+    psd.recoveryOperationCommands.push(BMD::deleteCommand("deleteResponseReceiver",
+                                                          psd.respRecRequested));
     return "!success!: "+sf.getTextName();
   }
   std::string SessionInformation::generatePdfsForExam(const std::string & _eName, const std::string & _dForReporting){
@@ -2263,7 +2101,7 @@ namespace SII{
     if(textExists==0){
       return "!failed!: Exam does not exist";
     }
-    respRecRequested=sf.getTextName();
+    psd.respRecRequested=sf.getTextName();
     std::string rawTextRespRec=sf.getTextData();
     pos=0;allD=SF::extract(rawTextRespRec,pos,s_tDataB,s_tDataE);
     if(allD.second==1){
@@ -2335,7 +2173,7 @@ namespace SII{
     }
     psd.indChangeRespRecToPrintVersionOfCommonInClassExam=0;
     psd.probVersionsOfChangedRespRec="";
-    return "!success!: "+respRecRequested;
+    return "!success!: "+psd.respRecRequested;
   }
   std::string SessionInformation::updateIndividualVersionsOfExam(const std::string & _eName, const std::string & _textWithUpdate){
     if(allowedToCreateRespRec()==0){
@@ -2346,7 +2184,7 @@ namespace SII{
     if(textExists==0){
       return "!failed!: Exam does not exist";
     }
-    respRecRequested=sf.getTextName();
+    psd.respRecRequested=sf.getTextName();
     std::string rawTextRespRec=sf.getTextData();
     long pos; std::pair<std::string, int> allD;
     pos=0;allD=SF::extract(rawTextRespRec,pos,s_tDataB,s_tDataE);
@@ -2379,7 +2217,7 @@ namespace SII{
         }
       }
     }
-    return "!success!: "+respRecRequested;
+    return "!success!: "+psd.respRecRequested;
   }
   std::string SessionInformation::createRRBackup(const std::string& rrName, const std::string & action) const{
     RMD::Response ssf;
@@ -2436,7 +2274,7 @@ namespace SII{
     if(textExists==0){
       return "!failed!: Exam does not exist";
     }
-    respRecRequested=sf.getTextName();
+    psd.respRecRequested=sf.getTextName();
     std::string rawTextRespRec=sf.getTextData();
     std::string examRRAction="modifyResponseReceiver";
     std::string gradingRRAction="modifyResponseReceiver";
@@ -2467,7 +2305,7 @@ namespace SII{
       }
     }
     psd.respRecBackupText =offlineAGData+ createRRBackup(_eName,masterRRAction)+psd.respRecBackupText;
-    return "!success!: "+respRecRequested;
+    return "!success!: "+psd.respRecRequested;
   }
   std::string SessionInformation::distributeExamToStudents(const std::string & _examTemplateName, const std::string & _distributionText){
     return "";
@@ -2948,7 +2786,7 @@ int isBeginning(const std::string& x, const std::string& bToTest){
     return "!success!";
   }
   std::string SessionInformation::uploadFilesFromResponseReceiver(
-    const cgicc::Cgicc & ch,const std::string & respRecRequested,
+    const cgicc::Cgicc & ch,const std::string & _respRecRequested,
     const std::string & dataToModify,
     const std::vector<std::string> &fInfoV,
     const RTI::Response & _t, const std::string & _nameOfPersonWhoIsFillingTheForm){
