@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -83,6 +83,7 @@ namespace WSI{
     std::map<std::string,std::string> default_FindReplacePairs;
   public:
     void getSetupFromMap(const std::map<std::string,std::string> &);
+    void updateSetupAfterUploadingDatabases();
     void changeAlphabet(const std::string &);
     void updateDefaultWebTexts(const std::string &);
     std::string getWSName() const;
@@ -213,6 +214,8 @@ namespace WSI{
     SF::assignValueFromMap(stMap,"defaultFindReplace!*",e_defaultFindReplace);
     SF::assignValueFromMap(stMap,"questionsOnPage!*",q_on_page);
     if(q_on_page<2){q_on_page=2;}
+  }
+  void Setup::updateSetupAfterUploadingDatabases(){
     fileUploadLoc=DD::GL_DBS.getPublicStorage();
     std::string redirectInfo="?rF="+fileUploadLoc;
     IOF::sys_createFolderIfDoesNotExist(fileUploadLoc,"index.html",HSF::redirectIndexHTML_F(redirectInfo,wsURL));
