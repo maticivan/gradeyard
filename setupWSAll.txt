@@ -35,6 +35,19 @@ Debugging mode: yes/no/timeOnly
 _vVPair__vr_debugging*!_/vr__vl_no_/vl__/vVPair_
 
 
+[Spam checking] If any of the following values is "no", then spam checking won't be performed
+_vVPair__vr_loginFailsSpammer*!_/vr__vl_30_/vl__/vVPair_  
+_vVPair__vr_loginTimeExpirationSpammer*!_/vr__vl_120_/vl__/vVPair_ 
+_vVPair__vr_htmlForSpammer*!_/vr__vl_<head> 
+<title>Access Error</title>
+</head>
+<body>
+<h1>Access Error</h1>
+<p>Make sure you are not a robot before trying to access this website.
+</p>
+ </body> 
+_/vl__/vVPair_ 
+[/Spam checking]
 _vVPair__vr_websiteName*!_/vr__vl_GradeYard_/vl__/vVPair_
 _vVPair__vr_websiteURL*!_/vr__vl_https://gradeyard.com/teaching_/vl__/vVPair_
 _vVPair__vr_cookieName*!_/vr__vl_teach0_/vl__/vVPair_
@@ -48,7 +61,7 @@ _vVPair__vr_respSbmYES!*_/vr__vl_y_/vl__/vVPair_
 _vVPair__vr_tableOpenTag*!_/vr__vl_<table class="table table-striped table-responsive table-hover" aria-label="main table">_/vl__/vVPair_
 _vVPair__vr_theadOpenTag*!_/vr__vl_<thead class="table-secondary">_/vl__/vVPair_
 
-_vVPair__vr_folderName*!_/vr__vl_dbSystem_/vl__/vVPair_
+ 
 
 _vVPair__vr_prefixSubdicrectories*!_/vr__vl_Dir__/vl__/vVPair_
 _vVPair__vr_prefixFilesPt*!_/vr__vl_f__/vl__/vVPair_
