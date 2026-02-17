@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -61,6 +61,13 @@ namespace SF{
     if( (c>='A') && (c<='Z')){return 1;}
     if(c=='\\'){return 1;}
     return 0;
+  }
+  std::string removeStartingCharacters(const std::string& in, char ch){
+    std::string out;
+    long pos=0;
+    while((pos<in.size())&&(in[pos]==ch)){++pos;}
+    while(pos<in.size()){out+=in[pos];++pos;}
+    return out;
   }
   long getPositionOfFirstLetterOrBS(const std::string & st, const long & start=0){
     long len=st.length();
@@ -647,6 +654,16 @@ namespace SF{
     }
     return fR;
   }
+  std::string vectorToString(const std::vector<long> & v,
+                            const std::string & _nextB="_n_",
+                            const std::string & _nextE="_/n_"){
+    std::string fR="";
+    long sz=v.size();
+    for(long i=0;i<sz;++i){
+      fR+=_nextB+std::to_string(v[i])+_nextE;
+    }
+    return fR;
+  }
   long copyTheRestOfTheStringAndGiveUp(const std::string& in, const long& oldPosSave, std::string& out,const int& copyIsNecessary){
     long len=in.length();
     if(copyIsNecessary==0){
@@ -713,6 +730,19 @@ namespace SF{
                                           const std::string & _attMustHave="!*!"){
     return stringToVectorAndRemoveItems(_allItems,_nextB,_nextE,0,_attMustHave).first;
   }
+std::vector<long> stringToVectorLong(const std::string & _allItems,
+                                     const std::string & _nextB="_n_",
+                                     const std::string & _nextE="_/n_",
+                                     const std::string & _attMustHave="!*!"){
+    std::vector<std::string> vStr=stringToVectorAndRemoveItems(_allItems,_nextB,_nextE,0,_attMustHave).first;
+    std::vector<long> res;
+    if(vStr.size()==0){return res;}
+    res.resize(vStr.size());
+    for(long i=0;i<vStr.size();++i){
+        res[i]=BF::stringToInteger(vStr[i]);
+    }
+    return res;
+}
   std::stack<std::string> stringToStack(const std::string & _allItems,
                                         const std::string & _nextB="_n_",
                                         const std::string & _nextE="_/n_",
@@ -1129,6 +1159,15 @@ namespace SF{
     }
     return fR;
   }
+std::string mapToString(const std::map<std::string,long> & m,const std::string &beginSeparator,const std::string &endSeparator, const std::string & sepKeyB,const std::string & sepKeyE,const std::string & sepValB,const std::string & sepValE){
+  std::string fR="";
+  std::map<std::string,long>::const_iterator it=m.begin(),itE=m.end();
+  while(it!=itE){
+    fR+=beginSeparator+sepKeyB+(it->first)+sepKeyE+sepValB+std::to_string(it->second)+sepValE+endSeparator;
+    ++it;
+  }
+  return fR;
+}
   std::string mapToString(const std::map<std::string,std::string> & m, const std::string & sepKeyB,const std::string & sepKeyE,const std::string & sepValB,const std::string & sepValE,const std::string &formattingSeparator = ""){
     return mapToString(m,"",formattingSeparator,sepKeyB,sepKeyE,sepValB,sepValE);
   }
