@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -55,6 +55,26 @@ namespace PSDI{
     std::string createStandardCourseMainDocName;
     std::string createStandardCourseSuccess;
     std::string queryAnswPlaceHolder;
+    std::string startOfList;
+    std::string addModFileReq;
+    std::string addModFileCodeReq;
+    std::string respRecRequested;
+      std::string respSubmitted;
+      std::string sysDataRequested;
+      std::string debuggingEnvVarRequest;
+      std::string debuggingModeRequest;
+      std::string addModFileModifyInfo;
+      std::string idOfMessageWhoseEditWasSubmitted;
+      std::string newTextOfMessage;
+      std::string encryptID;
+      long loginActionIndicator; // 1 - user wants to log in;
+                                 // 0 - no change of status;
+                                 //-1 - user wants to log out 
+      long loginStatusIndicator; // 1 - user is logged in;
+                                 // 0 - user is logged out
+      long loginFailedIndicator; // 1 - username/password supplied but wrong ;
+                                 // 0 - username/password correct,
+                                 //     or no log in attempted
     int queryAnswRequired;
     std::string allowRespRecDisplayToOthers;
     std::map<std::string,std::string> respMap;
