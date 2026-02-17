@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -43,6 +43,7 @@
 #include "ASMCF_asmCompiler.cpp"
 
 namespace SAIOF{
+  std::string GL_salt="notInitializedYet";
   int match(const std::string & st1, const std::string & st2,  long direction=1){
     long sz1=st1.length(); long sz2=st2.length();
     if(sz1 < sz2){
@@ -71,6 +72,15 @@ namespace SAIOF{
   int looksLikeSetupFile(const std::string &st,const std::string &start="st", const std::string &end="e.txt"){
     return startMatch(st,start)*endMatch(st,end);
   }
+  std::string makeSalt(const std::string& _s){
+      std::string res="m1234567890123456789012345678901234567890123456789012345678901234";
+      long i=0;
+      while((i<_s.length()) && (i<res.length()) && (_s[i]!='.')){
+          res[i]=_s[i];
+          ++i;
+      }
+      return res;
+  }
   std::string get_GL_MAIN_SETUP_FILE_NAME(const std::string & st="st", const std::string & en="e.txt"){
     std::vector<std::string> allFiles=IOF::listFiles(".");
     long db_sz=allFiles.size();
@@ -83,7 +93,12 @@ namespace SAIOF{
       }
       ++i;
     }
-    if(found!=""){return found;}
+    if(found!=""){
+        if(GL_salt=="notInitializedYet"){
+            GL_salt=makeSalt(found);
+        }
+        return found;
+    }
     i=0;
     while((i<db_sz)&&(found=="")){
       if(looksLikeSetupFile(allFiles[i],"setup",".txt")){
