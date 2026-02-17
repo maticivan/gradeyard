@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -454,6 +454,9 @@ namespace APTI{
         mLine[0]=createLinkForEditUser(w.getUsername());
       }
       mLine[1]=w.getExternalId();
+      if(_psd.encryptID=="yes"){
+          mLine[1]=(BI::encryptIP(mLine[1])).substr(5, 16);
+      }
       mLine[2]=w.getFirstName()+" "+w.getLastName();
       mLine[3]=w.getEmail();
       mLine[4]=createLinkForEditUserAdvanced(w.getUsername(),w.isRoot());
@@ -909,7 +912,13 @@ namespace APTI{
       if(numb<0){numb=0;}
       long start=BF::stringToInteger(MWII::GL_WI.getStartOfList());
       if(sc=="raw"){
-        return SDIRF::getRawStats(DD::GL_DBS.getStatTable(),3*SPREPF::STAT_CONSTS.maxItemsInFile,start);
+          std::string rawSt=SDIRF::getRawStats(DD::GL_DBS.getStatTable(),
+                                               3*SPREPF::STAT_CONSTS.maxItemsInFile,
+                                               start);
+          if(start==0){
+              rawSt=QSCI::deniedAccessSummary()+rawSt;
+          }
+          return rawSt;          
       }
       SDIRF::CompleteStats stats=SDIRF::getCompleteStats(DD::GL_DBS.getStatTable());
       long nT=(stats.sortedAccordingToName).size();
