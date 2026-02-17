@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -119,8 +119,35 @@ namespace LI{
     std::string st_envVName_Value="el";
     std::string st_envVName_ForwardVariable="fv";
     std::string st_envVName_ForwardValue="fl";
+    std::string e_searchFor="s1";
+    std::string e_replaceWith="r1";
+    std::string e_messToEdit="mei";
+    std::string e_messEditSubmission="msd";
+    std::string e_newTextWithMessage="nmt";
+    std::string e_responseReceiverDisplayRequest="rdd";
+    std::string e_startOfList="st";
+    std::string e_verReq="ver";
+    std::string e_sortCriterion="sc";
+    std::string e_addModFileReq="amF";
+    std::string e_addModFileCodeReq="fReq";
+    std::string e_addModFileModifyInfo="fInfo";
+    std::string e_systemDataDisplayRequest="sysData";
+    std::string e_debEnvVarRequest="debuggingEnvVar";
+    std::string e_debModeRequest="debuggingMode";
+    std::string e_redirectOverwrite="rdo";
+    std::string e_redirectToForward="rdf";
+    std::string e_editReq="er";
+    std::string e_editMessReq="emr";
+    std::string e_editCouasReq="ecr";
+    std::string e_confirmationOfComfortableUserEdit="ccu";
+    std::string e_passwCh="passwCh";
+    std::string e_respRecThatWillGradeCouas="rrg";
+    std::string e_userLogin="userLogIn";
+    std::string m_editReqY="y";
+    std::string m_editReqR="r";
+    std::string m_editReqW="w";
+    std::string m_logIn="yes";
   } GL_LN;
-
 }
 
 #endif
