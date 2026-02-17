@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2023 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -22,7 +22,6 @@
 namespace PS00F{
   class PSetup{
   private:
-      std::string default_folderName=".";
       std::string default_prefixSubDirectories="D";
       std::string default_prefixFilesPT="FP";
       std::string default_prefixFilesDT="FD";
@@ -35,7 +34,7 @@ namespace PS00F{
       std::string default_nextNameE="_/lNF*!_";
       std::string default_nextEmptyB="?";
       std::string default_nextEmptyE="!";
-      std::string folderName=default_folderName;
+      std::string rsFolderName="/";
       std::string prefixSubDirectories=default_prefixSubDirectories;
       std::string prefixFilesPT=default_prefixFilesPT;
       std::string prefixFilesDT=default_prefixFilesDT;
@@ -48,9 +47,12 @@ namespace PS00F{
       std::string nextNameE=default_nextNameE;
       std::string nextEmptyB=default_nextEmptyB;
       std::string nextEmptyE=default_nextEmptyE;
+      long loginFailsSpammer;
+      long loginTimeExpirationSpammer;
+      std::string htmlForSpammer;
   public:
       void getSetupFromMap(const std::map<std::string,std::string> &);
-      std::string getFolderName() const;
+      std::string getRSFolderName() const;
       std::string getPrefixSubDirs() const;
       std::string getPrefixFilesPT() const;
       std::string getPrefixFilesDT() const;
@@ -63,8 +65,11 @@ namespace PS00F{
       std::string getNextNameE() const;
       std::string getNextEmptyB() const;
       std::string getNextEmptyE() const;
+      long get_loginFailsSpammer() const;
+      long get_loginTimeExpirationSpammer() const;
+      std::string get_htmlForSpammer() const;
   };
-  std::string PSetup::getFolderName() const{    return folderName; }
+  std::string PSetup::getRSFolderName() const{    return rsFolderName; }
   std::string PSetup::getPrefixSubDirs() const{ return prefixSubDirectories;}
   std::string PSetup::getPrefixFilesPT() const{return prefixFilesPT;}
   std::string PSetup::getPrefixFilesDT() const{return prefixFilesDT;}
@@ -77,8 +82,20 @@ namespace PS00F{
   std::string PSetup::getNextNameE() const{return nextNameE;}
   std::string PSetup::getNextEmptyB() const{return nextEmptyB;}
   std::string PSetup::getNextEmptyE() const{return nextEmptyE;}
-  void PSetup::getSetupFromMap(const std::map<std::string,std::string> & stMap){
-      SF::assignValueFromMap(stMap,"folderName*!",folderName);
+  long PSetup::get_loginFailsSpammer() const{return loginFailsSpammer;}
+  long PSetup::get_loginTimeExpirationSpammer() const{return loginTimeExpirationSpammer;}
+  std::string PSetup::get_htmlForSpammer() const{return htmlForSpammer;}
+  void PSetup::getSetupFromMap(const std::map<std::string,std::string> & stMap){ 
+      std::string tmpMainFolder,tmpStatDB;
+      SF::assignValueFromMap(stMap,"mainFolderDB*!",tmpMainFolder);
+      SF::assignValueFromMap(stMap,"statDB*!",tmpStatDB);
+      if(tmpMainFolder.size()>0){
+        if(tmpMainFolder[tmpMainFolder.size()-1]!='/'){
+            tmpMainFolder+='/';
+        }
+      }
+      else{tmpMainFolder="/";} 
+      rsFolderName=tmpMainFolder+SF::removeStartingCharacters(tmpStatDB,'/')+"/rawSt";
       SF::assignValueFromMap(stMap,"prefixSubdicrectories*!",prefixSubDirectories);
       SF::assignValueFromMap(stMap,"prefixFilesPt*!",prefixFilesPT);
       SF::assignValueFromMap(stMap,"prefixFilesDt*!",prefixFilesDT);
@@ -91,6 +108,39 @@ namespace PS00F{
       SF::assignValueFromMap(stMap,"nextNameEB*!",nextNameE);
       SF::assignValueFromMap(stMap,"nextEmptyBB*!",nextEmptyB);
       SF::assignValueFromMap(stMap,"nextEmptyEB*!",nextEmptyE);
+      std::string spammerTempString; long tempNum; long ind_spamCheck=1;
+      std::string htmlStart="\n<!DOCTYPE html>\n<html lang=\"en\">";
+      std::string htmlEnd="\n</html>";
+      htmlForSpammer="<head>\n<title>Access Error</title>\n</head>\n<body>";
+      htmlForSpammer+="<h1>Access Error</h1>";
+      htmlForSpammer+="</body>";
+      SF::assignValueFromMap(stMap,"htmlForSpammer*!",spammerTempString);
+      if((spammerTempString.size()>0)&&(spammerTempString!="notFound")){
+          htmlForSpammer=spammerTempString;
+      }
+      htmlForSpammer=htmlStart+htmlForSpammer+htmlEnd;
+      loginFailsSpammer=5;
+      SF::assignValueFromMap(stMap,"loginFailsSpammer*!",spammerTempString);
+      if((spammerTempString.size()>0)&&((spammerTempString[0]=='n')||(spammerTempString[0]=='N'))){
+          ind_spamCheck=0;
+      }
+      tempNum=BF::stringToInteger(spammerTempString);
+      if(tempNum>0){
+          loginFailsSpammer=tempNum;
+      }
+      loginTimeExpirationSpammer=60;
+      SF::assignValueFromMap(stMap,"loginTimeExpirationSpammer*!",spammerTempString);
+      if((spammerTempString.size()>0)&&((spammerTempString[0]=='n')||(spammerTempString[0]=='N'))){
+          ind_spamCheck=0;
+      }
+      tempNum=BF::stringToInteger(spammerTempString);
+      if(tempNum>0){
+          loginTimeExpirationSpammer=tempNum;
+      }
+      if(ind_spamCheck==0){
+          loginFailsSpammer=0;
+          loginTimeExpirationSpammer=0;
+      }
   }
 }
 
