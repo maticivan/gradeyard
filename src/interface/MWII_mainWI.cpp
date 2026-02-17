@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -46,9 +46,11 @@ namespace MWII{
 #include "MPTI_mainPageText.h"
 #include "RTI_responseText.h"
 #include "SII_sessionInformation.h"
+#include "URLPI_getParameters.cpp"
 #include "CCI_commandCenter.h"
 #include "FFI_fileFormCenter.h"
 #include "FFI_fileFormCenter.cpp"
+#include "QSCI_quickSpamCheck.cpp"
 #include "GCSI_guestCloneServices.cpp"
 #include "FHI_formHandling.cpp"
 #include "MEI_messageElements.cpp"
