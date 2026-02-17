@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -108,62 +108,16 @@ namespace SII{
     std::string s_permissionStringE="_/permissionString!!_";
     std::string s_docTypeStringB="_documentType!!_";
     std::string s_docTypeStringE="_/documentType!!_";
-    std::string e_startOfList="st";
-    std::string e_sortCriterion="sc";
-    std::string e_pageName=MWII::GL_WI.get_e_parPage();
-    std::string e_respRecName=MWII::GL_WI.get_e_respRecReqRT();//="rrc";
-    std::string e_redirectOverwrite="rdo";
-    std::string e_redirectToForward="rdf";
-    std::string e_userLogin="userLogIn";
-    std::string e_passwCh="passwCh";
-    std::string e_respSubmit=MWII::GL_WI.get_e_respSubmitReqRT(); //="respSubmit";
-    std::string e_editReq="er";
-    std::string e_editMessReq="emr";
-    std::string e_editCouasReq="ecr";
-    std::string e_verReq="ver";
-    std::string e_messToEdit="mei";
-    std::string e_messEditSubmission="msd";
-    std::string e_newTextWithMessage="nmt";
-    std::string e_respRecThatWillGradeCouas="rrg";
-    std::string e_confirmationOfComfortableUserEdit="ccu";
-    std::string m_logIn="yes";
     std::string m_addModFileNew="new";
     std::string m_addModFileEdit="edit";
     std::string m_addModFileDelete="delete";
-    std::string m_respSubmit=MWII::GL_WI.get_e_respSubmitSuccRT();//="yes";
     std::string m_logOut="no";
-    std::string m_editReqY="y";
-    std::string m_editReqR="r";
-    std::string m_editReqW="w";
     std::string startOfList;
-    std::string e_systemDataDisplayRequest="sysData";
-    std::string e_debEnvVarRequest="debuggingEnvVar";
-    std::string e_debModeRequest="debuggingMode";
-    std::string e_responseReceiverDisplayRequest="rdd";
-    std::string e_addModFileReq="amF";
-    std::string e_addModFileCodeReq="fReq";
-    std::string e_addModFileModifyInfo="fInfo";
     std::string e_addModFileFilePar="sbF";
-    std::string e_searchFor="s1";
-    std::string e_replaceWith="r1";
     std::string s_deb_correctDebuggingEnvVarReq="eFel223";
     std::string s_deb_correctDebuggingModeReq="dFel223";
     std::string s_notFound="notFound";
-    std::string pageRequested;
-    std::string respRecRequested;
-    std::string respSubmitted;
-    std::string sysDataRequested;
-    std::string debuggingEnvVarRequest;
-    std::string debuggingModeRequest;
-    std::string addModFileReq;
-    std::string addModFileCodeReq;
-    std::string addModFileModifyInfo;
-    std::string idOfMessageWhoseEditWasSubmitted;
-    std::string newTextOfMessage;
     std::vector<std::string> envVariables;
-    long loginActionIndicator;// 1-user wants to log in; 0- no change of status; -1 - user wants to log out
-    long loginStatusIndicator;// 1 - user is logged in; 0 - user is logged out
-    long loginFailedIndicator;// 1 - username/password supplied but wrong ; 0 - username/password correct, or no log in attempted
     std::string currentCookie;
     long indicatorInitialized;
     int indicatorRespRecInitialized;
@@ -173,7 +127,6 @@ namespace SII{
     PSDI::SessionData psd;
     void updateRespMapToProperlyAccountForBothGraderCommentsAndPoints(const RTI::ResponderInfo&);
     int updateGradesFromResponse();
-    std::vector<std::vector<std::string> > respInOrder;
     int uploadToServer(const cgicc::Cgicc & , const std::string & , const std::string & );//WARNING: this one does not check for permissions
     ExamAttributes attributesFromRespRec(const std::string & ,const std::string & ) const;
     int checkWhetherSingleProblemExists(const std::string &, TMD::MText& ) const;
@@ -184,7 +137,7 @@ namespace SII{
     std::string updateExamDocument(const std::string &,const std::string &,const std::string &);
     std::string createRRBackup(const std::string& , const std::string & ) const;
     std::string treatRuleCommands(const std::string& ,const std::string &);
-    SPREPF::StatData prepareStatData() const;
+    SPREPF::StatData prepareStatData(const long& =1) const;
     std::map<std::string,std::string> mapNamesRawTexts(const std::set<std::string>& );
     std::string getOfflineAutograderData(const std::string& );
     std::vector<std::string> getAvailableExams(const std::string& ) const;
@@ -192,13 +145,12 @@ namespace SII{
     TMF::Timer timeToGenerateWebsite;
   public:
     SessionInformation();
-    void initSession(const cgicc::Cgicc & );
+    void initSession(const cgicc::Cgicc & , const std::vector<std::string>& );
     long isInitialized() const;
     void changeMainText(const std::string & ="");
     MPTI::MainText getHeader() const;
     MPTI::MainText getFooter() const;
     MPTI::MainText getMainText() const;
-    std::vector<std::vector<std::string> > getRespInOrder() const;
     std::string getResponse(const std::string & ) const;
     long countSubmittedFiles(const cgicc::Cgicc & ) const;
     void analyzeEnvVarsAndForms(const cgicc::Cgicc &);
