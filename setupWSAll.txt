@@ -35,17 +35,20 @@ Debugging mode: yes/no/timeOnly
 _vVPair__vr_debugging*!_/vr__vl_no_/vl__/vVPair_
 
 
-[Spam checking] If any of the following values is "no", then spam checking won't be performed
+[Spam checking] If any of the first two values is "no", 
+                then the spam checking won't be performed
 _vVPair__vr_loginFailsSpammer*!_/vr__vl_30_/vl__/vVPair_  
 _vVPair__vr_loginTimeExpirationSpammer*!_/vr__vl_120_/vl__/vVPair_ 
-_vVPair__vr_htmlForSpammer*!_/vr__vl_<head> 
-<title>Access Error</title>
-</head>
-<body>
-<h1>Access Error</h1>
-<p>Make sure you are not a robot before trying to access this website.
-</p>
- </body> 
+_vVPair__vr_spammerPasswordReplacement*!_/vr__vl_hidden_/vl__/vVPair_ 
+_vVPair__vr_htmlForSpammer*!_/vr__vl_
+<head> 
+<title>Unavailable</title> 
+</head> 
+<body> 
+<h1>Unavailable</h1> 
+<p>This resource is unavailable.</p> 
+<!-- req: [randomCode] --> 
+</body> 
 _/vl__/vVPair_ 
 [/Spam checking]
 _vVPair__vr_websiteName*!_/vr__vl_GradeYard_/vl__/vVPair_
