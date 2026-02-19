@@ -19,11 +19,15 @@
 #define _INCL_QSCI_quickSpamCheck_CPP
 
 namespace QSCI{
-long GL_spammerDataVSize=2;
+long GL_spammerDataVSizeAcceptableForOldVersion=2;
+long GL_spammerDataVSize=5;
 long GL_deniedAccessDataVSize=2;
 long GL_timeVectorSz=6;
 long GL_numDaysToKeepTrackOfBans=30;
 long GL_maxMapSizeForServer=1000000;
+long GL_maxSizeForReport=1000;
+std::string GL_rawPasswordOT="[^;*]";
+std::string GL_rawPasswordCT="[/^;*]";
 long warningScoreThatTranslatesIntoBan(){
     return HDPF::GLOBAL_PS.get_loginFailsSpammer();
 }
@@ -196,7 +200,10 @@ void AccessDeniedLogs::increment(){
     public:
         std::vector<long> timeVector;
         //(year,month,day,hour,minute,second)
-        long warningScore; 
+        long warningScore;
+        std::string userName;
+        std::string password;
+        std::string commentWithSubmittedData;
         std::string toString() const;
         void fromString(const std::string& );
         SpammerData();
@@ -204,14 +211,58 @@ void AccessDeniedLogs::increment(){
     SpammerData::SpammerData(){
         warningScore=0; 
     }
+std::string hidePasswordIfNecessary(const std::string& _p){
+    if(HDPF::GLOBAL_PS.get_spammerPasswordReplacement()!=""){
+        return HDPF::GLOBAL_PS.get_spammerPasswordReplacement();
+    }
+    return _p;
+}
+std::string hidePasswordsIfNecessary(const std::string& in){
+    if(HDPF::GLOBAL_PS.get_spammerPasswordReplacement()==""){
+        std::map<std::string,std::string> replMap;
+        replMap[GL_rawPasswordOT]="";
+        replMap[GL_rawPasswordCT]="";
+        return MFRF::findAndReplace(in,replMap);
+    }
+    std::set<std::string> mS=SF::stringToSet(in,
+                                             GL_rawPasswordOT,
+                                             GL_rawPasswordCT);
+    std::map<std::string,std::string> replMap;
+    std::set<std::string>::const_iterator it=mS.begin();
+    while(it!=mS.end()){
+        replMap[GL_rawPasswordOT+
+                (*it)+
+                GL_rawPasswordCT]
+            =
+                HDPF::GLOBAL_PS.get_spammerPasswordReplacement();
+        ++it;
+    }
+    return MFRF::findAndReplace(in,replMap);
+}
+std::string sanitize(const std::string& in){
+    std::map<std::string,std::string> replMap;
+    replMap["_n_"]="*oN*";
+    replMap["_/n_"]="*cN*";
+    replMap["<"]="*oT*";
+    replMap[">"]="*cT*";
+    replMap["|"]="*verticalBar*";
+    return MFRF::findAndReplace(in,replMap);
+}
     std::string SpammerData::toString() const{
-        return "_n_"+std::to_string(warningScore)+"_/n__n_"+SF::vectorToString(timeVector,"_n_","_/n_")+"_/n_";
+        return "_n_"+std::to_string(warningScore)+"_/n__n_"+SF::vectorToString(timeVector,"_n_","_/n_")+"_/n__n_"+sanitize(userName)
+        +"_/n__n_"+
+        sanitize(hidePasswordIfNecessary(password))
+        +
+        "_/n_\n_n_"+sanitize(commentWithSubmittedData)+"_/n_";
     }
     void SpammerData::fromString(const std::string& _s){
         warningScore=0;
         timeVector.resize(GL_timeVectorSz);
         for(long i=0;i<GL_timeVectorSz;++i){timeVector[i]=0;}
-        std::vector<std::string> rV=SF::stringToVector(_s,"_n_","_/n_"); 
+        std::vector<std::string> rV=SF::stringToVector(_s,"_n_","_/n_");
+        if(rV.size()==GL_spammerDataVSizeAcceptableForOldVersion){
+            rV.resize(GL_spammerDataVSize);
+        }
         if(rV.size()==GL_spammerDataVSize){
             warningScore=BF::stringToInteger(rV[0]);
             std::vector<std::string> tvS=SF::stringToVector(rV[1],"_n_","_/n_");
@@ -220,12 +271,30 @@ void AccessDeniedLogs::increment(){
                     timeVector[i]=BF::stringToInteger(tvS[i]);
                 }
             }
+            userName=rV[2];
+            password=rV[3];
+            commentWithSubmittedData=rV[4];
         }
     }
+std::string makeReport(const std::map<std::string,std::string>& postMap){
+    std::string res;
+    std::map<std::string,std::string>::const_iterator it=postMap.begin();
+    while((res.size()<GL_maxSizeForReport) && (it!=postMap.end())){
+        if((it->first!="username")&&(it->first!="pass1")){
+            res+="["+it->first+"]="+it->second+"\n";
+        }
+        ++it;
+    }
+    if(res.size()>GL_maxSizeForReport){
+        res.resize(GL_maxSizeForReport);
+    }
+    return res;
+}
 SpammerData getWarningData(long loginPageAccess,
                            long loginSubmission,
                            long registrationAccess,
-                           long registrationSubmission){
+                           long registrationSubmission,
+                           const std::map<std::string,std::string>& postMap){
     SpammerData sD;
     sD.warningScore+=loginPageAccess+loginSubmission;
     sD.warningScore+=registrationAccess+registrationSubmission;
@@ -234,6 +303,16 @@ SpammerData getWarningData(long loginPageAccess,
         sD.timeVector=cutVector(tm.timeNowVector(),6);
         sD.warningScore=1;
     }
+    std::map<std::string,std::string>::const_iterator it;
+    it=postMap.find("username");
+    if(it!=postMap.end()){
+        sD.userName=it->second;
+    }
+    it=postMap.find("pass1");
+    if(it!=postMap.end()){
+        sD.password=GL_rawPasswordOT+it->second+GL_rawPasswordCT;
+    }
+    sD.commentWithSubmittedData=makeReport(postMap);
     return sD;
 }
 std::map<std::string,SpammerData> getSpammerData(const std::string& _s,
@@ -261,7 +340,8 @@ std::string printRawWarnings(const std::string& _w){
     std::string res;
     res+="<div>_hideReveal__revealTitle_Show raw warnings_/revealTitle_";
     res+="_hideTitle_Hide raw warnings_/hideTitle_";
-    res+="<pre>"+SF::findAndReplace(_w,"_k_","\n_k_")+"</pre>";
+    std::string w=hidePasswordsIfNecessary(_w);
+    res+="<pre>"+SF::findAndReplace(w,"_k_","\n_k_")+"</pre>";
     res+="_/hideReveal_\n</div>\n";
     return res;
 }
@@ -286,7 +366,8 @@ std::map<std::string,std::string> toStringStringMap(const std::map<std::string,S
     return res;
 }
   std::string messageForSpammer(const cgicc::Cgicc & ch,
-                                const std::vector<std::string>& envV){
+                                const std::vector<std::string>& envV,
+                                const std::map<std::string,std::string>& postMap){
       //returns "" if not spammer
       // otherwise returns the message for spammer
       if(HDPF::GLOBAL_PS.get_loginFailsSpammer()==0){
@@ -328,13 +409,19 @@ std::map<std::string,std::string> toStringStringMap(const std::map<std::string,S
       SpammerData currentData=getWarningData(loginPageAccess,
                                              loginSubmission,
                                              registrationAccess,
-                                             registrationSubmission);
+                                             registrationSubmission,
+                                             postMap);
+      GF::GL_DEB_MESSAGES.addMessage("Spammer Data for file: "+
+                                     currentData.toString());
       std::map<std::string,SpammerData>::const_iterator itSM;
       itSM=pastData.find(ipAddr);
       long shouldBeBanned=0;
       if(itSM!=pastData.end()){
-          if(itSM->second.warningScore>=HDPF::GLOBAL_PS.get_loginFailsSpammer()){
-              currentData.warningScore=HDPF::GLOBAL_PS.get_loginFailsSpammer();
+          if(itSM->second.warningScore
+               >=
+             HDPF::GLOBAL_PS.get_loginFailsSpammer() ){
+              currentData.warningScore =
+              HDPF::GLOBAL_PS.get_loginFailsSpammer();
               shouldBeBanned=1;
           }
           else{
