@@ -17,7 +17,6 @@
 
 #ifndef _INCL_WI_AbstractText_CPP
 #define _INCL_WI_AbstractText_CPP
-
 namespace APTI{
   AbstractText::AbstractText(const std::string & _nameInDB, const std::string & _sysR, const std::string & _u){
   }
