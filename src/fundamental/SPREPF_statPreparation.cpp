@@ -28,6 +28,7 @@ namespace SPREPF{
     long numLoginAttemptsToStartCollectingData=5;
     long numLoginAttemptsToGetSuspcious=7;
     long cutoff_in_seconds_ForStalling=5;
+    long GL_maxSizeForReporting=500;
     std::string sepStat_NRDB="_nD*_";
     std::string sepStat_NRDE="_/nD*_";
     std::string sepStat_akzDB="aaaDZMB";
@@ -54,12 +55,14 @@ namespace SPREPF{
   struct StatData{
   public:
     std::string userName;
+    std::string loggedIn;
     std::string timeString;
     std::string ipAddr;
     std::string att_page;
     std::string att_pageID;
     std::string att_rr;
     std::string pass1;
+    std::string otherStatData;
     std::string putIntoString() const;
     void setFromString(const std::string &s);
   };
@@ -70,13 +73,9 @@ namespace SPREPF{
     replMap[STAT_CONSTS.sepStat_NRDB]=STAT_CONSTS.sepStat_akzDB;
     replMap[STAT_CONSTS.sepStat_NRDE]=STAT_CONSTS.sepStat_akzDE;
     std::string o=MFRF::findAndReplace(i,replMap);
-    if(o.size()>70){
-      std::string newO="";
-      for(long i=0;i<70;++i){
-        newO+=o[i];
-      }
-      newO+="...(too large)";
-      o=newO;
+    if(o.size()>STAT_CONSTS.GL_maxSizeForReporting){
+        o.resize(STAT_CONSTS.GL_maxSizeForReporting);
+        o+="...(too large)";
     }
     return o;
   }
@@ -88,6 +87,12 @@ namespace SPREPF{
     fR+=bS+statPrepare(ipAddr)+eS;
     fR+=bS+statPrepare(att_page)+eS;
     fR+=bS+statPrepare(att_rr)+eS;
+    std::string displPass=pass1;
+    if(loggedIn!=""){
+          displPass="[good]";
+    }
+    fR+=bS+statPrepare(displPass)+eS;
+    fR+=bS+statPrepare(otherStatData)+eS;
     return fR;
   }
   void StatData::setFromString(const std::string &i){
@@ -99,6 +104,12 @@ namespace SPREPF{
       ipAddr=dv[2];
       att_page=dv[3];
       att_rr=dv[4];
+      if(sz>5){
+        pass1=dv[5];
+      }
+      if(sz>6){
+        otherStatData=dv[6];
+      }
     }
   }
   struct StatAtom{
