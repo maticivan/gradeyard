@@ -49,6 +49,7 @@ namespace PS00F{
       std::string nextEmptyE=default_nextEmptyE;
       long loginFailsSpammer;
       long loginTimeExpirationSpammer;
+      std::string spammerPasswordReplacement;
       std::string htmlForSpammer;
   public:
       void getSetupFromMap(const std::map<std::string,std::string> &);
@@ -67,6 +68,7 @@ namespace PS00F{
       std::string getNextEmptyE() const;
       long get_loginFailsSpammer() const;
       long get_loginTimeExpirationSpammer() const;
+      std::string get_spammerPasswordReplacement() const;
       std::string get_htmlForSpammer() const;
   };
   std::string PSetup::getRSFolderName() const{    return rsFolderName; }
@@ -84,6 +86,9 @@ namespace PS00F{
   std::string PSetup::getNextEmptyE() const{return nextEmptyE;}
   long PSetup::get_loginFailsSpammer() const{return loginFailsSpammer;}
   long PSetup::get_loginTimeExpirationSpammer() const{return loginTimeExpirationSpammer;}
+  std::string PSetup::get_spammerPasswordReplacement() const{
+      return spammerPasswordReplacement;
+  }
   std::string PSetup::get_htmlForSpammer() const{return htmlForSpammer;}
   void PSetup::getSetupFromMap(const std::map<std::string,std::string> & stMap){ 
       std::string tmpMainFolder,tmpStatDB;
@@ -109,17 +114,50 @@ namespace PS00F{
       SF::assignValueFromMap(stMap,"nextEmptyBB*!",nextEmptyB);
       SF::assignValueFromMap(stMap,"nextEmptyEB*!",nextEmptyE);
       std::string spammerTempString; long tempNum; long ind_spamCheck=1;
-      std::string htmlStart="\n<!DOCTYPE html>\n<html lang=\"en\">";
+      std::string htmlStart;
+      htmlStart  = "Status: 404 Not Found\r\n";
+      htmlStart += "Content-Type: text/html; charset=UTF-8\r\n";
+      htmlStart += "X-Content-Type-Options: nosniff\r\n";
+      htmlStart += "Cache-Control: no-store, no-cache, must-revalidate\r\n";
+      htmlStart += "Pragma: no-cache\r\n";
+      htmlStart += "Expires: 0\r\n";
+      htmlStart += "\r\n";
+      htmlStart += "<!DOCTYPE html>\n";
+      htmlStart += "<html lang=\"en\">\n";
       std::string htmlEnd="\n</html>";
-      htmlForSpammer="<head>\n<title>Access Error</title>\n</head>\n<body>";
-      htmlForSpammer+="<h1>Access Error</h1>";
-      htmlForSpammer+="</body>";
+      htmlForSpammer  = "<head>\n";
+      htmlForSpammer += "<title>Unavailable</title>\n";
+      htmlForSpammer += "</head>\n";
+      htmlForSpammer += "<body>\n";
+      htmlForSpammer += "<h1>Unavailable</h1>\n";
+      htmlForSpammer += "<p>This resource is unavailable.</p>\n";
+      htmlForSpammer += "<!-- req: " + RNDF::genRandCode(15) + " -->\n";
+      htmlForSpammer += "</body>\n";
+      spammerTempString="";
       SF::assignValueFromMap(stMap,"htmlForSpammer*!",spammerTempString);
       if((spammerTempString.size()>0)&&(spammerTempString!="notFound")){
-          htmlForSpammer=spammerTempString;
+          htmlForSpammer=SF::findAndReplace(spammerTempString,
+                                            "[randomCode]",
+                                            RNDF::genRandCode(15));
       }
       htmlForSpammer=htmlStart+htmlForSpammer+htmlEnd;
+      spammerPasswordReplacement="";
+      spammerTempString="";
+      SF::assignValueFromMap(stMap,
+                             "spammerPasswordReplacement*!",
+                             spammerTempString);
+      if((spammerTempString.size()>0)&&(spammerTempString!="notFound")){
+          spammerPasswordReplacement=spammerTempString;
+      }
+      if(
+         (spammerPasswordReplacement=="no") ||
+         (spammerPasswordReplacement=="NO") ||
+         (spammerPasswordReplacement=="No")
+         ){
+        spammerPasswordReplacement="";
+      }
       loginFailsSpammer=5;
+      spammerTempString="";
       SF::assignValueFromMap(stMap,"loginFailsSpammer*!",spammerTempString);
       if((spammerTempString.size()>0)&&((spammerTempString[0]=='n')||(spammerTempString[0]=='N'))){
           ind_spamCheck=0;
@@ -129,6 +167,7 @@ namespace PS00F{
           loginFailsSpammer=tempNum;
       }
       loginTimeExpirationSpammer=60;
+      spammerTempString="";
       SF::assignValueFromMap(stMap,"loginTimeExpirationSpammer*!",spammerTempString);
       if((spammerTempString.size()>0)&&((spammerTempString[0]=='n')||(spammerTempString[0]=='N'))){
           ind_spamCheck=0;
