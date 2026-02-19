@@ -145,7 +145,9 @@ namespace SII{
     TMF::Timer timeToGenerateWebsite;
   public:
     SessionInformation();
-    void initSession(const cgicc::Cgicc & , const std::vector<std::string>& );
+    void initSession(const cgicc::Cgicc & ,
+                     const std::vector<std::string>& ,
+                     std::map<std::string,std::string>&);
     long isInitialized() const;
     void changeMainText(const std::string & ="");
     MPTI::MainText getHeader() const;
@@ -153,7 +155,7 @@ namespace SII{
     MPTI::MainText getMainText() const;
     std::string getResponse(const std::string & ) const;
     long countSubmittedFiles(const cgicc::Cgicc & ) const;
-    void analyzeEnvVarsAndForms(const cgicc::Cgicc &);
+    void analyzeEnvVarsAndForms(const cgicc::Cgicc &, std::map<std::string,std::string>&);
     long isFormResponded() const;
     long isFileReceived() const;
     long canFileBeAccepted() const;
