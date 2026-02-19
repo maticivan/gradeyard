@@ -73,10 +73,16 @@ namespace SII{
       forSt.userName=getResponse("username");
     }
     forSt.att_rr=psd.respRecRequested;
-    forSt.pass1=getResponse("pass1");
-      if(addToRawStat){
+    forSt.pass1=QSCI::hidePasswordIfNecessary(getResponse("pass1"));
+    if(psd.loginStatusIndicator==1){
+        forSt.loggedIn="yes";
+    }
+    else{
+        forSt.otherStatData=QSCI::makeReport(psd.respMap);
+    }
+    if(addToRawStat){
           STI::addDataToStat(forSt);
-      }
+    }
     return forSt;
   }
   void SessionInformation::addToMainText(const std::string &_a){mainText.addToText(_a);}
@@ -287,14 +293,15 @@ namespace SII{
      }
      return 1;
   }
-  void SessionInformation::analyzeEnvVarsAndForms(const cgicc::Cgicc & ch){
+  void SessionInformation::analyzeEnvVarsAndForms(const cgicc::Cgicc & ch,
+                                                  std::map<std::string,std::string> & _postMap){
     indicatorFormResponded=0;
     indicatorFileReceived=0;
     if((envVariables[13]=="GET")||(envVariables[13]=="POST")){
       if(envVariables[13]=="POST"){indicatorFormResponded=1;}
       MWII::GL_WI.setRedirectOverwrite(s_notFound);
       MWII::GL_WI.setRedirectForward(s_notFound);
-      psd=URLPI::getURLParameters(ch);
+      psd=URLPI::getURLParameters(ch,_postMap);
       MWII::GL_WI.setStartOfList(psd.startOfList);
       MWII::GL_WI.setSortCriterion(psd.sortCriterion);
       GF::GL_DEB_MESSAGES.addMessage("The number of files received is "+std::to_string(countSubmittedFiles(ch)));
@@ -398,7 +405,8 @@ namespace SII{
     return 0;
   }
   void SessionInformation::initSession(const cgicc::Cgicc & ch,
-                                       const std::vector<std::string>& _initEnvVars){
+                                       const std::vector<std::string>& _initEnvVars,
+                                       std::map<std::string,std::string>& _postMap){
     if(indicatorInitialized==0){
       indicatorRespRecInitialized=0;
       showLogInLink="yes";
@@ -414,7 +422,7 @@ namespace SII{
       HTII::GL_title.codewordThatTitleGenerationIsNeeded="_*autoTitle*_";
       HTII::GL_title.codewordThatDescGenerationIsNeeded="_*autoDesc*_";
       envVariables=_initEnvVars;
-      analyzeEnvVarsAndForms(ch);
+      analyzeEnvVarsAndForms(ch,_postMap);
         GF::GL_DEB_MESSAGES.addMessage("(loginAction,loginStatus)=("+ std::to_string(psd.loginActionIndicator)+","+std::to_string(psd.loginStatusIndicator)+")");
       currentCookie=envVariables[24];
       if(currentCookie!=s_notFound){
