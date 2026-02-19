@@ -74,14 +74,25 @@ void fillOneVariable(std::string& toFill,
         toFill=it->second;
     }
 }
-PSDI::SessionData getURLParameters(const cgicc::Cgicc & ch){
+std::map<std::string,std::string> getPostMap(const cgicc::Cgicc & ch){
+    std::map<std::string,std::string> res;
+    cgicc::const_form_iterator it=ch.getElements().begin();
+    while(it!=ch.getElements().end()){
+        res[it->getName()]=it->getValue();
+        ++it;
+    }
+    return res;
+}
+PSDI::SessionData getURLParameters(const cgicc::Cgicc & ch,
+                                   std::map<std::string,std::string>& _postMap){
     PSDI::SessionData psd;
     initializeAttributes(psd);
-    cgicc::const_form_iterator it=ch.getElements().begin();
+    /*cgicc::const_form_iterator it=ch.getElements().begin();
     while(it!=ch.getElements().end()){
         (psd.respMap)[it->getName()]=it->getValue();
         ++it;
-    }
+    }*/
+    psd.respMap=std::move(_postMap);
     std::map<std::string,std::string>::const_iterator itM;
     fillOneVariable(psd.pageRequested,psd.respMap,MWII::GL_WI.get_e_parPage());
     fillOneVariable(psd.respRecRequested,psd.respMap,MWII::GL_WI.get_e_respRecReqRT());
