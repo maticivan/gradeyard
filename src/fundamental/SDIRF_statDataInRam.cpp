@@ -216,8 +216,8 @@ namespace SDIRF{
   struct CompleteStats{
   public:
     std::map<std::string,ScoreData> mainMap;
-    SSF::StatSeq<ScoreTextPair> sortedAccordingToScore;
-    SSF::StatSeq<TextScorePair> sortedAccordingToName;
+    ssm::set<ScoreTextPair> sortedAccordingToScore;
+    ssm::set<TextScorePair> sortedAccordingToName;
   };
   void updateStats(CompleteStats& cs, const std::string& fName){
     if(fName=="readme.txt"){return;}
