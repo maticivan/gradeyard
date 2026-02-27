@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -59,9 +59,7 @@ namespace PASF{
   }
   std::string StudentData::putIntoStringForEmail(const std::string &sep) const{
     std::string fR="";
-
     fR+=firstName+sep+lastName+sep+email+sep+userName+sep+password+sep+"endLine";
-
     return fR;
   }
   std::string StudentData::putIntoString(const long & includePasswordAndExternalId) const{
@@ -74,7 +72,6 @@ namespace PASF{
     fR+=sB+userName+sE;
     if(includePasswordAndExternalId==1){
       fR+=sB+externalId+sE;
-
     }
     else{
       fR+=sB+"na"+sE;
@@ -102,12 +99,10 @@ namespace PASF{
       if( o1[i]=='_'){out+=o1[i];}
       if( o1[i]=='-'){out+=o1[i];}
     }
-
     return out;
   }
   int StudentData::prepareExternalAndInternalId(const std::string & ext){
     externalId=ext+studentID;
-
     firstName=BF::cleanSpaces(removeNewLineCharacters(firstName));
     lastName=BF::cleanSpaces(removeNewLineCharacters(lastName));
     userName=makeStringSafe(firstName+lastName);
@@ -130,7 +125,6 @@ namespace PASF{
       }
       fNPrep=makeStringSafe(firstName);
       lNPrep=makeStringSafe(lastName);
-
       if(lNPrep.length()>5){
         attempt="";
         if(fNPrep.length()>1){attempt+=fNPrep[0];}
@@ -252,8 +246,6 @@ namespace PASF{
     }
     return fR;
   }
-
-
   std::vector<StudentData> identifyStudentsNonCleanInput(const std::string & _input,const std::string &addToExtId){
     std::pair<std::string,int> allD;
     long pos;
@@ -271,10 +263,8 @@ namespace PASF{
       }
     }
     std::vector<std::string> indEmails=getIndividualLines(emailsSt+",end",",");
-
     std::vector<std::string> lines=getIndividualLines(input,"\n");
     std::vector<long> lNums=linesWithnumbersOnly(lines);
-
     long sz=lNums.size();
     long bsz=lines.size();
     long mcd=mostCommonDifference(lNums);
@@ -315,7 +305,6 @@ namespace PASF{
                   lnfn.second="notFound";
                 }
               }
-
             }
           }
           if(lnfn.second!="notFound"){
@@ -344,7 +333,6 @@ namespace PASF{
   std::vector<StudentData> identifyStudentsCleanInput(const std::string & _input,const std::string &addToExtId){
     std::pair<std::string,int> allD;
     long pos;
-
     std::vector<std::string> lines=SF::stringToVector(_input,"_n*_","_/n*_");
     long sz=lines.size();
     StudentData tmp;std::stack<StudentData> sds;
@@ -386,6 +374,26 @@ namespace PASF{
     }
     return fR;
   }
-
+struct StudentSearchData{
+public:
+    StudentData mData;
+    std::string nameForSearch;
+    std::string nameForDisplay;
+    std::string semester;
+    std::string course;
+    long year;
+    int operator<(const StudentSearchData& ) const;
+};
+int StudentSearchData::operator<(const StudentSearchData& oth) const{
+    if(nameForSearch<oth.nameForSearch){return 1;}
+    if(nameForSearch>oth.nameForSearch){return 0;}
+    if(year<oth.year){return 1;}
+    if(year>oth.year){return 0;}
+    if(semester<oth.semester){return 1;}
+    if(semester>oth.semester){return 0;}
+    if(course<oth.course){return 1;}
+    if(course>oth.course){return 0;}
+    return 0;
+}
 }
 #endif
