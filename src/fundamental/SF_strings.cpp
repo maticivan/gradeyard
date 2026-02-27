@@ -749,12 +749,11 @@ std::vector<long> stringToVectorLong(const std::string & _allItems,
                                         const std::string & _attMustHave="!*!"){
     return stringToStackAndRemoveItems(_allItems,_nextB,_nextE,0,_attMustHave).first;
   }
-  std::vector<std::string> stringToVectorSimpleSeparator(const std::string& _nAnswers,const std::string& separator=";"){
-    std::string saB="_n!-!*_", saE="_/n!-!*_";
-    std::string nAnsw=findAndReplace(_nAnswers,separator,saE+saB);
-    nAnsw=saB+nAnsw;
-    nAnsw+=saE;
-    return stringToVector(nAnsw,saB,saE);
+  std::vector<std::string> stringToVectorSimpleSeparator(const std::string& _nAnswers, const std::string& separator=";"){
+      std::string saB="_n!-!*_", saE="_/n!-!*_";
+      return stringToVector(saB+
+                            findAndReplace(_nAnswers,separator,saE+saB)+
+                            saE,saB,saE);
   }
   std::vector<std::vector<std::string> > stringToMatrix(const std::string & _qs,
                                                         const std::string & _nextB,
@@ -1117,6 +1116,27 @@ std::vector<long> stringToVectorLong(const std::string & _allItems,
       fR.insert(keys[i]);
     }
     return fR;
+  }
+  ssm::set<std::string> stringToSsms(const std::string & everything, const std::string & sepKeyB,const std::string & sepKeyE){
+      ssm::set<std::string> fR;
+      std::vector<std::string> keys=stringToVector(everything,sepKeyB,sepKeyE);
+      long sz=keys.size();
+      for(long i=0;i<sz;++i){
+          fR.insert(keys[i]);
+      }
+      return fR;
+  }
+  std::set<std::string> stringToSetSimpleSeparator(const std::string& _in, const std::string& separator=";"){
+      std::string saB="_n!-!*_", saE="_/n!-!*_";
+      return stringToSet(saB+
+                         findAndReplace(_in,separator,saE+saB) +
+                         saE,saB,saE);
+  }
+  ssm::set<std::string> stringToSsmsSimpleSeparator(const std::string& _in, const std::string& separator=";"){
+    std::string saB="_n!-!*_", saE="_/n!-!*_";
+    return stringToSsms(saB+
+                       findAndReplace(_in,separator,saE+saB) +
+                       saE,saB,saE);
   }
   std::string setToString(const std::set<std::string> & s, const std::string & sepKeyB,const std::string & sepKeyE ,const std::string &formattingSeparator=""){
     std::string fR="";
