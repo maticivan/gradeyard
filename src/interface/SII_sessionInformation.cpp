@@ -73,7 +73,7 @@ namespace SII{
       forSt.userName=getResponse("username");
     }
     forSt.att_rr=psd.respRecRequested;
-    forSt.pass1=QSCI::hidePasswordIfNecessary(getResponse("pass1"));
+    forSt.pass1=QSCI::hidePasswordIfNecessary(psd.my_un, getResponse("pass1"));
     if(psd.loginStatusIndicator==1){
         forSt.loggedIn="yes";
     }
