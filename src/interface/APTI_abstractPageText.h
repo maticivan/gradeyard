@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -244,6 +244,7 @@ namespace APTI{
     std::string createLinkToResponseReceiver(const std::string &, const std::string &) const;
     std::string createLinkToSwitchSortCriterion(const std::string & , const std::string & , const std::string & , const std::string &) const;
     std::string createListOfUsers(const PSDI::SessionData & ,const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
+    std::string createListOfStudents(const PSDI::SessionData & ,const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfTexts(const PSDI::SessionData & ,const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfFiles(const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
     std::string createListOfMessages(const std::string &, const std::string &) const;//WARNING: not fully implemented - works only for root
