@@ -18,7 +18,7 @@
 #ifndef _INCL_SAIOF_CPP
 #define _INCL_SAIOF_CPP
 
-#include "SSF_sortedSeq.cpp"
+#include "ssm.cpp"
 #include "MFRF_massiveFindReplace.cpp"
 #include "BF_bijFunction.cpp"
 #include "TMF_timer.cpp"
