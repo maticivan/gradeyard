@@ -1385,8 +1385,8 @@ namespace FFI{
     if(requestType=="userConvenientDisplay"){ return userDisplay(_psd,templ,templateName,parameter01,parameter02,"convenient");}
     return "";
   }
-  SSF::StatSeq<std::string> getNames(const std::vector<std::string> & v){
-    SSF::StatSeq<std::string> res;
+  ssm::set<std::string> getNames(const std::vector<std::string> & v){
+    ssm::set<std::string> res;
     long sz=v.size();
     std::string fName;
     long pos; std::pair<std::string, int> allD;
@@ -1448,7 +1448,7 @@ namespace FFI{
   }
   std::string finalTableDisplay(const PSDI::SessionData& _psd,
                                 const long& maxNumDispl,
-                                const SSF::StatSeq<std::string>& names,
+                                const ssm::set<std::string>& names,
                                 const std::string& request,
                                 const std::string& uname,
                                 const std::string& tmpl){
@@ -1498,7 +1498,7 @@ namespace FFI{
     if(IOF::legalFileName(uname)==0){uname=_psd.my_un;}
     std::string folderName=DD::GL_DBS.getFileFormsFolder()+"/";
     folderName+=GL_openingSeparatorInFileName+uname+GL_closingSeparatorInFileName+"/";
-    SSF::StatSeq<std::string> formsForUser;
+    ssm::set<std::string> formsForUser;
     if(IOF::sys_folderExists(folderName)){
       folderName+=GL_openingSeparatorInFileName+tmpl+GL_closingSeparatorInFileName+"/";
       if(IOF::sys_folderExists(folderName)){
@@ -1515,7 +1515,7 @@ namespace FFI{
     if(IOF::legalFileName(uname)==0){uname=_psd.my_un;}
     std::string folderName=DD::GL_DBS.getFileFormsFolder()+"/";
     folderName+=GL_openingSeparatorInFileName+uname+GL_closingSeparatorInFileName+"/";
-    SSF::StatSeq<std::string> templatesForUser;
+    ssm::set<std::string> templatesForUser;
     if(IOF::sys_folderExists(folderName)){
       templatesForUser=getNames(IOF::listFiles(folderName));
     }
@@ -1525,7 +1525,7 @@ namespace FFI{
     if(_psd.isRoot!="yes"){
       return allFormsForUsers(_psd,maxNumDispl,_psd.my_un);
     }
-    SSF::StatSeq<std::string> userNameFolders=getNames(IOF::listFiles(DD::GL_DBS.getFileFormsFolder()+"/"));
+    ssm::set<std::string> userNameFolders=getNames(IOF::listFiles(DD::GL_DBS.getFileFormsFolder()+"/"));
     return finalTableDisplay(_psd,maxNumDispl,userNameFolders,"allUsers","","");
   }
   std::string listOfFormsDisplay(const PSDI::SessionData & _psd,
