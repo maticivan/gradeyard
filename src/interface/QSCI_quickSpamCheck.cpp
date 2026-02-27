@@ -28,8 +28,6 @@ long GL_maxMapSizeForServer=1000000;
 long GL_maxSizeForReport=1000;
 std::string GL_rawPasswordOT="[^;*]";
 std::string GL_rawPasswordCT="[/^;*]";
-//std::string GL_rawUNameOT="[~;*]";
-//std::string GL_rawUNameCT="[/~;*]";
 long warningScoreThatTranslatesIntoBan(){
     return HDPF::GLOBAL_PS.get_loginFailsSpammer();
 }
