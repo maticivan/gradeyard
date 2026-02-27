@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -2052,7 +2052,7 @@ namespace RTI{
       }
       workDone=1;
     }
-    SSF::StatSeq<std::string> workers;
+    ssm::set<std::string> workers;
     long wsz;
     if(workDone==0){
       if((options[0]=='a')||(options[0]=='A')){
