@@ -18,7 +18,6 @@
 #ifndef _INCL_POINTERSSETUP_CPP
 #define _INCL_POINTERSSETUP_CPP
 
-
 namespace PS00F{
   class PSetup{
   private:
@@ -51,6 +50,7 @@ namespace PS00F{
       long loginTimeExpirationSpammer;
       std::string spammerPasswordReplacement;
       std::string htmlForSpammer;
+      std::set<std::string> m_unTHPStat;
   public:
       void getSetupFromMap(const std::map<std::string,std::string> &);
       std::string getRSFolderName() const;
@@ -69,6 +69,7 @@ namespace PS00F{
       long get_loginFailsSpammer() const;
       long get_loginTimeExpirationSpammer() const;
       std::string get_spammerPasswordReplacement() const;
+      int check_privacyProtection(const std::string& ) const;
       std::string get_htmlForSpammer() const;
   };
   std::string PSetup::getRSFolderName() const{    return rsFolderName; }
@@ -88,6 +89,12 @@ namespace PS00F{
   long PSetup::get_loginTimeExpirationSpammer() const{return loginTimeExpirationSpammer;}
   std::string PSetup::get_spammerPasswordReplacement() const{
       return spammerPasswordReplacement;
+  }
+  int PSetup::check_privacyProtection(const std::string& _u) const{
+    if(m_unTHPStat.find(_u)!=m_unTHPStat.end()){
+        return 1;
+    }
+    return 0;
   }
   std::string PSetup::get_htmlForSpammer() const{return htmlForSpammer;}
   void PSetup::getSetupFromMap(const std::map<std::string,std::string> & stMap){ 
@@ -179,6 +186,13 @@ namespace PS00F{
       if(ind_spamCheck==0){
           loginFailsSpammer=0;
           loginTimeExpirationSpammer=0;
+      }
+      else{
+          spammerTempString="";
+          SF::assignValueFromMap(stMap,"usernamesToHidePasswordsInStat*!",spammerTempString);
+          if((spammerTempString.size()>0)&&(spammerTempString!="notFound")){
+              m_unTHPStat=SF::stringToSetSimpleSeparator(spammerTempString,";");
+          }
       }
   }
 }
