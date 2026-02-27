@@ -469,6 +469,179 @@ namespace APTI{
     allLines.push(topLine);
     return BI::createScroller(start,end,numUsr,numb,"!*!",_numOnEachSide,sc)+HSF::tableFromStack(allLines,MWII::GL_WI.getTableOpenTag(),MWII::GL_WI.getTheadOpenTag());
   }
+ssm::set<PASF::StudentSearchData>
+getEnrolledStudent(const std::string& raw,
+                   const std::string& course,
+                   const std::string& semester,
+                   long year){
+    ssm::set<PASF::StudentSearchData> res;
+    PASF::StudentSearchData oneSt;
+    std::vector<std::string> stVector=SF::stringToVector(raw,"_n*|_","_/n*|_");
+    oneSt.semester=semester;
+    oneSt.year=year;
+    oneSt.course=course;
+    if(stVector.size()>0){
+        std::vector<std::string> allNames=SF::stringToVectorSimpleSeparator(stVector[0]," ");
+        oneSt.nameForDisplay=stVector[0];
+        for(long i=0;i<allNames.size();++i){
+            oneSt.nameForSearch=allNames[i]+" "+stVector[0];
+            res+=oneSt;
+        }
+    }
+    return res;
+}
+ssm::set<PASF::StudentSearchData>
+getEnrolledStudents(const std::string& raw,
+                    const std::string& course,
+                    const std::string& semester,
+                    long year){
+    ssm::set<PASF::StudentSearchData> res;
+    std::vector<std::string> rawStVect=SF::stringToVector(raw,"_st*|_","_/st*|_");
+    for(long i=0;i<rawStVect.size();++i){
+        res+=getEnrolledStudent(rawStVect[i],course,semester,year);
+    }
+    return res;
+}
+ssm::set<PASF::StudentSearchData>
+getEnrolledStudents(const std::string& prefix,
+                    const long& year){
+    std::string suffix="St";
+    ssm::set<PASF::StudentSearchData> res;
+    std::string fileNameSt=prefix+std::to_string(year);
+    TMD::MText sf;
+    MTF::Table& textTable=DD::GL_MAIN_DB.dbsM["mainText"];
+    TOSF::TSets indexTx=textTable.getIndTable("_i_1_ei_");
+    std::string tName;
+    std::pair<std::vector<std::string>, std::string> sR;
+    long indSz=indexTx.size();
+    std::vector<std::string> sbstV;
+    sbstV.resize(1); sbstV[0]=fileNameSt;
+    long indLow=indexTx.lowerBoundRowIndex(sbstV);
+    long patience=3;
+    while(indLow<indSz){
+        tName=(indexTx.getKeysFromRow(indLow))[0];
+        if(tName.starts_with(fileNameSt)){
+            if((tName.ends_with(suffix))&&(tName.size()>suffix.size()+fileNameSt.size())){
+                sf.setFromTextName(tName);
+                tName.erase(0,fileNameSt.size());
+                tName.erase(tName.size() - suffix.size());
+                res+=getEnrolledStudents(sf.getTextData(),  tName, prefix, year);
+            }
+        }
+        else{
+            --patience;
+            if(patience<0){
+                indLow=indSz;
+            }
+        }
+        ++indLow;
+    }
+    return res;
+}
+ssm::set<PASF::StudentSearchData>
+getEnrolledStudents(const std::string& prefix,
+                    const ssm::set<long>& years){
+    ssm::set<PASF::StudentSearchData> res;
+    long yIndex=0;
+    long lastIncludedYear=-1;
+    long yFromSet;
+    ssm::set<PASF::StudentSearchData> cData;
+    while(yIndex<years.size()){
+        yFromSet=years[yIndex];
+        if(lastIncludedYear<yFromSet){
+            lastIncludedYear=yFromSet;
+            cData=getEnrolledStudents(prefix,lastIncludedYear);
+            while(cData.size()>0){
+                res+=cData;
+                ++lastIncludedYear;
+                cData=getEnrolledStudents(prefix,lastIncludedYear);
+            }
+        }
+        ++yIndex;
+    }
+    return res;
+}
+ssm::set<PASF::StudentSearchData>
+getEnrolledStudents(const ssm::set<std::string>& sPrefix,
+                    const ssm::set<long>& years){
+    ssm::set<PASF::StudentSearchData> res;
+    for(long i=0;i<sPrefix.size();++i){
+        res+=getEnrolledStudents(sPrefix[i],years);
+    }
+    return res;
+}
+ssm::set<PASF::StudentSearchData>
+findStudents(const ssm::set<PASF::StudentSearchData>& allStudents,
+             const std::string& _sStr){
+    ssm::set<PASF::StudentSearchData> res;
+    PASF::StudentSearchData searchSt,currentSt;
+    searchSt.nameForSearch=_sStr;
+    long indUB=allStudents.upperBound(searchSt);
+    long sz=allStudents.size();
+    long patience=3;
+    while(indUB<sz){
+        PASF::StudentSearchData currentSt=allStudents[indUB];
+        if(currentSt.nameForSearch.starts_with(_sStr)){
+            res+=currentSt;
+        }
+        else{
+            --patience;
+            if(patience<0){
+                indUB=sz;
+            }
+        }
+        ++indUB;
+    }
+    return res;
+}
+std::string AbstractText::createListOfStudents(const PSDI::SessionData & _psd,const std::string & _filePrefixes, const std::string & _startYears) const{
+  std::string sc=MWII::GL_WI.getSortCriterion();
+  std::string searchBeginString=SF::getElFromMapOrNotFoundMessage(_psd.respMap,"sBg","!!notFound");
+  if(searchBeginString!="!!notFound"){
+      ssm::set<std::string> sPref=SF::stringToSsmsSimpleSeparator(_filePrefixes,";");
+      ssm::set<std::string> sYears=SF::stringToSsmsSimpleSeparator(_startYears,";");
+      ssm::set<long> slYears;
+      for(long i=0;i<sYears.size();++i){
+          slYears.insert(BF::stringToInteger(sYears[i]));
+      }
+      std::string res;
+      ssm::set<PASF::StudentSearchData>
+      searchResults = findStudents(getEnrolledStudents(sPref, slYears),
+                                   searchBeginString);
+      long lsz=5;
+      std::vector<std::string> topLine,mLine;
+      topLine.resize(lsz);mLine.resize(lsz);
+      std::stack<std::vector<std::string> > allLines;
+      topLine[0]="Year";
+      topLine[1]="Semester";
+      topLine[2]="Name";
+      topLine[3]="Course";
+      topLine[4]=MWII::GL_WI.getDefaultWebText("Document");
+      for(long i=0;i<searchResults.size();++i){
+          const PASF::StudentSearchData& cStudent =searchResults[i];
+          mLine[0]=std::to_string(cStudent.year);
+          mLine[1]=cStudent.semester;
+          if(mLine[1]=="f"){mLine[1]="Fall";}
+          if(mLine[1]=="s"){mLine[1]="Spring";}
+          if(mLine[1]=="su"){mLine[1]="Summer";}
+          mLine[2]=cStudent.nameForDisplay;
+          mLine[3]=cStudent.course;
+          mLine[4]="<a href=\"index.cgi?page=";
+          mLine[4]+=cStudent.semester+mLine[0];
+          mLine[4]+=cStudent.course;
+          mLine[4]+="\">";
+          mLine[4]+=cStudent.semester+" "+mLine[0]+" "+cStudent.course;
+          mLine[4]+="</a>";
+          allLines.push(mLine);
+      }
+      SF::flipTheStack(allLines);
+      allLines.push(topLine);
+      return HSF::tableFromStack(allLines,
+                                 MWII::GL_WI.getTableOpenTag(),
+                                 MWII::GL_WI.getTheadOpenTag());
+  }
+  return "";
+}
   std::string AbstractText::createLinkToText(const std::string &tN,const std::string &parameter, const std::string & _label, const std::string& _addition) const{
     std::string label=_label;
     if(label==""){
@@ -1067,6 +1240,9 @@ namespace APTI{
     }
     if(_db=="users"){
       return createListOfUsers(_psd,_numInList, _numOnEachSide);
+    }
+    if(_db=="students"){
+        return createListOfStudents(_psd,_numInList, _numOnEachSide);
     }
     if(_db=="texts"){
       return createListOfTexts(_psd,_numInList, _numOnEachSide);
