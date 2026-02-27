@@ -40,6 +40,9 @@ _vVPair__vr_debugging*!_/vr__vl_no_/vl__/vVPair_
 _vVPair__vr_loginFailsSpammer*!_/vr__vl_30_/vl__/vVPair_  
 _vVPair__vr_loginTimeExpirationSpammer*!_/vr__vl_120_/vl__/vVPair_ 
 _vVPair__vr_spammerPasswordReplacement*!_/vr__vl_hidden_/vl__/vVPair_ 
+The usernames below will have hidden passwords if the spammerPasswordReplacement from above 
+is empty string 
+_vVPair__vr_usernamesToHidePasswordsInStat*!_/vr__vl_mainAdmin;username1;username2_/vl__/vVPair_  
 _vVPair__vr_htmlForSpammer*!_/vr__vl_
 <head> 
 <title>Unavailable</title> 
