@@ -28,6 +28,8 @@ long GL_maxMapSizeForServer=1000000;
 long GL_maxSizeForReport=1000;
 std::string GL_rawPasswordOT="[^;*]";
 std::string GL_rawPasswordCT="[/^;*]";
+//std::string GL_rawUNameOT="[~;*]";
+//std::string GL_rawUNameCT="[/~;*]";
 long warningScoreThatTranslatesIntoBan(){
     return HDPF::GLOBAL_PS.get_loginFailsSpammer();
 }
@@ -211,14 +213,20 @@ void AccessDeniedLogs::increment(){
     SpammerData::SpammerData(){
         warningScore=0; 
     }
-std::string hidePasswordIfNecessary(const std::string& _p){
-    if(HDPF::GLOBAL_PS.get_spammerPasswordReplacement()!=""){
-        return HDPF::GLOBAL_PS.get_spammerPasswordReplacement();
+std::string hidePasswordIfNecessary(const std::string& _u,
+                                    const std::string& _p){
+    std::string spr=HDPF::GLOBAL_PS.get_spammerPasswordReplacement();
+    if(spr!=""){
+        return spr;
+    }
+    if(HDPF::GLOBAL_PS.check_privacyProtection(_u)){
+        return "privacy";
     }
     return _p;
 }
 std::string hidePasswordsIfNecessary(const std::string& in){
-    if(HDPF::GLOBAL_PS.get_spammerPasswordReplacement()==""){
+    std::string spr=HDPF::GLOBAL_PS.get_spammerPasswordReplacement();
+    if(spr==""){
         std::map<std::string,std::string> replMap;
         replMap[GL_rawPasswordOT]="";
         replMap[GL_rawPasswordCT]="";
@@ -230,11 +238,7 @@ std::string hidePasswordsIfNecessary(const std::string& in){
     std::map<std::string,std::string> replMap;
     std::set<std::string>::const_iterator it=mS.begin();
     while(it!=mS.end()){
-        replMap[GL_rawPasswordOT+
-                (*it)+
-                GL_rawPasswordCT]
-            =
-                HDPF::GLOBAL_PS.get_spammerPasswordReplacement();
+        replMap[GL_rawPasswordOT+(*it)+GL_rawPasswordCT]=spr;
         ++it;
     }
     return MFRF::findAndReplace(in,replMap);
@@ -251,7 +255,7 @@ std::string sanitize(const std::string& in){
     std::string SpammerData::toString() const{
         return "_n_"+std::to_string(warningScore)+"_/n__n_"+SF::vectorToString(timeVector,"_n_","_/n_")+"_/n__n_"+sanitize(userName)
         +"_/n__n_"+
-        sanitize(hidePasswordIfNecessary(password))
+        sanitize(hidePasswordIfNecessary(userName,password))
         +
         "_/n_\n_n_"+sanitize(commentWithSubmittedData)+"_/n_";
     }
@@ -354,7 +358,8 @@ std::string deniedAccessSummary(){
     AccessDeniedLogs adLogs;
     adLogs.fromString(IOF::fileToString(fSpamBans));
     std::string fSpamWarnings=rawStatFolder+"/spammerWarnings.txt";
-    return adLogs.displayString()+printRawWarnings(IOF::fileToString(fSpamWarnings));
+    return adLogs.displayString()+
+            printRawWarnings(IOF::fileToString(fSpamWarnings));
 }
 std::map<std::string,std::string> toStringStringMap(const std::map<std::string,SpammerData>& _m){
     std::map<std::string,std::string> res;
