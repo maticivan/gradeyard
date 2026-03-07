@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -373,9 +373,6 @@ namespace MFRF{
   }
   std::string findAndReplace(const std::string& inputWord,const std::vector<std::string>& keys, const std::vector<std::string>& vals, const int& caseSensitive=0){
     return findAndReplace(inputWord,toMap(keys,vals),caseSensitive);
-  }
-  std::string findAndReplace(const std::string& inputWord,const std::vector<std::pair<std::string, std::string> >& v, const int& caseSensitive=0, const int& direction=1){
-    return findAndReplace(inputWord,toMap(v,direction),caseSensitive);
   }
 }
 #endif
