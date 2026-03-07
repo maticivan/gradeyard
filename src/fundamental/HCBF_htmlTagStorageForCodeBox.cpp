@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2021 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -20,17 +20,17 @@
 #define _INCL_htmlTagStorageForCodeBox_CPP
 
 namespace HCBF{
-  std::vector<std::pair<std::string, std::string> > vectTagsToBeSaved(){
-    std::vector<std::pair<std::string,std::string> > verySafePlace;
-    verySafePlace.resize(5);
-    verySafePlace[0]=std::pair<std::string,std::string>("insert_","verIns!**!_");
-    verySafePlace[1]=std::pair<std::string,std::string>("variables_","verVar!**!_");
-    verySafePlace[2]=std::pair<std::string,std::string>("\n","*newLn!**!");
-    verySafePlace[3]=std::pair<std::string,std::string>("<","*less!**!");
-    verySafePlace[4]=std::pair<std::string,std::string>(">","*grea!**!");
-    return verySafePlace;
+  std::map<std::string, std::string > vectTagsToBeSaved(){
+    std::map<std::string,std::string > res;
+    res["insert_"]="verIns!**!_";
+    res["variables_"]="verVar!**!_";
+    res["\n"]="*newLn!**!";
+    res["<"]="*less!**!";
+    res[">"]="*grea!**!";
+    return res;
   }
-  std::vector<std::pair<std::string,std::string> > verySafePlace=vectTagsToBeSaved();
+  std::map<std::string,std::string> verySafePlace=vectTagsToBeSaved();
+  std::map<std::string,std::string> verySafePlaceInv=BF::inverse(verySafePlace);
 }
 
 
