@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -550,5 +550,12 @@ namespace BF{
     }
     return vt;
   }
+template<typename T1, typename T2>
+std::map<T2, T1> inverse(const std::map<T1, T2>& in) {
+    std::map<T2, T1> out;
+    for (const auto& [key, val] : in)
+        out[val] = key;
+    return out;
+}
 }
 #endif
