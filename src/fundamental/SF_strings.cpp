@@ -1056,9 +1056,10 @@ std::vector<long> stringToVectorLong(const std::string & _allItems,
                                                             const std::string &_cClose,
                                                             const std::string & _rOpen,
                                                             const std::string &_rClose,
-                                                            const std::vector<std::pair<std::string,std::string> > & permanentChangesForProtection ,
+                                                            const std::map<std::string,std::string> & permanentChangesForProtection ,
                                                             const int & caseSensitive =0){
     std::string output="";
+      GF::GL_DEB_MESSAGES.addMessage("Called replacedAllOuterLayerSeparators");
     std::pair<std::string,int> fR;fR.second=1;
     long pos=0,oldPos,newPos;
     std::pair<std::string,int> allD,allDB;
@@ -1074,7 +1075,7 @@ std::vector<long> stringToVectorLong(const std::string & _allItems,
     while(keepGoing==1){
       replacingPart= allD.first;
       if(szV>0){
-        replacingPart=MFRF::findAndReplace(replacingPart,permanentChangesForProtection,caseSensitive,1);
+        replacingPart=MFRF::findAndReplace(replacingPart,permanentChangesForProtection,caseSensitive);
       }
       allDB=getEverythingBefore(input,oldPos,_cOpen,caseSensitive);
       if(allDB.second==1){
