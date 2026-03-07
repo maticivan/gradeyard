@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2025 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -102,7 +102,7 @@ namespace UMCI{
         return createUMEditLink(_psd.pageRequested);
     }
     std::string prepareForDisplay(const std::string& uN, const std::string& uText){
-        return "<h4>"+uN+"</h4>"+uText;
+        return "<h4>"+uN+"</h4>"+DISPPF::prepareForHTMLDisplay(uText);
     }
     std::string userMapDisplay(const PSDI::SessionData & _psd,
                                const std::string& userMapRaw,
