@@ -196,6 +196,12 @@ namespace WSI{
   void Setup::getSetupFromMap(const std::map<std::string,std::string> & stMap){
     SF::assignValueFromMap(stMap,"websiteName*!",wsName);
     SF::assignValueFromMap(stMap,"websiteURL*!",wsURL);
+      PTKF::GL_thisWebsiteURL=wsURL;
+      if((PTKF::GL_thisWebsiteURL.size()>0) &&
+         (PTKF::GL_thisWebsiteURL[PTKF::GL_thisWebsiteURL.size()-1]!='/')
+         ){
+          PTKF::GL_thisWebsiteURL+='/';
+      }
     cookiePath=determineCookiePathFromURL(wsURL);
     SF::assignValueFromMap(stMap,"debugging*!",dbOptions);
     SF::assignValueFromMap(stMap,"versionStop*!",vstOptions);
