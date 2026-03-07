@@ -414,8 +414,6 @@ std::map<std::string,std::string> toStringStringMap(const std::map<std::string,S
                                              registrationAccess,
                                              registrationSubmission,
                                              postMap);
-      GF::GL_DEB_MESSAGES.addMessage("Spammer Data for file: "+
-                                     currentData.toString());
       std::map<std::string,SpammerData>::const_iterator itSM;
       itSM=pastData.find(ipAddr);
       long shouldBeBanned=0;
