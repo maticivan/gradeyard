@@ -1,6 +1,6 @@
 //    GradeYard learning management system
 //
-//    Copyright (C) 2024 Ivan Matic, https://gradeyard.com
+//    Copyright (C) 2026 Ivan Matic, https://gradeyard.com
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as published by
@@ -556,7 +556,6 @@ namespace CMTI{
     std::string res;
     CEI::CouasElement cEl(_psd);
     if(ICEI::initFromCode(_psd,cEl,couasCode)=="failed"){
-      GF::GL_DEB_MESSAGES.addMessage("<pre>Failed with ("+couasCode+","+rrCode+")</pre>");
       return "";
     }
     PSDI::SessionData psdWithModifiedRRCode=_psd;
