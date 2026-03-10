@@ -423,7 +423,6 @@ namespace SII{
       HTII::GL_title.codewordThatDescGenerationIsNeeded="_*autoDesc*_";
       envVariables=_initEnvVars;
       analyzeEnvVarsAndForms(ch,_postMap);
-        GF::GL_DEB_MESSAGES.addMessage("(loginAction,loginStatus)=("+ std::to_string(psd.loginActionIndicator)+","+std::to_string(psd.loginStatusIndicator)+")");
       currentCookie=envVariables[24];
       if(currentCookie!=s_notFound){
         currentCookie+=";"+MWII::GL_WI.getCookieName()+"="+s_notFound;
