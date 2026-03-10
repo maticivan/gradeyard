@@ -681,9 +681,13 @@ namespace SF{
                                               const std::string & _nextB="_n_",
                                               const std::string & _nextE="_/n_",
                                               const int & removalIsNecessary=1,
-                                              const std::string & _attMustHave="!*!"){
+                                              const std::string & _attMustHave="!*!",
+                                              const std::string& prefixToReplace="",
+                                              const std::string& suffixToReplace="",
+                                              const long& counterStart=-1){
     std::pair<std::stack<std::string>,std::string> fR;
     long pos=0; std::pair<std::string,int> allD;
+    long cntr=counterStart;
     long len=_allItems.length(); long openTagLen=_nextB.length();
     std::string stBefore,nextSt;
     long oldPosSave;
@@ -702,7 +706,17 @@ namespace SF{
         }
         else{
           nextSt=allD.first;
-          if(removalIsNecessary){fR.second+=stBefore;}
+            if(removalIsNecessary){
+                fR.second+=stBefore;
+                if(prefixToReplace!=""){
+                    fR.second+=prefixToReplace;
+                    if(cntr>-1){
+                        fR.second+=std::to_string(cntr);
+                        ++cntr;
+                    }
+                    fR.second+=suffixToReplace;
+                }
+            }
           if((_attMustHave=="!*!") || (findAndReplace(nextSt,_attMustHave,"")!=nextSt) ){
             (fR.first).push(nextSt);
           }
@@ -1059,7 +1073,6 @@ std::vector<long> stringToVectorLong(const std::string & _allItems,
                                                             const std::map<std::string,std::string> & permanentChangesForProtection ,
                                                             const int & caseSensitive =0){
     std::string output="";
-      GF::GL_DEB_MESSAGES.addMessage("Called replacedAllOuterLayerSeparators");
     std::pair<std::string,int> fR;fR.second=1;
     long pos=0,oldPos,newPos;
     std::pair<std::string,int> allD,allDB;
