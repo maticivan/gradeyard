@@ -274,23 +274,22 @@ std::string convertDollarsToLatexDelimiters(const std::string& in){
           closeTagReplacements[tagCntr]=closeTags[tagCntr];
           ++tagCntr;
       }
-    std::map<std::string,std::string> tagRecoveryMap;
-    PTKF::hideTexts(t,tagRecoveryMap,
-                    openTags,
-                    closeTags,
-                    openTagReplacements,
-                    closeTagReplacements,
-                    instructions,
-                    GL_HTML_Tags.formattingTags,
-                    GF::GL_HIDING_STRING_DISPPF02,
-                    rs.htmlTolerance);
+      PTKF::RecoveryStructure recS=PTKF::hideTags(t,
+                                              openTags,
+                                              closeTags,
+                                              openTagReplacements,
+                                              closeTagReplacements,
+                                              instructions,
+                                              GL_HTML_Tags.formattingTags,
+                                              GF::GL_HIDING_STRING_DISPPF02,
+                                              rs.htmlTolerance);
       if(rs.htmlTolerance<2){
           std::map<std::string,std::string> replMap;
           replMap["<"]="\\(<\\)";
           replMap[">"]="\\(>\\)";
-          t=MFRF::findAndReplace(t,replMap);
+          recS.noTagsText=MFRF::findAndReplace(recS.noTagsText,replMap);
       }
-      t=MFRF::findAndReplace(t,tagRecoveryMap);
+      t=recoverText(recS);
       t=PTKF::treatHideReveal(t);
       std::map<std::string,std::string> replMap;
       replMap[PTKF::GL_hideRevealOpenH]="_hideReveal_";
@@ -299,6 +298,9 @@ std::string convertDollarsToLatexDelimiters(const std::string& in){
       replMap[PTKF::GL_closeHidden]="";
       replMap[PTKF::GL_instructionOpen]="";
       replMap[PTKF::GL_instructionClose]="";
+      replMap[PTKF::GL_instrSepO]="";
+      replMap[PTKF::GL_instrSepC]="";
+      replMap[PTKF::GL_htmlInstructionCode]="";
       t=MFRF::findAndReplace(t,replMap);
     t=keeperOfBoxCodes.recover(t);
     return t;
