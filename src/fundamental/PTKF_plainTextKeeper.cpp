@@ -22,13 +22,18 @@ namespace PTKF{
   std::string GL_sepBStE="_/pTB*";
   std::string GL_rnd_code1="*"+RNDF::genRandCode(5)+"*@";
   std::string GL_rnd_code2="~"+RNDF::genRandCode(5)+"@!";
+  std::string GL_rnd_code3=RNDF::genRandCode(5);
   std::string GL_rnd_codeHR="."+RNDF::genRandCode(5)+"+~";
   std::string GL_openHidden="_|"+GL_rnd_code1;
   std::string GL_closeHidden="_/"+GL_rnd_code1;
   std::string GL_instructionOpen="~|"+GL_rnd_code2;
   std::string GL_instructionClose="~/"+GL_rnd_code2;
+  std::string GL_mainHidingWord="_|*"+GL_rnd_code2+"_)";
   std::string GL_hideRevealOpenH="!~"+GL_rnd_codeHR;
   std::string GL_hideRevealCloseH="!/~"+GL_rnd_codeHR;
+  std::string GL_htmlInstructionCode="#h"+GL_rnd_code3;
+  std::string GL_instrSepO=".~"+GL_rnd_code3;
+  std::string GL_instrSepC="~."+GL_rnd_code3;
   std::string GL_thisWebsiteURL="";//will be updated in MWII/WSI
   std::string cleanRandCodes(const std::string& in){
       std::map<std::string,std::string> replMap;
@@ -123,9 +128,9 @@ std::string treatHideReveal(const std::string & _input){
 std::string instructionData(const std::string& _o,
                             const std::string& _c,
                             const std::string& _i){
-    std::string res= GL_instructionOpen+"_n*_"+_o+"_/n*_";
-    res+="_n*_"+_c+"_/n*_";
-    res+="_n*_"+_i+"_/n*_"+GL_instructionClose;
+    std::string res= GL_instructionOpen+GL_instrSepO+_o+GL_instrSepC;
+    res+=GL_instrSepO+_c+GL_instrSepC;
+    res+=GL_instrSepO+_i+GL_instrSepC+GL_instructionClose;
     return res;
 }
 std::string applyInstruction(const std::string& in,
@@ -154,7 +159,7 @@ std::string followTheInstruction(const std::string& in){
     }
     std::string remaining=in.substr(pos,in.size()-pos);
     std::vector<std::string> iCodes=SF::stringToVector(allD.first,
-                                                       "_n*_","_/n*_");
+                                                       GL_instrSepO,GL_instrSepC);
     if(iCodes.size()!=3){
         return remaining;
     }
@@ -163,22 +168,36 @@ std::string followTheInstruction(const std::string& in){
     if(allD.second==0){
         return remaining;
     }
+    if(iCodes[0]==GL_htmlInstructionCode){return iCodes[1];}
     return iCodes[0]+applyInstruction(allD.first,iCodes[2])+iCodes[1];
 }
-void hideTexts(std::string& mainText,
-               std::map<std::string,std::string>& recoveryMap,
-               const std::vector<std::string>& openTags,
-               const std::vector<std::string>& closeTags,
-               const std::vector<std::string>& openTagReplacements,
-               const std::vector<std::string>& closeTagReplacements,
-               const std::vector<std::string>& instructions,
-               const std::vector<std::string>& htmlFormattingTags,
-               const std::string& azm,
-               const long& tolerance){
+std::stack<std::string> prepareRecoveryTags(std::stack<std::string>& in){
+    std::stack<std::string> out;
+    while(!in.empty()){
+        out.push(followTheInstruction(in.top()));
+        in.pop();
+    }
+    return out;
+}
+struct RecoveryStructure{
+public:
+    std::string noTagsText;
+    std::stack<std::string> savedTags;
+};
+RecoveryStructure hideTags(const std::string& mainText,
+                           const std::vector<std::string>& openTags,
+                           const std::vector<std::string>& closeTags,
+                           const std::vector<std::string>& openTagReplacements,
+                           const std::vector<std::string>& closeTagReplacements,
+                           const std::vector<std::string>& instructions,
+                           const std::vector<std::string>& htmlFormattingTags,
+                           const std::string& azm,
+                           const long& tolerance){
+    RecoveryStructure res;
     long sz=openTags.size();
-    if(sz<1){return;}
-    if(sz!=closeTags.size()){return;}
-    if(sz!=instructions.size()){return;}
+    if(sz<1){return res;}
+    if(sz!=closeTags.size()){return res;}
+    if(sz!=instructions.size()){return res;}
     std::map<std::string,std::string> initial;
     std::string tmp1,tmp2;
     for(long i=0;i<sz;++i){
@@ -193,35 +212,54 @@ void hideTexts(std::string& mainText,
         tmp2=closeTagReplacements[i]+GL_closeHidden;
         initial[tmp1] = tmp2;
     }
-    std::string textIntermediate = MFRF::findAndReplace(mainText, initial);
-    std::vector<std::string> textsToHide=SF::stringToVector(textIntermediate,
-                                                            GL_openHidden,
-                                                            GL_closeHidden);
-    ssm::set<std::string> tHideSet;
-    for(long i=0;i<textsToHide.size();++i){
-        tHideSet.insert(textsToHide[i]);
+    if(tolerance==1){
+        for(long i=0;i<htmlFormattingTags.size();++i){
+            tmp1=htmlFormattingTags[i];
+            tmp2=GL_openHidden+instructionData(GL_htmlInstructionCode,
+                                               tmp1,
+                                               "n")+tmp1+GL_closeHidden;
+            initial[tmp1] = tmp2;
+        }
     }
-    std::string tHSI;
-    std::map<std::string,std::string> hidingMap;
-    for(long i=0;i<tHideSet.size();++i){
-        tHSI=tHideSet[i];
-        tmp1=GL_openHidden+tHSI+GL_closeHidden;
-        tmp2=GL_openHidden+std::to_string(i)+GL_closeHidden;
-        hidingMap[tmp1]=tmp2;
-        recoveryMap[tmp2]=followTheInstruction(tHSI);
-    }
-    if(tolerance<2){
-      if(tolerance==1){
-          for(long i=0;i<htmlFormattingTags.size();++i){
-              tmp1=htmlFormattingTags[i];
-              tmp2=azm+std::to_string(tHideSet.size()+i)+"e|";
-              hidingMap[tmp1]=tmp2;
-              recoveryMap[tmp2]=tmp1;
-          }
-      }
-    }
-    mainText=MFRF::findAndReplace(textIntermediate,hidingMap);
+    res.noTagsText = MFRF::findAndReplace(mainText, initial);
+    std::pair<std::stack<std::string>,std::string> hidingStructure;
+    hidingStructure=SF::stringToStackAndRemoveItems(res.noTagsText,
+                                                    GL_openHidden,
+                                                    GL_closeHidden,
+                                                    1,
+                                                    "!*!",
+                                                    GL_mainHidingWord,
+                                                    "",
+                                                    -1);
+    res.noTagsText=std::move(hidingStructure.second);
+    res.savedTags=prepareRecoveryTags(hidingStructure.first);
+    return res;
 }
+std::string recoverText(RecoveryStructure& iRS){
+    std::string res;
+    std::pair<std::string, int> allD;
+    long pos=0;long oldPos;
+    while(pos<iRS.noTagsText.size()){
+        oldPos=pos;
+        allD=SF::getEverythingBefore(iRS.noTagsText,pos,GL_mainHidingWord);
+        if(allD.second==1){
+            res+=allD.first;
+            if(!iRS.savedTags.empty()){
+                res+=iRS.savedTags.top();
+                iRS.savedTags.pop();
+            }
+        }
+        else{
+            pos=oldPos;
+            while(pos<iRS.noTagsText.size()){
+                res+=iRS.noTagsText[pos];
+                ++pos;
+            }
+        }
+    }
+    return res;
+}
+
   class PlainTextKeeper{
   private:
     std::string sepEC="!|!|_";
