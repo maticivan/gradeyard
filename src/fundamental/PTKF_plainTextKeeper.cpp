@@ -23,6 +23,7 @@ namespace PTKF{
   std::string GL_rnd_code1="*"+RNDF::genRandCode(5)+"*@";
   std::string GL_rnd_code2="~"+RNDF::genRandCode(5)+"@!";
   std::string GL_rnd_code3=RNDF::genRandCode(5);
+  std::string GL_rnd_code4=RNDF::genRandCode(3);
   std::string GL_rnd_codeHR="."+RNDF::genRandCode(5)+"+~";
   std::string GL_openHidden="_|"+GL_rnd_code1;
   std::string GL_closeHidden="_/"+GL_rnd_code1;
@@ -34,6 +35,10 @@ namespace PTKF{
   std::string GL_htmlInstructionCode="#h"+GL_rnd_code3;
   std::string GL_instrSepO=".~"+GL_rnd_code3;
   std::string GL_instrSepC="~."+GL_rnd_code3;
+  std::string GL_instructionMath="#m"+GL_rnd_code4+"@";
+  std::string GL_instructionCode="#c"+GL_rnd_code4+"@";
+  std::string GL_instructionPre="#p"+GL_rnd_code4+"@";
+  std::string GL_instructionAHref="#a"+GL_rnd_code4+"@";
   std::string GL_thisWebsiteURL="";//will be updated in MWII/WSI
   std::string cleanRandCodes(const std::string& in){
       std::map<std::string,std::string> replMap;
@@ -54,13 +59,23 @@ namespace PTKF{
     }
     return output;
   }
-std::string treatmentPre(const std::string &in){
+std::string treatmentPre(const std::string &_in){
+    std::pair<std::stack<std::string>,std::string> cleaningTagsStr;
+    cleaningTagsStr=SF::stringToStackAndRemoveItems(_in,
+                                                    GL_instructionOpen,
+                                                    GL_instructionClose,
+                                                    1,
+                                                    "!*!");
+    
+    
     std::map<std::string,std::string> replMap;
     replMap["<"]="&lt;";
     replMap[">"]="&gt;";
     replMap["_hideReveal_"]=GL_hideRevealOpenH;
     replMap["_/hideReveal_"]=GL_hideRevealCloseH;
-    return MFRF::findAndReplace(in,replMap);
+    replMap[GL_openHidden]="";
+    replMap[GL_closeHidden]="";
+    return MFRF::findAndReplace(cleaningTagsStr.second,replMap);
 }
 std::string treatmentAHref(const std::string &in){
     std::map<std::string,std::string> replMap;
@@ -135,16 +150,16 @@ std::string instructionData(const std::string& _o,
 }
 std::string applyInstruction(const std::string& in,
                              const std::string& instruction){
-    if(instruction=="math"){
+    if(instruction==GL_instructionMath){
         return padIneqSigns(in);
     }
-    if(instruction=="pre"){
+    if(instruction==GL_instructionPre){
         return treatmentPre(in);
     }
-    if(instruction=="code"){
+    if(instruction==GL_instructionCode){
         return treatmentPre(in);
     }
-    if(instruction=="aHref"){
+    if(instruction==GL_instructionAHref){
         return treatmentAHref(in);
     }
     return in;
