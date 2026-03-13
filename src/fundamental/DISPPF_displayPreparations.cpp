@@ -27,6 +27,28 @@ std::string openOrCloseTag(long& toggleCounter,
     }
     return closeTag;
 }
+std::string nextIsCodeOrPreOpen(const std::string& in, long pos){
+    std::string stTemp="<code>";
+    if(in.substr(pos, stTemp.size())==stTemp){return stTemp;}
+    stTemp="<CODE>";
+    if(in.substr(pos, stTemp.size())==stTemp){return stTemp;}
+    stTemp="<pre>";
+    if(in.substr(pos, stTemp.size())==stTemp){return stTemp;}
+    stTemp="<PRE>";
+    if(in.substr(pos, stTemp.size())==stTemp){return stTemp;}
+    return "";
+}
+std::string nextIsCodeOrPreClose(const std::string& in, long pos){
+    std::string stTemp="</code>";
+    if(in.substr(pos, stTemp.size())==stTemp){return stTemp;}
+    stTemp="</CODE>";
+    if(in.substr(pos, stTemp.size())==stTemp){return stTemp;}
+    stTemp="</pre>";
+    if(in.substr(pos, stTemp.size())==stTemp){return stTemp;}
+    stTemp="</PRE>";
+    if(in.substr(pos, stTemp.size())==stTemp){return stTemp;}
+    return "";
+}
 std::string convertDollarsToLatexDelimiters(const std::string& in){
     std::string out;
     long inlineMathToggle  = 0;
@@ -36,25 +58,48 @@ std::string convertDollarsToLatexDelimiters(const std::string& in){
     const std::string displayOpen  = "\\[";
     const std::string displayClose = "\\]";
     long i = 0;
+    long preCodeCounter=0;std::string tagPreCode;
+    bool justRecognizedTag;
     while(i < in.size()){
-        if(in[i] == '$'){
-            bool escapedDollar = (i > 0) && (in[i-1] == '\\');
-            bool displayMath   = (i < in.size()-1) && (in[i+1] == '$');
-            if(escapedDollar){
-                out += '$';
-            }
-            else if(displayMath){
-                out += openOrCloseTag(displayMathToggle, displayOpen, displayClose);
-                ++i;
-            }
-            else{
-                out += openOrCloseTag(inlineMathToggle, inlineOpen, inlineClose);
-            }
+        justRecognizedTag=0;
+        tagPreCode=nextIsCodeOrPreOpen(in,i);
+        if( tagPreCode.size()>0 ){
+            out+=tagPreCode;
+            i+=tagPreCode.size();
+            justRecognizedTag=true;
+            ++preCodeCounter;
         }
         else{
-            out += in[i];
+            tagPreCode=nextIsCodeOrPreClose(in,i);
+            if( tagPreCode.size()>0 ){
+                out+=tagPreCode;
+                i+=tagPreCode.size();
+                justRecognizedTag=true;
+                if(preCodeCounter>0){
+                    --preCodeCounter;
+                }
+            }
         }
-        ++i;
+        if(!justRecognizedTag){
+            if( (in[i] == '$') && (preCodeCounter==0) ){
+                bool escapedDollar = (i > 0) && (in[i-1] == '\\');
+                bool displayMath   = (i < (long)in.size()-1) && (in[i+1] == '$');
+                if(escapedDollar){
+                    out += '$';
+                }
+                else if(displayMath){
+                    out += openOrCloseTag(displayMathToggle, displayOpen, displayClose);
+                    ++i;
+                }
+                else{
+                    out += openOrCloseTag(inlineMathToggle, inlineOpen, inlineClose);
+                }
+            }
+            else{
+                out += in[i];
+            }
+            ++i;
+        }
     }
     return out;
 }
@@ -200,15 +245,18 @@ std::string convertDollarsToLatexDelimiters(const std::string& in){
       closeTags.resize(numTags);
       instructions.resize(numTags);
       for(long i=0;i<numMathTags;++i){
-          instructions[i]="math";
+          instructions[i]=PTKF::GL_instructionMath;
       }
       long tagCntr=numMathTags;
-      instructions[tagCntr]="pre";++tagCntr;
-      instructions[tagCntr]="code";++tagCntr;
-      instructions[tagCntr]="pre";++tagCntr;
-      instructions[tagCntr]="code";++tagCntr;
-      instructions[tagCntr]="code";++tagCntr;
-      if(rs.htmlTolerance<2){instructions[tagCntr]="aHref";++tagCntr;}
+      instructions[tagCntr]=PTKF::GL_instructionPre;++tagCntr;
+      instructions[tagCntr]=PTKF::GL_instructionCode;++tagCntr;
+      instructions[tagCntr]=PTKF::GL_instructionPre;++tagCntr;
+      instructions[tagCntr]=PTKF::GL_instructionCode;++tagCntr;
+      instructions[tagCntr]=PTKF::GL_instructionCode;++tagCntr;
+      if(rs.htmlTolerance<2){
+          instructions[tagCntr]=PTKF::GL_instructionAHref;
+          ++tagCntr;
+      }
       tagCntr=0;
       openTags[tagCntr]="\\(";
       closeTags[tagCntr]="\\)";
@@ -301,9 +349,13 @@ std::string convertDollarsToLatexDelimiters(const std::string& in){
       replMap[PTKF::GL_instrSepO]="";
       replMap[PTKF::GL_instrSepC]="";
       replMap[PTKF::GL_htmlInstructionCode]="";
+      replMap[PTKF::GL_instructionMath]="";
+      replMap[PTKF::GL_instructionCode]="";
+      replMap[PTKF::GL_instructionPre]="";
+      replMap[PTKF::GL_instructionAHref]="";
       t=MFRF::findAndReplace(t,replMap);
-    t=keeperOfBoxCodes.recover(t);
-    return t;
+      t=keeperOfBoxCodes.recover(t);
+      return t;
   }
   std::string finalizeForDisplay(const std::map<std::string,std::string> &findReplacePairs, const std::string & _t){
     std::string t=MFRF::findAndReplace(_t,findReplacePairs);
