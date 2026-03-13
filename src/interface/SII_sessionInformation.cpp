@@ -15,12 +15,10 @@
 //    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
 //    along with this program.  If not, see https://www.gnu.org/licenses/.
 
-
 #ifndef _INCL_WI_SessionInformation_CPP
 #define _INCL_WI_SessionInformation_CPP
 
 namespace SII{
-
   std::string smallMapPrinting(const std::map<std::string,PSDI::GradingRule>&m ){
     std::string res;
     std::map<std::string,PSDI::GradingRule>::const_iterator it,itE;
