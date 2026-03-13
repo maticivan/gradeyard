@@ -15,7 +15,6 @@
 //    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
 //    along with this program.  If not, see https://www.gnu.org/licenses/.
 
-
 #ifndef _INCL_CMTI_couasMigrationTools_CPP
 #define _INCL_CMTI_couasMigrationTools_CPP
 
@@ -640,7 +639,6 @@ namespace CMTI{
     res+= enrollStudents(_psd,couasId,students) ;
     res+= assignGradesToCoaaFromRR(_psd,mainDocData.semester, mainDocData.courseNameAndSection,bijectionCouasRR);
     return res;
-
   }
 }
 #endif
